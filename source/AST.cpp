@@ -7,13 +7,7 @@
 
 using namespace std;
 
-#include "PKB.h"
+#include "AST.h"
 #include "TNode.h"
 
-int PKB::setProcToAST(PROC p, TNode* r) {
-	return NULL;
-}
 
-TNode* PKB::getRootAST (PROC p){
-	return NULL;
-}
