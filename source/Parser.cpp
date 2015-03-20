@@ -8,9 +8,4 @@
 using namespace std;
 
 #include "AST.h"
-#include "TNode.h"
 
-int Parse () {
-
-	return 0;
-}
