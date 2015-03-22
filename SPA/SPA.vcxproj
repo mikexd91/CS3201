@@ -20,10 +20,13 @@
     <ClCompile Include="..\source\ParsedData.cpp" />
     <ClCompile Include="..\source\Parser.cpp" />
     <ClCompile Include="..\source\AST.cpp" />
+    <ClCompile Include="..\source\ProcTable.cpp" />
     <ClCompile Include="..\source\Query.cpp" />
+    <ClCompile Include="..\source\QueryEvaluator.cpp" />
     <ClCompile Include="..\source\QueryParser.cpp" />
     <ClCompile Include="..\source\StmtTable.cpp" />
     <ClCompile Include="..\source\TNode.cpp" />
+    <ClCompile Include="..\source\VarTable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\AssgTable.h" />

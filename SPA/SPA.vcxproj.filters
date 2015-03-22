@@ -19,6 +19,12 @@
     <Filter Include="Source Files\PKB">
       <UniqueIdentifier>{e0488b09-2679-459c-b5cc-92f57156b8b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Parser">
+      <UniqueIdentifier>{0779c3af-3786-4223-953a-0d89d2ba16fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PKB">
+      <UniqueIdentifier>{f7f71e8a-7135-4668-945a-9dc6ddfc059d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\Parser.cpp">
@@ -45,45 +51,39 @@
     <ClCompile Include="..\source\StmtTable.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\Follows.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\Parent.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\AssgTable.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
     <ClCompile Include="..\source\FollowsTable.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\QueryEvaluator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\ProcTable.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\VarTable.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\ParentTable.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\Follows.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\Parent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\source\TNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\AssgTable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\AST.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\ParsedData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\Parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\Query.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\QueryParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\StmtTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\Follows.h">
@@ -93,12 +93,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\AssgTable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\FollowsTable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\ParentTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\Follows.h">
@@ -119,11 +113,32 @@
     <ClInclude Include="..\source\QueryEvaluator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\Parser.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\AssgTable.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\AST.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\FollowsTable.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\ParentTable.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
     <ClInclude Include="..\source\ProcTable.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\StmtTable.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\TNode.h">
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="..\source\VarTable.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\PKB</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
