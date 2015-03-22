@@ -6,10 +6,10 @@
 using namespace std;
 using namespace boost;
 
-#include "FollowsTable.h"
+#include "Follows.h"
 
 // constructor: instantiates an empty follows table
-FollowsTable::FollowsTable() {
+Follows::Follows() {
 
 
 }

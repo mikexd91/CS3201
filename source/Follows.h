@@ -6,10 +6,10 @@
 using namespace std;
 using namespace boost;
 
-class FollowsTable {
+class Follows {
 
 public:
-	FollowsTable();		// constructor: instantiates an empty follows table
+	Follows();		// constructor: instantiates an empty follows table
 
 	bool isFollows(int stmtNum1, int stmtNum2);		// checks if s2 follows s1
 
