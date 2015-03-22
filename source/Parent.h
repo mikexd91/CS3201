@@ -26,7 +26,6 @@ public:
 	//vector<vector<int>> getAllParentStar(syn syn1, syn syn2);		// gets lists of all possible parent-child* combinations
 
 private:
-	//unordered_map<int, vector<unordered_map<>>> _parentOfTable;
-	//unordered_map<int, vector<unordered_map<>>> _childOfTable;
+	
 
 }
