@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../include/boost/unordered_map.hpp"
 #include "TNode.h"
 #include <set>
