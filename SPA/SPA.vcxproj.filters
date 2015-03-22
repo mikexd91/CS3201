@@ -21,7 +21,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <ClCompile Include="..\source\Parser.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
@@ -63,14 +62,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-=======
-    <ClInclude Include="..\source\QueryParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\StmtTable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
->>>>>>> 09c7badbb0e5f00c280de9aa5e900f8ca21be6fb
     <ClInclude Include="..\source\TNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -80,7 +71,6 @@
     <ClInclude Include="..\source\AST.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\source\ParsedData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -111,7 +101,6 @@
     <ClInclude Include="..\source\ParentTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-=======
     <ClInclude Include="..\source\Follows.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -130,44 +119,5 @@
     <ClInclude Include="..\source\QueryEvaluator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\source\AssgTable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\AST.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\Follows.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\Parent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\ParsedData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\Parser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\Query.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\QueryEvaluator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\QueryParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\StmtTable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\TNode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
->>>>>>> 09c7badbb0e5f00c280de9aa5e900f8ca21be6fb
   </ItemGroup>
 </Project>

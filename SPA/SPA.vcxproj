@@ -11,7 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <ClCompile Include="..\source\AssgTable.cpp" />
     <ClCompile Include="..\source\Follows.cpp" />
     <ClCompile Include="..\source\FollowsTable.cpp" />
@@ -33,12 +32,6 @@
     <ClInclude Include="..\source\FollowsTable.h" />
     <ClInclude Include="..\source\Parent.h" />
     <ClInclude Include="..\source\ParentTable.h" />
-=======
-    <ClInclude Include="..\source\AssgTable.h" />
-    <ClInclude Include="..\source\AST.h" />
-    <ClInclude Include="..\source\Follows.h" />
-    <ClInclude Include="..\source\Parent.h" />
->>>>>>> 09c7badbb0e5f00c280de9aa5e900f8ca21be6fb
     <ClInclude Include="..\source\ParsedData.h" />
     <ClInclude Include="..\source\Parser.h" />
     <ClInclude Include="..\source\Query.h" />
@@ -47,20 +40,7 @@
     <ClInclude Include="..\source\StmtTable.h" />
     <ClInclude Include="..\source\TNode.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\source\AssgTable.cpp" />
-    <ClCompile Include="..\source\AST.cpp" />
-    <ClCompile Include="..\source\Follows.cpp" />
-    <ClCompile Include="..\source\Main.cpp" />
-    <ClCompile Include="..\source\Parent.cpp" />
-    <ClCompile Include="..\source\ParsedData.cpp" />
-    <ClCompile Include="..\source\Parser.cpp" />
-    <ClCompile Include="..\source\Query.cpp" />
-    <ClCompile Include="..\source\QueryEvaluator.cpp" />
-    <ClCompile Include="..\source\QueryParser.cpp" />
-    <ClCompile Include="..\source\StmtTable.cpp" />
-    <ClCompile Include="..\source\TNode.cpp" />
-  </ItemGroup>
+  
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>
     <RootNamespace>SPA</RootNamespace>
