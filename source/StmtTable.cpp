@@ -13,8 +13,12 @@ using namespace boost;
 // to include CFG
 // to include GNode
 
+// constructor: instantiates an empty statement table
+StmtTable::StmtTable() {
+
+}
+
 // adds statement to table
-// 
 void StmtTable::addStmt(int stmtNum, string type) {
 
 

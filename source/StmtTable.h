@@ -1,10 +1,7 @@
 #pragma once
 
-#include <stdio.h>
-#include <iostream>
 #include <boost/unordered_map.hpp>
 
-using namespace std;
 using namespace boost;
 
 #include "AST.h"
