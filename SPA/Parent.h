@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <boost/unordered_map.hpp>
+#include "ParentTable.h" // unsure!!
 
 using namespace std;
 using namespace boost;
@@ -27,5 +28,5 @@ public:
 
 private:
 	
-
+	ParentTable parentTable;
 }
