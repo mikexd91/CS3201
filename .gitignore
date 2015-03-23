@@ -197,20 +197,6 @@ FakesAssemblies/
 SPA/SPA.vcxproj
 SPA/SPA.vcxproj.filters
 
-#FROM INTERNET
-*~
-*.bundle
-*.opensdf
-*.sdf
-*.suo
-*.swo
-*.swp
-*.vcxproj.filters
-*.vcxproj.user
-Debug/
-Release/
-ipch/
-
 # I WANT THESE FILES COMMITTED
 !include/boost/*/debug
 !include/boost/*/release
