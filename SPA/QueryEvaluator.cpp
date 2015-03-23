@@ -4,6 +4,7 @@ using namespace std;
 
 QueryEvaluator::QueryEvaluator(void)
 {
+	// lala
 }
 
 
