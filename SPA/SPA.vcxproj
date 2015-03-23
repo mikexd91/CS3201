@@ -15,6 +15,7 @@
     <ClCompile Include="..\source\ParsedData.cpp" />
     <ClCompile Include="..\source\Parser.cpp" />
     <ClCompile Include="..\source\AST.cpp" />
+    <ClCompile Include="..\source\PDR.cpp" />
     <ClCompile Include="..\source\Query.cpp" />
     <ClCompile Include="..\source\QueryParser.cpp" />
     <ClCompile Include="..\source\TNode.cpp" />
@@ -23,6 +24,7 @@
     <ClInclude Include="..\source\AST.h" />
     <ClInclude Include="..\source\ParsedData.h" />
     <ClInclude Include="..\source\Parser.h" />
+    <ClInclude Include="..\source\PDR.h" />
     <ClInclude Include="..\source\Query.h" />
     <ClInclude Include="..\source\QueryParser.h" />
     <ClInclude Include="..\source\TNode.h" />
@@ -59,6 +61,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>C:\Users\Leon\Desktop\University\Year 3 Sem 2\CS3201\SPA\Debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
