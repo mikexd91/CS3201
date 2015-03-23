@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <boost/unordered_map.hpp>
+#include "../include/boost/unordered_map.hpp"
 
 using namespace std;
 using namespace boost;
@@ -26,7 +26,6 @@ public:
 	vector<vector<int>> getAllFollowsStar(int stmtNum1, int stmtNum2);	// gets list of all possible follows*
 
 private:
-	//unordered_map<int, vector<unordered_map<>>> _followsTable;
-	//unordered_map<int, vector<unordered_map<>>> _followedByTable;
+
 
 };
