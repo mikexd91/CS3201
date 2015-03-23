@@ -84,20 +84,11 @@
     <ClCompile Include="..\source\AssgTable.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="Clause.cpp">
+    <ClCompile Include="..\source\Clause.cpp">
       <Filter>Source Files\Query</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\source\Follows.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\Parent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\ParsedData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\Parser.h">
       <Filter>Header Files\Parser</Filter>
     </ClInclude>
@@ -149,10 +140,19 @@
     <ClInclude Include="..\source\QueryParser.h">
       <Filter>Header Files\Query</Filter>
     </ClInclude>
-    <ClInclude Include="Clause.h">
+    <ClInclude Include="..\source\Query.h">
       <Filter>Header Files\Query</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\Query.h">
+    <ClInclude Include="..\source\ParsedData.h">
+      <Filter>Header Files\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Parent.h">
+      <Filter>Header Files\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Follows.h">
+      <Filter>Header Files\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Clause.h">
       <Filter>Header Files\Query</Filter>
     </ClInclude>
   </ItemGroup>

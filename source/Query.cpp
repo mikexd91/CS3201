@@ -1,4 +1,5 @@
 #include "Query.h"
+#include "Clause.h"
 #include <string>
 #include <vector>
 
