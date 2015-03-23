@@ -84,6 +84,9 @@
     <ClCompile Include="..\source\AssgTable.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
+    <ClCompile Include="Clause.cpp">
+      <Filter>Source Files\Query</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\Follows.h">
@@ -93,9 +96,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\ParsedData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\Query.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\source\Parser.h">
@@ -147,6 +147,12 @@
       <Filter>Header Files\Query</Filter>
     </ClInclude>
     <ClInclude Include="..\source\QueryParser.h">
+      <Filter>Header Files\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="Clause.h">
+      <Filter>Header Files\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\Query.h">
       <Filter>Header Files\Query</Filter>
     </ClInclude>
   </ItemGroup>
