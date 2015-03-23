@@ -214,3 +214,6 @@ ipch/
 # I WANT THESE FILES COMMITTED
 !include/boost/*/debug
 !include/boost/*/release
+SPA Prototype.suo
+*.ini
+*.suo
