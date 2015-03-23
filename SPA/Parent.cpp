@@ -52,8 +52,11 @@ vector<vector<int>> getAllParent(syn syn1, syn syn2) {
 
 // checks if s1 is parent* of s2
 bool isParentStar(int stmtNum1, int stmtNum2) {
-
-
+	// get parent of stmtNum2
+	// check if parent == stmtNum1
+	// if stmtNum 1 parent returns none, return false
+	// if yes, return true
+	// else, get parent of stmtNum1 (do recursion)
 }
 
 // get list of parents* of stmtNum
