@@ -1,6 +1,9 @@
 #include <stack>
 #include <string>
 #include "ParsedData.h"
+#include "TNode.h"
+#include "Statement.h"
+#include "AST.h"
 
 using namespace std;
 
@@ -16,8 +19,12 @@ private:
 	int stmtCounter;
 	stack<Type> stmtStack;
 
+	TNode * currentProcNode;
+	TNode * currentNodeOnAST;
+
 	void processProcedureStmt(ParsedData);
 	void processAssignStmt(ParsedData);
-	//void processWhileStmt();
+	void processIfStmt(ParsedData);
+	void processWhileStmt();
 
 };
