@@ -1,3 +1,6 @@
+#ifndef PDR_HEADER
+#define PDR_HEADER
+
 #include <string>
 #include <vector>
 #include "ParsedData.h"
@@ -20,3 +23,4 @@ private:
 	//void processWhileStmt();
 
 };
+#endif

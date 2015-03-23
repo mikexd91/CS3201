@@ -2,6 +2,7 @@
 
 #include <string>
 #include <regex>
+#include "PDR.h"
 
 using namespace std;
 
@@ -15,6 +16,7 @@ private:
 	vector<string> tokens;
 	vector<string>::iterator iter;
 	int nestingLevel;
+	PDR parsedDataReceiver;
 
 	vector<string> explode(const string &s);
 	void match(string token);

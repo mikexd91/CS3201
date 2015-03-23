@@ -5,9 +5,10 @@
 #include <string>
 #include <vector>
 #include <regex>
-//#include "InvalidCodeException.h"
+#include "InvalidCodeException.h"
 #include "Parser.h"
 #include "ParsedData.h"
+#include "PDR.h"
 
 using namespace std;
 
@@ -48,8 +49,7 @@ void Parser::match(string token) {
 		getNextToken();
 	}
 	else {
-		//TODO: throw error. token should be present but is not
-		
+		throw InvalidCodeException();
 	}
 }
 
@@ -78,7 +78,7 @@ void Parser::procedure() {
 	string procName = getWord();
 	ParsedData procedure = ParsedData(ParsedData::PROCEDURE, nestingLevel);
 	procedure.setProcName(procName);
-	//TODO: send procedure object to pdr
+	parsedDataReceiver.processParsedData(procedure);
 	match("{");
 	nestingLevel++;
 	stmtLst();
@@ -105,7 +105,7 @@ void Parser::assign() {
 	ParsedData assignment = ParsedData(ParsedData::ASSIGNMENT, nestingLevel);
 	assignment.setAssignVar(var);
 	assignment.setAssignExpression(atoi(expression.c_str()));
-	//TODO: send assign object to pdr
+	parsedDataReceiver.processParsedData(assignment);
 }
 
 
