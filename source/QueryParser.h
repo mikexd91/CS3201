@@ -1,12 +1,12 @@
 #pragma once
 #include <string>
-#include "Query.h"
+
 using std::string;
 class QueryParser
 {
 private:
-	bool checkValidity(Query);
-	Query queryCreator(string);
+	string INVALID_QUERY;
+	string VALID_QUERY;
 public:
 	QueryParser(void);
 	~QueryParser(void);
