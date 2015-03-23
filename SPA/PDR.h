@@ -1,5 +1,5 @@
+#include <stack>
 #include <string>
-#include <vector>
 #include "ParsedData.h"
 
 using namespace std;
@@ -12,8 +12,9 @@ public:
 	void processParsedData(ParsedData);
 
 private:
-
+	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM};
 	int stmtCounter;
+	stack<Type> stmtStack;
 
 	void processProcedureStmt(ParsedData);
 	void processAssignStmt(ParsedData);

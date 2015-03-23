@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <stack>
 #include "ParsedData.h"
 #include "PDR.h"
 
@@ -7,6 +8,7 @@ using namespace std;
 
 PDR::PDR() {
 	stmtCounter = 0;
+	stmtStack.push(Type::PROGRAM);
 }
 
 void PDR::processParsedData(ParsedData data) {
@@ -22,6 +24,11 @@ void PDR::processParsedData(ParsedData data) {
 };
 
 void PDR::processProcedureStmt(ParsedData data) {
+	//TODO - if working on a previous procedure, links the prev procedure to the root of the 
+	//		 AST and creates a new procedure node
+	if(stmtStack.top() == Type::PROGRAM) {
+		stmtStack.pop();
+	}
 	//TODO - Create and AST node for procedure statements
 	
 }
