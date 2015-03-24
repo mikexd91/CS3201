@@ -11,13 +11,13 @@ public:
 	
 	//Setter
 	void setAssignVar(string);
-	void setAssignExpression(int);
+	void setAssignExpression(string);
 	void setProcName(string);
 
 	//Getter
 	int getNestingLevel();
 	string getAssignVar();
-	int getAssignExpression();
+	string getAssignExpression();
 	string getProcName();
 	Type getType();
 
@@ -27,7 +27,7 @@ private:
 	int nestingLevel;
 	//Assignment
 	string assignVar;
-	int assignExpression; //an integer for now
+	string assignExpression; //an integer for now
 	//Procedure
 	string procName;
 	
