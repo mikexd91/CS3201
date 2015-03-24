@@ -27,8 +27,8 @@ void Parser::parse(string content) {
 }
 
 string Parser::sanitise(string str) {
-	for (int i = 0; i < strlen(constants::SANITISED_CHARS); i++) {
-		char sanitisedChar = constants::SANITISED_CHARS[i];
+	for (int i = 0; i < strlen(ParserConstants::SANITISED_CHARS); i++) {
+		char sanitisedChar = ParserConstants::SANITISED_CHARS[i];
 		str.erase(remove(str.begin(), str.end(), sanitisedChar), str.end());
 	}
 	return str;
@@ -39,13 +39,13 @@ vector<string> Parser::explode(const string &str) {
 	vector<string> elems;
 	int pos;
 	int prev = 0;
-	while ((pos = str.find_first_of(constants::DELIM_STRING, prev)) != string::npos) {
+	while ((pos = str.find_first_of(ParserConstants::DELIM_STRING, prev)) != string::npos) {
 		//if there are words in between (not consecutive delimiters)
 		if (pos > prev) {
 			elems.push_back(str.substr(prev, pos - prev));
 		}
 		//if it is a delimiter that should be included (aka all delimiters but spaces)
-		if (find(begin(constants::DELIMITERS), end(constants::DELIMITERS), str[pos]) != end(constants::DELIMITERS)) {
+		if (find(begin(ParserConstants::DELIMITERS), end(ParserConstants::DELIMITERS), str[pos]) != end(ParserConstants::DELIMITERS)) {
 			elems.push_back(string(1, str[pos]));
 		}
 		prev = pos + 1;

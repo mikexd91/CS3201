@@ -32,7 +32,7 @@ private:
 	void assign();
 };
 
-namespace constants {
+namespace ParserConstants {
 	const string DELIM_STRING = " ;={}";
 	const char DELIMITERS[] = { ';', '=', '{', '}' };
 	const char SANITISED_CHARS[] = { '\t', '\n' };
