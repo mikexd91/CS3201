@@ -7,6 +7,6 @@ class ConstNode : public TNode {
 public:
 
 	// constructors
-	ConstNode(void);
+	ConstNode(const string &value);
 };
 

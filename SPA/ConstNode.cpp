@@ -1,11 +1,8 @@
 #include "ConstNode.h"
 
 
-ConstNode::ConstNode(void)
-{
+ConstNode::ConstNode(const string &value)
+	: TNode(NodeType::CONSTANT_, value) {
+
 }
 
-
-ConstNode::~ConstNode(void)
-{
-}

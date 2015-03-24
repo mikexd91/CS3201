@@ -3,22 +3,22 @@
 #include "tnode.h"
 #include "VarNode.h"
 #include "StmtLstNode.h"
+#include "StmtNode.h"
 
-class WhileNode :
-	public TNode
-{
+class WhileNode : public StmtNode {
+
 public:
 
 	// constructor
-	WhileNode();
+	WhileNode(int stmtNum);
 
 	// getters
-	VarNode& getVarNode();
-	StmtLstNode& getStmtLstNode();
+	VarNode* getVarNode();
+	StmtLstNode* getStmtLstNode();
 
 	// setters
-	void linkVarNode(VarNode varNode);
-	void linkStmtLstNode(StmtLstNode stmtLst);
+	void linkVarNode(VarNode *varNode);
+	void linkStmtLstNode(StmtLstNode *stmtLst);
 
 };
 

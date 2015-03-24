@@ -7,7 +7,7 @@ class VarNode : public TNode {
 public:
 
 	// constructor
-	VarNode(string &nodeName);
+	VarNode(const string &varName);
 	
 };
 

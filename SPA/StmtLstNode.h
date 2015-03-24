@@ -1,10 +1,18 @@
 #pragma once
+
 #include "tnode.h"
-class StmtLstNode :
-	public TNode
-{
+#include "StmtNode.h"
+
+class StmtLstNode : public TNode {
+
 public:
-	StmtLstNode(string &nodeName = NULL);
+
+	// constructor
+	StmtLstNode();
+	StmtLstNode(const string &nodeName);
+
+	// setters
+	void linkStmtNode(StmtNode *stmtNode);
 	
 };
 

@@ -4,19 +4,19 @@ using namespace std;
 
 // constructors
 
-TNode::TNode(void) {
+TNode::TNode(NodeType type) {
+	this->_nodeType = type;
 	this->_leftSibling = NULL;
 	this->_rightSibling = NULL;
 	this->_parent = NULL;
 }
 
-TNode::TNode(NodeType type) {
-	this->_nodeType = type;
-}
-
 TNode::TNode(NodeType type, const string& name) {
 	this->_nodeType = type;
 	this->_nodeName = name;
+	this->_leftSibling = NULL;
+	this->_rightSibling = NULL;
+	this->_parent = NULL;
 }
 
 //--------------------

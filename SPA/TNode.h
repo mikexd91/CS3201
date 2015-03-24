@@ -32,10 +32,8 @@ class TNode {
 public:
 	
 	// constructors
-	TNode();
 	TNode(NodeType type);
 	TNode(NodeType type, const string& name);
-	~TNode();
 
 	// getters
 	NodeType getNodeType();
@@ -60,7 +58,7 @@ public:
 	bool hasRightSibling();
 	bool hasLeftSibling();
 
-private:
+protected:
 	NodeType _nodeType;
 	string _nodeName;
 	vector<TNode*> _children;

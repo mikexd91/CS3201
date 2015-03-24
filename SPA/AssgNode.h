@@ -1,26 +1,22 @@
 #pragma once
 
-#include "tnode.h"
+#include "stmtnode.h"
 #include "VarNode.h"
 
-class AssgNode : public TNode {
+class AssgNode : public StmtNode {
 
 public:
 
-	// constructor
-	AssgNode();
-	AssgNode(const string& name, int stmtNum);
+	// constructors
+	AssgNode(int stmtNum);
 
 	// getters
-	int getStmtNum();
-	VarNode getVarNode(); // just children[0] and children[1]
-	TNode getExprNode();
+	VarNode* getVarNode(); // just children[0] and children[1]
+	TNode* getExprNode();
 
 	// setters
-	void linkVarNode(VarNode& varNode);
-	void linkExprNode(TNode& exprNode);
+	void linkVarNode(VarNode *varNode);
+	void linkExprNode(TNode *exprNode);
 
-private:
-	int _stmtNum;
 };
 

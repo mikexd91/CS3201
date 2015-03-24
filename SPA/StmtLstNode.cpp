@@ -1,11 +1,17 @@
 #include "StmtLstNode.h"
 
+// constructor
+StmtLstNode::StmtLstNode() 
+	: TNode(NodeType::STMTLST_) {
 
-StmtLstNode::StmtLstNode(void)
-{
 }
 
+StmtLstNode::StmtLstNode(const string &nodeName)
+	: TNode(NodeType::STMTLST_, nodeName) {
 
-StmtLstNode::~StmtLstNode(void)
-{
+}
+
+// setters
+void StmtLstNode::linkStmtNode(StmtNode *stmtNode) {
+	this->linkChild(stmtNode);
 }

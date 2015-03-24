@@ -1,11 +1,8 @@
 #include "CallNode.h"
 
 
-CallNode::CallNode(void)
-{
+CallNode::CallNode(int stmtNum, const string &nodeName)
+	: StmtNode(NodeType::CALL_STMT_, stmtNum, nodeName) {
+
 }
 
-
-CallNode::~CallNode(void)
-{
-}

@@ -41,15 +41,15 @@ public:
 	// constructor: creates tree rooted at programNode (named programName)
 	AST(const string &progName);
 
-	// checkers
-	bool isRootSet();
+	// getters
+	static AST* getInstance(const string &progName);
 
 	// setters
-	void addProcNode(TNode &procNode); // adds the procedure to the program
+	void addProcNode(ProcNode *procNode); // adds the procedure to the program
 
 private:
-	// actually 
-	// ProgramNode _programNode;
-	ProgNode _rootNode;
+	
+	ProgNode *_rootNode;
+	static AST *_instance;
 
 };

@@ -1,11 +1,18 @@
 #pragma once
+
 #include "tnode.h"
-class ProgNode :
-	public TNode
-{
+#include "ProcNode.h"
+
+class ProgNode : public TNode {
 public:
 
 	// constructors
-	ProgNode(void);
+	ProgNode(const string &name);
+
+	// getters
+	vector<TNode*>& getProcNodes(); // simply replace the methods for getchildren
+
+	// setters
+	void linkProcNode(ProcNode *procNode); 
 };
 

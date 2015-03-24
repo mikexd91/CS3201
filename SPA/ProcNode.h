@@ -8,13 +8,13 @@ class ProcNode : public TNode {
 public:
 
 	// constructor
-	ProcNode(void);
+	ProcNode(const string &name);
 
 	// getters
-	StmtLstNode& getStmtLst(); // children[0]
+	StmtLstNode* getStmtLst(); // children[0]
 
 	// setters
-	void linkStmtLstNode(StmtLstNode stmtlst);
+	void linkStmtLstNode(StmtLstNode *stmtlst);
 	
 	
 private:

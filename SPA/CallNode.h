@@ -1,11 +1,12 @@
 #pragma once
 
 #include "tnode.h"
+#include "StmtNode.h"
 
-class CallNode : public TNode {
+class CallNode : public StmtNode {
 public:
 
 	// constructor
-	CallNode(string &nodeName);
+	CallNode(int stmtNum, const string &nodeName);
 };
 

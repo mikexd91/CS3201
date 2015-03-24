@@ -1,11 +1,8 @@
 #include "VarNode.h"
 
 
-VarNode::VarNode(void)
-{
+VarNode::VarNode(const string &varName)
+	: TNode(NodeType::VARIABLE_, varName) {
+
 }
 
-
-VarNode::~VarNode(void)
-{
-}

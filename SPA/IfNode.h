@@ -3,22 +3,23 @@
 #include "tnode.h"
 #include "VarNode.h"
 #include "StmtLstNode.h"
+#include "StmtNode.h"
 
-class IfNode : public TNode {
+class IfNode : public StmtNode {
 
 public:
 	// constructors
-	IfNode(void);
+	IfNode(int stmtNum);
 
 	// getters
-	VarNode& getVarNode(); // children[0]
-	StmtLstNode& getThenStmtLst(); // children[1]
-	StmtLstNode& getElseStmtLst(); // children[2]
+	VarNode* getVarNode(); // children[0]
+	StmtLstNode* getThenStmtLstNode(); // children[1]
+	StmtLstNode* getElseStmtLstNode(); // children[2]
 
 	// setters
-	void linkVarNode(VarNode &varNode);
-	void linkThenStmtLst(StmtLstNode &thenNode);
-	void linkElseStmtLst(StmtLstNode &elseNode);
+	void linkVarNode(VarNode *varNode);
+	void linkThenStmtLstNode(StmtLstNode *thenNode);
+	void linkElseStmtLstNode(StmtLstNode *elseNode);
 
 };
 
