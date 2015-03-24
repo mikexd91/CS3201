@@ -4,8 +4,6 @@
 #include "TNode.h"
 //#include "GNode.h"
 
-using namespace std;
-
 /*
 // --------------------------- Statement --------------------------- 
 // Statement object created by PDR to use to add to statement table
@@ -33,7 +31,6 @@ class Statement {
 	enum NodeType { ASSIGN, CALL, WHILE, IF };
 
 public:
-
 	// TYPEDEF
 	typedef set<string> UsesSet;
 	typedef set<string> ModifiesSet;
