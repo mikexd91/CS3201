@@ -9,4 +9,5 @@ using namespace std;
 
 #include "AST.h"
 
-
+AST::AST(const string &progName) {
+}

@@ -35,21 +35,23 @@ public:
 	TNode();
 	TNode(NodeType type);
 	TNode(NodeType type, const string& name);
+	~TNode();
 
 	// getters
 	NodeType getNodeType();
 	string getNodeName(); // the name that comes before the colon e.g. else:stmtlst
-	vector<TNode>& getChildren();
-	TNode& getParent();
-	TNode& getRightSibling();
-	TNode& getLeftSibling();
+	vector<TNode*>& getChildren();
+	TNode* getParent();
+	TNode* getRightSibling();
+	TNode* getLeftSibling();
 
 	// setters
 	void setName(const string& name);
-	void linkChild(TNode& child);
-	void linkParent(TNode& parent);
-	void linkRightSibling(TNode& right);
-	void linkLeftSibling(TNode& left);
+	void addChild(TNode *child);
+	void linkChild(TNode *child);
+	void linkParent(TNode *parent);
+	void linkRightSibling(TNode *right);
+	void linkLeftSibling(TNode *left);
 
 	// checks
 	bool isNodeType(NodeType type);
@@ -59,18 +61,11 @@ public:
 	bool hasLeftSibling();
 
 private:
-
 	NodeType _nodeType;
 	string _nodeName;
-	vector<TNode> &_children;
-	TNode &parent;
-
-	/*string _nodeType;
-	int _stmtNumber;
-	string _value;
-	TNode * _parent;
-	TNode * _child;
-	TNode * _left;
-	TNode * _right;*/
+	vector<TNode*> _children;
+	TNode *_parent;
+	TNode *_rightSibling;
+	TNode *_leftSibling;
 
 };
