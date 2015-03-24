@@ -44,6 +44,10 @@ public:
 	typedef set<int> NextSet;
 	typedef set<int> PrevSet;
 
+	// CONSTRUCTOR
+	Statement();
+	//Statement(NodeType type, int stmtNum, TNode *tRef, GNode *gRef);
+
 	// GETTERS
 	const NodeType getType();				// get stmt type
 	const int getStmtNum();					// get stmt num

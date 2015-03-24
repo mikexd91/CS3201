@@ -8,6 +8,21 @@
 using namespace std;
 
 /* ----------------------------- */
+/* -------- CONSTRUCTORS ------- */
+/* ----------------------------- */
+// empty contructor (null attributes)
+Statement::Statement() {}
+
+/*
+// sets basic attributes
+Statment::Statement(NodeType type, int stmtNum, TNode *tRef, GNode *gRef) {
+	this->type = type;
+	this->stmtNum = stmtNum;
+	this->tNodeRef = tRef;
+	this->gRef = gRef;
+}*/
+
+/* ----------------------------- */
 /* ---------- GETTERS ---------- */
 /* ----------------------------- */
 // get stmt type
