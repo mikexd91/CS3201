@@ -2,14 +2,11 @@
 #include "Clause.h"
 #include <string>
 #include <vector>
-
+using namespace stringconst;
 Query::Query(void){
-
 }
 
-
-Query::~Query(void)
-{
+Query::~Query(void){
 }
 
 void Query::setSelectSynonym(string synonym){

@@ -1,13 +1,10 @@
 #include "Clause.h"
 #include <string>
-
 using std::string;
-Clause::Clause(void)
-{
+Clause::Clause(void){
 }
 
-Clause::~Clause(void)
-{
+Clause::~Clause(void){
 }
 
 void Clause::setClauseType(string newType){
@@ -30,22 +27,45 @@ void Clause::setSecondArgType(string type){
 	this->secondArgType = type;
 }
 
-string Clause::getClauseType(){
+string Clause::getClauseType(void){
 	return this->clauseType;
 }
 
-string Clause::getFirstArg(){
+string Clause::getFirstArg(void){
 	return this->firstArg;
 }
 
-string Clause::getFirstArgType(){
+string Clause::getFirstArgType(void){
 	return this->firstArgType;
 }
 
-string Clause::getSecondArg(){
+string Clause::getSecondArg(void){
 	return this->secondArg;
 }
 
-string Clause::getSecondArgType(){
+string Clause::getSecondArgType(void){
 	return this->secondArgType;
+}
+
+bool Clause::checkClauseValidity(void){
+	string type = this->getClauseType();
+	string argTypeOne = this->getFirstArgType();
+	string argTypeTwo = this->getSecondArgType();
+	if (type.compare(stringconst::TYPE_FOLLOWS)){
+		//INSERT RULES HERE
+		return true;
+	} else if (type.compare(stringconst::TYPE_PARENT)){
+		//INSERT RULES HERE
+		return true;
+	} else if (type.compare(stringconst::TYPE_MODIFIES)){
+		//INSERT RULES HERE
+		return true;
+	} else if (type.compare(stringconst::TYPE_PATTERN)){
+		//INSERT RULES HERE
+		return true;
+	} else if (type.compare(stringconst::TYPE_USES)){
+		//INSERT RULES HERE
+		return true;
+	}
+	return false;
 }

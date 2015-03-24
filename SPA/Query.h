@@ -21,4 +21,6 @@ public:
 	string getSelectSynonym();
 	vector<Clause> getClauseList();
 	Clause getClause(int);
+	int getNumClauses();
+	bool checkQueryValidity();
 };
