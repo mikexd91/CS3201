@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "TNode.h"
+#include "ProgNode.h"
 
 using namespace std;
 
@@ -50,6 +50,6 @@ public:
 private:
 	// actually 
 	// ProgramNode _programNode;
-	TNode _programRoot;
+	ProgNode _rootNode;
 
 };
