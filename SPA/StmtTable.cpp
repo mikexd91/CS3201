@@ -24,6 +24,13 @@ StmtTable* StmtTable::getInstance() {
 	return tableInstance;
 }
 
+// gets iterator to stmt table
+StmtTable::StatementTable::iterator StmtTable::getIterator() {
+	StmtTable::StatementTable::iterator tableIter = table.begin();
+
+	return tableIter;
+}
+
 // gets all assignment stmts
 const set<Statement>& StmtTable::getAssgStmts() {
 	set<Statement> stmtSet;

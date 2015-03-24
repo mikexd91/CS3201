@@ -24,6 +24,8 @@ public:
 	// ACCESSORS
 	static StmtTable* getInstance();			// gets instance of stmt table
 
+	StatementTable::iterator getIterator();		// gets iterator to stmt table
+
 	const set<Statement>& getAssgStmts();		// gets all assignment stmts
 	const set<Statement>& getCallStmts();		// gets all call stmts
 	const set<Statement>& getWhileStmts();		// gets all while stmts
