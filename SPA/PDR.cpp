@@ -19,6 +19,16 @@ void PDR::processParsedData(ParsedData data) {
 		case ParsedData::Type::ASSIGNMENT:
 			processAssignStmt(data);
 			break;
+		//case ParsedData::Type::CALL:
+		//	processCallStmt(data);
+		//	break;
+		//case ParsedData::Type::WHILE:
+		//	processWhileStmt(data);
+		//	break;
+		//case ParsedData::Type::IF:
+		//	processIfStmt(data);
+		//	break;
+
 	}
 }
 void PDR::processProcedureStmt(ParsedData data) {
@@ -29,15 +39,17 @@ void PDR::processProcedureStmt(ParsedData data) {
 		nodeStack.pop();
 	}
 
-	ProcNode procedure = ProcNode();
+	ProcNode procedure = ProcNode(data.getProcName());
 	nodeStack.push(procedure);
-	//TODO - Get the necessary details and create the statement object
+	StmtLstNode stmtLst = StmtLstNode();
+	nodeStack.push(stmtLst);
+	procedure.addChild(&stmtLst);
+
+	//TODO - Add to proc table
 }
 
 void PDR::processAssignStmt(ParsedData data) {
-	stmtCounter++;
-	
-	AssgNode assignNode = AssgNode();	
+	AssgNode assignNode = AssgNode(++stmtCounter);	
 	/* TODO - Get modifies variable
 	 *	    - Add to modifies table
 	 *      - Get used variables
@@ -68,10 +80,11 @@ void PDR::processIfStmt(ParsedData data) {
 
 void PDR::processWhileStmt(ParsedData data) {
 	//TODO - processing while stmtLst
-	stmtCounter++;
+	WhileNode whileNode = WhileNode(++stmtCounter);
+
 }
 
 void PDR::processCallStmt(ParsedData data) {
-	stmtCounter++;
+	CallNode callNode = CallNode(++stmtCounter, data.getProcName());
 }
 

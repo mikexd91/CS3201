@@ -4,6 +4,10 @@
 #include "ProcNode.h"
 #include "AssgNode.h"
 #include "Statement.h"
+#include "WhileNode.h"
+#include "StmtLstNode.h"
+#include "IfNode.h"
+#include "CallNode.h"
 #include "AST.h"
 
 using namespace std;
@@ -18,10 +22,10 @@ public:
 private:
 	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHI};
 	int stmtCounter;
+	int currNestingLevel;
+
 	stack<Type> stmtStack;
 	stack<TNode> nodeStack;
-
-	TNode previousFollowedByNode;
 
 	void processProcedureStmt(ParsedData);
 	void processAssignStmt(ParsedData);
