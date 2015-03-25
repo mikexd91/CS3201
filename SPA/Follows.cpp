@@ -24,7 +24,6 @@ Statement* getStmtObj(int stmtnum) {
 		int stmtnum2 = stmt->getStmtNum();
 		if (stmtnum2 == stmtnum) {
 			return stmt;
-			//stmt->getFollowedBy();
 		}
 	}
 }
@@ -32,19 +31,21 @@ Statement* getStmtObj(int stmtnum) {
 bool Follows::isFollows(int stmtNum1, int stmtNum2) {
 	StmtTable* table = StmtTable.getInstance();
 	const set<Statement*> assignStmts = table->getAssgStmts();
-	// Statement* stmtObj = getStmtObj(stmtNum1, assignStmts);
+	set<int> getFollowSet = getFollows(stmtNum1);
 }
 
 // gets all those before a in Follows(a, b)
-vector<int> Follows::getFollows(int stmtNum) {
+set<int> Follows::getFollows(int stmtNum) {
 	Statement* stmtObj = getStmtObj(stmtNum);
-	 //FollowsSet& stmtsList = stmtObj->getFollows();
+	set<int> stmtsSet = stmtObj->getFollows();
+	return stmtsSet;
 }
 
 // gets all those after b in Follows(a, b)
-vector<int> Follows::getFollowedBy(int stmtNum) {
+set<int> Follows::getFollowedBy(int stmtNum) {
 	Statement* stmtObj = getStmtObj(stmtNum);
-	//FollowsSet& stmtsList = stmtObj->getFollowedBy();
+	set<int> stmtsSet = stmtObj->getFollowedBy();
+	return stmtsSet;
 }
 
 vector<vector<int>> Follows::getAllFollows(int stmtNum1, int stmtNum2) {

@@ -12,8 +12,8 @@ public:
 
 	bool isFollows(int stmtNum1, int stmtNum2);		// checks if s2 follows s1
 
-	vector<int> getFollows(int stmtNum);			// gets list of statements that follows stmtNum
-	vector<int> getFollowedBy(int stmtNum);			// gets list of statements that stmtNum follows
+	set<int> getFollows(int stmtNum);			// gets list of statements that follows stmtNum
+	set<int> getFollowedBy(int stmtNum);			// gets list of statements that stmtNum follows
 
 	vector<vector<int>> getAllFollows(int stmtNum1, int stmtNum2);	// gets lists of all possible follows
 
