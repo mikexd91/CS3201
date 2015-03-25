@@ -4,6 +4,7 @@
 #include <boost/unordered_map.hpp>
 #include "StmtTable.h"
 #include "Statement.h"
+#include "TNode.h"
 
 using namespace boost;
 
@@ -32,39 +33,47 @@ StmtTable::StatementTable::iterator StmtTable::getIterator() {
 }
 
 // gets all assignment stmts
-const set<Statement>& StmtTable::getAssgStmts() {
-	set<Statement> stmtSet;
+const set<Statement*>& StmtTable::getAssgStmts() {
+	set<Statement*> stmtSet;
 
 	for(setIter=assgStmtSet.begin(); setIter!=assgStmtSet.end(); setIter++) {
 		stmtSet.insert(table.at(*setIter));
 	}
+
+	return stmtSet;
 }
 
 // gets all call stmts
-const set<Statement>& StmtTable::getCallStmts() {
-	set<Statement> stmtSet;
+const set<Statement*>& StmtTable::getCallStmts() {
+	set<Statement*> stmtSet;
 
 	for(setIter=callStmtSet.begin(); setIter!=callStmtSet.end(); setIter++) {
 		stmtSet.insert(table.at(*setIter));
 	}
+
+	return stmtSet;
 }
 
 // gets all while stmts
-const set<Statement>& StmtTable::getWhileStmts() {
-	set<Statement> stmtSet;
+const set<Statement*>& StmtTable::getWhileStmts() {
+	set<Statement*> stmtSet;
 
 	for(setIter=whileStmtSet.begin(); setIter!=whileStmtSet.end(); setIter++) {
 		stmtSet.insert(table.at(*setIter));
 	}
+
+	return stmtSet;
 }
 
 // gets all if stmts
-const set<Statement>& StmtTable::getIfStmts() {
-	set<Statement> stmtSet;
+const set<Statement*>& StmtTable::getIfStmts() {
+	set<Statement*> stmtSet;
 
 	for(setIter=ifStmtSet.begin(); setIter!=ifStmtSet.end(); setIter++) {
 		stmtSet.insert(table.at(*setIter));
 	}
+
+	return stmtSet;
 }
 
 // MUTATORS
@@ -77,19 +86,20 @@ void StmtTable::addStmt(Statement *stmt) {
 
 	// record type of stmt
 	switch(stmt->getType()) {
-		case Statement::NodeType.ASSIGN:
+	case NodeType::ASSIGN_STMT_:
 			assgStmtSet.insert(stmtNum);
 			break;
-		case Statement::NodeType.CALL:
+	case NodeType::CALL_STMT_:
 			callStmtSet.insert(stmtNum);
 			break;
-		case Statement::NodeType.IF:
+	case NodeType::IF_STMT_:
 			ifStmtSet.insert(stmtNum);
 			break;
-		case Statement::NodeType.WHILE:
+	case NodeType::WHILE_STMT_:
 			whileStmtSet.insert(stmtNum);
 			break;
-		default:
+	default:
+			;
 	}
 }
 

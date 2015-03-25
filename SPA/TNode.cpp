@@ -83,7 +83,7 @@ void TNode::linkLeftSibling(TNode *left) {
 
 // checks
 bool TNode::isNodeType(NodeType type) {
-	return this->_nodeType == type
+	return this->_nodeType == type;
 }
 
 bool TNode::hasChildren() {

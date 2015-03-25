@@ -27,9 +27,6 @@
 
 class Statement {
 
-	// DEFINE NODE TYPE
-	enum NodeType { ASSIGN, CALL, WHILE, IF };
-
 public:
 	// TYPEDEF
 	typedef set<string> UsesSet;
@@ -90,4 +87,4 @@ private:
 	NextSet			next;
 	PrevSet			prev;
 
-}
+};
