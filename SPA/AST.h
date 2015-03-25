@@ -38,8 +38,6 @@ class AST {
 
 public:
 
-	// constructor: creates tree rooted at programNode (named programName)
-	AST(const string &progName);
 
 	// getters
 	static AST* getInstance(const string &progName);
@@ -48,6 +46,8 @@ public:
 	void addProcNode(ProcNode *procNode); // adds the procedure to the program
 
 private:
+	// constructor: creates tree rooted at programNode (named programName)
+	AST(const string &progName);
 	
 	ProgNode *_rootNode;
 	static AST *_instance;

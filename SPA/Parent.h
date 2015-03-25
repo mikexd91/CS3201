@@ -1,7 +1,12 @@
 #pragma once
 
+<<<<<<< HEAD
 #include <vector>     
 #include "StmtTable.h"
+=======
+#include <vector>
+#include <boost/unordered_map.hpp>
+>>>>>>> 6ef66e5d505603d41310ab5f77408e4d9b36deb8
 
 using namespace std;
 
@@ -25,5 +30,10 @@ public:
 	//vector<vector<int>> getAllParentStar(syn syn1, syn syn2);		// gets lists of all possible parent-child* combinations
 
 private:
+<<<<<<< HEAD
 	StmtTable stmtTable;
 }
+=======
+	
+};
+>>>>>>> 6ef66e5d505603d41310ab5f77408e4d9b36deb8

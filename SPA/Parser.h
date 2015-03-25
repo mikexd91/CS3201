@@ -2,6 +2,7 @@
 
 #include <string>
 #include <regex>
+#include "PDR.h"
 
 using namespace std;
 
@@ -11,12 +12,15 @@ public:
 	void parse(string);
 
 private:
+
 	string nextToken;
 	vector<string> tokens;
 	vector<string>::iterator iter;
 	int nestingLevel;
+	PDR parsedDataReceiver;
 
-	vector<string> explode(const string &s);
+	string sanitise(string str);
+	vector<string> explode(const string &str);
 	void match(string token);
 	void getNextToken();
 	string getWord();
@@ -27,3 +31,9 @@ private:
 	void stmt();
 	void assign();
 };
+
+namespace ParserConstants {
+	const string DELIM_STRING = " ;={}";
+	const char DELIMITERS[] = { ';', '=', '{', '}' };
+	const char SANITISED_CHARS[] = { '\t', '\n' };
+}

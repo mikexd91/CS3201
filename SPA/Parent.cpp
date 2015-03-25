@@ -1,6 +1,9 @@
 #pragma once
 #include "Parent.h"
+<<<<<<< HEAD
 #include "StmtTable.h"
+=======
+>>>>>>> 6ef66e5d505603d41310ab5f77408e4d9b36deb8
 
 using namespace std;
 // constructor: instantiates an empty parent table
@@ -8,6 +11,7 @@ Parent::Parent() {
 	
 }
 
+/*
 // checks if s1 is parent of s2
 bool isParent(int stmtNum1, int stmtNum2) {
 	ParentTable parentTable = ParentTable(); // need to clarify this
@@ -36,12 +40,12 @@ vector<int> getChild(int stmtNum) {
 	return results;
 }
 
-/*
+
 // gets lists of all possible parent-child combinations
 vector<vector<int>> getAllParent(syn syn1, syn syn2) {
 
 
-} */
+} 
 
 // checks if s1 is parent* of s2
 bool isParentStar(int stmtNum1, int stmtNum2) {
@@ -64,7 +68,7 @@ vector<int> getChildStarBy(int stmtNum) {
 
 }
 
-/*
+
 // gets lists of all possible parent-child* combinations
 vector<vector<int>> getAllParentStar(syn syn1, syn syn2) {
 

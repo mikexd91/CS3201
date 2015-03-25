@@ -26,7 +26,7 @@ Statment::Statement(NodeType type, int stmtNum, TNode *tRef, GNode *gRef) {
 /* ---------- GETTERS ---------- */
 /* ----------------------------- */
 // get stmt type
-const Statement::NodeType Statement::getType() {
+const NodeType Statement::getType() {
 	return type;
 }
 
@@ -98,12 +98,12 @@ void Statement::setStmtNum(int num) {
 	stmtNum = num;
 }
 
-void Statement::setTNodeRef(const TNode *ref) {
+void Statement::setTNodeRef(TNode *ref) {
 	TNodeRef = ref;
 }
 
 /*
-//void Statement::setGNodeRef(const GNode *ref) {
+//void Statement::setGNodeRef(GNode *ref) {
 	GNodeRef = ref;
 } */
 
