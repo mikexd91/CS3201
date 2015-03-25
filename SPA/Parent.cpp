@@ -1,15 +1,8 @@
 #pragma once
-
-#include <algorithm>
-#include <vector>
-#include <boost/unordered_map.hpp>
+#include "Parent.h"
+#include "StmtTable.h"
 
 using namespace std;
-using namespace boost;
-
-#include "Parent.h"
-#include "ParentTable.h"
-
 // constructor: instantiates an empty parent table
 Parent::Parent() {
 	

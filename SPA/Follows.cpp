@@ -1,75 +1,61 @@
-#pragma once
-
-#include <vector>
-#include <boost/unordered_map.hpp>
+#include "Follows.h"
+#include <set>
 
 using namespace std;
-using namespace boost;
 
-#include "Follows.h"
-#include "FollowsTable.h"
+set<Statement*>::iterator setIter;						// stmt set iterator
+set<int>::iterator intIter;								// int set iterator
 
-// constructor: instantiates an empty follows table
-Follows::Follows() {
-
-
+Follows::Follows(void)
+{
 }
 
-// checks if s2 follows s1
-bool isFollows(int stmtNum1, int stmtNum2) {
-	FollowsTable followsTable = FollowsTable();
-	vector<int> results = followsTable.getStmtFollows(stmtNum1);
-	vector<int>::iterator it;
-	it = find(results.begin(), results.end(), stmtNum2);
 
-	if (results.empty() || (it != results.end())) {
-		return false;
-	} else {
-		return true;
+Follows::~Follows(void)
+{
+}
+
+Statement* getStmtObj(int stmtnum, set<Statement*> set) {
+	for (setIter=set.begin(); setIter!=set.end(); setIter++) {
+		Statement* stmt = *setIter;
+		int stmtnum2 = stmt->getStmtNum();
+		if (stmtnum2 == stmtnum) {
+			return stmt;
+			//stmt->getFollowedBy();
+		}
 	}
 }
 
-// gets list of statements that follows stmtNum
-vector<int> getFollows(int stmtNum) {
-	FollowsTable followsTable = FollowsTable();
-	vector<int> results = followsTable.getStmtFollows(stmtNum);
-	return results;
+bool Follows::isFollows(int stmtNum1, int stmtNum2) {
+	StmtTable* table = StmtTable.getInstance();
+	const set<Statement*> assignStmts = table->getAssgStmts();
+	// Statement* stmtObj = getStmtObj(stmtNum1, assignStmts);
 }
 
-// gets list of statements that stmtNum follows
-vector<int> getFollowedBy(int stmtNum) {
-	FollowsTable followsTable = FollowsTable();
-	vector<int> results = followsTable.getStmtFollowedBy(stmtNum);
-	return results;
-}
-
-// gets lists of all possible follows
-vector<vector<int>> getAllFollows(int stmtNum1, int stmtNum2) {
-	// iterate through followsTable
-	// call getFollows for each item
-	// store them in a vector<vector<int>> list
-}
-
-// checks if s2 followsStar s1
-bool isFollowsStar(int stmtNum1, int stmtNum2) {
-
+vector<int> Follows::getFollows(int stmtNum) {
 
 }
 
-// gets list of statements that follows* stmtNum
-vector<int> getFollowsStar(int stmtNum) {
-
+vector<int> Follows::getFollowedBy(int stmtNum) {
 
 }
 
-// gets list of statements that stmtNum follows*
-vector<int> getFollowedStarBy(int stmtNum) {
-
+vector<vector<int>> Follows::getAllFollows(int stmtNum1, int stmtNum2) {
 
 }
 
-// gets list of all possible follows*
-vector<vector<int>> getAllFollowsStar(int stmtNum1, int stmtNum2) {
+bool Follows::isFollowsStar(int stmtNum1, int stmtNum2) {
 
+}
+
+vector<int> Follows::getFollowsStar(int stmtNum) {
+
+}
+
+vector<int> Follows::getFollowedStarBy(int stmtNum) {
+
+}
+
+vector<vector<int>> Follows::getAllFollowsStar(int stmtNum1, int stmtNum2) {
 
 }

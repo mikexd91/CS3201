@@ -1,16 +1,14 @@
 #pragma once
 
-#include <vector>
-#include <boost/unordered_map.hpp>
-#include "ParentTable.h" // unsure!!
+#include <vector>     
+#include "StmtTable.h"
 
 using namespace std;
-using namespace boost;
 
 class Parent {
 
 public:
-	Parent();		// constructor: instantiates an empty parent table
+	Parent();									// constructor: instantiates an empty parent table
 
 	bool isParent(int stmtNum1, int stmtNum2);	// checks if s1 is parent of s2
 
@@ -27,5 +25,5 @@ public:
 	//vector<vector<int>> getAllParentStar(syn syn1, syn syn2);		// gets lists of all possible parent-child* combinations
 
 private:
-	ParentTable parentTable;
+	StmtTable stmtTable;
 }

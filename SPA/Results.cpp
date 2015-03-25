@@ -31,6 +31,8 @@ vector<string> Results::getVarResults() {
 }
 	
 string Results::toString() {
+	
+	/*
 	if (this->resultType.compare("stmt")) {
 
 	} else if (this->resultType.compare("var")) {
@@ -38,4 +40,5 @@ string Results::toString() {
 	} else {
 
 	}
+	*/
 }

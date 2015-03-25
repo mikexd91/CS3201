@@ -1,15 +1,14 @@
 #pragma once
-
 #include <vector>
-#include "../include/boost/unordered_map.hpp"
+#include "StmtTable.h"
 
 using namespace std;
-using namespace boost;
 
-class Follows {
-
+class Follows
+{
 public:
-	Follows();		// constructor: instantiates an empty follows table
+	Follows(void);
+	~Follows(void);
 
 	bool isFollows(int stmtNum1, int stmtNum2);		// checks if s2 follows s1
 
@@ -27,5 +26,5 @@ public:
 
 private:
 
-
 };
+
