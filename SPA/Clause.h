@@ -48,9 +48,9 @@ namespace stringconst{
 	string const TYPE_MODIFIES = "MODIFIES";
 	string const TYPE_USES = "USES";
 	string const TYPE_PATTERN = "PATTERN";
+	string const TYPE_CALLS = "CALLS";
 
 	string const ARG_STATEMENT = "STATEMENT";
 	string const ARG_ASSIGN = "ASSIGN";
 	string const ARG_VARIABLE = "VARIABLE";
 };
-
