@@ -10,7 +10,7 @@ class QueryParser
 {
 private:
 	vector<string> split(string, char, vector<string>);
-	vector<string> queryTokeniser(string, char);
+	vector<string> tokeniser(string, char);
 	bool checkValidity();
 public:
 	QueryParser(void);
