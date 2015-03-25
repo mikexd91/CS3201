@@ -1,5 +1,4 @@
 #include "Follows.h"
-#include <set>
 
 using namespace std;
 
@@ -10,15 +9,13 @@ Follows::Follows(void)
 {
 }
 
-
 Follows::~Follows(void)
 {
 }
 
-
 Statement* getStmtObj(int stmtnum) {
 	StmtTable* table = StmtTable.getInstance();
-	const set<Statement*> set = table->getAssgStmts();
+	const set<Statement*> set = table->getAssgStmts(); // error?
 	for (setIter=set.begin(); setIter!=set.end(); setIter++) {
 		Statement* stmt = *setIter;
 		int stmtnum2 = stmt->getStmtNum();
@@ -29,41 +26,55 @@ Statement* getStmtObj(int stmtnum) {
 }
 
 bool Follows::isFollows(int stmtNum1, int stmtNum2) {
-	StmtTable* table = StmtTable.getInstance();
-	const set<Statement*> assignStmts = table->getAssgStmts();
-	set<int> getFollowSet = getFollows(stmtNum1);
+	int stmt = getFollows(stmtNum1);
+	if (stmt == stmtNum2) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
-// gets all those before a in Follows(a, b)
-set<int> Follows::getFollows(int stmtNum) {
+// gets immediate statement after stmtNum
+int Follows::getFollows(int stmtNum) {
 	Statement* stmtObj = getStmtObj(stmtNum);
 	set<int> stmtsSet = stmtObj->getFollows();
-	return stmtsSet;
+	intIter = stmtsSet.begin();
+	int stmt = *intIter;
+	return stmt;
 }
 
-// gets all those after b in Follows(a, b)
-set<int> Follows::getFollowedBy(int stmtNum) {
+// gets immediate statement before stmtNum
+int Follows::getFollowedBy(int stmtNum) {
+	Statement* stmtObj = getStmtObj(stmtNum);
+	set<int> stmtsSet = stmtObj->getFollowedBy();
+	intIter = stmtsSet.end();
+	int stmt = *intIter;
+	return stmt;
+}
+
+set<set<int>> Follows::getAllFollows(int stmtNum1, int stmtNum2) {
+
+}
+
+
+bool Follows::isFollowsStar(int stmtNum1, int stmtNum2) {
+	set<int> stmtList = getFollowsStar(stmtNum1);
+}
+
+// gets all those before b in Follows(a, b)
+set<int> Follows::getFollowedStarBy(int stmtNum) {
 	Statement* stmtObj = getStmtObj(stmtNum);
 	set<int> stmtsSet = stmtObj->getFollowedBy();
 	return stmtsSet;
 }
 
-vector<vector<int>> Follows::getAllFollows(int stmtNum1, int stmtNum2) {
-
+// gets all those after a in Follows(a, b)
+set<int> Follows::getFollowsStar(int stmtNum) {
+	Statement* stmtObj = getStmtObj(stmtNum);
+	set<int> stmtsSet = stmtObj->getFollows();
+	return stmtsSet;
 }
 
-bool Follows::isFollowsStar(int stmtNum1, int stmtNum2) {
-
-}
-
-vector<int> Follows::getFollowsStar(int stmtNum) {
-
-}
-
-vector<int> Follows::getFollowedStarBy(int stmtNum) {
-
-}
-
-vector<vector<int>> Follows::getAllFollowsStar(int stmtNum1, int stmtNum2) {
+set<set<int>> Follows::getAllFollowsStar(int stmtNum1, int stmtNum2) {
 
 }
