@@ -2,66 +2,50 @@
 
 #include <set>
 #include <boost/unordered_map.hpp>
+#include "Statement.h"
 
 using namespace boost;
-
-#include "AST.h"
-#include "TNode.h"
-// to include CFG
-// to include GNode
 
 class StmtTable {
 	/*
 
-	Conceptual StmtTable:
-	---------------------------------------------------------------------------
-	|_[key]______|______________|______________________|______________________|
-	| stmt no.	 | node type	| TNode representation | GNode representation |
-	|_[key]______|______________|______________________|______________________|
-	---------------------------------------------------------------------------
-
-	Actual Implementation:
-	3 separate tables -
-
-	NodeType Table - contains the node type of the stmt
-	-----------------------------------------
-	|_[key]__________|______________________|
-	| stmt no. (int) | TNodes (TNode)	    | 
-	-----------------------------------------
-
-	TNode Table - contains the TNode (AST) representation of the stmts
-	-----------------------------------------
-	|_[key]__________|______________________|
-	| stmt no. (int) | TNodes (set<TNode>)  | 
-	-----------------------------------------
-
-	GNode Table - contains the GNode (CFG) representation of the stmts
-	-----------------------------------------
-	|_[key]__________|______________________|
-	| stmt no. (int) | GNodes (set<GNode>)  | 
-	-----------------------------------------
+	StmtTable Implementation:
+	---------------------------------
+	|_[key]______|__________________|
+	| stmt no.	 | stmt object ref	|
+	|_[key]______|__________________|
+	---------------------------------
 
 	*/
 
-	typedef set<TNode> TNodeRefTableRow;
-	//typedef set<GNode>	GNodeRefTableRow;
-
-	typedef boost::unordered_map<int, TNodeRefTableRow>		TNodeRefTable;
-	//typedef boost::unordered_map<int, GNodeRefTableRow>	GNodeRefTableRow;
+	typedef boost::unordered_map<int, Statement*> StatementTable;
 
 public:
-	StmtTable();	// constructor: instantiates an empty statement table
+	// ACCESSORS
+	static StmtTable* getInstance();			// gets instance of stmt table
 
-	void addStmt(int stmtNum, string type); // adds statement to table
+	StatementTable::iterator getIterator();		// gets iterator to stmt table
 
-	string getStmtType(int stmtNum);		// get type of statement
-	TNode * getASTReference(int stmtNum);	// get AST node rep of statement
-	//GNode * getCFGReference(int stmtNum);	// get CFG node rep of statement
+	const set<Statement>& getAssgStmts();		// gets all assignment stmts
+	const set<Statement>& getCallStmts();		// gets all call stmts
+	const set<Statement>& getWhileStmts();		// gets all while stmts
+	const set<Statement>& getIfStmts();			// gets all if stmts
 
-	void setASTReference(int stmtNum, TNode node);	// sets the AST ref node of statement
-	//void setCFGReference(int stmtNum, GNode node);	// sets the CFG ref node of statement
+	// MUTATORS
+	void addStmt(Statement *stmt);	// adds statement to table
 
 private:
-	//unordered_map<int, vector<unordered_map<>>> _stmtTable;
+	StatementTable table;
+	set<int> assgStmtSet;
+	set<int> callStmtSet;
+	set<int> whileStmtSet;
+	set<int> ifStmtSet;
+	
+	// SINGLETON
+	static bool instanceFlag;
+	static StmtTable* tableInstance;
+
+	// SINGLETON CONSTRUCTOR
+	StmtTable();
 
 };

@@ -1,11 +1,20 @@
 #include "ProcNode.h"
 
+// constructor
 
-ProcNode::ProcNode(void)
-{
+ProcNode::ProcNode(const string &name) 
+	: TNode(NodeType::PROCEDURE_, name) {
+
 }
 
+// getters
 
-ProcNode::~ProcNode(void)
-{
+StmtLstNode* ProcNode::getStmtLst() {
+	return (StmtLstNode*)(this->_children.at(0));
+}
+
+// setters
+
+void ProcNode::linkStmtLstNode(StmtLstNode *stmtLst) {
+	this->linkChild(stmtLst);
 }

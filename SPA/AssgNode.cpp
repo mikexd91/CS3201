@@ -1,11 +1,27 @@
 #include "AssgNode.h"
 
+// constructor
 
-AssgNode::AssgNode(void)
-{
+AssgNode::AssgNode(int stmtNum) 
+	: StmtNode(NodeType::ASSIGN_STMT_, stmtNum) {
+
 }
 
+// getters 
 
-AssgNode::~AssgNode(void)
-{
+VarNode* AssgNode::getVarNode() {
+	// just children[0] and children[1]
+	return (VarNode*)(this->_children.at(0));
+}
+TNode* AssgNode::getExprNode() {
+	return this->_children.at(1);
+}
+
+// setters
+
+void AssgNode::linkVarNode(VarNode *varNode) {
+	this->_children.at(0) = varNode;
+}
+void AssgNode::linkExprNode(TNode *exprNode) {
+	this->_children.at(1) = exprNode;
 }
