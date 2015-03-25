@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <boost/unordered_map.hpp>
+#include "ParentTable.h" // unsure!!
 
 using namespace std;
 using namespace boost;
@@ -26,6 +27,5 @@ public:
 	//vector<vector<int>> getAllParentStar(syn syn1, syn syn2);		// gets lists of all possible parent-child* combinations
 
 private:
-	
-
+	ParentTable parentTable;
 }
