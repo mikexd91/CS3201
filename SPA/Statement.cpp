@@ -26,7 +26,7 @@ Statment::Statement(NodeType type, int stmtNum, TNode *tRef, GNode *gRef) {
 /* ---------- GETTERS ---------- */
 /* ----------------------------- */
 // get stmt type
-const Statement::NodeType Statement::getType() {
+const NodeType Statement::getType() {
 	return type;
 }
 
