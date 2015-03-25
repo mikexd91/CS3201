@@ -55,8 +55,6 @@ class VarTable {
 	typedef boost::unordered_map<string, TNodeRefTableRow>		TNodeRefTable;
 
 public:
-	// constructor
-	VarTable();	
 
 	// property getters
 	const set<int>& getStmtsThatUse(const string &usedVar);
@@ -70,12 +68,16 @@ public:
 
 	// general getters
 	const set<string>& getAllVars();
+	static VarTable* getInstance();
 
 	// general methods
 	bool contains(const string &var);
 
 private:
+	// constructor
+	VarTable();	
 
+	static VarTable* _instance;
 	AllVarsTable	_allVarsTable;
 	UsedByTable		_usedByTable;
 	ModifiedByTable _modifiedByTable;
