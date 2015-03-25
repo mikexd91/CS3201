@@ -27,6 +27,10 @@ void Clause::setSecondArgType(string type){
 	this->secondArgType = type;
 }
 
+void Clause::setPatternArg(string pattern){
+	this->patternArg = pattern;
+}
+
 string Clause::getClauseType(void){
 	return this->clauseType;
 }
@@ -45,6 +49,10 @@ string Clause::getSecondArg(void){
 
 string Clause::getSecondArgType(void){
 	return this->secondArgType;
+}
+
+string Clause::getPatternArg(void){
+	return this->patternArg;
 }
 
 bool Clause::checkClauseValidity(void){

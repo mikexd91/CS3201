@@ -9,6 +9,7 @@ private:
 	string firstArgType;
 	string secondArg;
 	string secondArgType;
+	string patternArg;
 public:
 	Clause(void);
 	~Clause(void);
@@ -18,12 +19,14 @@ public:
 	void setSecondArg(string);
 	void setFirstArgType(string);
 	void setSecondArgType(string);
+	void setPatternArg(string);
 
 	string getClauseType();
 	string getFirstArg();
 	string getSecondArg();
 	string getFirstArgType();
 	string getSecondArgType();
+	string getPatternArg();
 
 	bool checkClauseValidity();
 };

@@ -34,6 +34,6 @@ vector<string> QueryParser::queryTokeniser(string input, char delim){
 
 Query QueryParser::processQuery(string input){
 	Query parsedQuery = Query();
-	vector<string> tokens = queryTokeniser(input, ' ');
+	vector<string> tokens = queryTokeniser(input, ';');
 	
 }
