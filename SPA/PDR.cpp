@@ -9,7 +9,7 @@ PDR::PDR() {
 	stmtCounter = 0;
 	stmtStack.push(Type::PROGRAM);
 }
-
+ 
 void PDR::processParsedData(ParsedData data) {
 	ParsedData::Type stmtType = data.getType();
 	switch(stmtType) {
@@ -20,35 +20,58 @@ void PDR::processParsedData(ParsedData data) {
 			processAssignStmt(data);
 			break;
 	}
-};
-
+}
 void PDR::processProcedureStmt(ParsedData data) {
 	//TODO - if working on a previous procedure, links the prev procedure to the root of the 
 	//		 AST and creates a new procedure node
-	if(stmtStack.top() == Type::PROGRAM) {
+	if(stmtStack.top() == Type::PROCEDURE) {
 		stmtStack.pop();
+		nodeStack.pop();
 	}
-	AST.addProcNode(currentProcNode);
 
-	/*
-	 * TODO - Create the procedure node and set the necessary attributes
-	 *
-	 */
-	TNode procedure = TNode(data.getProcName());
-	currentProcNode = &procedure;
-	currentNodeOnAST = &procedure;
+	ProcNode procedure = ProcNode();
+	nodeStack.push(procedure);
+	//TODO - Get the necessary details and create the statement object
 }
 
 void PDR::processAssignStmt(ParsedData data) {
-	//TODO - Create an AST node for assignment statements
-	TNode assignNode = TNode("assignment");	
+	stmtCounter++;
+	
+	AssgNode assignNode = AssgNode();	
+	/* TODO - Get modifies variable
+	 *	    - Add to modifies table
+	 *      - Get used variables
+	 *      - Add to uses table
+	 *      - Depending on the operators of the expression, push
+	 *        to stack
+	 */
+
+	TNode parent = nodeStack.top();
+	//parent.link(AssgNode);
+
+	/*
+	 * TODO - Create Statement object
+	 *		- set the uses
+	 *		- set the follows
+	 *		- set the parent
+	 *		- set the child
+	 */
+	Statement stmt = Statement();
+	//stmt.setType(Statement::NodeType::ASSIGN);
+
 }
 
-void processIfStmt(ParsedData data) {
+void PDR::processIfStmt(ParsedData data) {
 	//TODO - processing if stmtLst
+	stmtCounter++;
 }
 
-void processWhileStmt() {
+void PDR::processWhileStmt(ParsedData data) {
 	//TODO - processing while stmtLst
+	stmtCounter++;
+}
+
+void PDR::processCallStmt(ParsedData data) {
+	stmtCounter++;
 }
 
