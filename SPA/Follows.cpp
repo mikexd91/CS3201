@@ -15,7 +15,10 @@ Follows::~Follows(void)
 {
 }
 
-Statement* getStmtObj(int stmtnum, set<Statement*> set) {
+
+Statement* getStmtObj(int stmtnum) {
+	StmtTable* table = StmtTable.getInstance();
+	const set<Statement*> set = table->getAssgStmts();
 	for (setIter=set.begin(); setIter!=set.end(); setIter++) {
 		Statement* stmt = *setIter;
 		int stmtnum2 = stmt->getStmtNum();
@@ -32,12 +35,16 @@ bool Follows::isFollows(int stmtNum1, int stmtNum2) {
 	// Statement* stmtObj = getStmtObj(stmtNum1, assignStmts);
 }
 
+// gets all those before a in Follows(a, b)
 vector<int> Follows::getFollows(int stmtNum) {
-
+	Statement* stmtObj = getStmtObj(stmtNum);
+	 //FollowsSet& stmtsList = stmtObj->getFollows();
 }
 
+// gets all those after b in Follows(a, b)
 vector<int> Follows::getFollowedBy(int stmtNum) {
-
+	Statement* stmtObj = getStmtObj(stmtNum);
+	//FollowsSet& stmtsList = stmtObj->getFollowedBy();
 }
 
 vector<vector<int>> Follows::getAllFollows(int stmtNum1, int stmtNum2) {
