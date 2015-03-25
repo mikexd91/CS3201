@@ -7,7 +7,7 @@
 /*
 // --------------------------- Statement --------------------------- 
 // Statement object created by PDR to use to add to statement table
-// 1. PDR create statement objecy
+// 1. PDR create statement object
 // 2. Set all necessary components
 //		a. setNodeType
 //		b. setStmtNum
