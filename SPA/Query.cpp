@@ -9,8 +9,12 @@ Query::Query(void){
 Query::~Query(void){
 }
 
-void Query::setSelectSynonym(string synonym){
-	this->selectSynonym = synonym;
+void Query::setSelectList(vector<string> list){
+	this->selectList = list;
+}
+
+void Query::addSelectSynonym(string synonym){
+	this->selectList.push_back(synonym);
 }
 
 void Query::setClauseList(vector<Clause> list){
@@ -23,8 +27,12 @@ void Query::addClause(Clause item){
 	this->clauseList.push_back(item);
 }
 
-string Query::getSelectSynonym(){
-	return this->selectSynonym;
+vector<string> Query::getSelectList(){
+	return this->selectList;
+}
+
+string Query::getSelectSynonym(int num){
+	return this->selectList.at(num);
 }
 
 vector<Clause> Query::getClauseList(){

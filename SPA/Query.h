@@ -7,18 +7,21 @@ using std::vector;
 class Query
 {
 private:
-	string selectSynonym;
 	int numClauses;
+	vector<string> selectList;
 	vector<Clause> clauseList;
+
 public:
 	Query(void);
 	~Query(void);
 	
-	void setSelectSynonym(string);
+	void setSelectList(vector<string>);
+	void addSelectSynonym(string);
 	void setClauseList(vector<Clause>);
 	void addClause(Clause);
-
-	string getSelectSynonym();
+	
+	vector<string> getSelectList();
+	string getSelectSynonym(int);
 	vector<Clause> getClauseList();
 	Clause getClause(int);
 	int getNumClauses();
