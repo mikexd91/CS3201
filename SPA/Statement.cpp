@@ -98,12 +98,12 @@ void Statement::setStmtNum(int num) {
 	stmtNum = num;
 }
 
-void Statement::setTNodeRef(const TNode *ref) {
+void Statement::setTNodeRef(TNode *ref) {
 	TNodeRef = ref;
 }
 
 /*
-//void Statement::setGNodeRef(const GNode *ref) {
+//void Statement::setGNodeRef(GNode *ref) {
 	GNodeRef = ref;
 } */
 

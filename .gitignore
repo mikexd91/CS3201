@@ -200,3 +200,9 @@ SPA/SPA.vcxproj.filters
 # I WANT THESE FILES COMMITTED
 !include/boost/*/debug
 !include/boost/*/release
+
+# ECLIPSE IGNORE FILES
+*.suo
+*.ini
+.cproject
+.project

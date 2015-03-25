@@ -7,7 +7,7 @@
 /*
 // --------------------------- Statement --------------------------- 
 // Statement object created by PDR to use to add to statement table
-// 1. PDR create statement objecy
+// 1. PDR create statement object
 // 2. Set all necessary components
 //		a. setNodeType
 //		b. setStmtNum
@@ -28,6 +28,7 @@
 class Statement {
 
 public:
+
 	// TYPEDEF
 	typedef set<string> UsesSet;
 	typedef set<string> ModifiesSet;
@@ -59,8 +60,8 @@ public:
 	// SETTERS
 	void setType(NodeType nodeType);
 	void setStmtNum(int num);
-	void setTNodeRef(const TNode *ref);
-	//void setGNodeRef(const GNode *ref);
+	void setTNodeRef(TNode *ref);
+	//void setGNodeRef(GNode *ref);
 	void setUses(const set<string> &useSet);
 	void setModifies(const set<string> &modifiesSet);
 	void setFollows(const set<int> &followsSet);

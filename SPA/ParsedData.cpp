@@ -8,7 +8,7 @@ ParsedData::ParsedData(Type dataType, int levelNum)
 
 	//Assignment
 	string assignVar = NULL;
-	int assignExpression = NULL; //an integer for now
+	string assignExpression = NULL; 
 
 	//Procedure
 	string procName = NULL;
@@ -19,7 +19,7 @@ void ParsedData::setAssignVar(string name) {
 	assignVar = name;
 };
 
-void ParsedData::setAssignExpression(int expression) {
+void ParsedData::setAssignExpression(string expression) {
 	assignExpression = expression;
 }
 
@@ -35,7 +35,7 @@ string ParsedData::getAssignVar() {
 	return assignVar;
 };
 
-int ParsedData::getAssignExpression() {
+string ParsedData::getAssignExpression() {
 	return assignExpression;
 };
 
