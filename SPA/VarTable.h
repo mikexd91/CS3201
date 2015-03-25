@@ -3,6 +3,8 @@
 #include "../include/boost/unordered_map.hpp"
 #include "TNode.h"
 #include <set>
+#include "Variable.h"
+#include <unordered_map>
 
 using namespace std;
 
@@ -45,42 +47,31 @@ class VarTable {
 
 	*/
 
-	typedef set<int>	UsedByTableRow;
-	typedef set<int>	ModifiedByTableRow;
-	typedef set<TNode>	TNodeRefTableRow;
+	//typedef set<int>	UsedByTableRow;
+	//typedef set<int>	ModifiedByTableRow;
+	//typedef set<TNode>	TNodeRefTableRow;
 
-	typedef set<string>											AllVarsTable;
-	typedef boost::unordered_map<string, UsedByTableRow>		UsedByTable;
-	typedef boost::unordered_map<string, ModifiedByTableRow>	ModifiedByTable;
-	typedef boost::unordered_map<string, TNodeRefTableRow>		TNodeRefTable;
+	//typedef set<string>											AllVarsTable;
+	//typedef boost::unordered_map<string, UsedByTableRow>		UsedByTable;
+	//typedef boost::unordered_map<string, ModifiedByTableRow>	ModifiedByTable;
+	//typedef boost::unordered_map<string, TNodeRefTableRow>		TNodeRefTable;
+
+	typedef unordered_map<string, Variable*>::iterator VarIter;
 
 public:
-
-	// property getters
-	const set<int>& getStmtsThatUse(const string &usedVar);
-	const set<int>& getStmtsThatModify(const string &modifiedVar);
-	const set<TNode>& getTNodes(const string &var);
-
-	// property setters
-	void addUses(int stmt, const string &usedVar);
-	void addModifies(int stmt, const string &modifiedVar);
-	void addTNode(const string &var, const TNode &varTNode);
-
-	// general getters
-	const set<string>& getAllVars();
+	
+	// getters
 	static VarTable* getInstance();
+	Variable* getVariable(const string& varName);
+	VarIter getIterator();
 
 	// general methods
-	bool contains(const string &var);
+	bool contains(const string& varName);
 
 private:
 	// constructor
 	VarTable();	
 
 	static VarTable* _instance;
-	AllVarsTable	_allVarsTable;
-	UsedByTable		_usedByTable;
-	ModifiedByTable _modifiedByTable;
-	TNodeRefTable	_tNodeRefTable;
-
+	unordered_map<string, Variable*> _table;
 };

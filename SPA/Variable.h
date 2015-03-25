@@ -19,7 +19,9 @@ public:
 	set<TNode*>& getTNodes();
 
 	// setters
-
+	void addUsingStmt(int stmt);
+	void addModifyingStmt(int stmt);
+	void addTNode(TNode *node);
 
 private:
 	string _name;
