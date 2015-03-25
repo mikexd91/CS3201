@@ -8,13 +8,13 @@ using namespace std;
 using namespace boost;
 
 #include "Parent.h"
-#include "ParentTable.h"
 
 // constructor: instantiates an empty parent table
 Parent::Parent() {
 	
 }
 
+/*
 // checks if s1 is parent of s2
 bool isParent(int stmtNum1, int stmtNum2) {
 	ParentTable parentTable = ParentTable(); // need to clarify this
@@ -43,12 +43,12 @@ vector<int> getChild(int stmtNum) {
 	return results;
 }
 
-/*
+
 // gets lists of all possible parent-child combinations
 vector<vector<int>> getAllParent(syn syn1, syn syn2) {
 
 
-} */
+} 
 
 // checks if s1 is parent* of s2
 bool isParentStar(int stmtNum1, int stmtNum2) {
@@ -71,7 +71,7 @@ vector<int> getChildStarBy(int stmtNum) {
 
 }
 
-/*
+
 // gets lists of all possible parent-child* combinations
 vector<vector<int>> getAllParentStar(syn syn1, syn syn2) {
 

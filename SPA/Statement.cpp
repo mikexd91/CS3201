@@ -103,7 +103,7 @@ void Statement::setTNodeRef(TNode *ref) {
 }
 
 /*
-//void Statement::setGNodeRef(const GNode *ref) {
+//void Statement::setGNodeRef(GNode *ref) {
 	GNodeRef = ref;
 } */
 

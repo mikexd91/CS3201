@@ -31,6 +31,7 @@ vector<string> QueryParser::tokeniser(string input, char delim){
     return elems;
 }
 
+/*
 template <typename string>
 Query QueryParser::processQuery(string input){
 	Query parsedQuery = Query();
@@ -46,4 +47,4 @@ Query QueryParser::processQuery(string input){
 		currentPair.setFirst(declarationPair.at(0));
 		currentPair.setSecond(declarationPair.at(1));
 	}
-}
+}*/

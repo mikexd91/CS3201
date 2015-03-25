@@ -60,8 +60,8 @@ public:
 	// SETTERS
 	void setType(NodeType nodeType);
 	void setStmtNum(int num);
-	void setTNodeRef(const TNode *ref);
-	//void setGNodeRef(const GNode *ref);
+	void setTNodeRef(TNode *ref);
+	//void setGNodeRef(GNode *ref);
 	void setUses(const set<string> &useSet);
 	void setModifies(const set<string> &modifiesSet);
 	void setFollows(const set<int> &followsSet);

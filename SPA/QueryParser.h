@@ -6,8 +6,10 @@
 #include <sstream>
 
 using std::string;
+
 class QueryParser
 {
+
 private:
 	vector<string> split(string, char, vector<string>);
 	vector<string> tokeniser(string, char);

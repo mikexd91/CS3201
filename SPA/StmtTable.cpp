@@ -99,6 +99,7 @@ void StmtTable::addStmt(Statement *stmt) {
 				whileStmtSet.insert(stmtNum);
 				break;
 		default:
+			;
 	}
 }
 
