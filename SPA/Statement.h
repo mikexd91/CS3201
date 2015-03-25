@@ -28,6 +28,7 @@
 class Statement {
 
 public:
+
 	// TYPEDEF
 	typedef set<string> UsesSet;
 	typedef set<string> ModifiesSet;
