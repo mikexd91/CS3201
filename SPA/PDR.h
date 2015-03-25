@@ -12,7 +12,6 @@
 #include "Statement.h"
 #include "WhileNode.h"
 #include "StmtLstNode.h"
-#include "StmtTable.h"
 #include "IfNode.h"
 #include "CallNode.h"
 #include "AST.h"
@@ -27,12 +26,12 @@ public:
 	void processParsedData(ParsedData);
 
 private:
-	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHILE};
+	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHI};
 	int stmtCounter;
 	int currNestingLevel;
 
+	stack<Type> stmtStack;
 	stack<TNode> nodeStack;
-    stack<int> stmtNumStack;
 
 	void processProcedureStmt(ParsedData);
 	void processAssignStmt(ParsedData);
