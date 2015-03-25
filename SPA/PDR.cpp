@@ -57,10 +57,14 @@ void PDR::processAssignStmt(ParsedData data) {
 	AssgNode assignNode = AssgNode(++stmtCounter);	
 	
 	//means that the previous conditional statement has closed
+	//pop previous statementLst
 	if(currNestingLevel > data.getNestingLevel()) {
-		nodeStack.pop();
-	} else if(currNestingLevel < data.getNestingLevel()) {
+		int diffNestingLevel = currNestingLevel - data.getNestingLevel();
+		currNestingLevel = data.getNestingLevel();
 		
+		for(int i = 0; i < diffNestingLevel; i++) {
+			nodeStack.pop();
+		}
 	}
 
 	/* TODO - Get modifies variable
@@ -72,14 +76,14 @@ void PDR::processAssignStmt(ParsedData data) {
 	 */
 	
 	TNode parent = nodeStack.top();
-	//parent.link(AssgNode);
+	parent.linkChild(&assignNode);
 
 	/*
 	 * TODO - Create Statement object
-	 *		- set the uses
-	 *		- set the follows
-	 *		- set the parent
-	 *		- set the child
+	 *			- set the uses
+	 *			- set the follows
+	 *			- set the parent
+	 *			- set the child
 	 */
 	Statement stmt = Statement();
 	//stmt.setType(Statement::NodeType::ASSIGN);
