@@ -35,7 +35,8 @@ vector<string> QueryParser::queryTokeniser(string input, char delim){
 Query QueryParser::processQuery(string input){
 	Query parsedQuery = Query();
 	vector<string> declarationTokens = queryTokeniser(input, ';');
-	int numSynonyms = declarationTokens.size();
-	string selectStatement = declarationTokens.at(numSynonyms - 1);
+	int numSynonyms = declarationTokens.size() - 1;
+	string selectStatement = declarationTokens.at(numSynonyms);
+	declarationTokens.pop_back();
 
 }
