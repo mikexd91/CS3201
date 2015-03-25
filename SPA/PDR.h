@@ -30,7 +30,7 @@ private:
 	int stmtCounter;
 	int currNestingLevel;
 
-	stack<Type> stmtStack;
+	stack<int> stmtNumStack;
 	stack<TNode> nodeStack;
 
 	void processProcedureStmt(ParsedData);
