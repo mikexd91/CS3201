@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "TNode.h"
+#include "ProgNode.h"
 
 using namespace std;
 
@@ -41,15 +41,15 @@ public:
 	// constructor: creates tree rooted at programNode (named programName)
 	AST(const string &progName);
 
-	// checkers
-	bool isRootSet();
+	// getters
+	static AST* getInstance(const string &progName);
 
 	// setters
-	void addProcNode(TNode &procNode); // adds the procedure to the program
+	void addProcNode(ProcNode *procNode); // adds the procedure to the program
 
 private:
-	// actually 
-	// ProgramNode _programNode;
-	TNode _programRoot;
+	
+	ProgNode *_rootNode;
+	static AST *_instance;
 
 };
