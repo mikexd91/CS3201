@@ -7,6 +7,7 @@
 #include <string>
 #include "ParsedData.h"
 #include "ProcNode.h"
+#include "ProcTable.h"
 #include "AssgNode.h"
 #include "Statement.h"
 #include "WhileNode.h"

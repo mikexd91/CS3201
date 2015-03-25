@@ -203,3 +203,5 @@ SPA/SPA.vcxproj.filters
 SPA Prototype.suo
 *.ini
 *.suo
+.cproject
+.project

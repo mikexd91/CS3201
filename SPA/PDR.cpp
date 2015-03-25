@@ -31,6 +31,7 @@ void PDR::processParsedData(ParsedData data) {
 
 	}
 }
+ 
 void PDR::processProcedureStmt(ParsedData data) {
 	//TODO - if working on a previous procedure, links the prev procedure to the root of the 
 	//		 AST and creates a new procedure node
@@ -39,17 +40,33 @@ void PDR::processProcedureStmt(ParsedData data) {
 		nodeStack.pop();
 	}
 
+	currNestingLevel = data.getNestingLevel();
 	ProcNode procedure = ProcNode(data.getProcName());
-	nodeStack.push(procedure);
 	StmtLstNode stmtLst = StmtLstNode();
-	nodeStack.push(stmtLst);
+	
 	procedure.addChild(&stmtLst);
 
+	nodeStack.push(procedure);
+	nodeStack.push(stmtLst);
+	currNestingLevel++;
+	
 	//TODO - Add to proc table
 }
 
 void PDR::processAssignStmt(ParsedData data) {
 	AssgNode assignNode = AssgNode(++stmtCounter);	
+	
+	//means that the previous conditional statement has closed
+	//pop previous statementLst
+	if(currNestingLevel > data.getNestingLevel()) {
+		int diffNestingLevel = currNestingLevel - data.getNestingLevel();
+		currNestingLevel = data.getNestingLevel();
+		
+		for(int i = 0; i < diffNestingLevel; i++) {
+			nodeStack.pop();
+		}
+	}
+
 	/* TODO - Get modifies variable
 	 *	    - Add to modifies table
 	 *      - Get used variables
@@ -57,16 +74,16 @@ void PDR::processAssignStmt(ParsedData data) {
 	 *      - Depending on the operators of the expression, push
 	 *        to stack
 	 */
-
+	
 	TNode parent = nodeStack.top();
-	//parent.link(AssgNode);
+	parent.linkChild(&assignNode);
 
 	/*
 	 * TODO - Create Statement object
-	 *		- set the uses
-	 *		- set the follows
-	 *		- set the parent
-	 *		- set the child
+	 *			- set the uses
+	 *			- set the follows
+	 *			- set the parent
+	 *			- set the child
 	 */
 	Statement stmt = Statement();
 	//stmt.setType(Statement::NodeType::ASSIGN);
@@ -80,11 +97,20 @@ void PDR::processIfStmt(ParsedData data) {
 
 void PDR::processWhileStmt(ParsedData data) {
 	//TODO - processing while stmtLst
+	
 	WhileNode whileNode = WhileNode(++stmtCounter);
+	StmtLstNode stmtLst = StmtLstNode();
+	TNode parentNode = nodeStack.top();
+	whileNode.linkParent(&parentNode);
+	whileNode.linkChild(&stmtLst);
 
+	nodeStack.push(stmtLst);
+	currNestingLevel++;
 };
 
 void PDR::processCallStmt(ParsedData data) {
 	CallNode callNode = CallNode(++stmtCounter, data.getProcName());
 };
 
+void PDR::processCallStmt(ParsedData data) {
+}
