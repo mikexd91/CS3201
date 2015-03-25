@@ -9,12 +9,10 @@ using std::string;
 using std::vector;
 using std::stringstream;
 
-QueryParser::QueryParser(void)
-{
+QueryParser::QueryParser(void){
 }
 
-QueryParser::~QueryParser(void)
-{
+QueryParser::~QueryParser(void){
 }
 
 vector<string> split(string s, char delim, vector<string> elems) {
