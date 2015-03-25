@@ -111,6 +111,3 @@ void PDR::processWhileStmt(ParsedData data) {
 void PDR::processCallStmt(ParsedData data) {
 	CallNode callNode = CallNode(++stmtCounter, data.getProcName());
 };
-
-void PDR::processCallStmt(ParsedData data) {
-}
