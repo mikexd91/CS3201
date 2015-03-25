@@ -1,4 +1,9 @@
+
 #include <stack>
+
+#ifndef PDR_HEADER
+#define PDR_HEADER
+
 #include <string>
 #include "ParsedData.h"
 #include "ProcNode.h"
@@ -34,3 +39,4 @@ private:
 	void processCallStmt(ParsedData);
 
 };
+#endif

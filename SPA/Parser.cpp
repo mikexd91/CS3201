@@ -5,9 +5,10 @@
 #include <string>
 #include <vector>
 #include <regex>
-//#include "InvalidCodeException.h"
+#include "InvalidCodeException.h"
 #include "Parser.h"
 #include "ParsedData.h"
+#include "PDR.h"
 
 using namespace std;
 
@@ -17,24 +18,35 @@ Parser::Parser() {
 	nestingLevel = 0;
 }
 
-//e.g. string content = "Procedure test { a = 2; a = 5;} ";
+//e.g. string content = "procedure test { a = 2; a = 5;} ";
 void Parser::parse(string content) {
+	content = sanitise(content);
 	tokens = explode(content);
 	iter = tokens.begin();
 	program();
 }
 
+string Parser::sanitise(string str) {
+	for (int i = 0; i < strlen(ParserConstants::SANITISED_CHARS); i++) {
+		char sanitisedChar = ParserConstants::SANITISED_CHARS[i];
+		str.erase(remove(str.begin(), str.end(), sanitisedChar), str.end());
+	}
+	return str;
+}
+
 //Split code into a vector of tokens
-vector<string> Parser::explode(const string &s) {
+vector<string> Parser::explode(const string &str) {
 	vector<string> elems;
 	int pos;
 	int prev = 0;
-	while ((pos = s.find_first_of(" ;", prev)) != string::npos) {
+	while ((pos = str.find_first_of(ParserConstants::DELIM_STRING, prev)) != string::npos) {
+		//if there are words in between (not consecutive delimiters)
 		if (pos > prev) {
-			elems.push_back(s.substr(prev, pos- prev));
-			if (s[pos] == ';') {
-				elems.push_back(";");
-			}
+			elems.push_back(str.substr(prev, pos - prev));
+		}
+		//if it is a delimiter that should be included (aka all delimiters but spaces)
+		if (find(begin(ParserConstants::DELIMITERS), end(ParserConstants::DELIMITERS), str[pos]) != end(ParserConstants::DELIMITERS)) {
+			elems.push_back(string(1, str[pos]));
 		}
 		prev = pos + 1;
 	}
@@ -48,8 +60,7 @@ void Parser::match(string token) {
 		getNextToken();
 	}
 	else {
-		//TODO: throw error. token should be present but is not
-		
+		throw InvalidCodeException();
 	}
 }
 
@@ -74,11 +85,11 @@ void Parser::program() {
 }
 
 void Parser::procedure() {
-	match("Procedure");
+	match("procedure");
 	string procName = getWord();
 	ParsedData procedure = ParsedData(ParsedData::PROCEDURE, nestingLevel);
 	procedure.setProcName(procName);
-	//TODO: send procedure object to pdr
+	parsedDataReceiver.processParsedData(procedure);
 	match("{");
 	nestingLevel++;
 	stmtLst();
@@ -104,13 +115,6 @@ void Parser::assign() {
 	string expression = getWord();
 	ParsedData assignment = ParsedData(ParsedData::ASSIGNMENT, nestingLevel);
 	assignment.setAssignVar(var);
-	assignment.setAssignExpression(atoi(expression.c_str()));
-	//TODO: send assign object to pdr
+	assignment.setAssignExpression(expression.c_str());
+	parsedDataReceiver.processParsedData(assignment);
 }
-
-
-
-
-
-
-
