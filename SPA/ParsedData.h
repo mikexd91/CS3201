@@ -4,7 +4,7 @@ using namespace std;
 class ParsedData	
 {
 public:
-	enum Type {ASSIGNMENT, PROCEDURE};
+	enum Type {ASSIGNMENT, PROCEDURE, WHILE, IF, CALL};
 
 	//Constructor
 	ParsedData(enum Type, int);
