@@ -1,8 +1,14 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 using namespace std;
+
+enum NodeType {
+    PROGRAM_, PROCEDURE_, STMTLST_, CALL_STMT_, WHILE_STMT_, 
+    IF_STMT_, ASSIGN_STMT_, OPERATOR_, VARIABLE_, CONSTANT_
+};
 
 class TNode {
 
@@ -25,30 +31,39 @@ class TNode {
 
 public:
 	
-	//TNode(string nodeType); // constructor
+	// constructors
+	TNode(NodeType type);
+	TNode(NodeType type, const string& name);
 
-	//void setStmtNumber(int num); // for nodes that have stmt numbers
-	//void setValue(string value); // the value for the node, example procnode should have the value = procname
-	//void setParent(TNode *parent); // direct parent, not the relationship Parent
-	//void setChild(TNode *child);
-	//void setLeftSibling(TNode *left);
-	//void setRightSibling(TNode *right);
+	// getters
+	NodeType getNodeType();
+	string getNodeName(); // the name that comes before the colon e.g. else:stmtlst
+	vector<TNode*>& getChildren();
+	TNode* getParent();
+	TNode* getRightSibling();
+	TNode* getLeftSibling();
 
-	//string getNodeType();
-	//int getStmtNumber();
-	//TNode * getParent();
-	//TNode * getChild();
-	//TNode * getLeftSibling();
-	//TNode * getRightSibling();
+	// setters
+	void setName(const string& name);
+	void addChild(TNode *child);
+	void linkChild(TNode *child);
+	void linkParent(TNode *parent);
+	void linkRightSibling(TNode *right);
+	void linkLeftSibling(TNode *left);
 
-private:
+	// checks
+	bool isNodeType(NodeType type);
+	bool hasChildren();
+	bool hasParent();
+	bool hasRightSibling();
+	bool hasLeftSibling();
 
-	/*string _nodeType;
-	int _stmtNumber;
-	string _value;
-	TNode * _parent;
-	TNode * _child;
-	TNode * _left;
-	TNode * _right;*/
+protected:
+	NodeType _nodeType;
+	string _nodeName;
+	vector<TNode*> _children;
+	TNode *_parent;
+	TNode *_rightSibling;
+	TNode *_leftSibling;
 
 };
