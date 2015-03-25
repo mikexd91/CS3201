@@ -82,9 +82,9 @@ void PDR::processWhileStmt(ParsedData data) {
 	//TODO - processing while stmtLst
 	WhileNode whileNode = WhileNode(++stmtCounter);
 
-}
+};
 
 void PDR::processCallStmt(ParsedData data) {
 	CallNode callNode = CallNode(++stmtCounter, data.getProcName());
-}
+};
 

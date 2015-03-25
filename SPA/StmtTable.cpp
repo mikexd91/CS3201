@@ -77,19 +77,20 @@ void StmtTable::addStmt(Statement *stmt) {
 
 	// record type of stmt
 	switch(stmt->getType()) {
-		case Statement::NodeType.ASSIGN:
-			assgStmtSet.insert(stmtNum);
-			break;
-		case Statement::NodeType.CALL:
-			callStmtSet.insert(stmtNum);
-			break;
-		case Statement::NodeType.IF:
-			ifStmtSet.insert(stmtNum);
-			break;
-		case Statement::NodeType.WHILE:
-			whileStmtSet.insert(stmtNum);
-			break;
+		case Statement::NodeType::ASSIGN:
+				assgStmtSet.insert(stmtNum);
+				break;
+		case Statement::NodeType::CALL:
+				callStmtSet.insert(stmtNum);
+				break;
+		case Statement::NodeType::IF:
+				ifStmtSet.insert(stmtNum);
+				break;
+		case Statement::NodeType::WHILE:
+				whileStmtSet.insert(stmtNum);
+				break;
 		default:
+			break;
 	}
 }
 

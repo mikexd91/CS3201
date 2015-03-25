@@ -27,10 +27,13 @@
 
 class Statement {
 
+	
+
+public:
+
 	// DEFINE NODE TYPE
 	enum NodeType { ASSIGN, CALL, WHILE, IF };
 
-public:
 	// TYPEDEF
 	typedef set<string> UsesSet;
 	typedef set<string> ModifiesSet;
@@ -62,7 +65,7 @@ public:
 	// SETTERS
 	void setType(NodeType nodeType);
 	void setStmtNum(int num);
-	void setTNodeRef(const TNode *ref);
+	void setTNodeRef(TNode *ref);
 	//void setGNodeRef(const GNode *ref);
 	void setUses(const set<string> &useSet);
 	void setModifies(const set<string> &modifiesSet);
@@ -90,4 +93,4 @@ private:
 	NextSet			next;
 	PrevSet			prev;
 
-}
+};
