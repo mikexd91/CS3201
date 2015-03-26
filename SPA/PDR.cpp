@@ -1,6 +1,3 @@
-#include <string>
-#include <vector>
-#include <stack>
 #include "PDR.h"
 
 using namespace std;
@@ -28,7 +25,8 @@ void PDR::processParsedData(ParsedData data) {
         case ParsedData::Type::IF:
             processIfStmt(data);
             break;
-            
+        default:
+            break;
     }
 }
 
@@ -121,6 +119,7 @@ void PDR::processWhileStmt(ParsedData data) {
     whileNode.linkChild(&stmtLst);
     
     nodeStack.push(stmtLst);
+    stmtNumStack.push(stmtCounter);
     currNestingLevel++;
     
     Statement whileStmt = Statement();
@@ -129,6 +128,7 @@ void PDR::processWhileStmt(ParsedData data) {
     whileStmt.setTNodeRef(&whileNode);
     
     StmtTable* stmtTable = StmtTable.getInstance();
+    stmtTable->addStmt(&whileStmt);
     
 }
 

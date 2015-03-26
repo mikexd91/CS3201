@@ -9,6 +9,7 @@
 #include "ProcNode.h"
 #include "ProcTable.h"
 #include "AssgNode.h"
+#include "StmtTable.h"
 #include "Statement.h"
 #include "WhileNode.h"
 #include "StmtLstNode.h"
