@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <queue>
 using namespace std;
 class ParsedData	
 {
@@ -11,13 +12,13 @@ public:
 	
 	//Setter
 	void setAssignVar(string);
-	void setAssignExpression(string);
+	void setAssignExpression(queue<string>);
 	void setProcName(string);
 
 	//Getter
 	int getNestingLevel();
 	string getAssignVar();
-	string getAssignExpression();
+	queue<string> getAssignExpression();
 	string getProcName();
 	Type getType();
 
@@ -27,7 +28,7 @@ private:
 	int nestingLevel;
 	//Assignment
 	string assignVar;
-	string assignExpression; //an integer for now
+	queue<string> assignExpression; //in Reverse Polish notation
 	//Procedure
 	string procName;
 	
