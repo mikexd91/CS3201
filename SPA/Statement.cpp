@@ -22,6 +22,7 @@ Statment::Statement(NodeType type, int stmtNum, TNode *tRef, GNode *gRef) {
 	this->gRef = gRef;
 }*/
 
+
 /* ----------------------------- */
 /* ---------- GETTERS ---------- */
 /* ----------------------------- */
