@@ -46,8 +46,8 @@ public:
 	// GETTERS
 	const NodeType getType();				// get stmt type
 	const int getStmtNum();					// get stmt num
-	const TNode* getTNodeRef();				// get reference to stmt TNode
-	//const GNode* getGNodeRef();			// get reference to stmt GNode
+	TNode* getTNodeRef();				// get reference to stmt TNode
+	//GNode* getGNodeRef();			// get reference to stmt GNode
 	const UsesSet& getUses();				// get set of variables stmt uses
 	const ModifiesSet& getModifies();		// get set of variables stmt modifies
 	const FollowsSet& getFollows();			// get set of stmts that this stmt follows
