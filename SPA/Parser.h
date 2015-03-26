@@ -24,6 +24,7 @@ private:
 	void match(string token);
 	void getNextToken();
 	string getWord();
+	queue<string> getExpression();
 
 	void program();
 	void procedure();

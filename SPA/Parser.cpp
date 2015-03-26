@@ -106,7 +106,6 @@ void Parser::stmtLst() {
 void Parser::stmt() {
 	//only assign statements now
 	assign();
-	match(";");
 }
 
 void Parser::assign() {
@@ -115,6 +114,31 @@ void Parser::assign() {
 	string expression = getWord();
 	ParsedData assignment = ParsedData(ParsedData::ASSIGNMENT, nestingLevel);
 	assignment.setAssignVar(var);
-	assignment.setAssignExpression(expression.c_str());
+	assignment.setAssignExpression(getExpression());
 	parsedDataReceiver.processParsedData(assignment);
+}
+
+queue<string> Parser::getExpression() {
+	stack<string> operationStack;
+	queue<string> expressionQueue;
+	//using Shunting-yard algorithm
+	string word;
+	while ((word = getWord()) != ";") {
+		if (word == "+" || word == "-" || word == "*") {
+			//if top of stack is *, all other operation (+-*) are lower or equal, so just add top to output queue
+			//if top of stack is + or -, only add top to output queue if word is + or -
+			while (!operationStack.empty() && !(operationStack.top() != "*" && word == "*")) {
+				expressionQueue.push(operationStack.top());
+				operationStack.pop();
+			}
+			operationStack.push(word);
+		} else {
+			expressionQueue.push(word);
+		}	
+	}
+	while (!operationStack.empty()) {
+		expressionQueue.push(operationStack.top());
+		operationStack.pop();
+	}
+	return expressionQueue;
 }
