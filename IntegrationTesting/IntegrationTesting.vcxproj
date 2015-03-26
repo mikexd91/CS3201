@@ -65,9 +65,6 @@
       <AdditionalDependencies>$(SolutionDir)lib\cppunit.lib;$(SolutionDir)$(Configuration)\SPA.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="source\IntegrationTest.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
