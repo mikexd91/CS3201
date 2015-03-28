@@ -18,10 +18,10 @@ Statement* getStmtObj(int stmtnum) {
 	StmtTable* table = StmtTable::getInstance();
 	const set<Statement*> set = table->getAssgStmts();
 	for (setIter=set.begin(); setIter!=set.end(); setIter++) {
-		Statement* stmt = *setIter;
-		int stmtnum2 = stmt->getStmtNum();
+		Statement* stmtObj = *setIter;
+		int stmtnum2 = stmtObj->getStmtNum();
 		if (stmtnum2 == stmtnum) {
-			return stmt;
+			return stmtObj;
 		}
 	}
 	return 0;
