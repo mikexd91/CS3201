@@ -1,28 +1,32 @@
 #pragma once
 #include <string>
-#include <vector>
+#include <set>
 
 using namespace std;
 
 class Results
 {
 public:
+	enum Type { Letter, Digit, Tuple, Boolean, None};
+
 	Results(void);
 	~Results(void);
 
 	void addStmt(int);
 	void addVar(string);
-	void setResultType(string);
+	void setBool(bool);
+	void setResultType(Type);
 
-	vector<int> getStmtResults();
-	vector<string> getVarResults();
+	set<int> getStmtResults();
+	set<string> getVarResults();
+	bool getBoolResults();
 
 	string toString();
 
 private:
-	// Vector<tuple<int, int>> tupleResultSet;
-	vector<int> stmtResultSet;
-	vector<string> varResultSet;
-	string resultType;
+	set<int> stmtResultSet;
+	set<string> varResultSet;
+	bool exist;
+	Type resultType;
 };
 

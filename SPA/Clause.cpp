@@ -1,6 +1,8 @@
 #include "Clause.h"
 #include <string>
+
 using std::string;
+
 Clause::Clause(void){
 }
 
