@@ -44,12 +44,12 @@ public:
 	//GNode* getGNodeRef();				// get reference to stmt GNode
 	const UsesSet& getUses();			// get set of variables stmt uses
 	const ModifiesSet& getModifies();	// get set of variables stmt modifies
-	int getFollows();					// get set of stmts that this stmt follows
-	int getFollowedBy();				// get set of stmts that follows after this stmt
-	int getParentOf();					// get set of stmts that are parents of this stmt
-	int getChildOf();					// get set of stmts that are children of this stmt
-	int getNext();						// get set of stmts that are next of this stmt
-	int getPrev();						// get set of stmts whose next is this stmt
+	int getFollows();					// get stmt that this stmt follows
+	int getFollowedBy();				// get stmt that follows after this stmt
+	int getParentOf();					// get stmt that is parent of this stmt
+	int getChildOf();					// get stmt that is child of this stmt
+	int getNext();						// get stmt that is next of this stmt
+	int getPrev();						// get stmt whose next is this stmt
 
 	// SETTERS
 	void setType(NodeType nodeType);
