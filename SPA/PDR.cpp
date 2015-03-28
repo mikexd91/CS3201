@@ -35,24 +35,25 @@ void PDR::processProcedureStmt(ParsedData data) {
     //		 AST and creates a new procedure node
     
     // New Procedure
-    if(data.getNestingLevel() == 0) {
-        for(int i = 0; i < currNestingLevel - data.getNestingLevel(); i++) {
-            nodeStack.pop();
-        }
-        
-        TNode procToBeAttached = nodeStack.top();
-        // Link to program node of AST
+
+    for(int i = 0; i < currNestingLevel - data.getNestingLevel(); i++) {
         nodeStack.pop();
     }
     
-    currNestingLevel = data.getNestingLevel();
-    ProcNode procedure = ProcNode(data.getProcName());
-    StmtLstNode stmtLst = StmtLstNode();
-    
-    procedure.addChild(&stmtLst);
+    if(!nodeStack.empty()) {
+        TNode* previousProc = nodeStack.top();
+        // TODO - link previous proc node to the program node
+        nodeStack.pop();
+    }
+
+    ProcNode* procedure = new ProcNode(data.getProcName());
+    StmtLstNode* stmtLst = new StmtLstNode();
+    procedure->addChild(stmtLst);
     
     nodeStack.push(procedure);
     nodeStack.push(stmtLst);
+    
+    currNestingLevel = data.getNestingLevel();
     currNestingLevel++;
     
     // TODO - Add to proc table
@@ -60,15 +61,14 @@ void PDR::processProcedureStmt(ParsedData data) {
 }
 
 void PDR::processAssignStmt(ParsedData data) {
-    AssgNode assignNode = AssgNode(++stmtCounter);
+    AssgNode* assignNode = new AssgNode(++stmtCounter);
     
     if(currNestingLevel > data.getNestingLevel()) {
         int diffNestingLevel = currNestingLevel - data.getNestingLevel();
-        currNestingLevel = data.getNestingLevel();
-        
         for(int i = 0; i < diffNestingLevel; i++) {
             nodeStack.pop();
         }
+        currNestingLevel = data.getNestingLevel();
     }
     
     /* TODO - Get modifies variable
@@ -79,8 +79,8 @@ void PDR::processAssignStmt(ParsedData data) {
      *        to stack
      */
     
-    TNode parent = nodeStack.top();
-    parent.linkChild(&assignNode);
+    TNode* parent = nodeStack.top();
+    parent->linkChild(assignNode);
     
     /*
      * TODO - Create Statement object
@@ -89,8 +89,13 @@ void PDR::processAssignStmt(ParsedData data) {
      *			- set the parent
      *			- set the child
      */
-    Statement stmt = Statement();
-    //stmt.setType(Statement::NodeType::ASSIGN);
+    Statement* stmt = new Statement();
+    stmt->setType(assignNode->getNodeType());
+    stmt->setStmtNum(stmtCounter);
+    stmt->setTNodeRef(assignNode);
+    
+    StmtTable* stmtTable = StmtTable.getInstance();
+    stmtTable->addStmt(stmt);
     
 }
 
@@ -102,7 +107,6 @@ void PDR::processWhileStmt(ParsedData data) {
     //TODO - processing while stmtLst
     if(currNestingLevel > data.getNestingLevel()) {
         int diffNestingLevel = currNestingLevel - data.getNestingLevel();
-        currNestingLevel = data.getNestingLevel();
         
         for(int i = 0; i < diffNestingLevel; i++) {
             nodeStack.pop();
@@ -111,25 +115,40 @@ void PDR::processWhileStmt(ParsedData data) {
         // Throw error because nesting level cannot increase by more than 1
     }
     
-    WhileNode whileNode = WhileNode(++stmtCounter);
-    StmtLstNode stmtLst = StmtLstNode();
-    TNode parentNode = nodeStack.top();
+    WhileNode* whileNode = new WhileNode(++stmtCounter);
+    StmtLstNode* stmtLst = new StmtLstNode();
+    TNode* parentNode = nodeStack.top();
     
-    whileNode.linkParent(&parentNode);
-    whileNode.linkChild(&stmtLst);
+    whileNode->linkParent(parentNode);
     
     nodeStack.push(stmtLst);
-    stmtNumStack.push(stmtCounter);
-    currNestingLevel++;
+    stmtParentNumStack.push(stmtCounter);
+    currNestingLevel = data.getNestingLevel() + 1;
     
+    /*
+     * Creating statement object that will be used to populate the 
+     * necessary tables
+     */
     Statement whileStmt = Statement();
-    whileStmt.setType(whileNode.getNodeType());
-    whileStmt.setStmtNum(whileNode.getStmtNum());
-    whileStmt.setTNodeRef(&whileNode);
+    whileStmt.setType(whileNode->getNodeType());
+    whileStmt.setStmtNum(whileNode->getStmtNum());
+    whileStmt.setTNodeRef(whileNode);
     
     StmtTable* stmtTable = StmtTable.getInstance();
     stmtTable->addStmt(&whileStmt);
     
+}
+
+void PDR::breakDownAssignExpression(ParsedData data) {
+    // Assume expression to be the RPN of the variables and operators
+    queue<string> expression;
+    stack<string> rpnStack;
+    
+    for(int i = 0; i < expression.size(); i++) {
+        string exp = expression.front();
+        expression.pop();
+        
+    }
 }
 
 void PDR::processCallStmt(ParsedData data) {

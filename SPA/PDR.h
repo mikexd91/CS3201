@@ -1,5 +1,6 @@
 
 #include <stack>
+#include <queue>
 
 #ifndef PDR_HEADER
 #define PDR_HEADER
@@ -27,18 +28,19 @@ public:
 	void processParsedData(ParsedData);
 
 private:
-	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHI};
+	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHILE};
 	int stmtCounter;
 	int currNestingLevel;
 
-	stack<int> stmtNumStack;
-	stack<TNode> nodeStack;
+	stack<int> stmtParentNumStack;
+	stack<TNode*> nodeStack;
 
 	void processProcedureStmt(ParsedData);
 	void processAssignStmt(ParsedData);
 	void processIfStmt(ParsedData);
 	void processWhileStmt(ParsedData);
 	void processCallStmt(ParsedData);
+    void breakDownAssignExpression(ParsedData);
 
 };
 #endif
