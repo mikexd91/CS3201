@@ -13,6 +13,7 @@ Follows::~Follows(void)
 {
 }
 
+// Get the StmtObj in StmtTable
 Statement* getStmtObj(int stmtnum) {
 	StmtTable* table = StmtTable::getInstance();
 	const set<Statement*> set = table->getAssgStmts();
@@ -28,7 +29,7 @@ Statement* getStmtObj(int stmtnum) {
 
 bool Follows::isFollows(int stmtNum1, int stmtNum2) {
 	int stmt = getFollows(stmtNum1);
-	if (stmt != 0 && stmt == stmtNum2) {
+	if (stmt != -1 && stmt == stmtNum2) {
 		return true;
 	} else {
 		return false;
@@ -39,28 +40,24 @@ bool Follows::isFollows(int stmtNum1, int stmtNum2) {
 int Follows::getFollows(int stmtNum) {
 	Statement* stmtObj = getStmtObj(stmtNum);
 	if (stmtObj != 0) {
-		set<int> stmtsSet = stmtObj->getFollows();
-		if (!stmtsSet.empty()) {
-			intIter = stmtsSet.begin();
-			int stmt = *intIter;
+		int stmt = stmtObj->getFollows();
+		if (stmt != -1) {
 			return stmt;
 		}
 	} 
-	return 0;
+	return -1;
 }
 
 // gets immediate statement before stmtNum
 int Follows::getFollowedBy(int stmtNum) {
 	Statement* stmtObj = getStmtObj(stmtNum);
 	if (stmtObj != 0) {
-		set<int> stmtsSet = stmtObj->getFollowedBy();
-		if (!stmtsSet.empty()) {
-			intIter = stmtsSet.end();
-			int stmt = *intIter;
+		int stmt = stmtObj->getFollowedBy();
+		if (stmt != -1) {
 			return stmt;
 		}
 	}
-	return 0;
+	return -1;
 }
 
 /*
@@ -84,22 +81,28 @@ bool Follows::isFollowsStar(int stmtNum1, int stmtNum2) {
 
 // gets all those before b in Follows(a, b)
 set<int> Follows::getFollowedStarBy(int stmtNum) {
-	Statement* stmtObj = getStmtObj(stmtNum);
-	if (stmtObj != 0) {
-		set<int> stmtsSet = stmtObj->getFollowedBy();
-		return stmtsSet;
+	set<int> set;
+	int stmt = getFollowedBy(stmtNum);
+	
+	while (stmt != -1) {
+		set.insert(stmt);
+		stmt = getFollowedBy(stmt);
 	}
-	return set<int>();
+
+	return set;
 }
 
 // gets all those after a in Follows(a, b)
 set<int> Follows::getFollowsStar(int stmtNum) {
-	Statement* stmtObj = getStmtObj(stmtNum);
-	if (stmtObj != 0) {
-		set<int> stmtsSet = stmtObj->getFollows();
-		return stmtsSet;
+	set<int> set;
+	int stmt = getFollows(stmtNum);
+	
+	while (stmt != -1) {
+		set.insert(stmt);
+		stmt = getFollows(stmt);
 	}
-	return set<int>();
+
+	return set;
 }
 
 /*

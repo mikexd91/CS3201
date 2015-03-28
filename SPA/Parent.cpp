@@ -26,9 +26,11 @@ set<int> getChild(int stmtNum) {
 
 }
 
+/*
 set<set<int>> getAllParent(int stmtNum1, int stmtNum2) {
 
 }
+*/
 
 bool isParentStar(int stmtNum1, int stmtNum2) {
 
@@ -42,6 +44,8 @@ set<int> getChildStar(int stmtNum) {
 
 }
 
+/*
 set<set<int>> getAllParentStar(int stmtNum1, int stmtNum2) {
 
 }
+*/
