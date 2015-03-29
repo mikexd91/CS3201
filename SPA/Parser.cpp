@@ -24,6 +24,7 @@ void Parser::parse(string content) {
 	tokens = explode(content);
 	iter = tokens.begin();
 	program();
+	endParse();
 }
 
 string Parser::sanitise(string str) {
@@ -68,8 +69,7 @@ void Parser::getNextToken() {
 	if (iter < tokens.end()) {
 		nextToken = *(iter++);
 	} else {
-		//end of file
-		return;
+		nextToken.clear();
 	}
 }
 
@@ -81,7 +81,9 @@ string Parser::getWord() {
 
 void Parser::program() {
 	getNextToken();
-	procedure();
+	while (!nextToken.empty()) {
+		procedure();
+	}
 }
 
 void Parser::procedure() {
@@ -91,22 +93,24 @@ void Parser::procedure() {
 	procedure.setProcName(procName);
 	parsedDataReceiver.processParsedData(procedure);
 	match("{");
-	nestingLevel++;
 	stmtLst();
 	match("}");
-	nestingLevel--;
 }
 
 void Parser::stmtLst() {
+	nestingLevel++;
 	while (nextToken != "}") {
 		stmt();		
 	}
+	nestingLevel--;
 }
 
 void Parser::stmt() {
-	//only assign statements now
-	assign();
-	match(";");
+	if (nextToken == "while") {
+		parseWhile();
+	} else {
+		assign(); 
+	}
 }
 
 void Parser::assign() {
@@ -115,6 +119,58 @@ void Parser::assign() {
 	string expression = getWord();
 	ParsedData assignment = ParsedData(ParsedData::ASSIGNMENT, nestingLevel);
 	assignment.setAssignVar(var);
-	assignment.setAssignExpression(expression.c_str());
+	assignment.setAssignExpression(getExpression());
 	parsedDataReceiver.processParsedData(assignment);
+}
+
+
+/**
+Sample parsing of expression
+3*2+a*2 -> 3 2 * a 2 * +
+1+a*2+3-5 -> 1 a 2 * + 3 + 5 -
+2- 9 +8*0 -> 2 9 - 8 0 * +
+1-2*3-4+5*6*7+8 -> 1 2 3 * - 4 - 5 6 * 7 * + 8 +
+
+**/
+
+queue<string> Parser::getExpression() {
+	stack<string> operationStack;
+	queue<string> expressionQueue;
+	//using Shunting-yard algorithm
+	string word;
+	while ((word = getWord()) != ";") {
+		if (word == "+" || word == "-" || word == "*") {
+			//if top of stack is *, all other operation (+-*) are lower or equal, so just add top to output queue
+			//if top of stack is + or -, only add top to output queue if word is + or -
+			while (!operationStack.empty() && !(operationStack.top() != "*" && word == "*")) {
+				expressionQueue.push(operationStack.top());
+				operationStack.pop();
+			}
+			operationStack.push(word);
+		} else {
+			expressionQueue.push(word);
+		}	
+	}
+	while (!operationStack.empty()) {
+		expressionQueue.push(operationStack.top());
+		operationStack.pop();
+	}
+	return expressionQueue;
+}
+
+
+void Parser::parseWhile() {
+	match("while");
+	string conditionVar = getWord();
+	ParsedData whileStmt = ParsedData(ParsedData::WHILE, nestingLevel);
+	whileStmt.setWhileVar(conditionVar);
+	parsedDataReceiver.processParsedData(whileStmt);
+	match("{");
+	stmtLst();
+	match("}");
+}
+
+void Parser::endParse() {
+	ParsedData endData = ParsedData(ParsedData::END, nestingLevel);
+	parsedDataReceiver.processParsedData(endData);
 }

@@ -24,12 +24,15 @@ private:
 	void match(string token);
 	void getNextToken();
 	string getWord();
+	queue<string> getExpression();
 
 	void program();
 	void procedure();
 	void stmtLst();
 	void stmt();
 	void assign();
+	void parseWhile();
+	void endParse();
 };
 
 namespace ParserConstants {
