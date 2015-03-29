@@ -93,21 +93,24 @@ void Parser::procedure() {
 	procedure.setProcName(procName);
 	parsedDataReceiver.processParsedData(procedure);
 	match("{");
-	nestingLevel++;
 	stmtLst();
 	match("}");
-	nestingLevel--;
 }
 
 void Parser::stmtLst() {
+	nestingLevel++;
 	while (nextToken != "}") {
 		stmt();		
 	}
+	nestingLevel--;
 }
 
 void Parser::stmt() {
-	//only assign statements now
-	assign();
+	if (nextToken == "while") {
+		parseWhile();
+	} else {
+		assign(); 
+	}
 }
 
 void Parser::assign() {
@@ -119,6 +122,7 @@ void Parser::assign() {
 	assignment.setAssignExpression(getExpression());
 	parsedDataReceiver.processParsedData(assignment);
 }
+
 
 /**
 Sample parsing of expression
@@ -154,7 +158,19 @@ queue<string> Parser::getExpression() {
 	return expressionQueue;
 }
 
+
+void Parser::parseWhile() {
+	match("while");
+	string conditionVar = getWord();
+	ParsedData whileStmt = ParsedData(ParsedData::WHILE, nestingLevel);
+	whileStmt.setWhileVar(conditionVar);
+	parsedDataReceiver.processParsedData(whileStmt);
+	match("{");
+	stmtLst();
+	match("}");
+}
+
 void Parser::endParse() {
 	ParsedData endData = ParsedData(ParsedData::END, nestingLevel);
-	parsedDataReceiver.processParsedData(endParse);
+	parsedDataReceiver.processParsedData(endData);
 }

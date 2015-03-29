@@ -14,6 +14,7 @@ public:
 	void setAssignVar(string);
 	void setAssignExpression(queue<string>);
 	void setProcName(string);
+	void setWhileVar(string name);
 
 	//Getter
 	int getNestingLevel();
@@ -21,6 +22,7 @@ public:
 	queue<string> getAssignExpression();
 	string getProcName();
 	Type getType();
+	string getWhileVar();
 
 
 private:
@@ -31,8 +33,6 @@ private:
 	queue<string> assignExpression; //in Reverse Polish notation
 	//Procedure
 	string procName;
-	
-	
-
+	//While
+	string whileVar;
 };
-

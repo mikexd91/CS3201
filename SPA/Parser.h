@@ -31,6 +31,7 @@ private:
 	void stmtLst();
 	void stmt();
 	void assign();
+	void parseWhile();
 	void endParse();
 };
 
