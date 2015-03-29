@@ -79,8 +79,11 @@ void PDR::processAssignStmt(ParsedData data) {
      *        to stack
      */
     
+    TNode* assignExpChild = breakDownAssignExpression(data);
     TNode* parent = nodeStack.top();
     parent->linkChild(assignNode);
+    assignNode->linkExprNode(assignExpChild);
+    assignNode->linkVarNode(new VarNode(data.getAssignVar()));
     
     /*
      * TODO - Create Statement object
@@ -139,16 +142,52 @@ void PDR::processWhileStmt(ParsedData data) {
     
 }
 
-void PDR::breakDownAssignExpression(ParsedData data) {
+TNode* PDR::breakDownAssignExpression(ParsedData data) {
     // Assume expression to be the RPN of the variables and operators
     queue<string> expression;
     stack<string> rpnStack;
+    stack<TNode*> rpnNodeStack;
     
     for(int i = 0; i < expression.size(); i++) {
         string exp = expression.front();
         expression.pop();
         
+        if(exp == "+" || exp == "-" || exp == "*" || exp == "/") {
+            OpNode* operat = new OpNode();
+            TNode* right = rpnNodeStack.top();
+            rpnNodeStack.pop();
+            TNode* left = rpnNodeStack.top();
+            rpnNodeStack.pop();
+            operat->linkLeftNode(left);
+            operat->linkRightNode(right);
+            rpnNodeStack.push(operat);
+        } else {
+            if(isInteger(exp)) {
+                ConstNode* constNode = new ConstNode(exp);
+                rpnNodeStack.push(constNode);
+            } else {
+                VarNode* var = new VarNode(exp);
+                rpnNodeStack.push(var);
+            }
+        }
     }
+    
+    TNode* result;
+    while(!rpnNodeStack.empty()) {
+        result = rpnNodeStack.top();
+        rpnNodeStack.pop();
+    }
+    
+    return result;
+}
+
+bool PDR::isInteger(string exp) {
+    for(int i = 0; i < exp.length(); i++) {
+        if(!isdigit(exp[i])) {
+            return false;
+        }
+    }
+    return true;
 }
 
 void PDR::processCallStmt(ParsedData data) {

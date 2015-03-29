@@ -6,6 +6,7 @@
 #define PDR_HEADER
 
 #include <string>
+#include "ConstNode.h"
 #include "ParsedData.h"
 #include "ProcNode.h"
 #include "ProcTable.h"
@@ -16,6 +17,7 @@
 #include "StmtLstNode.h"
 #include "IfNode.h"
 #include "CallNode.h"
+#include "OpNode.h"
 #include "AST.h"
 
 using namespace std;
@@ -40,7 +42,9 @@ private:
 	void processIfStmt(ParsedData);
 	void processWhileStmt(ParsedData);
 	void processCallStmt(ParsedData);
-    void breakDownAssignExpression(ParsedData);
+    TNode* breakDownAssignExpression(ParsedData);
+    
+    bool isInteger(string);
 
 };
 #endif
