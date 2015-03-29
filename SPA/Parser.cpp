@@ -24,6 +24,7 @@ void Parser::parse(string content) {
 	tokens = explode(content);
 	iter = tokens.begin();
 	program();
+	endParse();
 }
 
 string Parser::sanitise(string str) {
@@ -68,8 +69,7 @@ void Parser::getNextToken() {
 	if (iter < tokens.end()) {
 		nextToken = *(iter++);
 	} else {
-		//end of file
-		return;
+		nextToken.clear();
 	}
 }
 
@@ -81,7 +81,9 @@ string Parser::getWord() {
 
 void Parser::program() {
 	getNextToken();
-	procedure();
+	while (!nextToken.empty()) {
+		procedure();
+	}
 }
 
 void Parser::procedure() {
@@ -141,4 +143,9 @@ queue<string> Parser::getExpression() {
 		operationStack.pop();
 	}
 	return expressionQueue;
+}
+
+void Parser::endParse() {
+	ParsedData endData = ParsedData(ParsedData::END, nestingLevel);
+	parsedDataReceiver.processParsedData(endParse);
 }
