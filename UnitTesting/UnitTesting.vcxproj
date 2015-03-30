@@ -73,11 +73,50 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\PKBUnitTest.cpp" />
-    <ClCompile Include="TNodeTeasdasdst.cpp" />
+    <ClCompile Include="source\StmtTableTest.cpp" />
     <ClCompile Include="TNodeTest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\StmtTableTest.h" />
     <ClInclude Include="TNodeTest.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Debug\cl.command.1.tlog" />
+    <None Include="Debug\CL.read.1.tlog" />
+    <None Include="Debug\CL.write.1.tlog" />
+    <None Include="Debug\link.command.1.tlog" />
+    <None Include="Debug\link.read.1.tlog" />
+    <None Include="Debug\link.write.1.tlog" />
+    <None Include="Debug\UnitTesting.lastbuildstate" />
+    <None Include="Debug\UnitTesting.log" />
+    <None Include="Debug\UnitTesting.unsuccessfulbuild" />
+    <None Include="Debug\UnitTesting.vcxprojResolveAssemblyReference.cache" />
+    <None Include="Debug\UnitTesting.write.1.tlog" />
+    <None Include="Debug\vc100.idb" />
+    <None Include="Debug\vc100.pdb" />
+    <None Include="Release\cl.command.1.tlog" />
+    <None Include="Release\CL.read.1.tlog" />
+    <None Include="Release\CL.write.1.tlog" />
+    <None Include="Release\link.command.1.tlog" />
+    <None Include="Release\link.read.1.tlog" />
+    <None Include="Release\link.write.1.tlog" />
+    <None Include="Release\mt.command.1.tlog" />
+    <None Include="Release\mt.read.1.tlog" />
+    <None Include="Release\mt.write.1.tlog" />
+    <None Include="Release\UnitTesting.Build.CppClean.log" />
+    <None Include="Release\UnitTesting.lastbuildstate" />
+    <None Include="Release\UnitTesting.log" />
+    <None Include="Release\UnitTesting.write.1.tlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="Debug\PKBUnitTest.obj" />
+    <Object Include="Debug\TNodeTeasdasdst.obj" />
+    <Object Include="Debug\TNodeTest.obj" />
+    <Object Include="Debug\UnitTest.obj" />
+    <Object Include="Release\UnitTest.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="Release\UnitTesting.exe.intermediate.manifest" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
