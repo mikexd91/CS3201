@@ -1,6 +1,5 @@
 #pragma once
 
-#include <set>
 #include "Statement.h"
 #include "TNode.h"
 //#include "GNode.h"
@@ -10,8 +9,16 @@ using namespace std;
 /* ----------------------------- */
 /* -------- CONSTRUCTORS ------- */
 /* ----------------------------- */
-// empty contructor (null attributes)
-Statement::Statement() {}
+// contructor with no preset attributes
+// (null attributes or -1 for primitives and 0 for stmtNum)
+Statement::Statement() {
+	follows = -1;
+	followedBy = -1;
+	parentOf = -1;
+	childOf = -1;
+	next = -1;
+	prev = -1;
+}
 
 /*
 // sets basic attributes
@@ -27,12 +34,12 @@ Statment::Statement(NodeType type, int stmtNum, TNode *tRef, GNode *gRef) {
 /* ---------- GETTERS ---------- */
 /* ----------------------------- */
 // get stmt type
-const NodeType Statement::getType() {
+NodeType Statement::getType() {
 	return type;
 }
 
 // get stmt num
-const int Statement::getStmtNum() {
+int Statement::getStmtNum() {
 	return stmtNum;
 }
 
@@ -57,33 +64,33 @@ const Statement::ModifiesSet& Statement::getModifies() {
 	return modifies;
 }
 
-// get set of stmts that this stmt follows
-const Statement::FollowsSet& Statement::getFollows() {
+// get stmt that this stmt follows
+int Statement::getFollows() {
 	return follows;
 }
 
-// get set of stmts that follows this stmt
-const Statement::FollowedBySet& Statement::getFollowedBy() {
+// get stmt that follows after this stmt
+int Statement::getFollowedBy() {
 	return followedBy;
 }
 
-// get set of stmts that are parents of this stmt
-const Statement::ParentOfSet& Statement::getParentOf() {
+// get stmt that is parents of this stmt
+int Statement::getParentOf() {
 	return parentOf;
 }
 
-// get set of stmts that are children of this stmt
-const Statement::ChildOfSet& Statement::getChildOf() {
+// get stmt that is child of this stmt
+int Statement::getChildOf() {
 	return childOf;
 }
 
-// get set of stmts that are next of this stmt
-const Statement::NextSet& Statement::getNext() {
+// get stmt that is next of this stmt
+int Statement::getNext() {
 	return next;
 }
 
-// get set of stmts whose next is this stmt
-const Statement::PrevSet& Statement::getPrev() {
+// get stmt whose next is this stmt
+int Statement::getPrev() {
 	return prev;
 }
 
@@ -116,26 +123,26 @@ void Statement::setModifies(const set<string> &modifiesSet) {
 	modifies = modifiesSet;
 }
 
-void Statement::setFollows(const set<int> &followsSet) {
-	follows = followsSet;
+void Statement::setFollows(int follows) {
+	this->follows = follows;
 }
 
-void Statement::setFollowedBy(const set<int> &followedBySet) {
-	followedBy = followedBySet;
+void Statement::setFollowedBy(int followedBy) {
+	this->followedBy = followedBy;
 }
 
-void Statement::setParentOf(const set<int> &parentOfSet) {
-	parentOf = parentOfSet;
+void Statement::setParentOf(int parentOf) {
+	this->parentOf = parentOf;
 }
 
-void Statement::setChildOf(const set<int> &childOfSet) {
-	childOf = childOfSet;
+void Statement::setChildOf(int childOf) {
+	this->childOf = childOf;
 }
 
-void Statement::setNext(const set<int> &nextSet) {
-	next = nextSet;
+void Statement::setNext(int nextSet) {
+	this->next = next;
 }
 
-void Statement::setPrev(const set<int> &prevSet) {
-	prev = prevSet;
+void Statement::setPrev(int prevSet) {
+	this->prev = prev;
 }
