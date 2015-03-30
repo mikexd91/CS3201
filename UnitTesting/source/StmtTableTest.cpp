@@ -20,21 +20,21 @@ void StmtTableTest::testInstance() {
 
 /*
 // method to test retrieval of assignment statements
-void testGetAssgStmts() {
+void StmtTableTest::testGetAssgStmts() {
 
 }
 
 // method to test retrieval of call statements
-void testGetCallStmts() {
+void StmtTableTest::testGetCallStmts() {
 
 }
 
 // method to test retrieval of while statements
-void testGetWhileStmts() {
+void StmtTableTest::testGetWhileStmts() {
 
 }
 
 // method to test retrieval of if statements
-void testGetIfStmts() {
+void StmtTableTest::testGetIfStmts() {
 
 }*/
