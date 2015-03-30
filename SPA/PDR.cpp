@@ -17,19 +17,19 @@ PDR* PDR::getInstance() {
 void PDR::processParsedData(ParsedData data) {
     ParsedData::Type stmtType = data.getType();
     switch(stmtType) {
-        case ParsedData::Type::PROCEDURE:
+        case ParsedData::PROCEDURE:
             processProcedureStmt(data);
             break;
-        case ParsedData::Type::ASSIGNMENT:
+        case ParsedData::ASSIGNMENT:
             processAssignStmt(data);
             break;
-        case ParsedData::Type::CALL:
+        case ParsedData::CALL:
             processCallStmt(data);
             break;
-        case ParsedData::Type::WHILE:
+        case ParsedData::WHILE:
             processWhileStmt(data);
             break;
-        case ParsedData::Type::IF:
+        case ParsedData::IF:
             processIfStmt(data);
             break;
         default:
