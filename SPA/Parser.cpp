@@ -27,7 +27,7 @@ void Parser::parse(string content) {
 }
 
 string Parser::sanitise(string str) {
-	for (int i = 0; i < strlen(ParserConstants::SANITISED_CHARS); i++) {
+	for (size_t i = 0; i < strlen(ParserConstants::SANITISED_CHARS); i++) {
 		char sanitisedChar = ParserConstants::SANITISED_CHARS[i];
 		str.erase(remove(str.begin(), str.end(), sanitisedChar), str.end());
 	}
