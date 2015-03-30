@@ -27,7 +27,7 @@ NodeType TNode::getNodeType() {
 	return this->_nodeType;
 }
 
-string TNode::getNodeName() {
+string TNode::getName() {
 	// the name that comes before the colon e.g. else:stmtlst
 	return this->_nodeName;
 }
