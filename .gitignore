@@ -197,6 +197,8 @@ FakesAssemblies/
 *.opt
 SPA/SPA.vcxproj
 SPA/SPA.vcxproj.filters
+UnitTesting/UnitTesting.vcxproj.filters
+UnitTesting/UnitTesting.vcxproj.user
 
 # I WANT THESE FILES COMMITTED
 !include/boost/*/debug
