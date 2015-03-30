@@ -64,32 +64,32 @@ const Statement::ModifiesSet& Statement::getModifies() {
 	return modifies;
 }
 
-// get set of stmts that this stmt follows
+// get stmt that this stmt follows
 int Statement::getFollows() {
 	return follows;
 }
 
-// get set of stmts that follows this stmt
+// get stmt that follows after this stmt
 int Statement::getFollowedBy() {
 	return followedBy;
 }
 
-// get set of stmts that are parents of this stmt
+// get stmt that is parents of this stmt
 int Statement::getParentOf() {
 	return parentOf;
 }
 
-// get set of stmts that are children of this stmt
+// get stmt that is child of this stmt
 int Statement::getChildOf() {
 	return childOf;
 }
 
-// get set of stmts that are next of this stmt
+// get stmt that is next of this stmt
 int Statement::getNext() {
 	return next;
 }
 
-// get set of stmts whose next is this stmt
+// get stmt whose next is this stmt
 int Statement::getPrev() {
 	return prev;
 }

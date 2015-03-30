@@ -1,7 +1,7 @@
 #include "OpNode.h"
 
 
-OpNode::OpNode(void)
+OpNode::OpNode(const string &varName)
 	: TNode(NodeType::OPERATOR_) {
 
 }

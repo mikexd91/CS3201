@@ -10,6 +10,9 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\IntegrationTest.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{44B65641-96D6-4FB5-B78A-F0CAD8DDA42C}</ProjectGuid>
     <RootNamespace>IntegrationTesting</RootNamespace>
@@ -65,9 +68,6 @@
       <AdditionalDependencies>$(SolutionDir)lib\cppunit.lib;$(SolutionDir)$(Configuration)\SPA.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="source\IntegrationTest.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
