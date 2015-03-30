@@ -21,14 +21,14 @@ CPPUNIT_TEST_SUITE_REGISTRATION( TNodeTest ); // Note 4
 // method to test the constructor
 void TNodeTest::testTNodeConstructor() {  // Note 5
 	// create a student object
-	TNode tnode(NodeType::PROGRAM_, "Alice");
+	TNode tnode(PROGRAM_, "Alice");
 
 	// check that the object is constructed correctly - Note 6
 	std::string name = tnode.getName();
 	CPPUNIT_ASSERT(name == "Alice");
 
 	NodeType nodeType = tnode.getNodeType();
-	CPPUNIT_ASSERT(nodeType == NodeType::PROGRAM_);
+	CPPUNIT_ASSERT(nodeType == PROGRAM_);
 
 	return;
 }
@@ -37,8 +37,8 @@ void TNodeTest::testTNodeConstructor() {  // Note 5
 void TNodeTest::testLinkChild()
 {
 	// create a student
-	TNode anode(NodeType::PROGRAM_, "Alice");
-	TNode bnode(NodeType::PROCEDURE_, "Alice");
+	TNode anode(PROGRAM_, "Alice");
+	TNode bnode(PROCEDURE_, "Alice");
 
 	// link bnode as child of anode
 	anode.linkChild(&bnode);

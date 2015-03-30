@@ -18,6 +18,7 @@ void StmtTableTest::testInstance() {
 	//CPPUNIT_ASSERT(dynamic_cast<StmtTable*>(instance));
 }
 
+/*
 // method to test retrieval of assignment statements
 void testGetAssgStmts() {
 
@@ -36,4 +37,4 @@ void testGetWhileStmts() {
 // method to test retrieval of if statements
 void testGetIfStmts() {
 
-}
+}*/
