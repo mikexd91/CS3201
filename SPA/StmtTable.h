@@ -34,10 +34,10 @@ public:
 
 private:
 	StatementTable table;
-	set<int> assgStmtSet;
-	set<int> callStmtSet;
-	set<int> whileStmtSet;
-	set<int> ifStmtSet;
+	set<Statement*> assgStmtSet;
+	set<Statement*> callStmtSet;
+	set<Statement*> whileStmtSet;
+	set<Statement*> ifStmtSet;
 	
 	// SINGLETON
 	static bool instanceFlag;
