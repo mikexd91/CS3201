@@ -9,6 +9,19 @@
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="SPA - Release|Win32">
+      <Configuration>SPA - Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\PKBUnitTest.cpp" />
+    <ClCompile Include="source\StmtTableTest.cpp" />
+    <ClCompile Include="source\TNodeTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\StmtTableTest.h" />
+    <ClInclude Include="source\TNodeTest.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{353E6B76-DB90-4258-AC06-2DF35773532C}</ProjectGuid>
@@ -26,6 +39,12 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SPA - Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -35,8 +54,14 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='SPA - Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SPA - Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -71,53 +96,22 @@
       <AdditionalDependencies>$(SolutionDir)lib\cppunit.lib;$(SolutionDir)$(Configuration)\SPA.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="source\PKBUnitTest.cpp" />
-    <ClCompile Include="source\StmtTableTest.cpp" />
-    <ClCompile Include="TNodeTest.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="source\StmtTableTest.h" />
-    <ClInclude Include="TNodeTest.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Debug\cl.command.1.tlog" />
-    <None Include="Debug\CL.read.1.tlog" />
-    <None Include="Debug\CL.write.1.tlog" />
-    <None Include="Debug\link.command.1.tlog" />
-    <None Include="Debug\link.read.1.tlog" />
-    <None Include="Debug\link.write.1.tlog" />
-    <None Include="Debug\UnitTesting.lastbuildstate" />
-    <None Include="Debug\UnitTesting.log" />
-    <None Include="Debug\UnitTesting.unsuccessfulbuild" />
-    <None Include="Debug\UnitTesting.vcxprojResolveAssemblyReference.cache" />
-    <None Include="Debug\UnitTesting.write.1.tlog" />
-    <None Include="Debug\vc100.idb" />
-    <None Include="Debug\vc100.pdb" />
-    <None Include="Release\cl.command.1.tlog" />
-    <None Include="Release\CL.read.1.tlog" />
-    <None Include="Release\CL.write.1.tlog" />
-    <None Include="Release\link.command.1.tlog" />
-    <None Include="Release\link.read.1.tlog" />
-    <None Include="Release\link.write.1.tlog" />
-    <None Include="Release\mt.command.1.tlog" />
-    <None Include="Release\mt.read.1.tlog" />
-    <None Include="Release\mt.write.1.tlog" />
-    <None Include="Release\UnitTesting.Build.CppClean.log" />
-    <None Include="Release\UnitTesting.lastbuildstate" />
-    <None Include="Release\UnitTesting.log" />
-    <None Include="Release\UnitTesting.write.1.tlog" />
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="Debug\PKBUnitTest.obj" />
-    <Object Include="Debug\TNodeTeasdasdst.obj" />
-    <Object Include="Debug\TNodeTest.obj" />
-    <Object Include="Debug\UnitTest.obj" />
-    <Object Include="Release\UnitTest.obj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Manifest Include="Release\UnitTesting.exe.intermediate.manifest" />
-  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='SPA - Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(SolutionDir)source;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>$(SolutionDir)lib\cppunit.lib;$(SolutionDir)$(Configuration)\SPA.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
