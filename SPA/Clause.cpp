@@ -1,8 +1,10 @@
 #include "Clause.h"
+#include "PQLExceptions.h"
 #include <string>
+#include <map>
 
+using std::map;
 using std::string;
-
 Clause::Clause(void){
 }
 
@@ -57,25 +59,37 @@ string Clause::getPatternArg(void){
 	return this->patternArg;
 }
 
-bool Clause::checkClauseValidity(void){
+bool Clause::checkClauseValidity(map<string, string> declarations){
 	string type = this->getClauseType();
-	string argTypeOne = this->getFirstArgType();
-	string argTypeTwo = this->getSecondArgType();
+	string argOne = this->getFirstArg();
+	string argTwo = this->getSecondArg();
+	if (declarations.count(argOne) != 0){
+		//if (!argOneLiteral){
+			throw MissingDeclarationException();
+			return false;
+		//}
+	}
+	if (declarations.count(argTwo) != 0){
+		throw MissingDeclarationException();
+		return false;
+	}
+	string argOneType = declarations.at(argOne);
+	string argTwoType = declarations.at(argTwo);
 	if (type.compare(stringconst::TYPE_FOLLOWS)){
 		//INSERT RULES HERE
-		return true;
+		
 	} else if (type.compare(stringconst::TYPE_PARENT)){
 		//INSERT RULES HERE
-		return true;
+		
 	} else if (type.compare(stringconst::TYPE_MODIFIES)){
 		//INSERT RULES HERE
-		return true;
+		
 	} else if (type.compare(stringconst::TYPE_PATTERN)){
 		//INSERT RULES HERE
-		return true;
+		
 	} else if (type.compare(stringconst::TYPE_USES)){
 		//INSERT RULES HERE
-		return true;
+		
 	}
-	return false;
+	return true;
 }
