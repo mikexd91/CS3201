@@ -104,7 +104,7 @@ void PDR::processAssignStmt(ParsedData data) {
     stmt->setStmtNum(stmtCounter);
     stmt->setTNodeRef(assignNode);
     
-    StmtTable* stmtTable = StmtTable.getInstance();
+    StmtTable* stmtTable = StmtTable::getInstance();
     stmtTable->addStmt(stmt);
     
 }
@@ -144,7 +144,7 @@ void PDR::processWhileStmt(ParsedData data) {
     whileStmt.setStmtNum(whileNode->getStmtNum());
     whileStmt.setTNodeRef(whileNode);
     
-    StmtTable* stmtTable = StmtTable.getInstance();
+    StmtTable* stmtTable = StmtTable::getInstance();
     stmtTable->addStmt(&whileStmt);
     
 }
@@ -179,7 +179,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data) {
         }
     }
     
-    TNode* result;
+    TNode* result = NULL;
     while(!rpnNodeStack.empty()) {
         result = rpnNodeStack.top();
         rpnNodeStack.pop();
