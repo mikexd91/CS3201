@@ -2,9 +2,16 @@
 
 using namespace std;
 
-PDR::PDR() {
-    stmtCounter = 0;
-    currNestingLevel = 0;
+bool PDR::instanceFlag = false;
+PDR* PDR::pdrInstance = NULL;
+
+PDR* PDR::getInstance() {
+    if(!instanceFlag) {
+        pdrInstance = new PDR();
+        instanceFlag = true;
+    }
+    
+    return pdrInstance;
 }
 
 void PDR::processParsedData(ParsedData data) {

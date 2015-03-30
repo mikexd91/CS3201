@@ -24,8 +24,8 @@ using namespace std;
 
 class PDR {
 	
-public:	
-	PDR(); //Constructor
+public:
+    static PDR* getInstance();
 
 	void processParsedData(ParsedData);
 
@@ -33,6 +33,8 @@ private:
 	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHILE};
 	int stmtCounter;
 	int currNestingLevel;
+    static bool instanceFlag;
+    static PDR* pdrInstance;
 
 	stack<int> stmtParentNumStack;
 	stack<TNode*> nodeStack;
