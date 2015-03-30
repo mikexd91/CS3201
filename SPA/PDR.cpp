@@ -160,7 +160,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data) {
         expression.pop();
         
         if(exp == "+" || exp == "-" || exp == "*" || exp == "/") {
-            OpNode* operat = new OpNode();
+            OpNode* operat = new OpNode(exp);
             TNode* right = rpnNodeStack.top();
             rpnNodeStack.pop();
             TNode* left = rpnNodeStack.top();
