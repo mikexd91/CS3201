@@ -2,10 +2,6 @@
 
 // Note 1
 #include <cppunit/extensions/HelperMacros.h>
-#include "../SPA/TNode.h"
-#include <string>
-
-using namespace std;
 
 class TNodeTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( TNodeTest ); // Note 3 
