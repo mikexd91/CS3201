@@ -13,7 +13,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( StmtTableTest );
 
 // method to test singleton instance geetter
 void StmtTableTest::testInstance() {
-	StmtTable* instance = StmtTable.getInstance();
+	StmtTable* instance = StmtTable::getInstance();
 
 	//CPPUNIT_ASSERT(dynamic_cast<StmtTable*>(instance));
 }
