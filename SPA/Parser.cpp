@@ -16,6 +16,7 @@ using namespace std;
 
 Parser::Parser() {
 	nestingLevel = 0;
+	parsedDataReceiver = PDR::getInstance();
 }
 
 //e.g. string content = "procedure test { a = 2; a = 5;} ";
@@ -91,7 +92,7 @@ void Parser::procedure() {
 	string procName = getWord();
 	ParsedData procedure = ParsedData(ParsedData::PROCEDURE, nestingLevel);
 	procedure.setProcName(procName);
-	parsedDataReceiver.processParsedData(procedure);
+	parsedDataReceiver->processParsedData(procedure);
 	match("{");
 	stmtLst();
 	match("}");
@@ -120,7 +121,7 @@ void Parser::assign() {
 	ParsedData assignment = ParsedData(ParsedData::ASSIGNMENT, nestingLevel);
 	assignment.setAssignVar(var);
 	assignment.setAssignExpression(getExpression());
-	parsedDataReceiver.processParsedData(assignment);
+	parsedDataReceiver->processParsedData(assignment);
 }
 
 
@@ -164,7 +165,7 @@ void Parser::parseWhile() {
 	string conditionVar = getWord();
 	ParsedData whileStmt = ParsedData(ParsedData::WHILE, nestingLevel);
 	whileStmt.setWhileVar(conditionVar);
-	parsedDataReceiver.processParsedData(whileStmt);
+	parsedDataReceiver->processParsedData(whileStmt);
 	match("{");
 	stmtLst();
 	match("}");
@@ -172,5 +173,5 @@ void Parser::parseWhile() {
 
 void Parser::endParse() {
 	ParsedData endData = ParsedData(ParsedData::END, nestingLevel);
-	parsedDataReceiver.processParsedData(endData);
+	parsedDataReceiver->processParsedData(endData);
 }

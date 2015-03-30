@@ -17,7 +17,7 @@ private:
 	vector<string> tokens;
 	vector<string>::iterator iter;
 	int nestingLevel;
-	PDR parsedDataReceiver;
+	PDR* parsedDataReceiver;
 
 	string sanitise(string str);
 	vector<string> explode(const string &str);
