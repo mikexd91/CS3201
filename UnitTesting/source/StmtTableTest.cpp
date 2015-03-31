@@ -20,7 +20,6 @@ void StmtTableTest::testInstance() {
 	CPPUNIT_ASSERT(dynamic_cast<StmtTable*>(table));
 }
 
-
 // method to test retrieval of assignment statements
 void StmtTableTest::testGetAssgStmts() {
 	// Create some assignment statements
