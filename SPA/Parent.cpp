@@ -23,6 +23,7 @@ bool Parent::isParent(int stmtNum1, int stmtNum2) {
 	}
 }
 
+/*
 int Parent::getParent(int stmtNum) {
 	Statement* stmtObj = pTable->getStmtObj(stmtNum);
 	if (stmtObj != NULL) {
@@ -32,7 +33,7 @@ int Parent::getParent(int stmtNum) {
 		}
 	} 
 	return -1;
-}
+}*/
 
 int Parent::getChild(int stmtNum) {
 	Statement* stmtObj = pTable->getStmtObj(stmtNum);

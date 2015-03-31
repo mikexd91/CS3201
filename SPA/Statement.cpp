@@ -14,7 +14,6 @@ using namespace std;
 Statement::Statement() {
 	follows = DEFAULT;
 	followedBy = DEFAULT;
-	parentOf = DEFAULT;
 	childOf = DEFAULT;
 	next = DEFAULT;
 	prev = DEFAULT;
