@@ -32,31 +32,31 @@ class TNode {
 public:
 	
 	// constructors
-	TNode(NodeType type);
-	TNode(NodeType type, const string& name);
+	TNode(NodeType type); // properties
+	TNode(NodeType type, const string& name); // properties
 
 	// getters
-	NodeType getNodeType();
-	string getName(); // the name that comes before the colon e.g. else:stmtlst
-	vector<TNode*>& getChildren();
-	TNode* getParent();
-	TNode* getRightSibling();
-	TNode* getLeftSibling();
+	NodeType getNodeType(); // properties
+	string getName(); // properties
+	vector<TNode*>& getChildren(); // links
+	TNode* getParent(); // links
+	TNode* getRightSibling(); // links
+	TNode* getLeftSibling(); // links
 
 	// setters
-	void setName(const string& name);
-	void addChild(TNode *child);
-	void linkChild(TNode *child);
-	void linkParent(TNode *parent);
-	void linkRightSibling(TNode *right);
-	void linkLeftSibling(TNode *left);
+	void setName(const string& name); // properties
+	void addChild(TNode *child); // links (from linkchild)
+	void linkChild(TNode *child); // links
+	void linkParent(TNode *parent); // links
+	void linkRightSibling(TNode *right); // links
+	void linkLeftSibling(TNode *left); // links
 
 	// checks
-	bool isNodeType(NodeType type);
-	bool hasChildren();
-	bool hasParent();
-	bool hasRightSibling();
-	bool hasLeftSibling();
+	bool isNodeType(NodeType type); // properties
+	bool hasChildren(); // links
+	bool hasParent(); // links
+	bool hasRightSibling(); // links
+	bool hasLeftSibling(); // links
 
 protected:
 	NodeType _nodeType;
