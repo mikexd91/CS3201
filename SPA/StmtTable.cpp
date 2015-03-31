@@ -32,6 +32,18 @@ StmtTable::StatementTable::iterator StmtTable::getIterator() {
 	return tableIter;
 }
 
+// gets the stmt obj by stmt number
+Statement* StmtTable::getStmtObj(int stmtNum) {
+	StmtTableIterator iter = table.find(stmtNum);
+
+	// if not found
+	if(iter == table.end()) {
+		return NULL;
+	} else {
+		return iter->second;
+	}
+}
+
 // gets all assignment stmts
 const set<Statement*>& StmtTable::getAssgStmts() {
 	return assgStmtSet;
