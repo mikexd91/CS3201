@@ -2,6 +2,7 @@
 
 using namespace std;
 
+StmtTable* table = StmtTable::getInstance();			// stmt table instance
 set<Statement*>::iterator setIter;						// stmt set iterator
 set<int>::iterator intIter;								// int set iterator
 
@@ -14,20 +15,6 @@ Parent::~Parent(void)
 {
 }
 
-// Get the StmtObj in StmtTable
-Statement* getStmtObj(int stmtnum) {
-	StmtTable* table = StmtTable::getInstance();
-	const set<Statement*> set = table->getAssgStmts();
-	for (setIter=set.begin(); setIter!=set.end(); setIter++) {
-		Statement* stmtObj = *setIter;
-		int stmtnum2 = stmtObj->getStmtNum();
-		if (stmtnum2 == stmtnum) {
-			return stmtObj;
-		}
-	}
-	return 0;
-}
-
 bool Parent::isParent(int stmtNum1, int stmtNum2) {
 	int stmt = getParent(stmtNum2);
 	if (stmt != -1 && stmt == stmtNum1) {
@@ -38,8 +25,8 @@ bool Parent::isParent(int stmtNum1, int stmtNum2) {
 }
 
 int Parent::getParent(int stmtNum) {
-	Statement* stmtObj = getStmtObj(stmtNum);
-	if (stmtObj != 0) {
+	Statement* stmtObj = table->getStmtObj(stmtNum);
+	if (stmtObj != NULL) {
 		int stmt = stmtObj->getParentOf();
 		if (stmt != -1) {
 			return stmt;
@@ -49,8 +36,8 @@ int Parent::getParent(int stmtNum) {
 }
 
 int Parent::getChild(int stmtNum) {
-	Statement* stmtObj = getStmtObj(stmtNum);
-	if (stmtObj != 0) {
+	Statement* stmtObj = table->getStmtObj(stmtNum);
+	if (stmtObj != NULL) {
 		int stmt = stmtObj->getChildOf();
 		if (stmt != -1) {
 			return stmt;
