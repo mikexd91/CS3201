@@ -79,6 +79,18 @@ void StmtTable::addStmt(Statement *stmt) {
 	}
 }
 
+// removes all statements to the table (for testing)
+void StmtTable::clearTable() {
+	// clear statements from table
+	table.clear();
+
+	// reset statement type sets
+	assgStmtSet.clear();
+	callStmtSet.clear();
+	whileStmtSet.clear();
+	ifStmtSet.clear();
+}
+
 
 // PRIVATE FUNCTIONS
 // empty private constructor

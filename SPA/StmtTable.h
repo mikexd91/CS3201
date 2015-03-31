@@ -31,6 +31,7 @@ public:
 
 	// MUTATORS
 	void addStmt(Statement *stmt);	// adds statement to table
+	void clearTable();				// removes all statements to the table (for testing)
 
 private:
 	StatementTable table;
