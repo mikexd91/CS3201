@@ -83,13 +83,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AssgNodeTest.cpp" />
+    <ClCompile Include="ProcNodeTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
     <ClCompile Include="source\PKBUnitTest.cpp" />
     <ClCompile Include="source\TNodeTest.cpp" />
+    <ClCompile Include="StmtLstNodeTest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AssgNodeTest.h" />
+    <ClInclude Include="ProcNodeTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
     <ClInclude Include="source\TNodeTest.h" />
+    <ClInclude Include="StmtLstNodeTest.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Debug\UnitTesting.vcxprojResolveAssemblyReference.cache" />
