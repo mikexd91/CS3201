@@ -17,7 +17,9 @@
     <ClInclude Include="IfNode.h" />
     <ClInclude Include="NodeType.h" />
     <ClInclude Include="OpNode.h" />
+    <ClInclude Include="Procedure.h" />
     <ClInclude Include="ProcNode.h" />
+    <ClInclude Include="ProcTable.h" />
     <ClInclude Include="ProgNode.h" />
     <ClInclude Include="Statement.h" />
     <ClInclude Include="StmtLstNode.h" />
@@ -35,7 +37,9 @@
     <ClCompile Include="ConstNode.cpp" />
     <ClCompile Include="IfNode.cpp" />
     <ClCompile Include="OpNode.cpp" />
+    <ClCompile Include="Procedure.cpp" />
     <ClCompile Include="ProcNode.cpp" />
+    <ClCompile Include="ProcTable.cpp" />
     <ClCompile Include="ProgNode.cpp" />
     <ClCompile Include="Statement.cpp" />
     <ClCompile Include="StmtLstNode.cpp" />

@@ -1,5 +1,8 @@
 #pragma once
 #include <string>
+#include <map>
+
+using std::map;
 using std::string;
 class Clause
 {
@@ -28,11 +31,12 @@ public:
 	string getSecondArgType();
 	string getPatternArg();
 
-	bool checkClauseValidity();
+	bool checkClauseValidity(map<string, string>);
 };
 
 namespace stringconst{
 	string const STRING_SELECT = "Select";
+	string const STRING_SUCHTHAT = "such that";
 	string const STRING_SUCH = "such";
 	string const STRING_THAT = "that";
 	string const STRING_WITH = "with";
@@ -43,14 +47,14 @@ namespace stringconst{
 	string const QUERY_INVALID = "INVALID";
 	string const QUERY_VALID = "VALID";
 
-	string const TYPE_FOLLOWS = "FOLLOWS";
-	string const TYPE_PARENT = "PARENT";
-	string const TYPE_MODIFIES = "MODIFIES";
-	string const TYPE_USES = "USES";
-	string const TYPE_PATTERN = "PATTERN";
-	string const TYPE_CALLS = "CALLS";
+	string const TYPE_FOLLOWS = "Follows";
+	string const TYPE_PARENT = "Parent";
+	string const TYPE_MODIFIES = "Modifies";
+	string const TYPE_USES = "Uses";
+	string const TYPE_PATTERN = "Pattern";
+	string const TYPE_CALLS = "Calls";
 
-	string const ARG_STATEMENT = "STATEMENT";
-	string const ARG_ASSIGN = "ASSIGN";
-	string const ARG_VARIABLE = "VARIABLE";
+	string const ARG_STATEMENT = "statement";
+	string const ARG_ASSIGN = "assign";
+	string const ARG_VARIABLE = "variable";
 };

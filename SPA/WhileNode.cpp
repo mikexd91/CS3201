@@ -3,7 +3,7 @@
 
 // constructors
 WhileNode::WhileNode(int stmtNum)
-	: StmtNode(NodeType::WHILE_STMT_, stmtNum) {
+	: StmtNode(WHILE_STMT_, stmtNum) {
 
 }
 

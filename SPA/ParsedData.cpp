@@ -8,10 +8,13 @@ ParsedData::ParsedData(Type dataType, int levelNum)
 
 	//Assignment
 	string assignVar = NULL;
-	string assignExpression = NULL; 
+	queue<string> assignExpression; 
 
 	//Procedure
 	string procName = NULL;
+
+	//While
+	string whileVar = NULL;
 }
 
 
@@ -19,13 +22,17 @@ void ParsedData::setAssignVar(string name) {
 	assignVar = name;
 };
 
-void ParsedData::setAssignExpression(string expression) {
+void ParsedData::setAssignExpression(queue<string> expression) {
 	assignExpression = expression;
 }
 
 void ParsedData::setProcName(string name) {
 	procName = name;
 }
+
+void ParsedData::setWhileVar(string name) {
+	whileVar = name;
+};
 
 int ParsedData::getNestingLevel() {
 	return nestingLevel;
@@ -35,7 +42,7 @@ string ParsedData::getAssignVar() {
 	return assignVar;
 };
 
-string ParsedData::getAssignExpression() {
+queue<string> ParsedData::getAssignExpression() {
 	return assignExpression;
 };
 
@@ -45,6 +52,10 @@ string ParsedData::getProcName() {
 
 ParsedData::Type ParsedData::getType() {
 	return type;
+};
+
+string ParsedData::getWhileVar() {
+	return whileVar;
 };
 
 

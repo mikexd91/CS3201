@@ -25,9 +25,10 @@ public:
 
 	// MUTATORS
 	void addProc(Procedure *proc);				// adds proc to table
+	void clearTable();							// removes all procedures to the table (for testing)
 
 	// GENERAL METHODS
-	bool contains(const string &varName);		// checks if proc exists in table
+	bool contains(const string &procName);		// checks if proc exists in table
 
 private:
 	ProcedureTable table;

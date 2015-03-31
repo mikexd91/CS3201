@@ -2,12 +2,12 @@
 
 // constructor
 StmtLstNode::StmtLstNode() 
-	: TNode(NodeType::STMTLST_) {
+	: TNode(STMTLST_) {
 
 }
 
 StmtLstNode::StmtLstNode(const string &nodeName)
-	: TNode(NodeType::STMTLST_, nodeName) {
+	: TNode(STMTLST_, nodeName) {
 
 }
 

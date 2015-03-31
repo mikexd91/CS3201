@@ -2,7 +2,7 @@
 
 // constructors
 ProgNode::ProgNode(const string &name)
-	: TNode(NodeType::PROGRAM_, name) {
+	: TNode(PROGRAM_, name) {
 }
 
 // getters

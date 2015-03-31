@@ -12,7 +12,11 @@ using namespace std;
 // empty contructor (null attributes)
 Procedure::Procedure() {}
 
-Procedure::Procedure(string *name, TNode *tRef) {
+Procedure::Procedure(const string &name) {
+	procName = name;
+}
+
+Procedure::Procedure(const string &name, TNode *tRef) {
 	procName = name;
 	TNodeRef = tRef;
 }
@@ -23,7 +27,7 @@ Procedure::Procedure(string *name, TNode *tRef) {
 /* ----------------------------- */
 // get name of proc
 string* Procedure::getProcName() {
-	return procName;
+	return &procName;
 }
 
 // get reference to proc TNode
@@ -55,7 +59,7 @@ const Procedure::CalledBySet& Procedure::getCalledBy() {
 /* ----------------------------- */
 /* ---------- SETTERS ---------- */
 /* ----------------------------- */
-void Procedure::setProcName(string *name) {
+void Procedure::setProcName(const string &name) {
 	procName = name;
 }
 

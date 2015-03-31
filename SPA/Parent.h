@@ -1,30 +1,27 @@
 #pragma once
-
-#include <vector>
-#include <boost/unordered_map.hpp>
+#include <set>
+#include "StmtTable.h"
 
 using namespace std;
-using namespace boost;
 
-class Parent {
-
+class Parent
+{
 public:
-	Parent();		// constructor: instantiates an empty parent table
+	Parent(void);
+	~Parent(void);
 
-	bool isParent(int stmtNum1, int stmtNum2);	// checks if s1 is parent of s2
+	bool isParent(int stmtNum1, int stmtNum2);		// checks if s2 follows s1
 
-	vector<int> getParent(int stmtNum);			// get list of parents of stmtNum
-	vector<int> getChild(int stmtNum);			// get list of children of stmtNum
+	int getParent(int stmtNum);						// gets immdiate parent of stmtNum
+	int getChild(int stmtNum);					// gets immediate children of stmtNum
 
-	//vector<vector<int>> getAllParent(syn syn1, syn syn2);			// gets lists of all possible parent-child combinations
+	// set<set<int>> getAllParent(int stmtNum1, int stmtNum2);	// gets lists of all possible Parents
 
-	bool isParentStar(int stmtNum1, int stmtNum2);	// checks if s1 is parent* of s2
+	bool isParentStar(int stmtNum1, int stmtNum2);	// checks if Parent*(s1, s2)
 
-	vector<int> getParentStar(int stmtNum);		// get list of parents* of stmtNum
-	vector<int> getChildStarBy(int stmtNum);	// get list of children* of stmtNum
+	set<int> getParentStar(int stmtNum);			// get set of stmts that are parents of this stmt
+	set<int> getChildStar(int stmtNum);				// get set of stmts that are children of this stmt
 
-	//vector<vector<int>> getAllParentStar(syn syn1, syn syn2);		// gets lists of all possible parent-child* combinations
-
-private:
-	
+	// set<set<int>> getAllParentStar(int stmtNum1, int stmtNum2);	// gets list of all possible Parent*
 };
+

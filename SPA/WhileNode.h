@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tnode.h"
+#include "TNode.h"
 #include "VarNode.h"
 #include "StmtLstNode.h"
 #include "StmtNode.h"

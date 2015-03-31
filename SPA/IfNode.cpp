@@ -2,7 +2,7 @@
 
 // constructors
 IfNode::IfNode(int stmtNum)
-	: StmtNode(NodeType::IF_STMT_, stmtNum) {
+	: StmtNode(IF_STMT_, stmtNum) {
 
 }
 

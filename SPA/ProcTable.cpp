@@ -37,8 +37,24 @@ void ProcTable::addProc(Procedure *proc) {
 	table.emplace(procName, proc);
 }
 
-	// GENERAL METHODS
-	bool contains(const string &varName);		// checks if proc exists in table
+// removes all procedures to the table (for testing)
+void ProcTable::clearTable() {
+	table.clear();
+}
+
+// GENERAL METHODS
+// checks if proc exists in table
+bool ProcTable::contains(const string &procName) {
+	ProcedureTable::iterator iter = getIterator();
+
+	for( ; iter!=table.end(); iter++) {
+		if(*iter->first == procName) {
+			return true;
+		}
+	}
+
+	return false;
+}
 
 
 // PRIVATE FUNCTIONS

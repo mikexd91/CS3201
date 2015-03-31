@@ -90,6 +90,8 @@
     <ClCompile Include="ProcNodeTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
     <ClCompile Include="source\PKBUnitTest.cpp" />
+    <ClCompile Include="source\ProcTableTest.cpp" />
+    <ClCompile Include="source\StmtTableTest.cpp" />
     <ClCompile Include="source\TNodeTest.cpp" />
     <ClCompile Include="StmtLstNodeTest.cpp" />
     <ClCompile Include="VarTableTest.cpp" />
@@ -102,6 +104,8 @@
     <ClInclude Include="IfNodeTest.h" />
     <ClInclude Include="ProcNodeTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
+    <ClInclude Include="source\ProcTableTest.h" />
+    <ClInclude Include="source\StmtTableTest.h" />
     <ClInclude Include="source\TNodeTest.h" />
     <ClInclude Include="StmtLstNodeTest.h" />
     <ClInclude Include="VarTableTest.h" />
