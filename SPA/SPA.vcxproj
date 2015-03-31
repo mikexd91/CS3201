@@ -19,10 +19,14 @@
     <ClInclude Include="OpNode.h" />
     <ClInclude Include="ProcNode.h" />
     <ClInclude Include="ProgNode.h" />
+    <ClInclude Include="Statement.h" />
     <ClInclude Include="StmtLstNode.h" />
     <ClInclude Include="StmtNode.h" />
+    <ClInclude Include="StmtTable.h" />
     <ClInclude Include="TNode.h" />
+    <ClInclude Include="Variable.h" />
     <ClInclude Include="VarNode.h" />
+    <ClInclude Include="VarTable.h" />
     <ClInclude Include="WhileNode.h" />
   </ItemGroup>
   <ItemGroup>
@@ -33,10 +37,14 @@
     <ClCompile Include="OpNode.cpp" />
     <ClCompile Include="ProcNode.cpp" />
     <ClCompile Include="ProgNode.cpp" />
+    <ClCompile Include="Statement.cpp" />
     <ClCompile Include="StmtLstNode.cpp" />
     <ClCompile Include="StmtNode.cpp" />
+    <ClCompile Include="StmtTable.cpp" />
     <ClCompile Include="TNode.cpp" />
+    <ClCompile Include="Variable.cpp" />
     <ClCompile Include="VarNode.cpp" />
+    <ClCompile Include="VarTable.cpp" />
     <ClCompile Include="WhileNode.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
