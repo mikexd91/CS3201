@@ -39,6 +39,7 @@ void ProcNodeTest::testLinks() {
 
 	// getprocnodes
 	CPPUNIT_ASSERT_EQUAL(&slnode, pnode.getStmtLstNode());
+	CPPUNIT_ASSERT_EQUAL(&pnode, (ProcNode*)slnode.getParent());
 	string expname = "then";
 	CPPUNIT_ASSERT_EQUAL(expname, pnode.getStmtLstNode()->getName());
 

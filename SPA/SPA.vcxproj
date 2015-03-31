@@ -12,6 +12,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssgNode.h" />
+    <ClInclude Include="CallNode.h" />
+    <ClInclude Include="ConstNode.h" />
+    <ClInclude Include="IfNode.h" />
+    <ClInclude Include="NodeType.h" />
     <ClInclude Include="OpNode.h" />
     <ClInclude Include="ProcNode.h" />
     <ClInclude Include="ProgNode.h" />
@@ -19,9 +23,13 @@
     <ClInclude Include="StmtNode.h" />
     <ClInclude Include="TNode.h" />
     <ClInclude Include="VarNode.h" />
+    <ClInclude Include="WhileNode.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssgNode.cpp" />
+    <ClCompile Include="CallNode.cpp" />
+    <ClCompile Include="ConstNode.cpp" />
+    <ClCompile Include="IfNode.cpp" />
     <ClCompile Include="OpNode.cpp" />
     <ClCompile Include="ProcNode.cpp" />
     <ClCompile Include="ProgNode.cpp" />
@@ -29,6 +37,7 @@
     <ClCompile Include="StmtNode.cpp" />
     <ClCompile Include="TNode.cpp" />
     <ClCompile Include="VarNode.cpp" />
+    <ClCompile Include="WhileNode.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>

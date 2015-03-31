@@ -38,7 +38,8 @@ void ProgNodeTest::testLinks() {
 	pnode.linkProcNode(&wnode);
 
 	// getprocnodes
-	CPPUNIT_ASSERT_EQUAL((TNode*)(&wnode), pnode.getProcNodes().at(0));
+	CPPUNIT_ASSERT_EQUAL(&wnode, (ProcNode*)pnode.getProcNodes().at(0));
+	CPPUNIT_ASSERT_EQUAL(&pnode, (ProgNode*)wnode.getParent());
 	ProcNode proc = *((ProcNode*)(pnode.getProcNodes().at(0)));
 	string expname = "BobProc";
 	CPPUNIT_ASSERT_EQUAL(expname, proc.getName());

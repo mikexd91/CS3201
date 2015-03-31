@@ -46,6 +46,7 @@ public:
 	// setters
 	void setName(const string& name); // properties
 	void addChild(TNode *child); // links (from linkchild)
+	void setParent(TNode *parent); // links (from linkparent)
 	void linkChild(TNode *child); // links
 	void linkParent(TNode *parent); // links
 	void linkRightSibling(TNode *right); // links
