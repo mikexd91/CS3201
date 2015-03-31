@@ -9,7 +9,7 @@ ProcNode::ProcNode(const string &name)
 
 // getters
 
-StmtLstNode* ProcNode::getStmtLst() {
+StmtLstNode* ProcNode::getStmtLstNode() {
 	return (StmtLstNode*)(this->_children.at(0));
 }
 

@@ -11,7 +11,7 @@ public:
 	ProcNode(const string &name);
 
 	// getters
-	StmtLstNode* getStmtLst(); // children[0]
+	StmtLstNode* getStmtLstNode(); // children[0]
 
 	// setters
 	void linkStmtLstNode(StmtLstNode *stmtlst);
