@@ -29,9 +29,6 @@
     <ClCompile Include="PQLController.cpp" />
     <ClCompile Include="Procedure.cpp" />
     <ClCompile Include="ProcTable.cpp" />
-    <ClCompile Include="Query.cpp" />
-    <ClCompile Include="QueryEvaluator.cpp" />
-    <ClCompile Include="QueryParser.cpp" />
     <ClCompile Include="Statement.cpp" />
     <ClCompile Include="StmtTable.cpp" />
     <ClCompile Include="TNode.cpp" />
@@ -48,9 +45,6 @@
     <ClInclude Include="PQLController.h" />
     <ClInclude Include="Procedure.h" />
     <ClInclude Include="ProcTable.h" />
-    <ClInclude Include="Query.h" />
-    <ClInclude Include="QueryEvaluator.h" />
-    <ClInclude Include="QueryParser.h" />
     <ClInclude Include="StmtTable.h" />
     <ClInclude Include="TNode.h" />
     <ClInclude Include="VarTable.h" />
