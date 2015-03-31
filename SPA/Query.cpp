@@ -64,7 +64,7 @@ map<string, string> Query::getDeclarationList(void){
 bool Query::checkQueryValidity(void){
 	vector<Clause> clauses = this->getClauseList();
 	map<string, string> declarations = this->getDeclarationList();
-	for (int i=0; i<clauses.size(); i++){
+	for (size_t i=0; i<clauses.size(); i++){
 		Clause current = clauses.at(i);
 		bool validClause = current.checkClauseValidity(declarations);
 		if (!validClause){
