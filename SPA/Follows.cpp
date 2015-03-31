@@ -2,9 +2,9 @@
 
 using namespace std;
 
-StmtTable* table = StmtTable::getInstance();			// stmt table instance
-set<Statement*>::iterator setIter;						// stmt set iterator
-set<int>::iterator intIter;								// int set iterator
+StmtTable* fTable = StmtTable::getInstance();			// stmt table instance
+set<Statement*>::iterator fSetIter;						// stmt set iterator
+set<int>::iterator fIntIter;								// int set iterator
 
 Follows::Follows(void)
 {
@@ -25,7 +25,7 @@ bool Follows::isFollows(int stmtNum1, int stmtNum2) {
 
 // gets immediate statement after stmtNum
 int Follows::getFollows(int stmtNum) {
-	Statement* stmtObj = table->getStmtObj(stmtNum);
+	Statement* stmtObj = fTable->getStmtObj(stmtNum);
 	if (stmtObj != NULL) {
 		int stmt = stmtObj->getFollows();
 		if (stmt != -1) {
@@ -37,7 +37,7 @@ int Follows::getFollows(int stmtNum) {
 
 // gets immediate statement before stmtNum
 int Follows::getFollowedBy(int stmtNum) {
-	Statement* stmtObj = table->getStmtObj(stmtNum);
+	Statement* stmtObj = fTable->getStmtObj(stmtNum);
 	if (stmtObj != NULL) {
 		int stmt = stmtObj->getFollowedBy();
 		if (stmt != -1) {
@@ -56,8 +56,8 @@ set<set<int>> Follows::getAllFollows(int stmtNum1, int stmtNum2) {
 bool Follows::isFollowsStar(int stmtNum1, int stmtNum2) {
 	set<int> stmtList = getFollowsStar(stmtNum1);
 	if (!stmtList.empty()) {
-		for (intIter=stmtList.begin(); intIter!=stmtList.end(); intIter++) {
-			int stmtNum = *intIter;
+		for (fIntIter=stmtList.begin(); fIntIter!=stmtList.end(); fIntIter++) {
+			int stmtNum = *fIntIter;
 			if (stmtNum == stmtNum2) {
 				return true;
 			}
