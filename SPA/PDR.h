@@ -11,6 +11,7 @@
 #include "ProcNode.h"
 #include "ProcTable.h"
 #include "AssgNode.h"
+#include "StmtNode.h"
 #include "StmtTable.h"
 #include "Statement.h"
 #include "WhileNode.h"
