@@ -2,7 +2,7 @@
 
 
 ConstNode::ConstNode(const string &value)
-	: TNode(NodeType::CONSTANT_, value) {
+	: TNode(CONSTANT_, value) {
 
 }
 

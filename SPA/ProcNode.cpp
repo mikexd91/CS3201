@@ -3,7 +3,7 @@
 // constructor
 
 ProcNode::ProcNode(const string &name) 
-	: TNode(NodeType::PROCEDURE_, name) {
+	: TNode(PROCEDURE_, name) {
 
 }
 

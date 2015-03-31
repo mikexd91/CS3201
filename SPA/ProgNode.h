@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tnode.h"
+#include "TNode.h"
 #include "ProcNode.h"
 
 class ProgNode : public TNode {

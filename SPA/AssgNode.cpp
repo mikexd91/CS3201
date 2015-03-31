@@ -3,7 +3,7 @@
 // constructor
 
 AssgNode::AssgNode(int stmtNum) 
-	: StmtNode(NodeType::ASSIGN_STMT_, stmtNum) {
+	: StmtNode(ASSIGN_STMT_, stmtNum) {
 
 }
 

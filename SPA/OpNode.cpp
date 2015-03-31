@@ -2,7 +2,7 @@
 
 
 OpNode::OpNode(const string &varName)
-	: TNode(NodeType::OPERATOR_) {
+	: TNode(OPERATOR_) {
 
 }
 

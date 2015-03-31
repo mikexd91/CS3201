@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stmtnode.h"
+#include "StmtNode.h"
 #include "VarNode.h"
 
 class AssgNode : public StmtNode {
