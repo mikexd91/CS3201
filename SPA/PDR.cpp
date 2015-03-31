@@ -155,7 +155,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data) {
     stack<string> rpnStack;
     stack<TNode*> rpnNodeStack;
     
-    for(int i = 0; i < expression.size(); i++) {
+    for(size_t i = 0; i < expression.size(); i++) {
         string exp = expression.front();
         expression.pop();
         
@@ -189,7 +189,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data) {
 }
 
 bool PDR::isInteger(string exp) {
-    for(int i = 0; i < exp.length(); i++) {
+    for(size_t i = 0; i < exp.length(); i++) {
         if(!isdigit(exp[i])) {
             return false;
         }
