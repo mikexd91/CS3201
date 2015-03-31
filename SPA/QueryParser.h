@@ -1,6 +1,7 @@
 #pragma once
 #include "Query.h"
 #include "Clause.h"
+#include "StringPair.h"
 #include <string>
 #include <vector>
 #include <sstream>
@@ -17,6 +18,10 @@ private:
 public:
 	QueryParser(void);
 	~QueryParser(void);
+
+	string removeAll(string, string);
+	vector<string> findClauses(string);
 	Query processQuery(string);
+	
 };
 

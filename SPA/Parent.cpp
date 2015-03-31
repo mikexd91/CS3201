@@ -1,79 +1,109 @@
-#pragma once
-
-#include <algorithm>
-#include <vector>
-#include <boost/unordered_map.hpp>
-
-using namespace std;
-using namespace boost;
-
 #include "Parent.h"
 
-// constructor: instantiates an empty parent table
-Parent::Parent() {
-	
+using namespace std;
+
+set<Statement*>::iterator setIter;						// stmt set iterator
+set<int>::iterator intIter;								// int set iterator
+
+Parent::Parent(void)
+{
 }
 
-/*
-// checks if s1 is parent of s2
-bool isParent(int stmtNum1, int stmtNum2) {
-	ParentTable parentTable = ParentTable(); // need to clarify this
-	vector<int> results = parentTable.getStmtChildren(stmtNum1);
-	vector<int>::iterator it;
-	it = find(results.begin(), results.end(), stmtNum2);
 
-	if (results.empty() || (it != results.end())) {
-		return false;
-	} else {
+Parent::~Parent(void)
+{
+}
+
+// Get the StmtObj in StmtTable
+Statement* getStmtObj(int stmtnum) {
+	StmtTable* table = StmtTable::getInstance();
+	const set<Statement*> set = table->getAssgStmts();
+	for (setIter=set.begin(); setIter!=set.end(); setIter++) {
+		Statement* stmtObj = *setIter;
+		int stmtnum2 = stmtObj->getStmtNum();
+		if (stmtnum2 == stmtnum) {
+			return stmtObj;
+		}
+	}
+	return 0;
+}
+
+bool Parent::isParent(int stmtNum1, int stmtNum2) {
+	int stmt = getParent(stmtNum2);
+	if (stmt != -1 && stmt == stmtNum1) {
 		return true;
+	} else {
+		return false;
 	}
 }
 
-// get list of parents of stmtNum
-vector<int> getParent(int stmtNum) {
-	ParentTable parentTable = ParentTable();
-	vector<int> results = parentTable.getStmtParents(stmtNum);
-	return results;
+int Parent::getParent(int stmtNum) {
+	Statement* stmtObj = getStmtObj(stmtNum);
+	if (stmtObj != 0) {
+		int stmt = stmtObj->getParentOf();
+		if (stmt != -1) {
+			return stmt;
+		}
+	} 
+	return -1;
 }
 
-// get list of children of stmtNum
-vector<int> getChild(int stmtNum) {
-	ParentTable parentTable = ParentTable();
-	vector<int> results = parentTable.getStmtChildren(stmtNum);
-	return results;
+int Parent::getChild(int stmtNum) {
+	Statement* stmtObj = getStmtObj(stmtNum);
+	if (stmtObj != 0) {
+		int stmt = stmtObj->getChildOf();
+		if (stmt != -1) {
+			return stmt;
+		}
+	} 
+	return -1;
 }
 
-
-// gets lists of all possible parent-child combinations
-vector<vector<int>> getAllParent(syn syn1, syn syn2) {
-
-
-} 
-
-// checks if s1 is parent* of s2
-bool isParentStar(int stmtNum1, int stmtNum2) {
-	// get parent of stmtNum2
-	// check if parent == stmtNum1
-	// if stmtNum 1 parent returns none, return false
-	// if yes, return true
-	// else, get parent of stmtNum1 (do recursion)
-}
-
-// get list of parents* of stmtNum
-vector<int> getParentStar(int stmtNum) {
-
+/*
+set<set<int>> Parent::getAllParent(int stmtNum1, int stmtNum2) {
 
 }
+*/
 
-// get list of children* of stmtNum
-vector<int> getChildStarBy(int stmtNum) {
-
-
+bool Parent::isParentStar(int stmtNum1, int stmtNum2) {
+	set<int> stmtList = getParentStar(stmtNum2);
+	if (!stmtList.empty()) {
+		for (intIter=stmtList.begin(); intIter!=stmtList.end(); intIter++) {
+			int stmtNum = *intIter;
+			if (stmtNum == stmtNum1) {
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
+set<int> Parent::getParentStar(int stmtNum) {
+	set<int> set;
+	int stmt = getParent(stmtNum);
+	
+	while (stmt != -1) {
+		set.insert(stmt);
+		stmt = getParent(stmt);
+	}
 
-// gets lists of all possible parent-child* combinations
-vector<vector<int>> getAllParentStar(syn syn1, syn syn2) {
+	return set;
+}
 
+set<int> Parent::getChildStar(int stmtNum) {
+	set<int> set;
+	int stmt = getChild(stmtNum);
+	
+	while (stmt != -1) {
+		set.insert(stmt);
+		stmt = getChild(stmt);
+	}
 
-} */
+	return set;
+}
+
+/*
+set<set<int>> Parent::getAllParentStar(int stmtNum1, int stmtNum2) {
+
+}
+*/

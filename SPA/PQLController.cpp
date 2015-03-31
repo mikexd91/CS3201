@@ -8,7 +8,7 @@ PQLController::PQLController(void) {
 PQLController::~PQLController(void) {
 }
 
-void run() {
+void PQLController::run() {
 	// Parse query to query preprocessor (try catch?)
 	// if query is valid, evaluate query with query evaluator
 	// else return none
