@@ -34,46 +34,22 @@ StmtTable::StatementTable::iterator StmtTable::getIterator() {
 
 // gets all assignment stmts
 const set<Statement*>& StmtTable::getAssgStmts() {
-	set<Statement*> stmtSet;
-
-	for(setIter=assgStmtSet.begin(); setIter!=assgStmtSet.end(); setIter++) {
-		stmtSet.insert(table.at(*setIter));
-	}
-
-	return stmtSet;
+	return assgStmtSet;
 }
 
 // gets all call stmts
 const set<Statement*>& StmtTable::getCallStmts() {
-	set<Statement*> stmtSet;
-
-	for(setIter=callStmtSet.begin(); setIter!=callStmtSet.end(); setIter++) {
-		stmtSet.insert(table.at(*setIter));
-	}
-
-	return stmtSet;
+	return callStmtSet;
 }
 
 // gets all while stmts
 const set<Statement*>& StmtTable::getWhileStmts() {
-	set<Statement*> stmtSet;
-
-	for(setIter=whileStmtSet.begin(); setIter!=whileStmtSet.end(); setIter++) {
-		stmtSet.insert(table.at(*setIter));
-	}
-
-	return stmtSet;
+	return whileStmtSet;
 }
 
 // gets all if stmts
 const set<Statement*>& StmtTable::getIfStmts() {
-	set<Statement*> stmtSet;
-
-	for(setIter=ifStmtSet.begin(); setIter!=ifStmtSet.end(); setIter++) {
-		stmtSet.insert(table.at(*setIter));
-	}
-
-	return stmtSet;
+	return ifStmtSet;
 }
 
 // MUTATORS
@@ -86,17 +62,17 @@ void StmtTable::addStmt(Statement *stmt) {
 
 	// record type of stmt
 	switch(stmt->getType()) {
-		case NodeType::ASSIGN_STMT_:
-				assgStmtSet.insert(stmtNum);
+		case ASSIGN_STMT_:
+				assgStmtSet.insert(stmt);
 				break;
-		case NodeType::CALL_STMT_:
-				callStmtSet.insert(stmtNum);
+		case CALL_STMT_:
+				callStmtSet.insert(stmt);
 				break;
-		case NodeType::IF_STMT_:
-				ifStmtSet.insert(stmtNum);
+		case IF_STMT_:
+				ifStmtSet.insert(stmt);
 				break;
-		case NodeType::WHILE_STMT_:
-				whileStmtSet.insert(stmtNum);
+		case WHILE_STMT_:
+				whileStmtSet.insert(stmt);
 				break;
 		default:
 			;
