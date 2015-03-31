@@ -2,8 +2,9 @@
 
 using namespace std;
 
-set<Statement*>::iterator setIter;						// stmt set iterator
-set<int>::iterator intIter;								// int set iterator
+StmtTable* fTable = StmtTable::getInstance();			// stmt table instance
+set<Statement*>::iterator fSetIter;						// stmt set iterator
+set<int>::iterator fIntIter;								// int set iterator
 
 Follows::Follows(void)
 {
@@ -11,20 +12,6 @@ Follows::Follows(void)
 
 Follows::~Follows(void)
 {
-}
-
-// Get the StmtObj in StmtTable
-Statement* getStmtObj(int stmtnum) {
-	StmtTable* table = StmtTable::getInstance();
-	const set<Statement*> set = table->getAssgStmts();
-	for (setIter=set.begin(); setIter!=set.end(); setIter++) {
-		Statement* stmtObj = *setIter;
-		int stmtnum2 = stmtObj->getStmtNum();
-		if (stmtnum2 == stmtnum) {
-			return stmtObj;
-		}
-	}
-	return 0;
 }
 
 bool Follows::isFollows(int stmtNum1, int stmtNum2) {
@@ -38,8 +25,8 @@ bool Follows::isFollows(int stmtNum1, int stmtNum2) {
 
 // gets immediate statement after stmtNum
 int Follows::getFollows(int stmtNum) {
-	Statement* stmtObj = getStmtObj(stmtNum);
-	if (stmtObj != 0) {
+	Statement* stmtObj = fTable->getStmtObj(stmtNum);
+	if (stmtObj != NULL) {
 		int stmt = stmtObj->getFollows();
 		if (stmt != -1) {
 			return stmt;
@@ -50,8 +37,8 @@ int Follows::getFollows(int stmtNum) {
 
 // gets immediate statement before stmtNum
 int Follows::getFollowedBy(int stmtNum) {
-	Statement* stmtObj = getStmtObj(stmtNum);
-	if (stmtObj != 0) {
+	Statement* stmtObj = fTable->getStmtObj(stmtNum);
+	if (stmtObj != NULL) {
 		int stmt = stmtObj->getFollowedBy();
 		if (stmt != -1) {
 			return stmt;
@@ -69,8 +56,8 @@ set<set<int>> Follows::getAllFollows(int stmtNum1, int stmtNum2) {
 bool Follows::isFollowsStar(int stmtNum1, int stmtNum2) {
 	set<int> stmtList = getFollowsStar(stmtNum1);
 	if (!stmtList.empty()) {
-		for (intIter=stmtList.begin(); intIter!=stmtList.end(); intIter++) {
-			int stmtNum = *intIter;
+		for (fIntIter=stmtList.begin(); fIntIter!=stmtList.end(); fIntIter++) {
+			int stmtNum = *fIntIter;
 			if (stmtNum == stmtNum2) {
 				return true;
 			}

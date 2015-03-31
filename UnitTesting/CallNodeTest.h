@@ -3,8 +3,8 @@
 // Note 1
 #include <cppunit/extensions/HelperMacros.h>
 
-class TNodeTest : public CPPUNIT_NS::TestFixture {
-	CPPUNIT_TEST_SUITE( TNodeTest );
+class CallNodeTest : public CPPUNIT_NS::TestFixture {
+	CPPUNIT_TEST_SUITE( CallNodeTest );
 	CPPUNIT_TEST( testProperties );
 	CPPUNIT_TEST( testLinks );
 	CPPUNIT_TEST_SUITE_END();

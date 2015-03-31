@@ -12,12 +12,11 @@ using namespace std;
 // contructor with no preset attributes
 // (null attributes or -1 for primitives and 0 for stmtNum)
 Statement::Statement() {
-	follows = -1;
-	followedBy = -1;
-	parentOf = -1;
-	childOf = -1;
-	next = -1;
-	prev = -1;
+	follows = DEFAULT;
+	followedBy = DEFAULT;
+	childOf = DEFAULT;
+	next = DEFAULT;
+	prev = DEFAULT;
 }
 
 /*
@@ -75,7 +74,7 @@ int Statement::getFollowedBy() {
 }
 
 // get stmt that is parents of this stmt
-int Statement::getParentOf() {
+const Statement::ParentOfSet& Statement::getParentOf() {
 	return parentOf;
 }
 
@@ -131,8 +130,8 @@ void Statement::setFollowedBy(int followedBy) {
 	this->followedBy = followedBy;
 }
 
-void Statement::setParentOf(int parentOf) {
-	this->parentOf = parentOf;
+void Statement::setParentOf(const set<int> &parentOfSet) {
+	parentOf = parentOfSet;
 }
 
 void Statement::setChildOf(int childOf) {

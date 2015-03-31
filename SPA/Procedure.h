@@ -29,18 +29,19 @@ public:
 
 	// CONSTRUCTOR
 	Procedure();
-	Procedure(string *name, TNode *tRef);
+	Procedure(const string &name);
+	Procedure(const string &name, TNode *tRef);
 
 	// GETTERS
-	string* getProcName();			// get name of proc
-	TNode* getTNodeRef();				// get reference to proc TNode
+	string* getProcName();					// get name of proc
+	TNode* getTNodeRef();					// get reference to proc TNode
 	const UsesSet& getUses();				// get set of variables proc uses
 	const ModifiesSet& getModifies();		// get set of variables proc modifies
 	const CallsSet& getCalls();				// get set of procs this proc calls
 	const CalledBySet& getCalledBy();		// get set of procs that call this proc
 
 	// SETTERS
-	void setProcName(string *name);
+	void setProcName(const string &name);
 	void setTNodeRef(TNode *ref);
 	void setUses(const set<string> &useSet);
 	void setModifies(const set<string> &modifiesSet);
@@ -49,7 +50,7 @@ public:
 
 private:
 	// PRIVATE ATTRIBUTES
-	string		*procName;		// proc name
+	string		procName;		// proc name
 	TNode		*TNodeRef;		// TNode reference
 
 	// PRIVATE SETS

@@ -17,12 +17,14 @@ class StmtTable {
 	*/
 
 	typedef boost::unordered_map<int, Statement*> StatementTable;
+	typedef StatementTable::iterator StmtTableIterator;
 
 public:
 	// ACCESSORS
 	static StmtTable* getInstance();			// gets instance of stmt table
 
 	StatementTable::iterator getIterator();		// gets iterator to stmt table
+	Statement* getStmtObj(int stmtNum);			// gets the stmt obj by stmt number
 
 	const set<Statement*>& getAssgStmts();		// gets all assignment stmts
 	const set<Statement*>& getCallStmts();		// gets all call stmts
@@ -31,6 +33,7 @@ public:
 
 	// MUTATORS
 	void addStmt(Statement *stmt);	// adds statement to table
+	void clearTable();				// removes all statements to the table (for testing)
 
 private:
 	StatementTable table;

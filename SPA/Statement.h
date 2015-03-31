@@ -25,6 +25,8 @@
 // -----------------------------------------------------------------
 */
 
+#define DEFAULT -1
+
 class Statement {
 
 public:
@@ -32,13 +34,14 @@ public:
 	// TYPEDEF
 	typedef set<string> UsesSet;
 	typedef set<string> ModifiesSet;
+	typedef set<int> ParentOfSet;
 
 	// CONSTRUCTOR
 	Statement();
 	//Statement(NodeType type, int stmtNum, TNode *tRef, GNode *gRef);
 
 	// GETTERS
-	NodeType getType();			// get stmt type
+	NodeType getType();					// get stmt type
 	int getStmtNum();					// get stmt num
 	TNode* getTNodeRef();				// get reference to stmt TNode
 	//GNode* getGNodeRef();				// get reference to stmt GNode
@@ -46,8 +49,8 @@ public:
 	const ModifiesSet& getModifies();	// get set of variables stmt modifies
 	int getFollows();					// get stmt that this stmt follows
 	int getFollowedBy();				// get stmt that follows after this stmt
-	int getParentOf();					// get stmt that is parent of this stmt
-	int getChildOf();					// get stmt that is child of this stmt
+	const ParentOfSet& getParentOf();		// get stmt that is parent of this stmt
+	int getChildOf();					// get set of stmts that is child of this stmt
 	int getNext();						// get stmt that is next of this stmt
 	int getPrev();						// get stmt whose next is this stmt
 
@@ -60,7 +63,7 @@ public:
 	void setModifies(const ModifiesSet &modifiesSet);
 	void setFollows(int follows);
 	void setFollowedBy(int followedBy);
-	void setParentOf(int parentOf);
+	void setParentOf(const ParentOfSet &parentOfSet);
 	void setChildOf(int childOf);
 	void setNext(int next);
 	void setPrev(int prev);
@@ -77,7 +80,7 @@ private:
 	ModifiesSet		modifies;
 	int				follows;
 	int				followedBy;
-	int				parentOf;
+	ParentOfSet		parentOf;
 	int				childOf;
 	int				next;
 	int				prev;

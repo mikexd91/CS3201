@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tnode.h"
+#include "TNode.h"
 #include "ProcNode.h"
 
 class ProgNode : public TNode {
@@ -10,7 +10,7 @@ public:
 	ProgNode(const string &name);
 
 	// getters
-	vector<TNode*>& getProcNodes(); // simply replace the methods for getchildren
+	vector<TNode*>& getProcNodes(); 
 
 	// setters
 	void linkProcNode(ProcNode *procNode); 

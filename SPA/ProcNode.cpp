@@ -3,13 +3,13 @@
 // constructor
 
 ProcNode::ProcNode(const string &name) 
-	: TNode(NodeType::PROCEDURE_, name) {
+	: TNode(PROCEDURE_, name) {
 
 }
 
 // getters
 
-StmtLstNode* ProcNode::getStmtLst() {
+StmtLstNode* ProcNode::getStmtLstNode() {
 	return (StmtLstNode*)(this->_children.at(0));
 }
 

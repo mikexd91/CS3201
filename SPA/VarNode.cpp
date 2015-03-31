@@ -2,7 +2,7 @@
 
 
 VarNode::VarNode(const string &varName)
-	: TNode(NodeType::VARIABLE_, varName) {
+	: TNode(VARIABLE_, varName) {
 
 }
 

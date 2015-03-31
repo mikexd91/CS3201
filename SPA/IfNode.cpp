@@ -2,7 +2,7 @@
 
 // constructors
 IfNode::IfNode(int stmtNum)
-	: StmtNode(NodeType::IF_STMT_, stmtNum) {
+	: StmtNode(IF_STMT_, stmtNum) {
 
 }
 
@@ -24,12 +24,27 @@ StmtLstNode* IfNode::getElseStmtLstNode() {
 
 // setters
 void IfNode::linkVarNode(VarNode *varNode) {
-	this->_children.at(0) = varNode;
+	if (this->_children.size() < 1) {
+		this->_children.push_back(varNode);
+	} else {
+		this->_children.at(0) = varNode;
+	}
+	varNode->setParent(this);
 }
 
 void IfNode::linkThenStmtLstNode(StmtLstNode *thenNode) {
-	this->_children.at(1) = thenNode;
+	if (this->_children.size() < 2) {
+		this->_children.push_back(thenNode);
+	} else {
+		this->_children.at(1) = thenNode;
+	}
+	thenNode->setParent(this);
 }
 void IfNode::linkElseStmtLstNode(StmtLstNode *elseNode) {
-	this->_children.at(2) = elseNode;
+	if (this->_children.size() < 3) {
+		this->_children.push_back(elseNode);
+	} else {
+		this->_children.at(2) = elseNode;
+	}
+	elseNode->setParent(this);
 }

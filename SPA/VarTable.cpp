@@ -1,6 +1,10 @@
 #include "VarTable.h"
 #include <unordered_map>
 
+using namespace std;
+
+VarTable* VarTable::_instance = NULL;
+
 // constructors
 VarTable::VarTable() {
 
@@ -8,10 +12,10 @@ VarTable::VarTable() {
 
 // general getters
 VarTable* VarTable::getInstance() {
-	if (_instance == NULL) {
-		_instance = new VarTable();
+	if (VarTable::_instance == NULL) {
+		VarTable::_instance = new VarTable();
 	}
-	return _instance;
+	return VarTable::_instance;
 }
 
 Variable* VarTable::getVariable(const string& varName) {
@@ -22,6 +26,13 @@ VarTable::VarIter VarTable::getIterator() {
 	VarTable::VarIter tableIter = _table.begin();
 
 	return tableIter;
+}
+
+// setters
+
+void VarTable::addVariable(Variable *var) {
+	string name = var->getName();
+	this->_table.emplace(name, var);
 }
 
 bool VarTable::contains(const string& varName) {
