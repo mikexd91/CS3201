@@ -1,5 +1,46 @@
 #pragma once
 
-#include <set>
-#include "TNode.h"
+#include "boost/unordered_map.hpp"
+#include "Procedure.h"
 #include "ProcTable.h"
+
+using namespace boost;
+
+bool ProcTable::instanceFlag = false;			// instance flag
+ProcTable* ProcTable::tableInstance = NULL;		// table instance
+
+// ACCESSORS
+// gets instance of proc table
+ProcTable* ProcTable::getInstance() {
+	// if instance does not exist, create and return instance
+	if (!instanceFlag) {
+		tableInstance = new ProcTable();
+		instanceFlag = true;
+	}
+
+	return tableInstance;
+}
+
+// gets iterator to proc table
+ProcTable::ProcedureTable::iterator ProcTable::getIterator() {
+	ProcTable::ProcedureTable::iterator tableIter = table.begin();
+
+	return tableIter;
+}
+
+// MUTATORS
+// adds proc to table
+void ProcTable::addProc(Procedure *proc) {
+	string *procName = proc->getProcName();
+
+	// add proc to table
+	table.emplace(procName, proc);
+}
+
+	// GENERAL METHODS
+	bool contains(const string &varName);		// checks if proc exists in table
+
+
+// PRIVATE FUNCTIONS
+// empty private constructor
+ProcTable::ProcTable() {}

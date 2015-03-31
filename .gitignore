@@ -4,6 +4,7 @@
 # User-specific files
 *.suo
 *.user
+*.filters
 *.userosscache
 *.sln.docstates
 
@@ -194,8 +195,6 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
-SPA/SPA.vcxproj
-SPA/SPA.vcxproj.filters
 
 # I WANT THESE FILES COMMITTED
 !include/boost/*/debug

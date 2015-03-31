@@ -4,8 +4,6 @@
 #include <boost/unordered_map.hpp>
 #include "Statement.h"
 
-using namespace std;
-
 class StmtTable {
 	/*
 
@@ -29,17 +27,17 @@ public:
 	const set<Statement*>& getAssgStmts();		// gets all assignment stmts
 	const set<Statement*>& getCallStmts();		// gets all call stmts
 	const set<Statement*>& getWhileStmts();		// gets all while stmts
-	const set<Statement*>& getIfStmts();			// gets all if stmts
+	const set<Statement*>& getIfStmts();		// gets all if stmts
 
 	// MUTATORS
 	void addStmt(Statement *stmt);	// adds statement to table
 
 private:
 	StatementTable table;
-	set<int> assgStmtSet;
-	set<int> callStmtSet;
-	set<int> whileStmtSet;
-	set<int> ifStmtSet;
+	set<Statement*> assgStmtSet;
+	set<Statement*> callStmtSet;
+	set<Statement*> whileStmtSet;
+	set<Statement*> ifStmtSet;
 	
 	// SINGLETON
 	static bool instanceFlag;

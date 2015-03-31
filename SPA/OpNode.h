@@ -6,7 +6,7 @@ class OpNode : public TNode {
 public:
 
 	// constructor
-	OpNode(void);
+	OpNode(const string &varName);
 
 	// getters
 	TNode* getLeftNode(); 

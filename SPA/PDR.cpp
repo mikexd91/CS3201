@@ -7,25 +7,25 @@ using namespace std;
 
 PDR::PDR() {
 	stmtCounter = 0;
-	stmtStack.push(Type::PROGRAM);
+	stmtStack.push(PROGRAM);
 }
  
 void PDR::processParsedData(ParsedData data) {
 	ParsedData::Type stmtType = data.getType();
 	switch(stmtType) {
-		case ParsedData::Type::PROCEDURE:
+		case PROCEDURE:
 			processProcedureStmt(data);
 			break;
-		case ParsedData::Type::ASSIGNMENT:
+		case ASSIGNMENT:
 			processAssignStmt(data);
 			break;
-		//case ParsedData::Type::CALL:
+		//case CALL:
 		//	processCallStmt(data);
 		//	break;
-		//case ParsedData::Type::WHILE:
+		//case WHILE:
 		//	processWhileStmt(data);
 		//	break;
-		//case ParsedData::Type::IF:
+		//case IF:
 		//	processIfStmt(data);
 		//	break;
 
@@ -35,7 +35,7 @@ void PDR::processParsedData(ParsedData data) {
 void PDR::processProcedureStmt(ParsedData data) {
 	//TODO - if working on a previous procedure, links the prev procedure to the root of the 
 	//		 AST and creates a new procedure node
-	if(stmtStack.top() == Type::PROCEDURE) {
+	if(stmtStack.top() == PROCEDURE) {
 		stmtStack.pop();
 		nodeStack.pop();
 	}

@@ -1,4 +1,5 @@
 #include "VarTable.h"
+#include <unordered_map>
 
 // constructors
 VarTable::VarTable() {
@@ -13,6 +14,16 @@ VarTable* VarTable::getInstance() {
 	return _instance;
 }
 
-const set<string>& VarTable::getAllVars() {
-	return this->_allVarsTable;
+Variable* VarTable::getVariable(const string& varName) {
+	return this->_table.find(varName)->second;
+}
+
+VarTable::VarIter VarTable::getIterator() {
+	VarTable::VarIter tableIter = _table.begin();
+
+	return tableIter;
+}
+
+bool VarTable::contains(const string& varName) {
+	return (this->_table.find(varName) != _table.end());
 }
