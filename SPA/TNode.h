@@ -37,7 +37,7 @@ public:
 
 	// getters
 	NodeType getNodeType();
-	string getNodeName(); // the name that comes before the colon e.g. else:stmtlst
+	string getName(); // the name that comes before the colon e.g. else:stmtlst
 	vector<TNode*>& getChildren();
 	TNode* getParent();
 	TNode* getRightSibling();
