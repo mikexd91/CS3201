@@ -25,4 +25,4 @@ public:
 	// set<set<int>> getAllFollowsStar(int stmtNum1, int stmtNum2);	// gets list of all possible follows*
 
 };
-
+  

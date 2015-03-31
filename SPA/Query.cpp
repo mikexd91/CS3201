@@ -1,5 +1,6 @@
 #include "Query.h"
 #include "Clause.h"
+#include "PQLExceptions.h"
 #include <string>
 #include <vector>
 using namespace stringconst;
@@ -25,6 +26,15 @@ void Query::setClauseList(vector<Clause> list){
 
 void Query::addClause(Clause item){
 	this->clauseList.push_back(item);
+	this->numClauses++;
+}
+
+void Query::setDeclarationList(map<string, string> map){
+	this->declarationList = map;
+}
+
+void Query::addDeclaration(StringPair item){
+	this->declarationList.insert(item.getFirst(), item.getSecond());
 }
 
 vector<string> Query::getSelectList(){
@@ -45,4 +55,23 @@ Clause Query::getClause(int index){
 
 int Query::getNumClauses(){
 	return this->numClauses;
+}
+
+map<string, string> Query::getDeclarationList(void){
+	return this->declarationList;
+}
+
+bool Query::checkQueryValidity(void){
+	vector<Clause> clauses = this->getClauseList();
+	map<string, string> declarations = this->getDeclarationList();
+	for (int i=0; i<clauses.size(); i++){
+		Clause current = clauses.at(i);
+		bool validClause = current.checkClauseValidity(declarations);
+		if (!validClause){
+			//break loop cause dont need to check the rest
+			throw InvalidDeclarationException();
+			return false;
+		}
+		//else check all other clauses in the list
+	}
 }
