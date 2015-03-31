@@ -78,7 +78,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>"$(SolutionDir)lib\cppunit.lib"</AdditionalDependencies>
+      <AdditionalDependencies>"$(SolutionDir)lib\cppunit_debug.lib";"$(SolutionDir)Debug\SPA.lib"</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ProjectReference>
