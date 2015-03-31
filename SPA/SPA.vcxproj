@@ -11,9 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ProcNode.h" />
+    <ClInclude Include="ProgNode.h" />
     <ClInclude Include="TNode.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ProcNode.cpp" />
+    <ClCompile Include="ProgNode.cpp" />
     <ClCompile Include="TNode.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
