@@ -10,12 +10,15 @@
 #include "ParsedData.h"
 #include "ProcNode.h"
 #include "ProcTable.h"
+#include "VarTable.h"
+#include "Variable.h"
 #include "AssgNode.h"
 #include "StmtNode.h"
 #include "StmtTable.h"
 #include "Statement.h"
 #include "WhileNode.h"
 #include "StmtLstNode.h"
+#include "Procedure.h"
 #include "IfNode.h"
 #include "CallNode.h"
 #include "OpNode.h"
@@ -45,7 +48,12 @@ private:
 	void processIfStmt(ParsedData);
 	void processWhileStmt(ParsedData);
 	void processCallStmt(ParsedData);
-    TNode* breakDownAssignExpression(ParsedData);
+    void processEndProgram();
+    
+    void addToProcTable(TNode*);
+    void addToVarTable(TNode*);
+    
+    TNode* breakDownAssignExpression(ParsedData, set<string>&);
     
     bool isInteger(string);
 
