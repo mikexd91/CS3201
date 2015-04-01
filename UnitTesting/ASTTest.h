@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../SPA/VarTable.h"
+#include "../SPA/AST.h"
 
 // Note 1
 #include <cppunit/extensions/HelperMacros.h>
 
-class VarTableTest : public CPPUNIT_NS::TestFixture {
-	CPPUNIT_TEST_SUITE( VarTableTest );
+class ASTTest : public CPPUNIT_NS::TestFixture {
+	CPPUNIT_TEST_SUITE( ASTTest );
 	CPPUNIT_TEST( testInstances );
 	CPPUNIT_TEST( testAcrossMethods );
 	CPPUNIT_TEST_SUITE_END();

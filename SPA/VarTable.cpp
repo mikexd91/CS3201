@@ -3,23 +3,29 @@
 
 using namespace std;
 
-VarTable* VarTable::_instance = NULL;
+bool VarTable::_hasInstance = false;
+VarTable VarTable::_instance;
+VarTable::Table VarTable::_table;
 
 // constructors
 VarTable::VarTable() {
-
 }
 
 // general getters
-VarTable* VarTable::getInstance() {
-	if (VarTable::_instance == NULL) {
-		VarTable::_instance = new VarTable();
+VarTable& VarTable::getInstance() {
+	if (!VarTable::_hasInstance) {
+		VarTable::_instance = *(new VarTable());
+		VarTable::_hasInstance = true;
 	}
 	return VarTable::_instance;
 }
 
 Variable* VarTable::getVariable(const string& varName) {
-	return this->_table.find(varName)->second;
+	if (this->contains(varName)) {
+		return this->_table.find(varName)->second;
+	} else {
+		return NULL;
+	}
 }
 
 VarTable::VarIter VarTable::getIterator() {
