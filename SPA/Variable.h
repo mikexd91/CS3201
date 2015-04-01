@@ -13,7 +13,7 @@ public:
 	Variable(const string& varName);
 
 	// getters
-	const string& getName();
+	string getName();
 	set<int>& getUsedByStmts();
 	set<int>& getModifiedByStmts();
 	set<TNode*>& getTNodes();
