@@ -235,14 +235,14 @@ void PDR::addToProcTable(TNode* procedure) {
 }
 
 void PDR::addToVarTable(TNode* variable) {
-    VarTable* varTable = VarTable::getInstance();
+    VarTable varTable = VarTable::getInstance();
     
-    if(varTable->contains(variable->getName())) {
-        Variable* var = varTable->getVariable(variable->getName());
+    if(varTable.contains(variable->getName())) {
+        Variable* var = varTable.getVariable(variable->getName());
         var->addTNode(variable);
     } else {
         Variable* var = new Variable(variable->getName());
-        varTable->addVariable(var);
+        varTable.addVariable(var);
     }
 }
 
@@ -259,10 +259,11 @@ void PDR::processEndProgram() {
 }
 
 bool PDR::isInteger(string exp) {
-    for(size_t i = 0; i < exp.length(); i++) {
-        if(!isdigit(exp[i])) {
-            return false;
-        }
+    regex integer("(\\+|-)?[[:digit:]]+");
+    
+    if(regex_match(exp, integer)) {
+        return true;
     }
-    return true;
+    
+    return false;
 }

@@ -6,6 +6,8 @@
 #define PDR_HEADER
 
 #include <string>
+#include <regex>
+
 #include "ConstNode.h"
 #include "ParsedData.h"
 #include "ProcNode.h"
