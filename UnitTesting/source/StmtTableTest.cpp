@@ -20,6 +20,21 @@ void StmtTableTest::testInstance() {
 	CPPUNIT_ASSERT(dynamic_cast<StmtTable*>(table));
 }
 
+// method to test retrieval of statement by statement number
+void StmtTableTest::testGetStmtByNum() {
+	int stmtNum = 5;
+
+	// Create an assignment statement with statement number
+	Statement* stmt = new Statement(); stmt->setStmtNum(stmtNum);
+
+	// Add statement to table
+	table->addStmt(stmt);
+
+	// Check that statement can be retrieved
+	Statement* result = table->getStmtObj(stmtNum);
+	CPPUNIT_ASSERT_EQUAL(stmtNum, result->getStmtNum());
+}
+
 // method to test retrieval of assignment statements
 void StmtTableTest::testGetAssgStmts() {
 	// Create some assignment statements

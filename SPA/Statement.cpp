@@ -14,7 +14,6 @@ using namespace std;
 Statement::Statement() {
 	follows = DEFAULT;
 	followedBy = DEFAULT;
-	parentOf = DEFAULT;
 	childOf = DEFAULT;
 	next = DEFAULT;
 	prev = DEFAULT;
@@ -75,7 +74,7 @@ int Statement::getFollowedBy() {
 }
 
 // get stmt that is parents of this stmt
-int Statement::getParentOf() {
+const Statement::ParentOfSet& Statement::getParentOf() {
 	return parentOf;
 }
 
@@ -131,8 +130,8 @@ void Statement::setFollowedBy(int followedBy) {
 	this->followedBy = followedBy;
 }
 
-void Statement::setParentOf(int parentOf) {
-	this->parentOf = parentOf;
+void Statement::setParentOf(const set<int> &parentOfSet) {
+	parentOf = parentOfSet;
 }
 
 void Statement::setChildOf(int childOf) {

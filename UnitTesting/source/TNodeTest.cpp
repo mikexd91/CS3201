@@ -21,13 +21,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION( TNodeTest );
 void TNodeTest::testProperties() { 
 
 	// constructor
-	TNode tnode(NodeType::PROGRAM_, "Alice");
+	TNode tnode(PROGRAM_, "Alice");
 
 	// getnodetype
 	// ok
-	CPPUNIT_ASSERT(tnode.getNodeType() == NodeType::PROGRAM_);
+	CPPUNIT_ASSERT(tnode.getNodeType() == PROGRAM_);
 	// nok
-	CPPUNIT_ASSERT(tnode.getNodeType() != NodeType::CALL_STMT_);
+	CPPUNIT_ASSERT(tnode.getNodeType() != CALL_STMT_);
 
 	// getname
 	// ok
@@ -36,7 +36,7 @@ void TNodeTest::testProperties() {
 	CPPUNIT_ASSERT(tnode.getName() != "alice");
 
 	// constructor
-	TNode snode(NodeType::ASSIGN_STMT_);
+	TNode snode(ASSIGN_STMT_);
 
 	// setname
 	snode.setName("Bob");
@@ -44,9 +44,9 @@ void TNodeTest::testProperties() {
 
 	// isnodetype
 	// ok
-	CPPUNIT_ASSERT(snode.isNodeType(NodeType::ASSIGN_STMT_));
+	CPPUNIT_ASSERT(snode.isNodeType(ASSIGN_STMT_));
 	// nok
-	CPPUNIT_ASSERT(!snode.isNodeType(NodeType::CONSTANT_));
+	CPPUNIT_ASSERT(!snode.isNodeType(CONSTANT_));
 
 	return;
 }
@@ -54,8 +54,8 @@ void TNodeTest::testProperties() {
 void TNodeTest::testLinks() {
 
 	// a, b
-	TNode anode(NodeType::PROGRAM_, "Alice");
-	TNode bnode(NodeType::PROCEDURE_, "Alice");
+	TNode anode(PROGRAM_, "Alice");
+	TNode bnode(PROCEDURE_, "Alice");
 	
 	// linkchild
 	anode.linkChild(&bnode);
@@ -83,8 +83,8 @@ void TNodeTest::testLinks() {
 	CPPUNIT_ASSERT(!bnode.hasChildren());
 
 	// c, d
-	TNode cnode(NodeType::PROGRAM_, "Alice");
-	TNode dnode(NodeType::PROCEDURE_, "Alice");
+	TNode cnode(PROGRAM_, "Alice");
+	TNode dnode(PROCEDURE_, "Alice");
 
 	// linkparent
 	dnode.linkParent(&cnode);
@@ -94,8 +94,8 @@ void TNodeTest::testLinks() {
 	CPPUNIT_ASSERT_EQUAL(&cnode, dnode.getParent());
 
 	// e, f
-	TNode enode(NodeType::PROGRAM_, "Alice");
-	TNode fnode(NodeType::PROCEDURE_, "Alice");
+	TNode enode(PROGRAM_, "Alice");
+	TNode fnode(PROCEDURE_, "Alice");
 
 	// linkrightsibling
 	enode.linkRightSibling(&fnode);
@@ -125,8 +125,8 @@ void TNodeTest::testLinks() {
 	CPPUNIT_ASSERT(!enode.hasLeftSibling());
 
 	// g, h
-	TNode gnode(NodeType::PROGRAM_, "Alice");
-	TNode hnode(NodeType::PROCEDURE_, "Alice");
+	TNode gnode(PROGRAM_, "Alice");
+	TNode hnode(PROCEDURE_, "Alice");
 
 	// linkleftsibling
 	hnode.linkLeftSibling(&gnode);

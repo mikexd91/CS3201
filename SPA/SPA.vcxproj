@@ -16,7 +16,6 @@
     <ClInclude Include="CallNode.h" />
     <ClInclude Include="ConstNode.h" />
     <ClInclude Include="IfNode.h" />
-    <ClInclude Include="NodeType.h" />
     <ClInclude Include="OpNode.h" />
     <ClInclude Include="Procedure.h" />
     <ClInclude Include="ProcNode.h" />
