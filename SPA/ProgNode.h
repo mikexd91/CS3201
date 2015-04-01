@@ -10,7 +10,7 @@ public:
 	ProgNode(const string &name);
 
 	// getters
-	vector<TNode*>& getProcNodes(); // simply replace the methods for getchildren
+	vector<TNode*>& getProcNodes(); 
 
 	// setters
 	void linkProcNode(ProcNode *procNode); 

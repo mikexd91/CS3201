@@ -59,13 +59,17 @@ void TNode::addChild(TNode *child) {
 	this->_children.push_back(child);
 }
 
-void TNode::linkParent(TNode *parent) {
+void TNode::setParent(TNode *parent) {
 	this->_parent = parent;
+}
+
+void TNode::linkParent(TNode *parent) {
+	this->setParent(parent);
 	parent->addChild(this);
 }
 
 void TNode::linkChild(TNode *child) {
-	child->_parent = this;
+	child->setParent(this);
 	this->addChild(child);
 }
 
