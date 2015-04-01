@@ -13,7 +13,7 @@ public:
 	bool isParent(int stmtNum1, int stmtNum2);		// checks if s2 follows s1
 
 	int getParent(int stmtNum);						// gets immdiate parent of stmtNum
-	int getChild(int stmtNum);					// gets immediate children of stmtNum
+	set<int> getChild(int stmtNum);					// gets immediate children of stmtNum
 
 	// set<set<int>> getAllParent(int stmtNum1, int stmtNum2);	// gets lists of all possible Parents
 
