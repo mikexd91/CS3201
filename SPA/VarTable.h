@@ -37,9 +37,11 @@ public:
 	bool contains(const string& varName);
 
 private:
+	static int _hasInstance;
+	static VarTable* _instance;
+	Table _table;
+	
 	// constructor
 	VarTable();	
 
-	static VarTable* _instance;
-	Table _table;
 };

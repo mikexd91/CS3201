@@ -5,7 +5,7 @@ Variable::Variable(const string& varName) {
 	this->_name = varName;
 }
 
-const string& Variable::getName() {
+string Variable::getName() {
 	return this->_name;
 }
 
