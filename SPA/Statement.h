@@ -34,7 +34,7 @@ public:
 	// TYPEDEF
 	typedef set<string> UsesSet;
 	typedef set<string> ModifiesSet;
-	typedef set<int> ParentOfSet;
+	typedef set<int> ChildrenSet;
 
 	// CONSTRUCTOR
 	Statement();
@@ -47,10 +47,10 @@ public:
 	//GNode* getGNodeRef();				// get reference to stmt GNode
 	const UsesSet& getUses();			// get set of variables stmt uses
 	const ModifiesSet& getModifies();	// get set of variables stmt modifies
-	int getFollows();					// get stmt that this stmt follows
-	int getFollowedBy();				// get stmt that follows after this stmt
-	const ParentOfSet& getParentOf();		// get stmt that is parent of this stmt
-	int getChildOf();					// get set of stmts that is child of this stmt
+	int getFollows();					// gets all those after a in Follows(a, b)
+	int getFollowedBy();				// gets all those before b in Follows(a, b)
+	const ChildrenSet& getChildren();	// get childrent nodes
+	int getParent();					// get immediate parent node
 	int getNext();						// get stmt that is next of this stmt
 	int getPrev();						// get stmt whose next is this stmt
 
@@ -63,7 +63,7 @@ public:
 	void setModifies(const ModifiesSet &modifiesSet);
 	void setFollows(int follows);
 	void setFollowedBy(int followedBy);
-	void setParentOf(const ParentOfSet &parentOfSet);
+	void setParentOf(const ChildrenSet &parentOfSet);
 	void setChildOf(int childOf);
 	void setNext(int next);
 	void setPrev(int prev);
@@ -80,7 +80,7 @@ private:
 	ModifiesSet		modifies;
 	int				follows;
 	int				followedBy;
-	ParentOfSet		parentOf;
+	ChildrenSet		parentOf;
 	int				childOf;
 	int				next;
 	int				prev;

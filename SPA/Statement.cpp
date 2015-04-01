@@ -73,13 +73,13 @@ int Statement::getFollowedBy() {
 	return followedBy;
 }
 
-// get stmt that is parents of this stmt
-const Statement::ParentOfSet& Statement::getParentOf() {
+// get childrent nodes
+const Statement::ChildrenSet& Statement::getChildren() {
 	return parentOf;
 }
 
-// get stmt that is child of this stmt
-int Statement::getChildOf() {
+// get immediate parent node
+int Statement::getParent() {
 	return childOf;
 }
 
