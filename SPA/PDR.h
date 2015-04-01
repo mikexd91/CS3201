@@ -31,6 +31,8 @@ using namespace std;
 class PDR {
 	
 public:
+    
+    PDR();
     static PDR* getInstance();
 
 	void processParsedData(ParsedData);

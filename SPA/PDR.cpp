@@ -5,6 +5,11 @@ using namespace std;
 bool PDR::instanceFlag = false;
 PDR* PDR::pdrInstance = NULL;
 
+PDR::PDR() {
+    currNestingLevel = 0;
+    stmtCounter = 0;
+}
+
 PDR* PDR::getInstance() {
     if(!instanceFlag) {
         pdrInstance = new PDR();
