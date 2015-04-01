@@ -8,7 +8,6 @@
 #include "InvalidCodeException.h"
 #include "Parser.h"
 #include "ParsedData.h"
-#include "PDR.h"
 
 using namespace std;
 
@@ -90,7 +89,7 @@ void Parser::program() {
 void Parser::procedure() {
 	match("procedure");
 	string procName = getWord();
-	ParsedData procedure = ParsedData(ParsedData::PROCEDURE, nestingLevel);
+	ParsedData procedure = ParsedData(ParsedData::PROCEDURE, this->nestingLevel);
 	procedure.setProcName(procName);
 	parsedDataReceiver->processParsedData(procedure);
 	match("{");
@@ -117,7 +116,6 @@ void Parser::stmt() {
 void Parser::assign() {
 	string var = getWord();
 	match("=");
-	string expression = getWord();
 	ParsedData assignment = ParsedData(ParsedData::ASSIGNMENT, nestingLevel);
 	assignment.setAssignVar(var);
 	assignment.setAssignExpression(getExpression());
