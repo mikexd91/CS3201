@@ -6,16 +6,11 @@
 
 using namespace std;
 
-VarTable vt = *(VarTable::getInstance());
+VarTable vt = (VarTable::getInstance());
+Variable* x = new Variable("x");
 
 void VarTableTest::setUp() {
-	Variable* x = new Variable("x");
-	//Variable xx("x"); Variable* x = &xx;
-	printf("\n");
-	printf("x: %p\n", x);
-	printf("name: %s\n", x->getName().c_str());
 	vt.addVariable(x);
-	printf("%d\n", vt.contains("x"));
 }
 
 void VarTableTest::tearDown() {
@@ -28,35 +23,29 @@ CPPUNIT_TEST_SUITE_REGISTRATION( VarTableTest );
 void VarTableTest::testProperties() {
 	CPPUNIT_ASSERT(dynamic_cast<VarTable*>(&vt));
 
-	printf("vt addr: %p\n", &vt);
-	
-	Variable* newx = new Variable("x");
-	printf("newx: %p\n", newx);
-	printf("newname: %s\n", newx->getName().c_str());
+	VarTable asd = VarTable::getInstance();
+	VarTable qwe = VarTable::getInstance();
+
+	//CPPUNIT_ASSERT_EQUAL(&asd, &qwe);
+	CPPUNIT_ASSERT(asd.contains("x"));
+	CPPUNIT_ASSERT(qwe.contains("x"));
+
+	asd.addVariable(new Variable("y"));
 
 	Variable* vget = vt.getVariable("x");
 	CPPUNIT_ASSERT(NULL != vget);
-	printf("vget: %p\n", vget);
-	printf("name: %s\n", vget->getName().c_str()); 
 
 	string expname = "x";
 	CPPUNIT_ASSERT_EQUAL(expname, vget->getName());
+	CPPUNIT_ASSERT_EQUAL(x, vget);
 
 	return;
 }
 
 void VarTableTest::testLinks() {
 
-	VarTable* vtt = (VarTable::getInstance());
-	printf("%p\n", &vt);
-	printf("%p\n", vtt->contains("x"));
-
-	//Variable x("x");
-	//Variable* vget = vt.contains("x");
-	CPPUNIT_ASSERT(vt.contains("x"));
-	//CPPUNIT_ASSERT_EQUAL(&x, vget);
-	string expname = "x";
-	//CPPUNIT_ASSERT_EQUAL(expname, vget->getName());
+	VarTable vtt = (VarTable::getInstance());
+	CPPUNIT_ASSERT(vtt.contains("y"));
 
 	return;
 }

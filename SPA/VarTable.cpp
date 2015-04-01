@@ -4,7 +4,8 @@
 using namespace std;
 
 int VarTable::_hasInstance = 0;
-VarTable* VarTable::_instance = NULL;
+VarTable VarTable::_instance;
+VarTable::Table VarTable::_table;
 
 // constructors
 VarTable::VarTable() {
@@ -12,13 +13,11 @@ VarTable::VarTable() {
 }
 
 // general getters
-VarTable* VarTable::getInstance() {
+VarTable& VarTable::getInstance() {
 	if (VarTable::_hasInstance != 1) {
-		printf("asd\n");
-		VarTable::_instance = new VarTable();
+		VarTable::_instance = *(new VarTable());
 		VarTable::_hasInstance = 1;
 	}
-	printf("instance address: %p\n", VarTable::_instance);
 	return VarTable::_instance;
 }
 
