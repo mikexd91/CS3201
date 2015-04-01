@@ -84,6 +84,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AssgNodeTest.cpp" />
+    <ClCompile Include="ASTTest.cpp" />
     <ClCompile Include="CallNodeTest.cpp" />
     <ClCompile Include="ConstNodeTest.cpp" />
     <ClCompile Include="IfNodeTest.cpp" />
@@ -99,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssgNodeTest.h" />
+    <ClInclude Include="ASTTest.h" />
     <ClInclude Include="CallNodeTest.h" />
     <ClInclude Include="ConstNodeTest.h" />
     <ClInclude Include="IfNodeTest.h" />
