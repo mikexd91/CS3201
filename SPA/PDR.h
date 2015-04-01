@@ -6,6 +6,8 @@
 #define PDR_HEADER
 
 #include <string>
+#include <regex>
+
 #include "ConstNode.h"
 #include "ParsedData.h"
 #include "ProcNode.h"
@@ -29,6 +31,8 @@ using namespace std;
 class PDR {
 	
 public:
+    
+    PDR();
     static PDR* getInstance();
 
 	void processParsedData(ParsedData);
