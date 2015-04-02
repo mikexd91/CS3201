@@ -17,8 +17,8 @@
 //		f. setModifies
 //		g. setFollows
 //		h. setFollowedBy
-//		i. setParentOf
-//		j. setChildOf
+//		i. setChildren
+//		j. setParent
 //		k. setNext
 //		l. setPrev
 // 3. Add to StmtTable:
@@ -47,10 +47,10 @@ public:
 	//GNode* getGNodeRef();				// get reference to stmt GNode
 	const UsesSet& getUses();			// get set of variables stmt uses
 	const ModifiesSet& getModifies();	// get set of variables stmt modifies
-	int getFollows();					// gets all those after a in Follows(a, b)
-	int getFollowedBy();				// gets all those before b in Follows(a, b)
-	const ChildrenSet& getChildren();	// get childrent nodes
-	int getParent();					// get immediate parent node
+	int getFollowsAfter();				// get stmt that follows after this stmt
+	int getFollowsBefore();				// get stmt that follows before this stmt
+	const ChildrenSet& getChildren();	// get set of child nodes of this stmt
+	int getParent();					// get parent of this stmt
 	int getNext();						// get stmt that is next of this stmt
 	int getPrev();						// get stmt whose next is this stmt
 
@@ -61,10 +61,10 @@ public:
 	//void setGNodeRef(GNode *ref);
 	void setUses(const UsesSet &usesSet);
 	void setModifies(const ModifiesSet &modifiesSet);
-	void setFollows(int follows);
-	void setFollowedBy(int followedBy);
-	void setParentOf(const ChildrenSet &parentOfSet);
-	void setChildOf(int childOf);
+	void setFollowsAfter(int followsAfter);
+	void setFollowsBefore(int followsBefore);
+	void setChildren(const ChildrenSet &childrenSet);
+	void setParent(int parent);
 	void setNext(int next);
 	void setPrev(int prev);
 
@@ -78,10 +78,10 @@ private:
 	// PRIVATE RELATIONS ATTRIBUTES
 	UsesSet			uses;
 	ModifiesSet		modifies;
-	int				follows;
-	int				followedBy;
-	ChildrenSet		parentOf;
-	int				childOf;
+	int				followsAfter;
+	int				followsBefore;
+	ChildrenSet		children;
+	int				parent;
 	int				next;
 	int				prev;
 
