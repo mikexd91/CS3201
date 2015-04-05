@@ -3,20 +3,19 @@
 
 using namespace std;
 
-int VarTable::_hasInstance = 0;
+bool VarTable::_hasInstance = false;
 VarTable VarTable::_instance;
 VarTable::Table VarTable::_table;
 
 // constructors
 VarTable::VarTable() {
-
 }
 
 // general getters
 VarTable& VarTable::getInstance() {
-	if (VarTable::_hasInstance != 1) {
+	if (!VarTable::_hasInstance) {
 		VarTable::_instance = *(new VarTable());
-		VarTable::_hasInstance = 1;
+		VarTable::_hasInstance = true;
 	}
 	return VarTable::_instance;
 }

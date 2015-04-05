@@ -4,7 +4,7 @@ using namespace std;
 
 StmtTable* fTable = StmtTable::getInstance();			// stmt table instance
 set<Statement*>::iterator fSetIter;						// stmt set iterator
-set<int>::iterator fIntIter;								// int set iterator
+set<int>::iterator fIntIter;							// int set iterator
 
 Follows::Follows(void)
 {

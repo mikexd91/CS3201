@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// setup
 VarTable vt = (VarTable::getInstance());
 Variable* x = new Variable("x");
 
@@ -20,7 +21,7 @@ void VarTableTest::tearDown() {
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( VarTableTest );
 
-void VarTableTest::testProperties() {
+void VarTableTest::testInstances() {
 	CPPUNIT_ASSERT(dynamic_cast<VarTable*>(&vt));
 
 	VarTable asd = VarTable::getInstance();
@@ -42,7 +43,7 @@ void VarTableTest::testProperties() {
 	return;
 }
 
-void VarTableTest::testLinks() {
+void VarTableTest::testAcrossMethods() {
 
 	VarTable vtt = (VarTable::getInstance());
 	CPPUNIT_ASSERT(vtt.contains("y"));

@@ -7,10 +7,13 @@ class ProgNode : public TNode {
 public:
 
 	// constructors
+	ProgNode();
 	ProgNode(const string &name);
 
 	// getters
-	vector<TNode*>& getProcNodes(); 
+	vector<TNode*>& getProcNodes();
+	bool contains(const string& procName);
+	ProcNode* getProcNode(const string& procName);
 
 	// setters
 	void linkProcNode(ProcNode *procNode); 

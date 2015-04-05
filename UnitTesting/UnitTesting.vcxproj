@@ -14,17 +14,6 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="source\PKBUnitTest.cpp" />
-    <ClCompile Include="source\ProcTableTest.cpp" />
-    <ClCompile Include="source\StmtTableTest.cpp" />
-    <ClCompile Include="source\TNodeTest.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="source\ProcTableTest.h" />
-    <ClInclude Include="source\StmtTableTest.h" />
-    <ClInclude Include="source\TNodeTest.h" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{353E6B76-DB90-4258-AC06-2DF35773532C}</ProjectGuid>
     <RootNamespace>UnitTesting</RootNamespace>
@@ -137,6 +126,40 @@
       <Message>Unit Tests</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="AssgNodeTest.cpp" />
+    <ClCompile Include="ASTTest.cpp" />
+    <ClCompile Include="CallNodeTest.cpp" />
+    <ClCompile Include="ConstNodeTest.cpp" />
+    <ClCompile Include="IfNodeTest.cpp" />
+    <ClCompile Include="ProcNodeTest.cpp" />
+    <ClCompile Include="ProgNodeTest.cpp" />
+    <ClCompile Include="source\PKBUnitTest.cpp" />
+    <ClCompile Include="source\ProcTableTest.cpp" />
+    <ClCompile Include="source\StmtTableTest.cpp" />
+    <ClCompile Include="source\TNodeTest.cpp" />
+    <ClCompile Include="StmtLstNodeTest.cpp" />
+    <ClCompile Include="VarTableTest.cpp" />
+    <ClCompile Include="WhileNodeTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AssgNodeTest.h" />
+    <ClInclude Include="ASTTest.h" />
+    <ClInclude Include="CallNodeTest.h" />
+    <ClInclude Include="ConstNodeTest.h" />
+    <ClInclude Include="IfNodeTest.h" />
+    <ClInclude Include="ProcNodeTest.h" />
+    <ClInclude Include="ProgNodeTest.h" />
+    <ClInclude Include="source\ProcTableTest.h" />
+    <ClInclude Include="source\StmtTableTest.h" />
+    <ClInclude Include="source\TNodeTest.h" />
+    <ClInclude Include="StmtLstNodeTest.h" />
+    <ClInclude Include="VarTableTest.h" />
+    <ClInclude Include="WhileNodeTest.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Debug\UnitTesting.vcxprojResolveAssemblyReference.cache" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
