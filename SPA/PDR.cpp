@@ -48,8 +48,8 @@ void PDR::processProcedureStmt(ParsedData data) {
     // If there was a previous procedure, link prev proc to AST
     if(!nodeStack.empty()) {
         ProcNode* previousProc = (ProcNode*)nodeStack.top();
-        AST* ast = AST::getInstance();
-        ast->addProcNode(previousProc);
+        AST ast = AST::getInstance();
+        ast.addProcNode(previousProc);
         nodeStack.pop();
     }
 
@@ -257,8 +257,8 @@ void PDR::processEndProgram() {
     }
     
     ProcNode* procNodeToBeLinked = (ProcNode*)nodeStack.top();
-    AST* ast = AST::getInstance();
-    ast->addProcNode(procNodeToBeLinked);
+    AST ast = AST::getInstance();
+    ast.addProcNode(procNodeToBeLinked);
     
     nodeStack.pop();
 }
