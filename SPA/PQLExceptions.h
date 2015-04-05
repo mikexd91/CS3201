@@ -14,3 +14,15 @@ struct InvalidDeclarationException : public exception{
 		return "Declaration type mismatch!";
 	}
 };
+
+struct InvalidSelectException : public exception{
+	const char * what() const throw(){
+		return "Query invalid!";
+	}
+};
+
+struct InvalidSentenceException : public exception{
+	const char * what() const throw(){
+		return "Unexpected end of Query!";
+	}
+};

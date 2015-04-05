@@ -19,8 +19,6 @@ public:
 	QueryParser(void);
 	~QueryParser(void);
 
-	string removeAll(string, string);
-	vector<string> findClauses(string);
 	Query processQuery(string);
 	
 };
