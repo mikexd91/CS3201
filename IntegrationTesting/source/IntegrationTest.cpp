@@ -8,7 +8,7 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 // Get the top level suite from the registry
-CPPUNIT_NS::Test *suite = CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest();
+CPPUNIT_NS::Test *suite = CPPUNIT_NS::TestFactoryRegistry::getRegistry("TestOne").makeTest();
 CppUnit::TextUi::TestRunner runner;
 
 //parse the SIMPLE soource code into the parser
