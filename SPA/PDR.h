@@ -34,6 +34,7 @@ public:
     
     PDR();
     static PDR* getInstance();
+	static void resetInstanceFlag();
 
 	void processParsedData(ParsedData);
 

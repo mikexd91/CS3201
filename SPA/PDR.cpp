@@ -19,6 +19,10 @@ PDR* PDR::getInstance() {
     return pdrInstance;
 }
 
+void PDR::resetInstanceFlag() {
+	instanceFlag = false;
+}
+
 void PDR::processParsedData(ParsedData data) {
     ParsedData::Type stmtType = data.getType();
     switch(stmtType) {
