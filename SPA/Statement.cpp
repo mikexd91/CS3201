@@ -63,24 +63,24 @@ const Statement::ModifiesSet& Statement::getModifies() {
 	return modifies;
 }
 
-// get stmt that this stmt follows
-int Statement::getFollows() {
-	return follows;
-}
-
 // get stmt that follows after this stmt
-int Statement::getFollowedBy() {
-	return followedBy;
+int Statement::getFollowsAfter() {
+	return followsAfter;
 }
 
-// get stmt that is parents of this stmt
-const Statement::ParentOfSet& Statement::getParentOf() {
-	return parentOf;
+// get stmt that follows before this stmt
+int Statement::getFollowsBefore() {
+	return followsBefore;
 }
 
-// get stmt that is child of this stmt
-int Statement::getChildOf() {
-	return childOf;
+// get set of child nodes of this stmt
+const Statement::ChildrenSet& Statement::getChildren() {
+	return children;
+}
+
+// get parent of this stmt
+int Statement::getParent() {
+	return parent;
 }
 
 // get stmt that is next of this stmt
@@ -122,20 +122,20 @@ void Statement::setModifies(const set<string> &modifiesSet) {
 	modifies = modifiesSet;
 }
 
-void Statement::setFollows(int follows) {
-	this->follows = follows;
+void Statement::setFollowsAfter(int followsAfter) {
+	this->followsAfter = followsAfter;
 }
 
-void Statement::setFollowedBy(int followedBy) {
-	this->followedBy = followedBy;
+void Statement::setFollowsBefore(int followsBefore) {
+	this->followsBefore = followsBefore;
 }
 
-void Statement::setParentOf(const set<int> &parentOfSet) {
-	parentOf = parentOfSet;
+void Statement::setChildren(const set<int> &childrenSet) {
+	children = childrenSet;
 }
 
-void Statement::setChildOf(int childOf) {
-	this->childOf = childOf;
+void Statement::setParent(int parent) {
+	this->parent = parent;
 }
 
 void Statement::setNext(int nextSet) {
