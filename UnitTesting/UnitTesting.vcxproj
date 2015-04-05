@@ -14,6 +14,19 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\ParserTest.cpp" />
+    <ClCompile Include="source\PKBUnitTest.cpp" />
+    <ClCompile Include="source\ProcTableTest.cpp" />
+    <ClCompile Include="source\StmtTableTest.cpp" />
+    <ClCompile Include="source\TNodeTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\ParserTest.h" />
+    <ClInclude Include="source\ProcTableTest.h" />
+    <ClInclude Include="source\StmtTableTest.h" />
+    <ClInclude Include="source\TNodeTest.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{353E6B76-DB90-4258-AC06-2DF35773532C}</ProjectGuid>
     <RootNamespace>UnitTesting</RootNamespace>
@@ -156,9 +169,6 @@
     <ClInclude Include="StmtLstNodeTest.h" />
     <ClInclude Include="VarTableTest.h" />
     <ClInclude Include="WhileNodeTest.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Debug\UnitTesting.vcxprojResolveAssemblyReference.cache" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
