@@ -57,4 +57,8 @@ namespace stringconst{
 	string const ARG_STATEMENT = "statement";
 	string const ARG_ASSIGN = "assign";
 	string const ARG_VARIABLE = "variable";
+
+	const string DELIM_STRING = " ;={}";
+	const char DELIMITERS[] = { ';', '=', '{', '}' };
+	const char SANITISED_CHARS[] = { '\t', '\n' };
 };
