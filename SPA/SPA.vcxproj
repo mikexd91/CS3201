@@ -9,13 +9,21 @@
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="SPA - Release|Win32">
+      <Configuration>SPA - Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="SPA|Win32">
+      <Configuration>SPA</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssgNode.h" />
+    <ClInclude Include="ast.h" />
     <ClInclude Include="CallNode.h" />
     <ClInclude Include="Clause.h" />
     <ClInclude Include="ConstNode.h" />
-    <ClInclude Include="Follows.h" />
     <ClInclude Include="IfNode.h" />
     <ClInclude Include="InvalidCodeException.h" />
     <ClInclude Include="OpNode.h" />
@@ -43,14 +51,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssgNode.cpp" />
+    <ClCompile Include="AST.cpp" />
     <ClCompile Include="CallNode.cpp" />
     <ClCompile Include="Clause.cpp" />
     <ClCompile Include="ConstNode.cpp" />
-    <ClCompile Include="Follows.cpp" />
     <ClCompile Include="IfNode.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="OpNode.cpp" />
-    <ClCompile Include="Parent.cpp" />
     <ClCompile Include="ParsedData.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PDR.cpp" />
@@ -70,6 +77,11 @@
     <ClCompile Include="VarNode.cpp" />
     <ClCompile Include="VarTable.cpp" />
     <ClCompile Include="WhileNode.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="InvalidCodeException.h" />
+    <ClInclude Include="ParsedData.h" />
+    <ClInclude Include="Parser.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>
@@ -97,7 +109,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>

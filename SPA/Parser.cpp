@@ -173,3 +173,6 @@ void Parser::endParse() {
 	ParsedData endData = ParsedData(ParsedData::END, nestingLevel);
 	parsedDataReceiver->processParsedData(endData);
 }
+
+
+

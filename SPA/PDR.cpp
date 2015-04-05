@@ -48,8 +48,8 @@ void PDR::processProcedureStmt(ParsedData data) {
     // If there was a previous procedure, link prev proc to AST
     if(!nodeStack.empty()) {
         ProcNode* previousProc = (ProcNode*)nodeStack.top();
-        AST* ast = AST::getInstance();
-        ast->addProcNode(previousProc);
+        AST ast = AST::getInstance();
+        ast.addProcNode(previousProc);
         nodeStack.pop();
     }
 
@@ -111,14 +111,14 @@ void PDR::processAssignStmt(ParsedData data) {
     
     if(assignNode->hasLeftSibling()) {
         StmtNode* leftSib = (StmtNode*)assignNode->getLeftSibling();
-        stmt->setFollows(leftSib->getStmtNum());
+        stmt->setFollowsAfter(leftSib->getStmtNum());
         Statement* leftStmt = stmtTable->getStmtObj(leftSib->getStmtNum());
-        leftStmt->setFollowedBy(assignNode->getStmtNum());
+        leftStmt->setFollowsBefore(assignNode->getStmtNum());
     }
     
     if(!stmtParentNumStack.empty()) {
         int parentStmtNum = stmtParentNumStack.top();
-        stmt->setChildOf(parentStmtNum);
+        stmt->setParent(parentStmtNum);
     }
 
     stmtTable->addStmt(stmt);
@@ -165,14 +165,14 @@ void PDR::processWhileStmt(ParsedData data) {
     
     if(whileNode->hasLeftSibling()) {
         StmtNode* leftSib = (StmtNode*)whileNode->getLeftSibling();
-        whileStmt->setFollows(leftSib->getStmtNum());
+        whileStmt->setFollowsAfter(leftSib->getStmtNum());
         Statement* leftStmt = stmtTable->getStmtObj(leftSib->getStmtNum());
-        leftStmt->setFollowedBy(whileNode->getStmtNum());
+        leftStmt->setFollowsBefore(whileNode->getStmtNum());
     }
     
     if(!stmtParentNumStack.empty()) {
         int parentStmtNum = stmtParentNumStack.top();
-        whileStmt->setChildOf(parentStmtNum);
+        whileStmt->setParent(parentStmtNum);
     }
     
     addToVarTable(whileVar);
@@ -257,8 +257,8 @@ void PDR::processEndProgram() {
     }
     
     ProcNode* procNodeToBeLinked = (ProcNode*)nodeStack.top();
-    AST* ast = AST::getInstance();
-    ast->addProcNode(procNodeToBeLinked);
+    AST ast = AST::getInstance();
+    ast.addProcNode(procNodeToBeLinked);
     
     nodeStack.pop();
 }
