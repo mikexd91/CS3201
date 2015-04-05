@@ -108,19 +108,24 @@ void PDR::processAssignStmt(ParsedData data) {
     stmt->setTNodeRef(assignNode);
     stmt->setModifies(modifies);
     stmt->setUses(uses);
+	
     
     if(assignNode->hasLeftSibling()) {
         StmtNode* leftSib = (StmtNode*)assignNode->getLeftSibling();
-        stmt->setFollows(leftSib->getStmtNum());
+        stmt->setFollowsAfter(leftSib->getStmtNum());
         Statement* leftStmt = stmtTable->getStmtObj(leftSib->getStmtNum());
-        leftStmt->setFollowedBy(assignNode->getStmtNum());
+        leftStmt->setFollowsBefore(assignNode->getStmtNum());
     }
     
     if(!stmtParentNumStack.empty()) {
         int parentStmtNum = stmtParentNumStack.top();
-        stmt->setChildOf(parentStmtNum);
+        stmt->setParent(parentStmtNum);
+		Statement* parentStmt = stmtTable->getStmtObj(parentStmtNum);
+		set<int> children = parentStmt->getChildren();
+		children.insert(assignNode->getStmtNum());
+		parentStmt->setChildren(children);
     }
-
+	
     stmtTable->addStmt(stmt);
     
 }
@@ -165,14 +170,18 @@ void PDR::processWhileStmt(ParsedData data) {
     
     if(whileNode->hasLeftSibling()) {
         StmtNode* leftSib = (StmtNode*)whileNode->getLeftSibling();
-        whileStmt->setFollows(leftSib->getStmtNum());
+        whileStmt->setFollowsAfter(leftSib->getStmtNum());
         Statement* leftStmt = stmtTable->getStmtObj(leftSib->getStmtNum());
-        leftStmt->setFollowedBy(whileNode->getStmtNum());
+        leftStmt->setFollowsBefore(whileNode->getStmtNum());
     }
     
     if(!stmtParentNumStack.empty()) {
         int parentStmtNum = stmtParentNumStack.top();
-        whileStmt->setChildOf(parentStmtNum);
+        whileStmt->setParent(parentStmtNum);
+		Statement* parentStmt = stmtTable->getStmtObj(parentStmtNum);
+		set<int> children = parentStmt->getChildren();
+		children.insert(whileNode->getStmtNum());
+		parentStmt->setChildren(children);
     }
     
     addToVarTable(whileVar);

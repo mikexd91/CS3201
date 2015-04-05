@@ -12,9 +12,9 @@ using namespace std;
 // contructor with no preset attributes
 // (null attributes or -1 for primitives and 0 for stmtNum)
 Statement::Statement() {
-	follows = DEFAULT;
-	followedBy = DEFAULT;
-	childOf = DEFAULT;
+	followsAfter = DEFAULT;
+	followsBefore = DEFAULT;
+	parent = DEFAULT;
 	next = DEFAULT;
 	prev = DEFAULT;
 }
