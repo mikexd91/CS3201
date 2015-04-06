@@ -4,7 +4,8 @@ using namespace std;
 
 VarTable* uVarTable = VarTable::getInstance();				// var table instance
 StmtTable* uStmtTable = StmtTable::getInstance();			// stmt table instance
-set<int>::iterator uIntIter;							// int set iterator
+set<int>::iterator uIntIter;								// int set iterator
+set<string>::iterator uStringIter;							// string set iterator
 
 Uses::Uses(void)
 {
@@ -44,6 +45,48 @@ set<string> Uses::getVarOfUses(int stmtNum) {
 		return varStmt;
 	}
 	return set<string>();
+}
+
+// for all assignment in set<int>, check if its var is in set<int> var
+set<int> Uses::getAssignOfUsesUnfixed(set<int> assign, set<string> var0) {
+	set<int> result;
+	for (uIntIter=assign.begin(); uIntIter!=assign.end(); uIntIter++) {
+		int stmtNum = *uIntIter;
+		Statement* stmtObj = uStmtTable->getStmtObj(stmtNum);
+		// get uses of stmtObj
+		set<string> usedVar = stmtObj->getUses();
+		// check if its var is in set<int> var
+		for (uStringIter=usedVar.begin(); uStringIter!=usedVar.end(); uStringIter++) {
+			string var1 = *uStringIter;
+			set<string>::iterator iter = var0.find(var1);
+			if (iter != var0.end()) {
+				result.insert(stmtNum);
+				break;
+			}
+		}
+	}
+	return result;
+}
+
+// for all var in set<string>, check if the assignment that uses it is in set<int> assign
+set<string> Uses::getVarOfUsesUnfixed(set<int> assign, set<string> var0) {
+	set<string> result;
+	// for all variable in var0
+	for (uStringIter=var0.begin(); uStringIter!=var0.end(); uStringIter++) {
+		string var1 = *uStringIter;
+		Variable *var2 = uVarTable->getVariable(var1);
+		set<int> stmtSet = var2->getUsedByStmts();
+		// for all stmt in stmtSet
+		for (uIntIter=stmtSet.begin(); uIntIter!=stmtSet.end(); uIntIter++) {
+			int stmt = *uIntIter;
+			set<int>::iterator iter = assign.find(stmt);
+			if (iter != assign.end()) {
+				result.insert(var1);
+				break;
+			}
+		}
+	}
+	return result;
 }
 
 /*

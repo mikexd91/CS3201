@@ -16,7 +16,8 @@ public:
 
 	set<int> getAssignOfUses(string varName);		// get a of Uses(a,"v")
 	set<string> getVarOfUses(int stmtNum);			// get v of Uses(a, v)
-	// set<int> get
+	set<int> getAssignOfUsesUnfixed(set<int> assign, set<string> var0);
+	set<string> getVarOfUsesUnfixed(set<int> assign, set<string> var0);
 
 	// set<set<int>> getAllUses(int stmt1, int stmt2);
 };
