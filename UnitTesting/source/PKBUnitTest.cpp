@@ -9,6 +9,7 @@ int main(int argc, char* argv[])
 // Get the top level suite from the registry
 
 CppUnit::TestSuite *unitSuite = new CppUnit::TestSuite( "PKB Unit Tests" );
+
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("TNodeTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ProgNodeTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ProcNodeTest").makeTest());

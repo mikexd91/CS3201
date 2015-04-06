@@ -22,6 +22,7 @@ AST::AST() {
 
 // getters
 
+
 AST& AST::getInstance() {
 	if (!AST::_hasInstance) {
 		AST::_instance = *(new AST());

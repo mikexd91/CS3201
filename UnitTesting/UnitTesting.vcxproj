@@ -70,7 +70,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>"$(SolutionDir)lib\cppunit_debug.lib";"$(SolutionDir)Debug\SPA.lib"</AdditionalDependencies>
-      <AdditionalLibraryDirectories>"$(SolutionDir)\Release";%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -156,9 +156,6 @@
     <ClInclude Include="StmtLstNodeTest.h" />
     <ClInclude Include="VarTableTest.h" />
     <ClInclude Include="WhileNodeTest.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Debug\UnitTesting.vcxprojResolveAssemblyReference.cache" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
