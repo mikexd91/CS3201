@@ -211,7 +211,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
         }
     }
     
-    for(int i = 0; i < expression.size(); i++) {
+    for(size_t i = 0; i < expression.size(); i++) {
         string exp = expression.front();
         expression.pop();
         
