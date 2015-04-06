@@ -19,6 +19,23 @@ void ProcTableTest::testInstance() {
 	CPPUNIT_ASSERT(dynamic_cast<ProcTable*>(table));
 }
 
+// method to test instance copies
+void ProcTableTest::testInstanceCopies() {
+	// Create a procedure
+	Procedure* proc = new Procedure("new");
+
+	// Add proc to original table instance
+	table->addProc(proc);
+
+	// Create new table instance
+	ProcTable* testTable = ProcTable::getInstance();
+
+	// Check that procedure instance are the same and contain the same proc
+	CPPUNIT_ASSERT_EQUAL(table, testTable);
+	CPPUNIT_ASSERT(table->contains("new"));
+	CPPUNIT_ASSERT(testTable->contains("new"));
+}
+
 // method to test adding of proc to table
 void ProcTableTest::testAddProc() {
 	// Create some procedures

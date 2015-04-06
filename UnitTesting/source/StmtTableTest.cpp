@@ -20,6 +20,24 @@ void StmtTableTest::testInstance() {
 	CPPUNIT_ASSERT(dynamic_cast<StmtTable*>(table));
 }
 
+// method to test instance copies
+void StmtTableTest::testInstanceCopies() {
+	int stmtNum = 8;
+
+	// Create a statement
+	Statement* stmt = new Statement(); stmt->setStmtNum(stmtNum);
+
+	// Add proc to original table instance
+	table->addStmt(stmt);
+
+	// Create new table instance
+	StmtTable* testTable = StmtTable::getInstance();
+
+	// Check that procedure instance are the same and contain the same proc
+	CPPUNIT_ASSERT_EQUAL(table, testTable);
+	CPPUNIT_ASSERT_EQUAL(table->getStmtObj(stmtNum), testTable->getStmtObj(stmtNum));
+}
+
 // method to test retrieval of statement by statement number
 void StmtTableTest::testGetStmtByNum() {
 	int stmtNum = 5;
