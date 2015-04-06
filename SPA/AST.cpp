@@ -10,8 +10,8 @@ using namespace std;
 #include "AST.h"
 
 bool AST::_hasInstance = false;
-AST AST::_instance;
-ProgNode AST::_root;
+AST* AST::_instance;
+//ProgNode AST::_root;
 
 // constructors
 
@@ -22,10 +22,9 @@ AST::AST() {
 
 // getters
 
-
-AST& AST::getInstance() {
+AST* AST::getInstance() {
 	if (!AST::_hasInstance) {
-		AST::_instance = *(new AST());
+		AST::_instance = (new AST());
 		AST::_hasInstance = true;
 	}
 	return _instance;
