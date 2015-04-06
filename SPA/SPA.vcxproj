@@ -27,7 +27,6 @@
     <ClInclude Include="IfNode.h" />
     <ClInclude Include="InvalidCodeException.h" />
     <ClInclude Include="OpNode.h" />
-    <ClInclude Include="Parent.h" />
     <ClInclude Include="ParsedData.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="PDR.h" />
