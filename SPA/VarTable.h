@@ -26,7 +26,7 @@ class VarTable {
 public:
 	
 	// getters
-	static VarTable& getInstance();
+	static VarTable* getInstance();
 	Variable* getVariable(const string& varName);
 	VarIter getIterator();
 
@@ -38,8 +38,8 @@ public:
 
 private:
 	static bool _hasInstance;
-	static VarTable _instance;
-	static Table _table;
+	static VarTable* _instance;
+	Table _table;
 	
 	// constructor
 	VarTable();	

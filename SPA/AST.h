@@ -13,7 +13,7 @@ class AST {
 public:
 
 	// getters
-	static AST& getInstance();
+	static AST* getInstance();
 	bool contains(const string& procName);
 	ProcNode* getProcNode(const string& procName);
 
@@ -24,8 +24,8 @@ private:
 	// constructor: creates tree rooted at programNode (named programName)
 	AST();
 	
-	static ProgNode _root;
+	ProgNode _root;
 	static bool _hasInstance;
-	static AST _instance;
+	static AST* _instance;
 
 };
