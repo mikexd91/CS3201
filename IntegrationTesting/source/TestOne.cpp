@@ -37,11 +37,9 @@ void TestOne::testAddProc() {
 	string initModifies2[] = { "y" };
 	set<string> strModifies2(initModifies2, initModifies2 + 1);
 	CPPUNIT_ASSERT(stmt2->getModifies() == strModifies2);
-	//string initUses2[] = { "x", "z" };
-	set<string> strUses2;
-	strUses2.insert("x");
-	strUses2.insert("z");
-	//CPPUNIT_ASSERT(stmt2->getUses() == strUses2);
+	string initUses2[] = { "x", "z" };
+	set<string> strUses2(initUses2, initUses2 + 2);
+	CPPUNIT_ASSERT(stmt2->getUses() == strUses2);
 }
 
 void TestOne::testAssign() {
