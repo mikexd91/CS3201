@@ -30,6 +30,7 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("StmtTableTest").ma
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ProcTableTest").makeTest());
 
 // PQL Clauses
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("FollowsClauseTest").makeTest());
 
 CppUnit::TestFactoryRegistry::getRegistry().addTestToSuite(unitSuite);
 CppUnit::TextUi::TestRunner runner;
