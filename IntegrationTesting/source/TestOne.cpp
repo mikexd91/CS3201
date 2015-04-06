@@ -23,7 +23,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( TestOne );
 
 // method to test adding of proc to table
 void TestOne::testAddProc() {
-	parser.parse("procedure test {x = 2; y=x+z;}");
+	parser.parse("procedure test {x = 2; y=x+z; z=x+y;}");
 	ProcTable* procTable = ProcTable::getInstance();
 	CPPUNIT_ASSERT(procTable->contains("test"));
 	StmtTable* stmtTable = StmtTable::getInstance();
@@ -40,6 +40,14 @@ void TestOne::testAddProc() {
 	string initUses2[] = { "x", "z" };
 	set<string> strUses2(initUses2, initUses2 + 2);
 	CPPUNIT_ASSERT(stmt2->getUses() == strUses2);
+
+	Statement* stmt3 = stmtTable->getStmtObj(3);
+	string initModifies3[] = { "z" };
+	set<string> strModifies3(initModifies3, initModifies3 + 1);
+	CPPUNIT_ASSERT(stmt3->getModifies() == strModifies3);
+	string initUses3[] = { "x", "y" };
+	set<string> strUses3(initUses3, initUses3 + 2);
+	CPPUNIT_ASSERT(stmt3->getUses() == strUses3);
 }
 
 void TestOne::testAssign() {
