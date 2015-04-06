@@ -1,7 +1,6 @@
 #include <iostream>
 #include <exception>
 
-using std::system;
 using std::exception;
 
 struct MissingDeclarationException : public exception{
@@ -25,5 +24,11 @@ struct InvalidSelectException : public exception{
 struct UnexpectedEndException : public exception{
 	const char * what() const throw(){
 		return "Unexpected end of Query!";
+	}
+};
+
+struct MissingClauseException : public exception{
+	const char * what() const throw(){
+		return "Clause not found!";
 	}
 };

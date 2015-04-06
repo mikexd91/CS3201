@@ -17,6 +17,7 @@ private:
 	bool checkValidity();
 	bool containsAny(string, vector<string>);
 	bool containsClauseType(string);
+	string getClauseString(string);
 public:
 	QueryParser(void);
 	~QueryParser(void);

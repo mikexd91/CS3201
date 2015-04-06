@@ -56,6 +56,22 @@ bool containsClauseTypes(string s){
 	return containsAny(s, clauseVector);
 }
 
+string getClauseString(string s){
+	vector<string> clauseVector;
+	clauseVector.push_back(stringconst::TYPE_CALLS);
+	clauseVector.push_back(stringconst::TYPE_PATTERN);
+	clauseVector.push_back(stringconst::TYPE_FOLLOWS);
+	clauseVector.push_back(stringconst::TYPE_PARENT);
+	clauseVector.push_back(stringconst::TYPE_MODIFIES);
+	clauseVector.push_back(stringconst::TYPE_USES);
+	for (int i=0; i<clauseVector.size(); i++){
+		string current = clauseVector.at(i);
+		if (contains(s, current)){
+			return current;
+		}
+	}
+}
+
 Query QueryParser::processQuery(string input){
 	Utils util;
 	Query parsedQuery = Query();
@@ -88,7 +104,12 @@ Query QueryParser::processQuery(string input){
 			if (insideClause){
 
 			} else if (expectingClause){
-				
+				if (!containsClauseType(current)){
+					throw MissingClauseException();
+				} else {
+					insideClause = true;
+
+				}
 			} else {
 				if (current.compare(stringconst::STRING_AND) || current.compare(stringconst::STRING_WITH)){
 					if (i == tokens.size() -1){
