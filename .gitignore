@@ -205,3 +205,4 @@ FakesAssemblies/
 *.ini
 .cproject
 .project
+SPA/SPA.vcxproj
