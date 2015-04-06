@@ -12,6 +12,7 @@
 using std::string;
 using std::vector;
 using std::stringstream;
+using namespace boost;
 
 QueryParser::QueryParser(void){
 }
@@ -32,6 +33,27 @@ vector<string> QueryParser::tokeniser(string input, char delim){
 	vector<string> elems;
     split(input, delim, elems);
     return elems;
+}
+
+bool containsAny(string s, vector<string> list){
+	for (int i=0; i<list.size(); i++){
+		string current = list.at(i);
+		if (contains(s, current)){
+			return true;
+		}
+	}
+	return false;
+}
+
+bool containsClauseTypes(string s){
+	vector<string> clauseVector;
+	clauseVector.push_back(stringconst::TYPE_CALLS);
+	clauseVector.push_back(stringconst::TYPE_PATTERN);
+	clauseVector.push_back(stringconst::TYPE_FOLLOWS);
+	clauseVector.push_back(stringconst::TYPE_PARENT);
+	clauseVector.push_back(stringconst::TYPE_MODIFIES);
+	clauseVector.push_back(stringconst::TYPE_USES);
+	return containsAny(s, clauseVector);
 }
 
 Query QueryParser::processQuery(string input){
@@ -58,12 +80,14 @@ Query QueryParser::processQuery(string input){
 		string current = tokens.at(i);
 		if (i==0){
 			if (!current.compare(stringconst::STRING_SELECT)){
-				throw UnexpectedEndException();
+				throw InvalidSelectException();
 			}
 		} else if (i==1){
 			parsedQuery.addSelectSynonym(current);
 		} else {
-			if (expectingClause){
+			if (insideClause){
+
+			} else if (expectingClause){
 				
 			} else {
 				if (current.compare(stringconst::STRING_AND) || current.compare(stringconst::STRING_WITH)){

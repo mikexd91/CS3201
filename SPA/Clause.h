@@ -1,7 +1,9 @@
 #pragma once
+#include <vector>
 #include <string>
 #include <map>
 
+using std::vector;
 using std::map;
 using std::string;
 class Clause
@@ -60,6 +62,8 @@ namespace stringconst{
 	string const TYPE_USES = "Uses";
 	string const TYPE_PATTERN = "Pattern";
 	string const TYPE_CALLS = "Calls";
+
+	vector<string> const VECTOR_TYPE;
 
 	string const ARG_WHILE = "while";
 	string const ARG_STATEMENT = "statement";
