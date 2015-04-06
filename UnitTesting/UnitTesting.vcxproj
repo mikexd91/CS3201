@@ -135,11 +135,12 @@
     <ClCompile Include="OpNodeTest.cpp" />
     <ClCompile Include="ProcNodeTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
-    <ClCompile Include="source\PKBUnitTest.cpp" />
+    <ClCompile Include="source\AllUnitTest.cpp" />
     <ClCompile Include="source\ProcTableTest.cpp" />
     <ClCompile Include="source\StmtTableTest.cpp" />
     <ClCompile Include="source\TNodeTest.cpp" />
     <ClCompile Include="StmtLstNodeTest.cpp" />
+    <ClCompile Include="VarNodeTest.cpp" />
     <ClCompile Include="VarTableTest.cpp" />
     <ClCompile Include="WhileNodeTest.cpp" />
   </ItemGroup>
@@ -156,6 +157,7 @@
     <ClInclude Include="source\StmtTableTest.h" />
     <ClInclude Include="source\TNodeTest.h" />
     <ClInclude Include="StmtLstNodeTest.h" />
+    <ClInclude Include="VarNodeTest.h" />
     <ClInclude Include="VarTableTest.h" />
     <ClInclude Include="WhileNodeTest.h" />
   </ItemGroup>
