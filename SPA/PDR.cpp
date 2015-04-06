@@ -5,6 +5,11 @@ using namespace std;
 bool PDR::instanceFlag = false;
 PDR* PDR::pdrInstance = NULL;
 
+PDR::PDR() {
+    currNestingLevel = 0;
+    stmtCounter = 0;
+}
+
 PDR* PDR::getInstance() {
     if(!instanceFlag) {
         pdrInstance = new PDR();
@@ -12,6 +17,10 @@ PDR* PDR::getInstance() {
     }
     
     return pdrInstance;
+}
+
+void PDR::resetInstanceFlag() {
+	instanceFlag = false;
 }
 
 void PDR::processParsedData(ParsedData data) {
@@ -23,14 +32,11 @@ void PDR::processParsedData(ParsedData data) {
         case ParsedData::ASSIGNMENT:
             processAssignStmt(data);
             break;
-        case ParsedData::CALL:
-            processCallStmt(data);
-            break;
         case ParsedData::WHILE:
             processWhileStmt(data);
             break;
-        case ParsedData::IF:
-            processIfStmt(data);
+        case ParsedData::END:
+            processEndProgram();
             break;
         default:
             break;
@@ -38,18 +44,16 @@ void PDR::processParsedData(ParsedData data) {
 }
 
 void PDR::processProcedureStmt(ParsedData data) {
-    //TODO - if working on a previous procedure, links the prev procedure to the root of the
-    //		 AST and creates a new procedure node
-    
     // New Procedure
-
     for(int i = 0; i < currNestingLevel - data.getNestingLevel(); i++) {
         nodeStack.pop();
     }
     
+    // If there was a previous procedure, link prev proc to AST
     if(!nodeStack.empty()) {
-        TNode* previousProc = nodeStack.top();
-        // TODO - link previous proc node to the program node
+        ProcNode* previousProc = (ProcNode*)nodeStack.top();
+        AST ast = AST::getInstance();
+        ast.addProcNode(previousProc);
         nodeStack.pop();
     }
 
@@ -63,97 +67,149 @@ void PDR::processProcedureStmt(ParsedData data) {
     currNestingLevel = data.getNestingLevel();
     currNestingLevel++;
     
-    // TODO - Add to proc table
+    addToProcTable(procedure);
     
 }
 
 void PDR::processAssignStmt(ParsedData data) {
-    AssgNode* assignNode = new AssgNode(++stmtCounter);
-    
     if(currNestingLevel > data.getNestingLevel()) {
         int diffNestingLevel = currNestingLevel - data.getNestingLevel();
         for(int i = 0; i < diffNestingLevel; i++) {
+            stmtParentNumStack.pop();
             nodeStack.pop();
         }
         currNestingLevel = data.getNestingLevel();
     }
     
-    /* TODO - Get modifies variable
-     *	    - Add to modifies table
-     *      - Get used variables
-     *      - Add to uses table
-     *      - Depending on the operators of the expression, push
-     *        to stack
-     */
+    set<string> modifies;
+    set<string> uses;
+    AssgNode* assignNode = new AssgNode(++stmtCounter);
+    TNode* assignExpChild = breakDownAssignExpression(data, uses);
+    TNode* parentStmtLst = nodeStack.top();
     
-    TNode* assignExpChild = breakDownAssignExpression(data);
-    TNode* parent = nodeStack.top();
-    parent->linkChild(assignNode);
+    if(parentStmtLst->hasChildren()) {
+        vector<TNode*> listOfChildren = parentStmtLst->getChildren();
+        long int lastChild = listOfChildren.size() - 1;
+        TNode* leftSibling = listOfChildren[lastChild];
+        assignNode->linkLeftSibling(leftSibling);
+    }
+    
+    modifies.insert(data.getAssignVar());
+    
+    // Linking the AST
+    assignNode->linkParent(parentStmtLst);
     assignNode->linkExprNode(assignExpChild);
-    assignNode->linkVarNode(new VarNode(data.getAssignVar()));
+    VarNode* modifiesVar = new VarNode(data.getAssignVar());
+    assignNode->linkVarNode(modifiesVar);
+    addToVarTable(modifiesVar);
     
-    /*
-     * TODO - Create Statement object
-     *			- set the uses
-     *			- set the follows
-     *			- set the parent
-     *			- set the child
-     */
+    
+    // Populating the StmtTable
+    StmtTable* stmtTable = StmtTable::getInstance();
     Statement* stmt = new Statement();
     stmt->setType(assignNode->getNodeType());
     stmt->setStmtNum(stmtCounter);
     stmt->setTNodeRef(assignNode);
+    stmt->setModifies(modifies);
+    stmt->setUses(uses);
+	
     
-    StmtTable* stmtTable = StmtTable::getInstance();
+    if(assignNode->hasLeftSibling()) {
+        StmtNode* leftSib = (StmtNode*)assignNode->getLeftSibling();
+        stmt->setFollowsAfter(leftSib->getStmtNum());
+        Statement* leftStmt = stmtTable->getStmtObj(leftSib->getStmtNum());
+        leftStmt->setFollowsBefore(assignNode->getStmtNum());
+    }
+    
+    if(!stmtParentNumStack.empty()) {
+        int parentStmtNum = stmtParentNumStack.top();
+        stmt->setParent(parentStmtNum);
+		Statement* parentStmt = stmtTable->getStmtObj(parentStmtNum);
+		set<int> children = parentStmt->getChildren();
+		children.insert(assignNode->getStmtNum());
+		parentStmt->setChildren(children);
+    }
+	
     stmtTable->addStmt(stmt);
     
 }
 
-void PDR::processIfStmt(ParsedData data) {
-    
-}
-
 void PDR::processWhileStmt(ParsedData data) {
-    //TODO - processing while stmtLst
     if(currNestingLevel > data.getNestingLevel()) {
         int diffNestingLevel = currNestingLevel - data.getNestingLevel();
-        
         for(int i = 0; i < diffNestingLevel; i++) {
+            stmtParentNumStack.pop();
             nodeStack.pop();
         }
-    } else if(data.getNestingLevel() - currNestingLevel > 1) {
-        // Throw error because nesting level cannot increase by more than 1
     }
     
     WhileNode* whileNode = new WhileNode(++stmtCounter);
     StmtLstNode* stmtLst = new StmtLstNode();
-    TNode* parentNode = nodeStack.top();
+    TNode* parentStmtLst = nodeStack.top();
     
-    whileNode->linkParent(parentNode);
+    if(parentStmtLst->hasChildren()) {
+        vector<TNode*> listOfChildren = parentStmtLst->getChildren();
+        long int lastChild = listOfChildren.size() - 1;
+        TNode* leftSibling = listOfChildren[lastChild];
+        whileNode->linkLeftSibling(leftSibling);
+    }
     
+    // Linking the AST
+    VarNode* whileVar = new VarNode(data.getWhileVar());
+    whileNode->linkParent(parentStmtLst);
+    whileNode->linkVarNode(whileVar);
+    whileNode->linkStmtLstNode(stmtLst);
+    
+    stmtParentNumStack.push(stmtCounter);
     nodeStack.push(stmtLst);
     stmtParentNumStack.push(stmtCounter);
     currNestingLevel = data.getNestingLevel() + 1;
     
-    /*
-     * Creating statement object that will be used to populate the 
-     * necessary tables
-     */
-    Statement whileStmt = Statement();
-    whileStmt.setType(whileNode->getNodeType());
-    whileStmt.setStmtNum(whileNode->getStmtNum());
-    whileStmt.setTNodeRef(whileNode);
-    
+    // Populating StmtTable
     StmtTable* stmtTable = StmtTable::getInstance();
-    stmtTable->addStmt(&whileStmt);
+    Statement* whileStmt = new Statement();
+    whileStmt->setType(whileNode->getNodeType());
+    whileStmt->setStmtNum(whileNode->getStmtNum());
+    whileStmt->setTNodeRef(whileNode);
     
+    if(whileNode->hasLeftSibling()) {
+        StmtNode* leftSib = (StmtNode*)whileNode->getLeftSibling();
+        whileStmt->setFollowsAfter(leftSib->getStmtNum());
+        Statement* leftStmt = stmtTable->getStmtObj(leftSib->getStmtNum());
+        leftStmt->setFollowsBefore(whileNode->getStmtNum());
+    }
+    
+    if(!stmtParentNumStack.empty()) {
+        int parentStmtNum = stmtParentNumStack.top();
+        whileStmt->setParent(parentStmtNum);
+		Statement* parentStmt = stmtTable->getStmtObj(parentStmtNum);
+		set<int> children = parentStmt->getChildren();
+		children.insert(whileNode->getStmtNum());
+		parentStmt->setChildren(children);
+    }
+    
+    addToVarTable(whileVar);
+    stmtTable->addStmt(whileStmt);
 }
 
-TNode* PDR::breakDownAssignExpression(ParsedData data) {
+TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
     // Assume expression to be the RPN of the variables and operators
-    queue<string> expression;
-    stack<string> rpnStack;
+    queue<string> expression = data.getAssignExpression();
     stack<TNode*> rpnNodeStack;
+    
+    if(expression.size() == 1) {
+        string exp = expression.front();
+        expression.pop();
+        
+        if(isInteger(exp)) {
+            ConstNode* constNode = new ConstNode(exp);
+            return constNode;
+        } else {
+            VarNode* var = new VarNode(exp);
+            usesSet.insert(exp);
+            return var;
+        }
+    }
     
     for(size_t i = 0; i < expression.size(); i++) {
         string exp = expression.front();
@@ -175,6 +231,8 @@ TNode* PDR::breakDownAssignExpression(ParsedData data) {
             } else {
                 VarNode* var = new VarNode(exp);
                 rpnNodeStack.push(var);
+                usesSet.insert(exp);
+                addToVarTable(var);
             }
         }
     }
@@ -188,14 +246,42 @@ TNode* PDR::breakDownAssignExpression(ParsedData data) {
     return result;
 }
 
-bool PDR::isInteger(string exp) {
-    for(size_t i = 0; i < exp.length(); i++) {
-        if(!isdigit(exp[i])) {
-            return false;
-        }
-    }
-    return true;
+void PDR::addToProcTable(TNode* procedure) {
+    ProcTable* procTable = ProcTable::getInstance();
+    Procedure* proc = new Procedure(procedure->getName(), procedure);
+    procTable->addProc(proc);
 }
 
-void PDR::processCallStmt(ParsedData data) {
+void PDR::addToVarTable(TNode* variable) {
+    VarTable varTable = VarTable::getInstance();
+    
+    if(varTable.contains(variable->getName())) {
+        Variable* var = varTable.getVariable(variable->getName());
+        var->addTNode(variable);
+    } else {
+        Variable* var = new Variable(variable->getName());
+        varTable.addVariable(var);
+    }
+}
+
+void PDR::processEndProgram() {
+    for(int i = 0; i < currNestingLevel; i++) {
+        nodeStack.pop();
+    }
+    
+    ProcNode* procNodeToBeLinked = (ProcNode*)nodeStack.top();
+    AST ast = AST::getInstance();
+    ast.addProcNode(procNodeToBeLinked);
+    
+    nodeStack.pop();
+}
+
+bool PDR::isInteger(string exp) {
+    regex integer("(\\+|-)?[[:digit:]]+");
+    
+    if(regex_match(exp, integer)) {
+        return true;
+    }
+    
+    return false;
 }

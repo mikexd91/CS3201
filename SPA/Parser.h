@@ -36,7 +36,7 @@ private:
 };
 
 namespace ParserConstants {
-	const string DELIM_STRING = " ;={}";
-	const char DELIMITERS[] = { ';', '=', '{', '}' };
+	const string DELIM_STRING = " ;={}+*-";
+	const char DELIMITERS[] = { ';', '=', '{', '}', '+', '*', '-' };
 	const char SANITISED_CHARS[] = { '\t', '\n' };
 }

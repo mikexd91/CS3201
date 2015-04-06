@@ -9,26 +9,39 @@ using namespace std;
 
 #include "AST.h"
 
+bool AST::_hasInstance = false;
+AST AST::_instance;
+ProgNode AST::_root;
+
 // constructors
 
-AST::AST(const string &progName) {
-	this->_rootNode = new ProgNode(progName);
+AST::AST() {
 }
 
 //------------------
 
 // getters
 
-AST* AST::getInstance(const string &progName) {
-	if (_instance == NULL) {
-		_instance = new AST(progName);
+
+AST& AST::getInstance() {
+	if (!AST::_hasInstance) {
+		AST::_instance = *(new AST());
+		AST::_hasInstance = true;
 	}
 	return _instance;
 }
-	
+
+bool AST::contains(const string& procName) {
+	return this->_root.contains(procName);
+}
+
+ProcNode* AST::getProcNode(const string& procName) {
+	return this->_root.getProcNode(procName);
+}
+
 //------------------
 
 // setters
 void AST::addProcNode(ProcNode *procNode) {
-	_rootNode->linkProcNode(procNode);
+	_root.linkProcNode(procNode);
 }

@@ -7,14 +7,14 @@ ParsedData::ParsedData(Type dataType, int levelNum)
 	nestingLevel = levelNum;
 
 	//Assignment
-	string assignVar = NULL;
+	string assignVar;
 	queue<string> assignExpression; 
 
 	//Procedure
-	string procName = NULL;
+	string procName;
 
 	//While
-	string whileVar = NULL;
+	string whileVar;
 }
 
 

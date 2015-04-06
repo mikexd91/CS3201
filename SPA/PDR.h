@@ -6,15 +6,21 @@
 #define PDR_HEADER
 
 #include <string>
+#include <regex>
+
 #include "ConstNode.h"
 #include "ParsedData.h"
 #include "ProcNode.h"
 #include "ProcTable.h"
+#include "VarTable.h"
+#include "Variable.h"
 #include "AssgNode.h"
+#include "StmtNode.h"
 #include "StmtTable.h"
 #include "Statement.h"
 #include "WhileNode.h"
 #include "StmtLstNode.h"
+#include "Procedure.h"
 #include "IfNode.h"
 #include "CallNode.h"
 #include "OpNode.h"
@@ -25,7 +31,10 @@ using namespace std;
 class PDR {
 	
 public:
+    
+    PDR();
     static PDR* getInstance();
+	static void resetInstanceFlag();
 
 	void processParsedData(ParsedData);
 
@@ -44,7 +53,12 @@ private:
 	void processIfStmt(ParsedData);
 	void processWhileStmt(ParsedData);
 	void processCallStmt(ParsedData);
-    TNode* breakDownAssignExpression(ParsedData);
+    void processEndProgram();
+    
+    void addToProcTable(TNode*);
+    void addToVarTable(TNode*);
+    
+    TNode* breakDownAssignExpression(ParsedData, set<string>&);
     
     bool isInteger(string);
 
