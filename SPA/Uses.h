@@ -15,7 +15,8 @@ public:
 	bool isUses(int stmt, string varName);			// return boolean of Uses(a,v)
 
 	set<int> getAssignOfUses(string varName);		// get a of Uses(a,"v")
-	set<string> getVarOfUses(int stmtNum);				// get v of Uses(a, v)
+	set<string> getVarOfUses(int stmtNum);			// get v of Uses(a, v)
+	// set<int> get
 
 	// set<set<int>> getAllUses(int stmt1, int stmt2);
 };

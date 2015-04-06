@@ -19,7 +19,6 @@ void QueryEvaluator::setQuery(Query q) {
 
 Results QueryEvaluator::getClauseResult(Clause c,string syn, Results res) {
 	Query q = this->queryObj;
-	
 }
 
 Results QueryEvaluator::oneClauseOneSyn() {
@@ -35,15 +34,23 @@ Results QueryEvaluator::oneClauseOneSyn() {
 		return res;
 
 	} else { // synonym is not used in clause
-		Results res = getClauseResult(c, "none", res);
+		Results res = getClauseResult(c, "bool", res); // check if clause is true
 		map<string, string> declarationList = q.getDeclarationList();
 		dlIter = declarationList.find(selectSyn);
 		string synonymType = dlIter->second;
-		res.setResultType(synonymType);
+		res.setResultType();
 		return res;
 	}
 }
 
 Results QueryEvaluator::manyClauseOneSyn() {
+	Query q = this->queryObj;
+	Clause c1 = q.getClause(1);
+	Clause c2 = q.getClause(2);
+
+	string arg1 = c1.getFirstArg();
+	string arg2 = c1.getSecondArg();
+	string arg3 = c2.getFirstArg();
+	string arg4 = c2.getSecondArg();
 
 }

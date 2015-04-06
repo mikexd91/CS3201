@@ -15,7 +15,8 @@ public:
 	bool isModifies(int stmt, string varName);		// return boolean of Modifies(a,v)
 
 	set<int> getAssignOfModifies(string varName);	// get a of Modifies(a,"v")
-	set<string> getVarOfModifies(int stmtNum);			// get v of Modifies(a, v)
+	set<string> getVarOfModifies(int stmtNum);		// get v of Modifies(a, v)
+	// set<int> getAssignthatModifiesAVar(
 
 	// set<set<int>> getAllModifies(int stmt1, int stmt2);
 };

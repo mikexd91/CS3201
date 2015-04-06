@@ -18,7 +18,6 @@ public:
 	Results getClauseResult(Clause,string, Results);
 	Results oneClauseOneSyn();
 	Results manyClauseOneSyn();
-
 	Results evaluateQuery(Query);
 
 private:
