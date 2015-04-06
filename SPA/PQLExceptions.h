@@ -21,7 +21,7 @@ struct InvalidSelectException : public exception{
 	}
 };
 
-struct InvalidSentenceException : public exception{
+struct UnexpectedEndException : public exception{
 	const char * what() const throw(){
 		return "Unexpected end of Query!";
 	}
