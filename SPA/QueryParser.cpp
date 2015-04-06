@@ -4,6 +4,7 @@
 #include "StringPair.h"
 #include "Utils.h"
 #include "PQLExceptions.h"
+#include "boost/algorithm/string.hpp"
 #include <string>
 #include <vector>
 #include <sstream>
@@ -49,26 +50,37 @@ Query QueryParser::processQuery(string input){
 	parsedQuery.setDeclarationList(declarations);
 	selectStatement = util.sanitise(selectStatement);
 	vector<string> tokens = util.explode(selectStatement);
+	bool expectingClause, insideClause = false;
+	if (tokens.size() < 4){
+		throw UnexpectedEndException();
+	}
 	for (int i=0; i<tokens.size(); i++){
 		string current = tokens.at(i);
 		if (i==0){
 			if (!current.compare(stringconst::STRING_SELECT)){
-				throw InvalidSelectException();
+				throw UnexpectedEndException();
 			}
 		} else if (i==1){
 			parsedQuery.addSelectSynonym(current);
 		} else {
-			if (current.compare(stringconst::STRING_AND) || current.compare(stringconst::STRING_WITH)){
-				if (i == tokens.size() -1){
-					throw InvalidSentenceException();
-				} else {
+			if (expectingClause){
 				
-				}
-			} else if (current.compare(stringconst::STRING_SUCH)){
-				if (i == tokens.size() -1){
-					throw InvalidSentenceException();
-				} else {
-					
+			} else {
+				if (current.compare(stringconst::STRING_AND) || current.compare(stringconst::STRING_WITH)){
+					if (i == tokens.size() -1){
+						throw UnexpectedEndException();
+					} else {
+						expectingClause = true;
+					}
+				} else if (current.compare(stringconst::STRING_SUCH)){
+					if (i == tokens.size() -1){
+						throw UnexpectedEndException();
+					} else {
+						string next = tokens.at(i+1);
+						if (!next.compare(stringconst::STRING_THAT)){
+							throw InvalidSelectException();
+						}
+					}
 				}
 			}
 		}
