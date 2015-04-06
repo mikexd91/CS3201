@@ -1,6 +1,7 @@
 #include <iostream>
 #include <exception>
 
+using std::system;
 using std::exception;
 
 struct MissingDeclarationException : public exception{
