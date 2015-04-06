@@ -41,6 +41,7 @@ namespace stringconst{
 	string const STRING_THAT = "that";
 	string const STRING_WITH = "with";
 	string const STRING_AND = "and";
+	string const STRING_EMPTY = "";
 
 	string const QUERY_NONE = "NONE";
 	string const QUERY_ERROR = "ERROR";
@@ -57,6 +58,7 @@ namespace stringconst{
 	string const ARG_STATEMENT = "statement";
 	string const ARG_ASSIGN = "assign";
 	string const ARG_VARIABLE = "variable";
+	string const ARG_BOOLEAN = "boolean";
 
 	const string DELIM_STRING = " ;={}";
 	const char DELIMITERS[] = { ';', '=', '{', '}' };
