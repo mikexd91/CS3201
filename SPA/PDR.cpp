@@ -112,6 +112,7 @@ void PDR::processAssignStmt(ParsedData data) {
     stmt->setTNodeRef(assignNode);
     stmt->setModifies(modifies);
     stmt->setUses(uses);
+	
     
     if(assignNode->hasLeftSibling()) {
         StmtNode* leftSib = (StmtNode*)assignNode->getLeftSibling();
@@ -123,8 +124,12 @@ void PDR::processAssignStmt(ParsedData data) {
     if(!stmtParentNumStack.empty()) {
         int parentStmtNum = stmtParentNumStack.top();
         stmt->setParent(parentStmtNum);
+		Statement* parentStmt = stmtTable->getStmtObj(parentStmtNum);
+		set<int> children = parentStmt->getChildren();
+		children.insert(assignNode->getStmtNum());
+		parentStmt->setChildren(children);
     }
-
+	
     stmtTable->addStmt(stmt);
     
 }
@@ -177,6 +182,10 @@ void PDR::processWhileStmt(ParsedData data) {
     if(!stmtParentNumStack.empty()) {
         int parentStmtNum = stmtParentNumStack.top();
         whileStmt->setParent(parentStmtNum);
+		Statement* parentStmt = stmtTable->getStmtObj(parentStmtNum);
+		set<int> children = parentStmt->getChildren();
+		children.insert(whileNode->getStmtNum());
+		parentStmt->setChildren(children);
     }
     
     addToVarTable(whileVar);
