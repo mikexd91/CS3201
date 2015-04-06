@@ -36,6 +36,9 @@
     <ClInclude Include="ProcNode.h" />
     <ClInclude Include="ProcTable.h" />
     <ClInclude Include="ProgNode.h" />
+    <ClInclude Include="Query.h" />
+    <ClInclude Include="QueryEvaluator.h" />
+    <ClInclude Include="QueryParser.h" />
     <ClInclude Include="Results.h" />
     <ClInclude Include="Statement.h" />
     <ClInclude Include="StmtLstNode.h" />
@@ -44,6 +47,7 @@
     <ClInclude Include="StringPair.h" />
     <ClInclude Include="TNode.h" />
     <ClInclude Include="Uses.h" />
+    <ClInclude Include="Utils.h" />
     <ClInclude Include="Variable.h" />
     <ClInclude Include="VarNode.h" />
     <ClInclude Include="VarTable.h" />
@@ -65,6 +69,9 @@
     <ClCompile Include="ProcNode.cpp" />
     <ClCompile Include="ProcTable.cpp" />
     <ClCompile Include="ProgNode.cpp" />
+    <ClCompile Include="Query.cpp" />
+    <ClCompile Include="QueryEvaluator.cpp" />
+    <ClCompile Include="QueryParser.cpp" />
     <ClCompile Include="Results.cpp" />
     <ClCompile Include="Statement.cpp" />
     <ClCompile Include="StmtLstNode.cpp" />
@@ -73,6 +80,7 @@
     <ClCompile Include="StringPair.cpp" />
     <ClCompile Include="TNode.cpp" />
     <ClCompile Include="Uses.cpp" />
+    <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Variable.cpp" />
     <ClCompile Include="VarNode.cpp" />
     <ClCompile Include="VarTable.cpp" />
