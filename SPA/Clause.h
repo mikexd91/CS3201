@@ -9,8 +9,10 @@ class Clause
 private:
 	string clauseType;
 	string firstArg;
+	bool firstArgFixed;
 	string firstArgType;
 	string secondArg;
+	bool secondArgFixed;
 	string secondArgType;
 	string patternArg;
 public:
@@ -22,6 +24,8 @@ public:
 	void setSecondArg(string);
 	void setFirstArgType(string);
 	void setSecondArgType(string);
+	void setFirstArgFixed(bool);
+	void setSecondArgFixed(bool);
 	void setPatternArg(string);
 
 	string getClauseType();
@@ -29,6 +33,8 @@ public:
 	string getSecondArg();
 	string getFirstArgType();
 	string getSecondArgType();
+	bool getFirstArgFixed();
+	bool getSecondArgFixed();
 	string getPatternArg();
 
 	bool checkClauseValidity(map<string, string>);
