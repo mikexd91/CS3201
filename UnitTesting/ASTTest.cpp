@@ -6,11 +6,11 @@
 
 using namespace std;
 
-AST ast = AST::getInstance();
+AST* ast = AST::getInstance();
 ProcNode* p = new ProcNode("Alice");
 
 void ASTTest::setUp() {
-	ast.addProcNode(p);
+	ast->addProcNode(p);
 }
 
 void ASTTest::tearDown() {
@@ -21,20 +21,20 @@ void ASTTest::tearDown() {
 CPPUNIT_TEST_SUITE_REGISTRATION( ASTTest );
 
 void ASTTest::testInstances() {
-	CPPUNIT_ASSERT(dynamic_cast<AST*>(&ast));
+	CPPUNIT_ASSERT(dynamic_cast<AST*>(ast));
 
-	AST asd = AST::getInstance();
-	AST qwe = AST::getInstance();
+	AST* asd = AST::getInstance();
+	AST* qwe = AST::getInstance();
 
-	CPPUNIT_ASSERT(asd.contains("Alice"));
-	CPPUNIT_ASSERT(qwe.contains("Alice"));
+	CPPUNIT_ASSERT(asd->contains("Alice"));
+	CPPUNIT_ASSERT(qwe->contains("Alice"));
 
 	ProcNode* pn = new ProcNode("Bob");
 	StmtLstNode* sln = new StmtLstNode("then");
 	pn->linkStmtLstNode(sln);
-	asd.addProcNode(pn);
+	asd->addProcNode(pn);
 
-	ProcNode* pget = asd.getProcNode("Bob");
+	ProcNode* pget = asd->getProcNode("Bob");
 	CPPUNIT_ASSERT(NULL != pget);
 
 	string expname = "Bob";
@@ -51,11 +51,11 @@ void ASTTest::testInstances() {
 
 void ASTTest::testAcrossMethods() {
 
-	AST asd = (AST::getInstance());
-	CPPUNIT_ASSERT(asd.contains("Alice"));
-	CPPUNIT_ASSERT(asd.contains("Bob"));
+	AST* asd = (AST::getInstance());
+	CPPUNIT_ASSERT(asd->contains("Alice"));
+	CPPUNIT_ASSERT(asd->contains("Bob"));
 
-	ProcNode* pget = asd.getProcNode("Bob");
+	ProcNode* pget = asd->getProcNode("Bob");
 	CPPUNIT_ASSERT(NULL != pget);
 
 	string expname = "Bob";

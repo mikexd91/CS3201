@@ -157,9 +157,6 @@
     <ClInclude Include="VarTableTest.h" />
     <ClInclude Include="WhileNodeTest.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Debug\UnitTesting.vcxprojResolveAssemblyReference.cache" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
