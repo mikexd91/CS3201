@@ -19,6 +19,15 @@ TNode::TNode(NodeType type, const string& name) {
 	this->_parent = NULL;
 }
 
+// destructor
+
+TNode::~TNode() {
+	/*delete &_children;
+	delete _parent;
+	delete _rightSibling;
+	delete _leftSibling;*/
+}
+
 //--------------------
 
 // getters

@@ -9,6 +9,7 @@ public:
 	// constructors
 	ProgNode();
 	ProgNode(const string &name);
+	~ProgNode();
 
 	// getters
 	vector<TNode*>& getProcNodes();
