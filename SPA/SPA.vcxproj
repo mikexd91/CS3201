@@ -43,6 +43,7 @@
     <ClInclude Include="StmtTable.h" />
     <ClInclude Include="StringPair.h" />
     <ClInclude Include="TNode.h" />
+    <ClInclude Include="Uses.h" />
     <ClInclude Include="Variable.h" />
     <ClInclude Include="VarNode.h" />
     <ClInclude Include="VarTable.h" />
@@ -71,6 +72,7 @@
     <ClCompile Include="StmtTable.cpp" />
     <ClCompile Include="StringPair.cpp" />
     <ClCompile Include="TNode.cpp" />
+    <ClCompile Include="Uses.cpp" />
     <ClCompile Include="Variable.cpp" />
     <ClCompile Include="VarNode.cpp" />
     <ClCompile Include="VarTable.cpp" />
