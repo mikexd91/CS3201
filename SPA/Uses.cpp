@@ -47,7 +47,7 @@ set<string> Uses::getVarOfUses(int stmtNum) {
 	return set<string>();
 }
 
-// for all assignment in set<int>, check if its var is in set<int> var
+// for all assignment in set<int>, check if its var is in set<string> var
 set<int> Uses::getAssignOfUsesUnfixed(set<int> assign, set<string> var0) {
 	set<int> result;
 	for (uIntIter=assign.begin(); uIntIter!=assign.end(); uIntIter++) {
