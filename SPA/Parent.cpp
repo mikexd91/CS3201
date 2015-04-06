@@ -1,4 +1,6 @@
 #include "Parent.h"
+#include "StmtTable.h"
+#include <boost/lockfree/queue.hpp>
 
 using namespace std;
 
@@ -72,26 +74,27 @@ set<int> Parent::getParentStar(int stmtNum) {
 
 	return set;
 }
-/*
-void fillAllChildSet(set<int> childSet, set<int> &set, Parent *inst) {
-	if (!childSet.empty()) {
-		for (pIntIter=childSet.begin(); pIntIter!=childSet.end(); pIntIter++) {
-			set.insert(*pIntIter);
-			set<int> childOfChild; // typedef ? or sth to do with namespace?
-			// inst->getChild(*pIntIter);
-		}
-	} 
-}
 
 set<int> Parent::getChildStar(int stmtNum) {
-	set<int> immediateChildSet = getChild(stmtNum);
-	set<int> allChildSet;
-	fillAllChildSet(immediateChildSet, allChildSet, this);
-	return allChildSet;
-}
-*/
-set<int> Parent::getChildStar(int stmtNum) {
-	return set<int>();
+	set<int> childSet = getChild(stmtNum);
+	set<int> results;
+	boost::lockfree::queue<int> queue;
+	for (set<int>::iterator child = childSet.begin(); child != childSet.end(); child++) {
+		queue.push(*child);
+		results.insert(*child);
+	}
+
+	while (!queue.empty()) {
+		int stmt;
+		queue.pop(stmt);
+		childSet = getChild(stmt);
+
+		for (set<int>::iterator child = childSet.begin(); child != childSet.end(); child++) {
+			queue.push(*child);
+			results.insert(*child);
+		}
+	}
+	return results;
 }
 
 /*

@@ -27,6 +27,7 @@
     <ClInclude Include="IfNode.h" />
     <ClInclude Include="InvalidCodeException.h" />
     <ClInclude Include="OpNode.h" />
+    <ClInclude Include="Parent.h" />
     <ClInclude Include="ParsedData.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="PDR.h" />
@@ -36,9 +37,6 @@
     <ClInclude Include="ProcNode.h" />
     <ClInclude Include="ProcTable.h" />
     <ClInclude Include="ProgNode.h" />
-    <ClInclude Include="Query.h" />
-    <ClInclude Include="QueryEvaluator.h" />
-    <ClInclude Include="QueryParser.h" />
     <ClInclude Include="Results.h" />
     <ClInclude Include="Statement.h" />
     <ClInclude Include="StmtLstNode.h" />
@@ -61,6 +59,7 @@
     <ClCompile Include="ConstNode.cpp" />
     <ClCompile Include="IfNode.cpp" />
     <ClCompile Include="OpNode.cpp" />
+    <ClCompile Include="Parent.cpp" />
     <ClCompile Include="ParsedData.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PDR.cpp" />
@@ -69,9 +68,6 @@
     <ClCompile Include="ProcNode.cpp" />
     <ClCompile Include="ProcTable.cpp" />
     <ClCompile Include="ProgNode.cpp" />
-    <ClCompile Include="Query.cpp" />
-    <ClCompile Include="QueryEvaluator.cpp" />
-    <ClCompile Include="QueryParser.cpp" />
     <ClCompile Include="Results.cpp" />
     <ClCompile Include="Statement.cpp" />
     <ClCompile Include="StmtLstNode.cpp" />

@@ -1,6 +1,5 @@
 #pragma once
 #include <set>
-#include "StmtTable.h"
 
 using namespace std;
 
