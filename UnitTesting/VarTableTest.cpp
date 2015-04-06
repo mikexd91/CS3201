@@ -7,11 +7,11 @@
 using namespace std;
 
 // setup
-VarTable vt = (VarTable::getInstance());
+VarTable* vt = (VarTable::getInstance());
 Variable* x = new Variable("x");
 
 void VarTableTest::setUp() {
-	vt.addVariable(x);
+	vt->addVariable(x);
 }
 
 void VarTableTest::tearDown() {
@@ -22,18 +22,18 @@ void VarTableTest::tearDown() {
 CPPUNIT_TEST_SUITE_REGISTRATION( VarTableTest );
 
 void VarTableTest::testInstances() {
-	CPPUNIT_ASSERT(dynamic_cast<VarTable*>(&vt));
+	CPPUNIT_ASSERT(dynamic_cast<VarTable*>(vt));
 
-	VarTable asd = VarTable::getInstance();
-	VarTable qwe = VarTable::getInstance();
+	VarTable* asd = VarTable::getInstance();
+	VarTable* qwe = VarTable::getInstance();
 
 	//CPPUNIT_ASSERT_EQUAL(&asd, &qwe);
-	CPPUNIT_ASSERT(asd.contains("x"));
-	CPPUNIT_ASSERT(qwe.contains("x"));
+	CPPUNIT_ASSERT(asd->contains("x"));
+	CPPUNIT_ASSERT(qwe->contains("x"));
 
-	asd.addVariable(new Variable("y"));
+	asd->addVariable(new Variable("y"));
 
-	Variable* vget = vt.getVariable("x");
+	Variable* vget = vt->getVariable("x");
 	CPPUNIT_ASSERT(NULL != vget);
 
 	string expname = "x";
@@ -45,8 +45,8 @@ void VarTableTest::testInstances() {
 
 void VarTableTest::testAcrossMethods() {
 
-	VarTable vtt = (VarTable::getInstance());
-	CPPUNIT_ASSERT(vtt.contains("y"));
+	VarTable* vtt = (VarTable::getInstance());
+	CPPUNIT_ASSERT(vtt->contains("y"));
 
 	return;
 }
