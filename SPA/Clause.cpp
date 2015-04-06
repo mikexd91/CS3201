@@ -23,12 +23,20 @@ void Clause::setFirstArgType(string type){
 	this->firstArgType = type;
 }
 
+void Clause::setFirstArgFixed(bool fixed){
+	this->firstArgFixed = fixed;
+}
+
 void Clause::setSecondArg(string second){
 	this->secondArg = second;
 }
 
 void Clause::setSecondArgType(string type){
 	this->secondArgType = type;
+}
+
+void Clause::setSecondArgFixed(bool fixed){
+	this->secondArgFixed = fixed;
 }
 
 void Clause::setPatternArg(string pattern){
@@ -57,6 +65,14 @@ string Clause::getSecondArgType(void){
 
 string Clause::getPatternArg(void){
 	return this->patternArg;
+}
+
+bool Clause::getFirstArgFixed(void){
+	return this->firstArgFixed;
+}
+
+bool Clause::getSecondArgFixed(void){
+	return this->secondArgFixed;
 }
 
 bool Clause::checkClauseValidity(map<string, string> declarations){
