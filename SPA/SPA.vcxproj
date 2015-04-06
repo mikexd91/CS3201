@@ -24,6 +24,7 @@
     <ClInclude Include="CallNode.h" />
     <ClInclude Include="Clause.h" />
     <ClInclude Include="ConstNode.h" />
+    <ClInclude Include="Follows.h" />
     <ClInclude Include="IfNode.h" />
     <ClInclude Include="InvalidCodeException.h" />
     <ClInclude Include="OpNode.h" />
@@ -57,6 +58,7 @@
     <ClCompile Include="CallNode.cpp" />
     <ClCompile Include="Clause.cpp" />
     <ClCompile Include="ConstNode.cpp" />
+    <ClCompile Include="Follows.cpp" />
     <ClCompile Include="IfNode.cpp" />
     <ClCompile Include="OpNode.cpp" />
     <ClCompile Include="Parent.cpp" />
