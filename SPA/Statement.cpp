@@ -12,8 +12,11 @@ using namespace std;
 // contructor with no preset attributes
 // (null attributes or -1 for primitives and 0 for stmtNum)
 Statement::Statement() {
+	uses = UsesSet();
+	modifies = ModifiesSet();
 	followsAfter = DEFAULT;
 	followsBefore = DEFAULT;
+	children = ChildrenSet();
 	parent = DEFAULT;
 	next = DEFAULT;
 	prev = DEFAULT;
