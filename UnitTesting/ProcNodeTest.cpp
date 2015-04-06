@@ -22,7 +22,7 @@ void ProcNodeTest::testProperties() {
 
 	// constructor
 	ProcNode pnode("Alice");
-	CPPUNIT_ASSERT_EQUAL(NodeType::PROCEDURE_, pnode.getNodeType());
+	CPPUNIT_ASSERT_EQUAL(PROCEDURE_, pnode.getNodeType());
 	string expname = "Alice";
 	CPPUNIT_ASSERT_EQUAL(expname, pnode.getName());
 

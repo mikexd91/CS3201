@@ -23,7 +23,7 @@ void StmtLstNodeTest::testProperties() {
 
 	// constructor
 	StmtLstNode pnode("then");
-	CPPUNIT_ASSERT_EQUAL(NodeType::STMTLST_, pnode.getNodeType());
+	CPPUNIT_ASSERT_EQUAL(STMTLST_, pnode.getNodeType());
 	string expname = "then";
 	CPPUNIT_ASSERT_EQUAL(expname, pnode.getName());
 

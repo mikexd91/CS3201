@@ -22,7 +22,7 @@ void WhileNodeTest::testProperties() {
 
 	// constructor
 	WhileNode inode(999234234);
-	CPPUNIT_ASSERT_EQUAL(NodeType::WHILE_STMT_, inode.getNodeType());
+	CPPUNIT_ASSERT_EQUAL(WHILE_STMT_, inode.getNodeType());
 	CPPUNIT_ASSERT_EQUAL(999234234, inode.getStmtNum());
 
 	return;

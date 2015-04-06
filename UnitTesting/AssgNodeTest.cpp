@@ -23,7 +23,7 @@ void AssgNodeTest::testProperties() {
 
 	// constructor
 	AssgNode anode(95143);
-	CPPUNIT_ASSERT_EQUAL(NodeType::ASSIGN_STMT_, anode.getNodeType());
+	CPPUNIT_ASSERT_EQUAL(ASSIGN_STMT_, anode.getNodeType());
 	CPPUNIT_ASSERT_EQUAL(95143, anode.getStmtNum());
 
 	return;
