@@ -35,6 +35,9 @@ public:
 	TNode(NodeType type); // properties
 	TNode(NodeType type, const string& name); // properties
 
+	// destructor
+	~TNode();
+
 	// getters
 	NodeType getNodeType(); // properties
 	string getName(); // properties

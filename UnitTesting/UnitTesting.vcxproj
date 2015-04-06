@@ -131,6 +131,7 @@
     <ClCompile Include="ASTTest.cpp" />
     <ClCompile Include="CallNodeTest.cpp" />
     <ClCompile Include="ConstNodeTest.cpp" />
+    <ClCompile Include="FollowsClauseTest.cpp" />
     <ClCompile Include="IfNodeTest.cpp" />
     <ClCompile Include="OpNodeTest.cpp" />
     <ClCompile Include="ProcNodeTest.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="ASTTest.h" />
     <ClInclude Include="CallNodeTest.h" />
     <ClInclude Include="ConstNodeTest.h" />
+    <ClInclude Include="FollowsClauseTest.h" />
     <ClInclude Include="IfNodeTest.h" />
     <ClInclude Include="OpNodeTest.h" />
     <ClInclude Include="ProcNodeTest.h" />

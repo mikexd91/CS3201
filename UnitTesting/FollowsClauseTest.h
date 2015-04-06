@@ -5,18 +5,17 @@
 
 class FollowsClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( FollowsClauseTest );
-	CPPUNIT_TEST( testFollowsA2 );
-	CPPUNIT_TEST( testFollows1A );
+	CPPUNIT_TEST( testIsFollows );
+	CPPUNIT_TEST( testIsFollowsStar );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
 	void setUp();
 	void tearDown();
 
-	void testFollowsA2();
+	void testIsFollows();
 
-	void testFollows1A();
+	void testIsFollowsStar();
 
-	//void testLinks();
 };
     

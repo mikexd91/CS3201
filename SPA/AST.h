@@ -12,6 +12,8 @@ class AST {
 
 public:
 
+	~AST();
+
 	// getters
 	static AST* getInstance();
 	bool contains(const string& procName);
@@ -19,10 +21,14 @@ public:
 
 	// setters
 	void addProcNode(ProcNode *procNode); // adds the procedure to the program
+	
+	// clear
+	static void reset();
 
 private:
 	// constructor: creates tree rooted at programNode (named programName)
 	AST();
+
 	
 	ProgNode _root;
 	static bool _hasInstance;
