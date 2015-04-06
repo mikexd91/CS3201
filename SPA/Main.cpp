@@ -1,14 +1,26 @@
 #include <stdio.h>
 #include <iostream>
 #include "Parser.h"
+#include "InvalidCodeException.h"
+#include <fstream>
+#include <sstream>
 
 int main() {
 	/* rewrite as necessary */
 
 	Parser parser = Parser();
 
-	string programSource = "simple source code";
-	parser.parse(programSource);
+	ifstream in("sample.txt");
+	stringstream buffer;
+    buffer << in.rdbuf();
+    string programSource = buffer.str();
+
+	try {
+		parser.parse(programSource);
+	} catch (InvalidCodeException) {
+		cout << "Error";
+		exit(EXIT_FAILURE);
+	}
 
 	// designExtractor.extract();
 
