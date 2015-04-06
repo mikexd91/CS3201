@@ -24,8 +24,6 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("StmtTableTest").ma
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ProcTableTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ASTTest").makeTest());
 
-unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ParserTest").makeTest());
-
 CppUnit::TestFactoryRegistry::getRegistry().addTestToSuite(unitSuite);
 CppUnit::TextUi::TestRunner runner;
 

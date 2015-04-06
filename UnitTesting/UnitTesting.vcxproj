@@ -15,14 +15,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\ParserTest.cpp" />
     <ClCompile Include="source\PKBUnitTest.cpp" />
     <ClCompile Include="source\ProcTableTest.cpp" />
     <ClCompile Include="source\StmtTableTest.cpp" />
     <ClCompile Include="source\TNodeTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\ParserTest.h" />
     <ClInclude Include="source\ProcTableTest.h" />
     <ClInclude Include="source\StmtTableTest.h" />
     <ClInclude Include="source\TNodeTest.h" />
