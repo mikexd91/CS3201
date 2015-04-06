@@ -22,7 +22,7 @@ void CallNodeTest::testProperties() {
 
 	// constructor
 	CallNode cnode(1, "Alice");
-	CPPUNIT_ASSERT_EQUAL(NodeType::CALL_STMT_, cnode.getNodeType());
+	CPPUNIT_ASSERT_EQUAL(CALL_STMT_, cnode.getNodeType());
 	CPPUNIT_ASSERT_EQUAL(1, cnode.getStmtNum());
 	string expname = "Alice";
 	CPPUNIT_ASSERT_EQUAL(expname, cnode.getName());

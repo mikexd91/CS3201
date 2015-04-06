@@ -23,7 +23,7 @@ bool ProgNode::contains(const string& procName) {
 		TNode* child = this->_children.at(i);
 		string childName = child->getName();
 		NodeType childType = child->getNodeType();
-		if (procName == childName && childType == NodeType::PROCEDURE_) {
+		if (procName == childName && childType == PROCEDURE_) {
 			return true;
 		}
 	}
@@ -36,7 +36,7 @@ ProcNode* ProgNode::getProcNode(const string& procName) {
 		TNode* child = this->_children.at(i);
 		string childName = child->getName();
 		NodeType childType = child->getNodeType();
-		if (procName == childName && childType == NodeType::PROCEDURE_) {
+		if (procName == childName && childType == PROCEDURE_) {
 			return (ProcNode*)child;
 		}
 	}
