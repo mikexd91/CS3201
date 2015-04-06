@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssgNode.h" />
-    <ClInclude Include="ast.h" />
+    <ClInclude Include="AST.h" />
     <ClInclude Include="CallNode.h" />
     <ClInclude Include="Clause.h" />
     <ClInclude Include="ConstNode.h" />
@@ -77,11 +77,6 @@
     <ClCompile Include="VarNode.cpp" />
     <ClCompile Include="VarTable.cpp" />
     <ClCompile Include="WhileNode.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="InvalidCodeException.h" />
-    <ClInclude Include="ParsedData.h" />
-    <ClInclude Include="Parser.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>

@@ -22,7 +22,7 @@ void ConstNodeTest::testProperties() {
 
 	// constructor
 	ConstNode cnode("1");
-	CPPUNIT_ASSERT_EQUAL(NodeType::CONSTANT_, cnode.getNodeType());
+	CPPUNIT_ASSERT_EQUAL(CONSTANT_, cnode.getNodeType());
 	string expname = "1";
 	CPPUNIT_ASSERT_EQUAL(expname, cnode.getName());
 

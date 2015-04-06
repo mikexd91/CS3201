@@ -22,7 +22,7 @@ void IfNodeTest::testProperties() {
 
 	// constructor
 	IfNode inode(1);
-	CPPUNIT_ASSERT_EQUAL(NodeType::IF_STMT_, inode.getNodeType());
+	CPPUNIT_ASSERT_EQUAL(IF_STMT_, inode.getNodeType());
 	CPPUNIT_ASSERT_EQUAL(1, inode.getStmtNum());
 
 	return;
