@@ -12,9 +12,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\IntegrationTest.cpp" />
+    <ClCompile Include="source\pdr_integration_test.cpp" />
     <ClCompile Include="source\TestOne.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\pdr_integration_test.h" />
     <ClInclude Include="source\TestOne.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
