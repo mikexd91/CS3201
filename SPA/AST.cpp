@@ -10,22 +10,27 @@ using namespace std;
 #include "AST.h"
 
 bool AST::_hasInstance = false;
-AST AST::_instance;
-ProgNode AST::_root;
+AST* AST::_instance;
 
 // constructors
 
 AST::AST() {
+
+}
+
+// destructor
+
+AST::~AST() {
+	//delete &_root;
 }
 
 //------------------
 
 // getters
 
-
-AST& AST::getInstance() {
+AST* AST::getInstance() {
 	if (!AST::_hasInstance) {
-		AST::_instance = *(new AST());
+		AST::_instance = (new AST());
 		AST::_hasInstance = true;
 	}
 	return _instance;
@@ -44,4 +49,12 @@ ProcNode* AST::getProcNode(const string& procName) {
 // setters
 void AST::addProcNode(ProcNode *procNode) {
 	_root.linkProcNode(procNode);
+}
+
+//------------------
+
+// clear
+void AST::reset() {
+	AST::_hasInstance = false;
+	delete _instance;
 }

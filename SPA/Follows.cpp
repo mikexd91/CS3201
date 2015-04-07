@@ -27,7 +27,7 @@ bool Follows::isFollows(int stmtNum1, int stmtNum2) {
 int Follows::getFollows(int stmtNum) {
 	Statement* stmtObj = fTable->getStmtObj(stmtNum);
 	if (stmtObj != NULL) {
-		int stmt = stmtObj->getFollows();
+		int stmt = stmtObj->getFollowsAfter();
 		if (stmt != -1) {
 			return stmt;
 		}
@@ -39,7 +39,7 @@ int Follows::getFollows(int stmtNum) {
 int Follows::getFollowedBy(int stmtNum) {
 	Statement* stmtObj = fTable->getStmtObj(stmtNum);
 	if (stmtObj != NULL) {
-		int stmt = stmtObj->getFollowedBy();
+		int stmt = stmtObj->getFollowsBefore();
 		if (stmt != -1) {
 			return stmt;
 		}

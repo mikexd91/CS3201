@@ -1,10 +1,12 @@
 #include "Parent.h"
+#include "StmtTable.h"
+#include <boost/lockfree/queue.hpp>
 
 using namespace std;
 
-StmtTable* pTable = StmtTable::getInstance();			// stmt table instance
+StmtTable* pStmtTable = StmtTable::getInstance();			// stmt table instance
 set<Statement*>::iterator pSetIter;						// stmt set iterator
-set<int>::iterator pIntIter;								// int set iterator
+set<int>::iterator pIntIter;							// int set iterator
 
 Parent::Parent(void)
 {
@@ -23,27 +25,23 @@ bool Parent::isParent(int stmtNum1, int stmtNum2) {
 	}
 }
 
-/*
-int Parent::getParent(int stmtNum) {
-	Statement* stmtObj = pTable->getStmtObj(stmtNum);
-	if (stmtObj != NULL) {
-		int stmt = stmtObj->getParentOf();
-		if (stmt != -1) {
-			return stmt;
-		}
-	} 
-	return -1;
-}*/
 
-int Parent::getChild(int stmtNum) {
-	Statement* stmtObj = pTable->getStmtObj(stmtNum);
+int Parent::getParent(int stmtNum) {
+	Statement* stmtObj = pStmtTable->getStmtObj(stmtNum);
 	if (stmtObj != NULL) {
-		int stmt = stmtObj->getChildOf();
-		if (stmt != -1) {
-			return stmt;
-		}
+		int stmt = stmtObj->getParent();
+		return stmt;
 	} 
 	return -1;
+}
+
+set<int> Parent::getChild(int stmtNum) {
+	Statement* stmtObj = pStmtTable->getStmtObj(stmtNum);
+	if (stmtObj != NULL) {
+		set<int> stmtSet = stmtObj->getChildren();
+		return stmtSet;
+	} 
+	return set<int>();
 }
 
 /*
@@ -78,15 +76,25 @@ set<int> Parent::getParentStar(int stmtNum) {
 }
 
 set<int> Parent::getChildStar(int stmtNum) {
-	set<int> set;
-	int stmt = getChild(stmtNum);
-	
-	while (stmt != -1) {
-		set.insert(stmt);
-		stmt = getChild(stmt);
+	set<int> childSet = getChild(stmtNum);
+	set<int> results;
+	boost::lockfree::queue<int> queue;
+	for (set<int>::iterator child = childSet.begin(); child != childSet.end(); child++) {
+		queue.push(*child);
+		results.insert(*child);
 	}
 
-	return set;
+	while (!queue.empty()) {
+		int stmt;
+		queue.pop(stmt);
+		childSet = getChild(stmt);
+
+		for (set<int>::iterator child = childSet.begin(); child != childSet.end(); child++) {
+			queue.push(*child);
+			results.insert(*child);
+		}
+	}
+	return results;
 }
 
 /*

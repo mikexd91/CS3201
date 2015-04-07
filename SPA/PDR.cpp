@@ -52,8 +52,8 @@ void PDR::processProcedureStmt(ParsedData data) {
     // If there was a previous procedure, link prev proc to AST
     if(!nodeStack.empty()) {
         ProcNode* previousProc = (ProcNode*)nodeStack.top();
-        AST ast = AST::getInstance();
-        ast.addProcNode(previousProc);
+        AST* ast = AST::getInstance();
+        ast->addProcNode(previousProc);
         nodeStack.pop();
     }
 
@@ -196,8 +196,9 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
     // Assume expression to be the RPN of the variables and operators
     queue<string> expression = data.getAssignExpression();
     stack<TNode*> rpnNodeStack;
+	int numExpressions = expression.size();
     
-    if(expression.size() == 1) {
+    if(numExpressions == 1) {
         string exp = expression.front();
         expression.pop();
         
@@ -211,7 +212,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
         }
     }
     
-    for(size_t i = 0; i < expression.size(); i++) {
+    for(size_t i = 0; i < numExpressions; i++) {
         string exp = expression.front();
         expression.pop();
         
@@ -253,14 +254,14 @@ void PDR::addToProcTable(TNode* procedure) {
 }
 
 void PDR::addToVarTable(TNode* variable) {
-    VarTable varTable = VarTable::getInstance();
+    VarTable* varTable = VarTable::getInstance();
     
-    if(varTable.contains(variable->getName())) {
-        Variable* var = varTable.getVariable(variable->getName());
+    if(varTable->contains(variable->getName())) {
+        Variable* var = varTable->getVariable(variable->getName());
         var->addTNode(variable);
     } else {
         Variable* var = new Variable(variable->getName());
-        varTable.addVariable(var);
+        varTable->addVariable(var);
     }
 }
 
@@ -270,8 +271,8 @@ void PDR::processEndProgram() {
     }
     
     ProcNode* procNodeToBeLinked = (ProcNode*)nodeStack.top();
-    AST ast = AST::getInstance();
-    ast.addProcNode(procNodeToBeLinked);
+    AST* ast = AST::getInstance();
+    ast->addProcNode(procNodeToBeLinked);
     
     nodeStack.pop();
 }

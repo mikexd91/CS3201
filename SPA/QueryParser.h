@@ -15,12 +15,13 @@ private:
 	vector<string> split(string, char, vector<string>);
 	vector<string> tokeniser(string, char);
 	bool checkValidity();
+	bool containsAny(string, vector<string>);
+	bool containsClauseType(string);
+	string getClauseString(string);
 public:
 	QueryParser(void);
 	~QueryParser(void);
 
-	string removeAll(string, string);
-	vector<string> findClauses(string);
 	Query processQuery(string);
 	
 };

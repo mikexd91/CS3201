@@ -4,17 +4,17 @@
 using namespace std;
 
 bool VarTable::_hasInstance = false;
-VarTable VarTable::_instance;
-VarTable::Table VarTable::_table;
+VarTable* VarTable::_instance;
+//VarTable::Table VarTable::_table;
 
 // constructors
 VarTable::VarTable() {
 }
 
 // general getters
-VarTable& VarTable::getInstance() {
+VarTable* VarTable::getInstance() {
 	if (!VarTable::_hasInstance) {
-		VarTable::_instance = *(new VarTable());
+		VarTable::_instance = (new VarTable());
 		VarTable::_hasInstance = true;
 	}
 	return VarTable::_instance;

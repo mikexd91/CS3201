@@ -16,9 +16,17 @@ TNode* OpNode::getRightNode() {
 
 // setters
 void OpNode::linkLeftNode(TNode *left) {
-	this->_children.at(0) = left;
+	if (this->_children.size() < 1) {
+		this->_children.push_back(left);
+	} else {
+		this->_children.at(0) = left;
+	}
 }
 
 void OpNode::linkRightNode(TNode *right) {
-	this->_children.at(1) = right;
+	if (this->_children.size() < 2) {
+		this->_children.push_back(right);
+	} else {
+		this->_children.at(1) = right;
+	}
 }
