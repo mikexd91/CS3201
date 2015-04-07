@@ -14,10 +14,12 @@
 #include "PatternClause.h"
 #include "UsesClause.h"
 #include "UsesStarClause.h"
+#include <map>
 #include <string>
 #include <vector>
 #include <sstream>
 
+using std::map;
 using std::string;
 using std::vector;
 using std::stringstream;
@@ -132,6 +134,7 @@ Clause createCorrectClause(string type){
 void parseSelect(vector<string> tokens, Query query){
 	bool selectSynonyms = true;
 	bool insideClause = false;
+	bool insidePattern = false; //TODO PATTERN HANDLING
 	vector<Clause*> currentClause;
 	if (tokens.size() == 1 || !tokens.at(0).compare(stringconst::STRING_SELECT)){
 		throw InvalidSelectException();
@@ -140,7 +143,9 @@ void parseSelect(vector<string> tokens, Query query){
 		string current = tokens.at(i);
 		if (selectSynonyms){
 			if (!current.compare(stringconst::STRING_SUCH)){
-				query.addSelectSynonym(current);
+				StringPair newSelect;
+				newSelect.setFirst(current);
+				query.addSelectSynonym(newSelect);
 			} else {
 				selectSynonyms = false;
 			}
@@ -157,6 +162,7 @@ void parseSelect(vector<string> tokens, Query query){
 					string clauseType = getClauseString(current);
 					Clause newClause = createCorrectClause(current);
 					insideClause = true;
+					//ADD SPECIAL CASE FOR PATTERN
 					std::size_t index = current.find_first_of("(");
 					std::size_t endIndex = current.find_first_of(",");
 					string synonym = current.substr(index, endIndex);
@@ -170,6 +176,35 @@ void parseSelect(vector<string> tokens, Query query){
 	}
 	if (query.getSelectList().size() == 0){
 		throw InvalidSelectException();
+	}
+}
+
+void vetQuery(Query query){
+	map<string, string> decList = query.getDeclarationList();
+	vector<Clause> clauseList = query.getClauseList();
+	vector<StringPair> selectList = query.getSelectList();
+	for (int i=0; i<selectList.size(); i++){
+		StringPair current = selectList.at(i);
+		string currentSelect = current.getFirst();
+		if (decList.find(currentSelect) == decList.end() ) {
+			throw MissingDeclarationException();
+		} else {
+			string currentType = decList.at(currentSelect);
+			selectList.at(i).setSecond(currentType);
+		}
+	}
+	for (int i=0; i<clauseList.size(); i++){
+		Clause current = clauseList.at(i);
+		//DO CHECK FOR PATTERN
+		string currentSynonymOne = current.getFirstArg();
+		if (decList.find(currentSynonymOne) == decList.end() ) {
+			throw MissingDeclarationException();
+		} else {
+			string currentTypeOne = decList.at(currentSynonymOne);
+			current.setFirstArgType(currentTypeOne);
+			//check for fixed statement number and variable call
+
+		}
 	}
 }
 
@@ -190,6 +225,8 @@ Query QueryParser::processQuery(string input){
 	selectStatement = util.sanitise(selectStatement);
 	vector<string> tokens = util.explode(selectStatement);
 	parseSelect(tokens, parsedQuery);
+
+	return parsedQuery;
 }
 
 

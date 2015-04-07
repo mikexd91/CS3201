@@ -10,11 +10,11 @@ Query::Query(void){
 Query::~Query(void){
 }
 
-void Query::setSelectList(vector<string> list){
+void Query::setSelectList(vector<StringPair> list){
 	this->selectList = list;
 }
 
-void Query::addSelectSynonym(string synonym){
+void Query::addSelectSynonym(StringPair synonym){
 	this->selectList.push_back(synonym);
 }
 
@@ -37,20 +37,12 @@ void Query::addDeclaration(StringPair item){
 	this->declarationList.insert(item.getFirst(), item.getSecond());
 }
 
-vector<string> Query::getSelectList(){
+vector<StringPair> Query::getSelectList(){
 	return this->selectList;
-}
-
-string Query::getSelectSynonym(int num){
-	return this->selectList.at(num);
 }
 
 vector<Clause> Query::getClauseList(){
 	return this->clauseList;
-}
-
-Clause Query::getClause(int index){
-	return this->clauseList.at(index);
 }
 
 int Query::getNumClauses(){
@@ -59,19 +51,4 @@ int Query::getNumClauses(){
 
 map<string, string> Query::getDeclarationList(void){
 	return this->declarationList;
-}
-
-bool Query::checkQueryValidity(void){
-	vector<Clause> clauses = this->getClauseList();
-	map<string, string> declarations = this->getDeclarationList();
-	for (size_t i=0; i<clauses.size(); i++){
-		Clause current = clauses.at(i);
-		bool validClause = current.checkClauseValidity(declarations);
-		if (!validClause){
-			//break loop cause dont need to check the rest
-			throw InvalidDeclarationException();
-			return false;
-		}
-		//else check all other clauses in the list
-	}
 }
