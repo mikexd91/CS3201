@@ -25,6 +25,8 @@
     <ClInclude Include="Clause.h" />
     <ClInclude Include="ConstNode.h" />
     <ClInclude Include="Follows.h" />
+    <ClInclude Include="FollowsClause.h" />
+    <ClInclude Include="FollowsStarClause.h" />
     <ClInclude Include="IfNode.h" />
     <ClInclude Include="InvalidCodeException.h" />
     <ClInclude Include="Modifies.h" />
@@ -32,6 +34,7 @@
     <ClInclude Include="Parent.h" />
     <ClInclude Include="ParsedData.h" />
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="PatternClause.h" />
     <ClInclude Include="PDR.h" />
     <ClInclude Include="PQLController.h" />
     <ClInclude Include="PQLExceptions.h" />
@@ -61,12 +64,15 @@
     <ClCompile Include="Clause.cpp" />
     <ClCompile Include="ConstNode.cpp" />
     <ClCompile Include="Follows.cpp" />
+    <ClCompile Include="FollowsClause.cpp" />
+    <ClCompile Include="FollowsStarClause.cpp" />
     <ClCompile Include="IfNode.cpp" />
     <ClCompile Include="Modifies.cpp" />
     <ClCompile Include="OpNode.cpp" />
     <ClCompile Include="Parent.cpp" />
     <ClCompile Include="ParsedData.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="PatternClause.cpp" />
     <ClCompile Include="PDR.cpp" />
     <ClCompile Include="PQLController.cpp" />
     <ClCompile Include="Procedure.cpp" />

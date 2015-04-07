@@ -20,15 +20,3 @@ struct InvalidSelectException : public exception{
 		return "Query invalid!";
 	}
 };
-
-struct UnexpectedEndException : public exception{
-	const char * what() const throw(){
-		return "Unexpected end of Query!";
-	}
-};
-
-struct MissingClauseException : public exception{
-	const char * what() const throw(){
-		return "Clause not found!";
-	}
-};
