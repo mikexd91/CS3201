@@ -52,7 +52,7 @@ namespace stringconst{
 	string const STRING_THAT = "that";
 	string const STRING_WITH = "with";
 	string const STRING_AND = "and";
-	string const STRING_EMPTY = "";
+	string const STRING_EMPTY = "_";
 
 	string const QUERY_NONE = "NONE";
 	string const QUERY_ERROR = "ERROR";
