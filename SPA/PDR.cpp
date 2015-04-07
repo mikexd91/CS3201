@@ -159,10 +159,8 @@ void PDR::processWhileStmt(ParsedData data) {
     whileNode->linkParent(parentStmtLst);
     whileNode->linkVarNode(whileVar);
     whileNode->linkStmtLstNode(stmtLst);
-    
-    stmtParentNumStack.push(stmtCounter);
+
     nodeStack.push(stmtLst);
-    stmtParentNumStack.push(stmtCounter);
     currNestingLevel = data.getNestingLevel() + 1;
     
     // Populating StmtTable
@@ -188,6 +186,7 @@ void PDR::processWhileStmt(ParsedData data) {
 		parentStmt->setChildren(children);
     }
     
+	stmtParentNumStack.push(stmtCounter);
     addToVarTable(whileVar);
     stmtTable->addStmt(whileStmt);
 }
@@ -196,9 +195,9 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
     // Assume expression to be the RPN of the variables and operators
     queue<string> expression = data.getAssignExpression();
     stack<TNode*> rpnNodeStack;
-	int numExpressions = expression.size();
+	int numExp = expression.size();
     
-    if(numExpressions == 1) {
+    if(numExp == 1) {
         string exp = expression.front();
         expression.pop();
         
@@ -212,7 +211,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
         }
     }
     
-    for(size_t i = 0; i < numExpressions; i++) {
+    for(size_t i = 0; i < numExp; i++) {
         string exp = expression.front();
         expression.pop();
         
