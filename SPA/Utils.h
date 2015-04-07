@@ -11,6 +11,7 @@ public:
 	Utils(void);
 	~Utils(void);
 	
+	bool isNumber(string);
 	string sanitise(string str);
 	vector<string> explode(const string &str);
 	
