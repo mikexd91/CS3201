@@ -45,7 +45,7 @@ bool containsAny(string s, vector<string> list){
 	return false;
 }
 
-bool containsClauseTypes(string s){
+bool containsClauseType(string s){
 	vector<string> clauseVector;
 	clauseVector.push_back(stringconst::TYPE_CALLS);
 	clauseVector.push_back(stringconst::TYPE_PATTERN);
@@ -70,28 +70,11 @@ string getClauseString(string s){
 			return current;
 		}
 	}
+	clauseVector.~vector();
 }
 
-Query QueryParser::processQuery(string input){
-	Utils util;
-	Query parsedQuery = Query();
-	vector<string> declarationTokens = tokeniser(input, ';');
-	int numSynonyms = declarationTokens.size() - 1;
-	string selectStatement = declarationTokens.at(numSynonyms);
-	declarationTokens.pop_back();
-	map<string, string> declarations = map<string, string>();
-	for (int i=0; i<numSynonyms; i++){
-		string currentDeclaration = declarationTokens.at(i);
-		vector<string> declarationPair = tokeniser(currentDeclaration, ' ');
-		declarations.insert(declarationPair.at(1), declarationPair.at(0));
-	}
-	parsedQuery.setDeclarationList(declarations);
-	selectStatement = util.sanitise(selectStatement);
-	vector<string> tokens = util.explode(selectStatement);
-	bool expectingClause, insideClause = false;
-	if (tokens.size() < 4){
-		throw UnexpectedEndException();
-	}
+void parseSelect(vector<string> tokens, Query query){
+	bool expectingClause, insideClause, noClauses= false;
 	for (int i=0; i<tokens.size(); i++){
 		string current = tokens.at(i);
 		if (i==0){
@@ -99,7 +82,7 @@ Query QueryParser::processQuery(string input){
 				throw InvalidSelectException();
 			}
 		} else if (i==1){
-			parsedQuery.addSelectSynonym(current);
+			query.addSelectSynonym(current);
 		} else {
 			if (insideClause){
 
@@ -130,6 +113,27 @@ Query QueryParser::processQuery(string input){
 			}
 		}
 	}
+	if (noClauses){
+		throw UnexpectedEndException();
+	}
+}
+
+Query QueryParser::processQuery(string input){
+	Utils util;
+	Query parsedQuery = Query();
+	vector<string> declarationTokens = tokeniser(input, ';');
+	int numSynonyms = declarationTokens.size() - 1;
+	string selectStatement = declarationTokens.at(numSynonyms);
+	declarationTokens.pop_back();
+	map<string, string> declarations = map<string, string>();
+	for (int i=0; i<numSynonyms; i++){
+		string currentDeclaration = declarationTokens.at(i);
+		vector<string> declarationPair = tokeniser(currentDeclaration, ' ');
+		declarations.insert(declarationPair.at(1), declarationPair.at(0));
+	}
+	parsedQuery.setDeclarationList(declarations);
+	selectStatement = util.sanitise(selectStatement);
+	vector<string> tokens = util.explode(selectStatement);
 }
 
 
