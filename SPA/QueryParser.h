@@ -18,6 +18,7 @@ private:
 	bool containsAny(string, vector<string>);
 	bool containsClauseType(string);
 	string getClauseString(string);
+	void parseSelect(vector<string>, Query);
 public:
 	QueryParser(void);
 	~QueryParser(void);

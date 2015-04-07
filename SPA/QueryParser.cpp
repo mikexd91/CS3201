@@ -70,6 +70,7 @@ string getClauseString(string s){
 			return current;
 		}
 	}
+	clauseVector.~vector();
 }
 
 void parseSelect(vector<string> tokens, Query query){

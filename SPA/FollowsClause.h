@@ -7,6 +7,7 @@ public:
 	FollowsClause(void);
 	~FollowsClause(void);
 private:
+	bool checkValidFollows(void);
 
 };
 

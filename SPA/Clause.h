@@ -6,11 +6,23 @@
 using std::vector;
 using std::map;
 using std::string;
+
+enum ClauseType{
+	FOLLOWS_, 
+	FOLLOWSSTAR_, 
+	PARENT_, 
+	PARENTSTAR_, 
+	USES_, 
+	USESSTAR_, 
+	MODIFIES_, 
+	MODIFIESSTAR_, 
+	ASSIGN_, 
+	ASSIGNSTAR_  
+};
+
 class Clause
 {
 private:
-	string clauseType;
-	bool isStar;
 	string firstArg;
 	bool firstArgFixed;
 	string firstArgType;
@@ -22,27 +34,20 @@ public:
 	Clause(void);
 	~Clause(void);
 
-	void setClauseType(string);
-	void setStar(bool);
 	void setFirstArg(string);
 	void setSecondArg(string);
 	void setFirstArgType(string);
 	void setSecondArgType(string);
 	void setFirstArgFixed(bool);
 	void setSecondArgFixed(bool);
-	void setPatternArg(string);
 
-	string getClauseType();
-	bool getStar();
 	string getFirstArg();
 	string getSecondArg();
 	string getFirstArgType();
 	string getSecondArgType();
 	bool getFirstArgFixed();
 	bool getSecondArgFixed();
-	string getPatternArg();
 
-	bool checkClauseValidity(map<string, string>);
 };
 
 namespace stringconst{
