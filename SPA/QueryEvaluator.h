@@ -1,10 +1,8 @@
 #pragma once
+#include "Results.h"
 #include "Query.h"
 #include "Clause.h"
-#include "Results.h"
-#include "StmtTable.h"
-#include "VarTable.h"
-#include <vector>
+
 //Query object to be passed between parser and evaluator
 using namespace std;
 
@@ -13,14 +11,21 @@ class QueryEvaluator
 public:
 	QueryEvaluator(void);
 	~QueryEvaluator(void);
-	
-	void setQuery(Query);
-	Results getClauseResult(Clause,string, Results);
-	Results oneClauseOneSyn();
-	Results manyClauseOneSyn();
-	Results evaluateQuery(Query);
+
+	Results evaluateQuery(Query q);
 
 private:
-	Query queryObj;
+	void setQueryObj(Query q);
+	void setClauseObj(Clause c);
+	void setResultObj(Results r);
+	
+	int isFixed(void);
+	bool isSynInClause(void);
+	void setResultSynNotInClause(bool isTrue);
 
+	Results evaluateFollowsClause(void);
+	
+	Query queryObj;
+	Clause clauseObj;
+	Results resultsObj;
 };

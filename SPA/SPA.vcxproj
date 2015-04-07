@@ -39,7 +39,6 @@
     <ClInclude Include="ProcNode.h" />
     <ClInclude Include="ProcTable.h" />
     <ClInclude Include="ProgNode.h" />
-    <ClInclude Include="Results.h" />
     <ClInclude Include="Statement.h" />
     <ClInclude Include="StmtLstNode.h" />
     <ClInclude Include="StmtNode.h" />
@@ -72,7 +71,6 @@
     <ClCompile Include="ProcNode.cpp" />
     <ClCompile Include="ProcTable.cpp" />
     <ClCompile Include="ProgNode.cpp" />
-    <ClCompile Include="Results.cpp" />
     <ClCompile Include="Statement.cpp" />
     <ClCompile Include="StmtLstNode.cpp" />
     <ClCompile Include="StmtNode.cpp" />
