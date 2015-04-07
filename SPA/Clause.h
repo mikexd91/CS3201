@@ -66,8 +66,6 @@ namespace stringconst{
 	string const TYPE_PATTERN = "Pattern";
 	string const TYPE_CALLS = "Calls";
 
-	vector<string> const VECTOR_TYPE;
-
 	string const ARG_WHILE = "while";
 	string const ARG_STATEMENT = "statement";
 	string const ARG_ASSIGN = "assign";
