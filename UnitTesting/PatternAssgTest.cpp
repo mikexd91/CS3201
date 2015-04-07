@@ -134,6 +134,7 @@ void PatternAssgTest::testIsFollowsStar() {
 	CPPUNIT_ASSERT(p2->match("j", "_\"2 3 +\"_"));
 	CPPUNIT_ASSERT(p2->match("j", "_\"2 3 + 4 +\"_"));
 	CPPUNIT_ASSERT(!p2->match("j", "_\"3 4 +\"_"));
+	CPPUNIT_ASSERT(!p2->match("i", "_\"3 4 +\"_"));
 
 	return;
 }

@@ -90,7 +90,7 @@ bool PatternAssg::matchExpr(AssgNode* assg, string expr) {
 	set<TNode*> visited;
 	stack<TNode*> nodestack = stack<TNode*>();
 	TNode* exprnode = assg->getExprNode();
-	cout << exprnode->getName() << endl;
+	//cout << exprnode->getName() << endl;
 	nodestack.push(exprnode);
 	TNode* nextnode = nodestack.top();
 	while (nextnode != NULL && i < 9999) {
@@ -100,7 +100,7 @@ bool PatternAssg::matchExpr(AssgNode* assg, string expr) {
 			nodestack.push(op->getRightNode());
 			nodestack.push(op->getLeftNode());
 			nextnode = nodestack.top();
-			cout << nextnode->getName() << endl;
+			//cout << nextnode->getName() << endl;
 		} else if (nextnode->getNodeType() == CONSTANT_) {
 			nextnode = NULL;
 		} else if (nextnode->getNodeType() == VARIABLE_) {
