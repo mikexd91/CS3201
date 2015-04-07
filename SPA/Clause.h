@@ -10,6 +10,7 @@ class Clause
 {
 private:
 	string clauseType;
+	bool isStar;
 	string firstArg;
 	bool firstArgFixed;
 	string firstArgType;
@@ -22,6 +23,7 @@ public:
 	~Clause(void);
 
 	void setClauseType(string);
+	void setStar(bool);
 	void setFirstArg(string);
 	void setSecondArg(string);
 	void setFirstArgType(string);
@@ -31,6 +33,7 @@ public:
 	void setPatternArg(string);
 
 	string getClauseType();
+	bool getStar();
 	string getFirstArg();
 	string getSecondArg();
 	string getFirstArgType();
