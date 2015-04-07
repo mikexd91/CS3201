@@ -10,6 +10,7 @@ class Clause
 {
 private:
 	string clauseType;
+	bool isStar;
 	string firstArg;
 	bool firstArgFixed;
 	string firstArgType;
@@ -22,6 +23,7 @@ public:
 	~Clause(void);
 
 	void setClauseType(string);
+	void setStar(bool);
 	void setFirstArg(string);
 	void setSecondArg(string);
 	void setFirstArgType(string);
@@ -31,6 +33,7 @@ public:
 	void setPatternArg(string);
 
 	string getClauseType();
+	bool getStar();
 	string getFirstArg();
 	string getSecondArg();
 	string getFirstArgType();
@@ -63,7 +66,12 @@ namespace stringconst{
 	string const TYPE_PATTERN = "Pattern";
 	string const TYPE_CALLS = "Calls";
 
-	vector<string> const VECTOR_TYPE;
+	string const STAR_FOLLOWS = "Follows*";
+	string const STAR_PARENT = "Parent*";
+	string const STAR_MODIFIES = "Modifies*";
+	string const STAR_USES = "Uses*";
+	string const STAR_PATTERN = "Pattern*";
+	string const STAR_CALLS = "Calls*";
 
 	string const ARG_WHILE = "while";
 	string const ARG_STATEMENT = "statement";

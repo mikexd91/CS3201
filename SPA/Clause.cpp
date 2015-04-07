@@ -15,6 +15,10 @@ void Clause::setClauseType(string newType){
 	this->clauseType = newType;
 }
 
+void Clause::setStar(bool star){
+	this->isStar = star;
+}
+
 void Clause::setFirstArg(string first){
 	this->firstArg = first;
 }
@@ -45,6 +49,10 @@ void Clause::setPatternArg(string pattern){
 
 string Clause::getClauseType(void){
 	return this->clauseType;
+}
+
+bool Clause::getStar(void){
+	return this->isStar;
 }
 
 string Clause::getFirstArg(void){
