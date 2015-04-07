@@ -5,7 +5,8 @@
 
 using std::map;
 using std::string;
-Clause::Clause(void){
+Clause::Clause(ClauseType type){
+	this->clauseType = type;
 }
 
 Clause::~Clause(void){
