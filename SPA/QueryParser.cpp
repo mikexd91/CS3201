@@ -150,7 +150,9 @@ void parseSelect(vector<string> tokens, Query query){
 				selectSynonyms = false;
 			}
 		} else {
-			if(insideClause){
+			if (insidePattern){
+				//TODO PATTERN ARGUMENT ASSIGNMENT
+			} else if(insideClause){
 				std::size_t index = current.find_first_of(")");
 				string synonym = current.substr(0, index);
 				currentClause.at(0)->setSecondArg(synonym);
@@ -163,11 +165,15 @@ void parseSelect(vector<string> tokens, Query query){
 					Clause newClause = createCorrectClause(current);
 					insideClause = true;
 					//ADD SPECIAL CASE FOR PATTERN
-					std::size_t index = current.find_first_of("(");
-					std::size_t endIndex = current.find_first_of(",");
-					string synonym = current.substr(index, endIndex);
-					newClause.setFirstArg(synonym);
-					currentClause.push_back(&newClause);
+					if (clauseType.compare(stringconst::TYPE_PATTERN)){
+						insidePattern = true;
+					} else {
+						std::size_t index = current.find_first_of("(");
+						std::size_t endIndex = current.find_first_of(",");
+						string synonym = current.substr(index, endIndex);
+						newClause.setFirstArg(synonym);
+						currentClause.push_back(&newClause);
+					}
 				} else if (!containsKeyword(current)){
 					throw InvalidSelectException();
 				}

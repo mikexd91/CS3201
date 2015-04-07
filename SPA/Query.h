@@ -27,9 +27,7 @@ public:
 	void addDeclaration(StringPair);
 
 	vector<StringPair> getSelectList(void);
-	string getSelectSynonym(int);
 	vector<Clause> getClauseList(void);
-	Clause getClause(int);
 	int getNumClauses(void);
 	map<string, string> getDeclarationList(void);
 };
