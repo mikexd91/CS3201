@@ -35,6 +35,14 @@ bool Results::isClauseTrue() {
 	return this->isValid;
 }
 
+string Results::getFirstClauseSyn() {
+	return this->firstClauseSyn;
+}
+
+string Results::getSecondClauseSyn() {
+	return this->secondClauseSyn;
+}
+
 vector<string> Results::getSinglesResults() {
 	return this->singleResults;
 }

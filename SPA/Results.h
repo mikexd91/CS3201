@@ -18,6 +18,8 @@ public:
 
 	bool isClauseTrue();
 
+	string getFirstClauseSyn();
+	string getSecondClauseSyn();
 	vector<string> getSinglesResults();
 	vector<pair<string, string>> getPairResults();
 
