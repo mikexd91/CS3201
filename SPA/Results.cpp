@@ -33,6 +33,10 @@ set<string> Results::getVarResults() {
 	return this->varResultSet;
 }
 
+bool Results::getBoolResults() {
+	return this->exist;
+}
+
 void removeEndComma(string *result) {
 	result->pop_back();
 	result->pop_back();

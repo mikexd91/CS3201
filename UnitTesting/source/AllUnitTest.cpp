@@ -10,6 +10,8 @@ int main(int argc, char* argv[])
 
 CppUnit::TestSuite *unitSuite = new CppUnit::TestSuite( "PKB Unit Tests" );
 
+//AST Components
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ASTTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("TNodeTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ProgNodeTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ProcNodeTest").makeTest());
@@ -19,10 +21,16 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("CallNodeTest").mak
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("IfNodeTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("WhileNodeTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ConstNodeTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("VarNodeTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("OpNodeTest").makeTest());
+
+// PKB Tables
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("VarTableTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("StmtTableTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ProcTableTest").makeTest());
-unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ASTTest").makeTest());
+
+// PQL Clauses
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("FollowsClauseTest").makeTest());
 
 CppUnit::TestFactoryRegistry::getRegistry().addTestToSuite(unitSuite);
 CppUnit::TextUi::TestRunner runner;

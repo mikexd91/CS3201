@@ -11,6 +11,11 @@ ProgNode::ProgNode(const string &name)
 	: TNode(PROGRAM_, name) {
 }
 
+// destructor
+ProgNode::~ProgNode() {
+
+}
+
 // getters
 vector<TNode*>& ProgNode::getProcNodes() {
 	// simply replace the methods for getchildren

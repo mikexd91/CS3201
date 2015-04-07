@@ -4,6 +4,9 @@
 #include <string>
 #include <iostream>
 #include <list>
+#include "../../SPA/Parser.h"
+#include "../../SPA/PQLController.h"
+
 
 // include your other headers here
 #include "AbstractWrapper.h"
@@ -21,6 +24,9 @@ class TestWrapper : public AbstractWrapper {
   
   // method for evaluating a query
   virtual void evaluate(std::string query, std::list<std::string>& results);
+
+  Parser* parser;
+  PQLController* pqlController;
 };
 
 #endif

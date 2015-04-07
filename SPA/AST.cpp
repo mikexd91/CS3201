@@ -11,11 +11,17 @@ using namespace std;
 
 bool AST::_hasInstance = false;
 AST* AST::_instance;
-//ProgNode AST::_root;
 
 // constructors
 
 AST::AST() {
+
+}
+
+// destructor
+
+AST::~AST() {
+	//delete &_root;
 }
 
 //------------------
@@ -43,4 +49,12 @@ ProcNode* AST::getProcNode(const string& procName) {
 // setters
 void AST::addProcNode(ProcNode *procNode) {
 	_root.linkProcNode(procNode);
+}
+
+//------------------
+
+// clear
+void AST::reset() {
+	AST::_hasInstance = false;
+	delete _instance;
 }
