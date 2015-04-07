@@ -1,12 +1,21 @@
+#include <iostream>
 #include <exception>
+#include <string>
+#include <sstream>
+
 using namespace std;
 
-class InvalidCodeException {
+	
+class InvalidCodeException : public exception {
+	
 public:
-	InvalidCodeException()
-		: message("Invalid SIMPLE code input!") { }
+	InvalidCodeException(const string m) : message(m) { }
 
-	const char * what() const { return message; }
+	virtual const char * what() const throw() { 
+		return message.c_str(); 
+	}
+
 private:
-	const char * message;
+	int lineNumber;
+	string message;
 };

@@ -16,6 +16,7 @@ using namespace std;
 Parser::Parser() {
 	nestingLevel = 0;
 	parsedDataReceiver = PDR::getInstance();
+	stmtCount = 0;
 }
 
 //e.g. string content = "procedure test { a = 2; a = 5;} ";
@@ -61,7 +62,8 @@ void Parser::match(string token) {
 		getNextToken();
 	}
 	else {
-		throw InvalidCodeException();
+		throwException(stmtCount);
+		//throw InvalidCodeException(stmtCount);
 	}
 }
 
@@ -79,6 +81,26 @@ string Parser::getWord() {
 	return result;
 }
 
+string Parser::getName() {
+	string result = getWord();
+	if (isValidName(result)) {
+		return result;
+	} else {
+		throwException(stmtCount);
+	}
+}
+
+/**
+string Parser::getFactor() {
+	string result = getWord();
+	if (isValidName(result) || isValidConstant(result)) {
+		return result;
+	} else {
+		throw InvalidCodeException(stmtCount);
+	}
+}
+**/
+
 void Parser::program() {
 	getNextToken();
 	while (!nextToken.empty()) {
@@ -88,7 +110,7 @@ void Parser::program() {
 
 void Parser::procedure() {
 	match("procedure");
-	string procName = getWord();
+	string procName = getName();
 	ParsedData procedure = ParsedData(ParsedData::PROCEDURE, this->nestingLevel);
 	procedure.setProcName(procName);
 	parsedDataReceiver->processParsedData(procedure);
@@ -106,6 +128,7 @@ void Parser::stmtLst() {
 }
 
 void Parser::stmt() {
+	stmtCount++;
 	if (nextToken == "while") {
 		parseWhile();
 	} else {
@@ -114,7 +137,7 @@ void Parser::stmt() {
 }
 
 void Parser::assign() {
-	string var = getWord();
+	string var = getName();
 	match("=");
 	ParsedData assignment = ParsedData(ParsedData::ASSIGNMENT, nestingLevel);
 	assignment.setAssignVar(var);
@@ -147,7 +170,11 @@ queue<string> Parser::getExpression() {
 			}
 			operationStack.push(word);
 		} else {
-			expressionQueue.push(word);
+			if(isValidFactor(word)) {
+				expressionQueue.push(word);
+			} else {
+				throwException(stmtCount);
+			}
 		}	
 	}
 	while (!operationStack.empty()) {
@@ -160,7 +187,7 @@ queue<string> Parser::getExpression() {
 
 void Parser::parseWhile() {
 	match("while");
-	string conditionVar = getWord();
+	string conditionVar = getName();
 	ParsedData whileStmt = ParsedData(ParsedData::WHILE, nestingLevel);
 	whileStmt.setWhileVar(conditionVar);
 	parsedDataReceiver->processParsedData(whileStmt);
@@ -176,3 +203,36 @@ void Parser::endParse() {
 
 
 
+bool Parser::isValidName(string name) {
+	if (!isalpha(name[0])) {
+		return false;
+	} else {
+		for (int i = 1; i < name.size(); i++) {
+			if(!isalnum(name[i])) {
+				return false;
+			}
+		}
+		return true;
+	}
+}
+
+bool Parser::isValidConstant(string number) {
+	for (int i = 0; i < number.size(); i++) {
+		if (!isdigit(number[i])) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool Parser::isValidFactor(string factor) {
+	return isValidConstant(factor) || isValidName(factor);
+}
+
+void Parser::throwException(int lineNumber) {
+	ostringstream output;
+	output.str("");
+	output << "Error at line " << lineNumber;
+	throw InvalidCodeException(output.str());
+
+}
