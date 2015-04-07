@@ -50,3 +50,11 @@ vector<string> Results::getSinglesResults() {
 vector<pair<string, string>> Results::getPairResults() {
 	return this->pairResults;
 }
+
+void eliminateSingle(Results res, string commonSyn) {
+
+}
+
+void eliminatePair(Results res) {
+
+}

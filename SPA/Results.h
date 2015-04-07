@@ -23,6 +23,9 @@ public:
 	vector<string> getSinglesResults();
 	vector<pair<string, string>> getPairResults();
 
+	void eliminateSingle(Results res, string commonSyn);
+	void eliminatePair(Results res);
+
 private:
 
 	bool isValid;
