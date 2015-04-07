@@ -1,7 +1,6 @@
 #include "FollowsClause.h"
 
-
-FollowsClause::FollowsClause(void){
+FollowsClause::FollowsClause(void):Clause(FOLLOWS_){
 }
 
 FollowsClause::~FollowsClause(void){
