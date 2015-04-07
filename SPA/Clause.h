@@ -17,14 +17,13 @@ enum ClauseType{
 	USESSTAR_, 
 	MODIFIES_, 
 	MODIFIESSTAR_, 
-	ASSIGN_, 
-	ASSIGNSTAR_  
+	PATTERN_
 };
 
 class Clause
 {
 private:
-	ClauseType type;
+	ClauseType clauseType;
 	string firstArg;
 	bool firstArgFixed;
 	string firstArgType;
