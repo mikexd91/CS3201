@@ -3,91 +3,42 @@
 
 Results::Results(void)
 {
+	isValid = false;
 }
 
 Results::~Results(void)
 {
 }
 
-void Results::addStmt(int stmt) {
-	stmtResultSet.insert(stmt);
-}
-	
-void Results::addVar(string var) {
-	varResultSet.insert(var);
+void Results::setClauseTrue() {
+	this->isValid = true;
 }
 
-void Results::setBool(bool res) {
-	this->exist = res;
+void Results::addSingleResult(string s) {
+	this->singleResults.push_back(s);
 }
 
-void Results::setResultType(Type type) {
-	this->resultType = type;
+void Results::addPairResult(string s1, string s2) {
+	pair<string, string> pair = make_pair(s1, s2);
+	this->pairResults.push_back(pair);
 }
 
-set<int> Results::getStmtResults() {
-	return this->stmtResultSet;
-}
-	
-set<string> Results::getVarResults() {
-	return this->varResultSet;
+void Results::setFirstClauseSyn(string s1) {
+	this->firstClauseSyn = s1;
 }
 
-bool Results::getBoolResults() {
-	return this->exist;
+void Results::setSecondClauseSyn(string s2) {
+	this->secondClauseSyn = s2;
 }
 
-void removeEndComma(string *result) {
-	result->pop_back();
-	result->pop_back();
+bool Results::isClauseTrue() {
+	return this->isValid;
 }
 
-string formatVarResult(set<string> varSet) {
-	string result;
-	set<string>::iterator setIter;	
-	for (setIter=varSet.begin(); setIter!=varSet.end(); setIter++) {
-		string v = *setIter;
-		result = v + ", ";
-	}
-	removeEndComma(&result);
-	return result;
+vector<string> Results::getSinglesResults() {
+	return this->singleResults;
 }
 
-string formatStmtResult(set<int> stmtSet) {
-	string result;
-	set<int>::iterator setIter;	
-	for (setIter=stmtSet.begin(); setIter!=stmtSet.end(); setIter++) {
-		int n = *setIter;
-		result = n + ", ";
-	}
-	removeEndComma(&result);
-	return result;
-}
-
-string formatBoolResult(bool res) {
-	return res + "";
-}
-
-string Results::toString() {
-	Type type = this->resultType;
-	string result;
-	switch (type) {
-	case Letter:
-		result = formatVarResult(this->varResultSet);
-		break;
-	case Digit:
-		result = formatStmtResult(this->stmtResultSet);
-		break;
-	case Tuple:
-		break;
-	case Boolean:
-		result = formatBoolResult(this->exist);
-		break;
-	case None:
-		result = "none";
-		break;
-	default:
-		break;
-	}
-	return result;
+vector<pair<string, string>> Results::getPairResults() {
+	return this->pairResults;
 }

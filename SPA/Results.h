@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <set>
+#include <vector>
 
 using namespace std;
 
@@ -10,19 +10,24 @@ public:
 	Results(void);
 	~Results(void);
 
-	void addStmt(int);
-	void addVar(string);
-	void setBool(bool);
+	void setClauseTrue();
+	void setFirstClauseSyn(string s1);
+	void setSecondClauseSyn(string s2);
+	void addSingleResult(string s);
+	void addPairResult(string s1, string s2);
 
-	set<int> getStmtResults();
-	set<string> getVarResults();
-	bool getBoolResults();
+	bool isClauseTrue();
 
-	string toString();
+	vector<string> getSinglesResults();
+	vector<pair<string, string>> getPairResults();
 
 private:
-	set<int> stmtResultSet;
-	set<string> varResultSet;
-	bool exist;
+
+	bool isValid;
+	string firstClauseSyn;
+	string secondClauseSyn;
+	vector<pair<string, string>> pairResults;
+	vector<string> singleResults;
+
 };
 
