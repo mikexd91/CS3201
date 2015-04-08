@@ -20,7 +20,7 @@ StmtLstNode* WhileNode::getStmtLstNode() {
 
 // setters
 void WhileNode::linkVarNode(VarNode *varNode) {
-	if (this->_children.size() < 1) {
+	if (this->_children.size() == 0) {
 		this->_children.push_back(varNode);
 	} else {
 		this->_children.at(0) = varNode;
@@ -29,7 +29,10 @@ void WhileNode::linkVarNode(VarNode *varNode) {
 }
 
 void WhileNode::linkStmtLstNode(StmtLstNode *stmtLst) {
-	if (this->_children.size() < 2) {
+	if (this->_children.size() == 0) {
+		this->_children.push_back(NULL);
+		this->_children.push_back(stmtLst);
+	} else if (this->_children.size() == 1) {
 		this->_children.push_back(stmtLst);
 	} else {
 		this->_children.at(1) = stmtLst;
