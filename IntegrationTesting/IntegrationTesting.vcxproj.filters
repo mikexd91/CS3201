@@ -21,15 +21,9 @@
     <ClCompile Include="source\TestOne.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\pdr_integration_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\TestOne.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\pdr_integration_test.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

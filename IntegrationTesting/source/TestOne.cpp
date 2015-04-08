@@ -12,6 +12,7 @@
 
 void TestOne::setUp() {
 	pdr = PDR::getInstance();
+	ast = AST::getInstance();
 	parser = Parser();
 }
 
@@ -83,18 +84,18 @@ void TestOne::testAddProc() {
 	CPPUNIT_ASSERT(stmt6->getParent() == 4);
 
 	Variable* varX = varTable->getVariable("x");
-	int initXUsedBy[] = {2, 3, 5};
+	int initXUsedBy[] = {2, 3, 4, 5};
 	int initXModifiedBy[] = {1};
-	set<int> setXUsedBy(initXUsedBy, initXUsedBy + 3);
+	set<int> setXUsedBy(initXUsedBy, initXUsedBy + 4);
 	set<int> setXModifiedBy(initXModifiedBy, initXModifiedBy + 1);
 	CPPUNIT_ASSERT(varX->getUsedByStmts() == setXUsedBy);
 	CPPUNIT_ASSERT(varX->getModifiedByStmts() == setXModifiedBy);
 
 	Variable* varY = varTable->getVariable("y");
 	int initYUsedBy[] = {3};
-	int initYModifiedBy[] = {2, 5};
+	int initYModifiedBy[] = {2, 4, 5};
 	set<int> setYUsedBy(initYUsedBy, initYUsedBy + 1);
-	set<int> setYModifiedBy(initYModifiedBy, initYModifiedBy + 2);
+	set<int> setYModifiedBy(initYModifiedBy, initYModifiedBy + 3);
 	CPPUNIT_ASSERT(varY->getUsedByStmts() == setYUsedBy);
 	CPPUNIT_ASSERT(varY->getModifiedByStmts() == setYModifiedBy);
 
@@ -246,4 +247,8 @@ void TestOne::testMultipleProcAST() {
 	ProcNode* proc1 = ast->getProcNode("proc1");
 	ProcNode* proc2 = ast->getProcNode("proc2");
 	ProcNode* proc3 = ast->getProcNode("proc3");
+}
+
+void TestOne::testFollows() {
+	parser.parse("procedure proc{x = 2; y = x + 3; while y{z = y + x;}}}");
 }
