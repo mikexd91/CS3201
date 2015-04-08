@@ -1,14 +1,11 @@
 #include "PatternClause.h"
+#include "Utils.h"
 
+using namespace stringconst;
 
-PatternClause::PatternClause(void):Clause(PATTERN_)
-{
+PatternClause::PatternClause()
+	: Clause(PATTERN_) {
 }
 
-PatternClause::~PatternClause(void)
-{
-}
-
-Results PatternClause::evaluate(void) {
-	return Results();
+PatternClause::~PatternClause(void) {
 }
