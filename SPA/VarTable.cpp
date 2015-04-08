@@ -46,7 +46,7 @@ bool VarTable::contains(const string& varName) {
 }
 
 // reset VarTable
-static void VarTable::reset() {
+void VarTable::reset() {
 	VarTable::_hasInstance = false;
 	delete _instance;
 }
