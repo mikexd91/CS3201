@@ -29,8 +29,8 @@ void Query::setClauseList(vector<Clause*> list){
 	this->numClauses = sizeOf;
 }
 
-void Query::addClause(Clause item){
-	this->clauseList.push_back(&item);
+void Query::addClause(Clause* item){
+	this->clauseList.push_back(item);
 	this->numClauses = this->numClauses + 1;
 }
 

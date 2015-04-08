@@ -149,7 +149,7 @@ void parseSelect(vector<string> tokens, Query query){
 					std::size_t index = current.find_first_of(")");
 					string patternArg = current.substr(0, index);
 					//RPN method
-					query.addClause(*currentClause.at(0));
+					query.addClause(currentClause.at(0));
 					currentClause.pop_back();
 					insidePattern = false;
 				}
@@ -157,7 +157,7 @@ void parseSelect(vector<string> tokens, Query query){
 				std::size_t index = current.find_first_of(")");
 				string synonym = current.substr(0, index);
 				currentClause.at(0)->setSecondArg(synonym);
-				query.addClause(*currentClause.at(0));
+				query.addClause(currentClause.at(0));
 				currentClause.pop_back();
 				insideClause = false;
 			} else {
@@ -188,7 +188,7 @@ void parseSelect(vector<string> tokens, Query query){
 
 void vetQuery(Query query){
 	unordered_map<string, string> decList = query.getDeclarationList();
-	vector<Clause> clauseList = query.getClauseList();
+	vector<Clause*> clauseList = query.getClauseList();
 	vector<StringPair> selectList = query.getSelectList();
 	for (size_t i=0; i<selectList.size(); i++){
 		StringPair current = selectList.at(i);
@@ -201,14 +201,14 @@ void vetQuery(Query query){
 		}
 	}
 	for (size_t i=0; i<clauseList.size(); i++){
-		Clause current = clauseList.at(i);
+		Clause* current = clauseList.at(i);
 		//DO CHECK FOR PATTERN
-		string currentSynonymOne = current.getFirstArg();
+		string currentSynonymOne = current->getFirstArg();
 		if (decList.find(currentSynonymOne) == decList.end() ) {
 			throw MissingDeclarationException();
 		} else {
 			string currentTypeOne = decList.at(currentSynonymOne);
-			current.setFirstArgType(currentTypeOne);
+			current->setFirstArgType(currentTypeOne);
 			//check for fixed statement number and variable call
 
 		}

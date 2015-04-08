@@ -13,7 +13,7 @@ class Query
 private:
 	int numClauses;
 	vector<StringPair> selectList;
-	vector<Clause> clauseList;
+	vector<Clause*> clauseList;
 	unordered_map<string, string> declarationList;
 public:
 	Query(void);
@@ -21,13 +21,13 @@ public:
 	
 	void setSelectList(vector<StringPair>);
 	void addSelectSynonym(StringPair);
-	void setClauseList(vector<Clause>);
-	void addClause(Clause);
+	void setClauseList(vector<Clause*>);
+	void addClause(Clause*);
 	void setDeclarationList(unordered_map<string, string>);
 	void addDeclaration(StringPair);
 
 	vector<StringPair> getSelectList(void); // stringPair <synonym, synonym type>
-	vector<Clause> getClauseList(void);
+	vector<Clause*> getClauseList(void);
 	int getNumClauses(void);
 	unordered_map<string, string> getDeclarationList(void);
 };
