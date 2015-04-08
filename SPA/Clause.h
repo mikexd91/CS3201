@@ -28,6 +28,7 @@ protected:
 	bool secondArgFixed;
 	string secondArgType;
 	string patternArg;
+
 	bool isValid();
 public:
 	Clause(void);
