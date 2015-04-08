@@ -10,6 +10,7 @@ PDR* pdr1;
 AST* ast1;
 
 void PDR_Integration_Test::setUp() {
+	PDR::resetInstanceFlag();
 	pdr1 = PDR::getInstance();
 	parser1 = Parser();
 	ast1 = AST::getInstance();
@@ -138,10 +139,4 @@ void PDR_Integration_Test::testMultipleProc() {
 	ProcNode* proc2 = ast1->getProcNode("proc2");
 	ProcNode* proc3 = ast1->getProcNode("proc3");
 
-	CPPUNIT_ASSERT(proc1->getLeftSibling() == NULL);
-	CPPUNIT_ASSERT(proc1->getRightSibling() == proc2);
-	CPPUNIT_ASSERT(proc2->getLeftSibling() == proc1);
-	CPPUNIT_ASSERT(proc2->getRightSibling() == proc3);
-	CPPUNIT_ASSERT(proc3->getLeftSibling() == proc2);
-	CPPUNIT_ASSERT(proc3->getRightSibling() == NULL);
 }
