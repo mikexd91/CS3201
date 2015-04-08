@@ -28,6 +28,7 @@ private:
 	string getName();
 	//string getFactor();
 	queue<string> getExpression();
+	queue<string> getRPN(queue<string>);
 	bool isValidName(string);
 	bool isValidConstant(string);
 	bool isValidFactor(string);

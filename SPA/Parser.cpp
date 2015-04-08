@@ -157,26 +157,49 @@ Sample parsing of expression
 **/
 
 queue<string> Parser::getExpression() {
+	queue<string> originalExpression;
+	string word;
+	while ((word = getWord()) != ";") {
+		if (isValidFactor(word) || isValidSymbol(word)) {
+			originalExpression.push(word);
+		} else {
+			throwException(stmtCount);
+		}
+	}
+	queue<string> rpn = getRPN(originalExpression);
+	if (rpn.empty()) {
+		throwException(stmtCount);
+	} 
+	return getRPN(originalExpression);
+}
+
+queue<string> Parser::getRPN(queue<string> originalExpression) {
+	if (originalExpression.empty()) {
+		return queue<string>();
+	}
 	stack<string> operationStack;
 	queue<string> expressionQueue;
 	//using Shunting-yard algorithm
 	string word;
 	int count = 0;
-	word = getWord();
+	word = originalExpression.front();
+	originalExpression.pop();
 	parseFactor(word, expressionQueue);
 	
-	while ((word = getWord()) != ";") {
+	while (!originalExpression.empty()) {
 		if(count > 9999) {
 			throw runtime_error("Infinite loop!");
 			break;
 		} else {
+			word = originalExpression.front();
+			originalExpression.pop();
 			parseSymbol(word, expressionQueue, operationStack);
-			word = getWord();
+			word = originalExpression.front();
+			originalExpression.pop();
 			parseFactor(word, expressionQueue);
 		}
 		count++;
 	}
-
 	while (!operationStack.empty()) {
 		expressionQueue.push(operationStack.top());
 		operationStack.pop();
