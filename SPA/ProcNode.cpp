@@ -10,11 +10,19 @@ ProcNode::ProcNode(const string &name)
 // getters
 
 StmtLstNode* ProcNode::getStmtLstNode() {
+	if (_children.size() < 1) {
+		return NULL;
+	}
 	return (StmtLstNode*)(this->_children.at(0));
 }
 
 // setters
 
 void ProcNode::linkStmtLstNode(StmtLstNode *stmtLst) {
-	this->linkChild(stmtLst);
+	if (this->_children.size() == 0) {
+		this->_children.push_back(stmtLst);
+	} else {
+		this->_children.at(0) = stmtLst;
+	}
+	stmtLst->setParent(this);
 }

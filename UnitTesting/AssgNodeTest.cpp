@@ -34,6 +34,9 @@ void AssgNodeTest::testLinks() {
 	AssgNode anode(1);
 	VarNode vnode("x");
 	OpNode onode("+");
+	
+	// linkexprnode
+	anode.linkExprNode(&onode);
 
 	// linkvarnode
 	anode.linkVarNode(&vnode);
@@ -43,9 +46,6 @@ void AssgNodeTest::testLinks() {
 	CPPUNIT_ASSERT_EQUAL(&vnode, vget);
 	string expname = "x";
 	CPPUNIT_ASSERT_EQUAL(expname, vget->getName());
-	
-	// linkexprnode
-	anode.linkExprNode(&onode);
 
 	// getexprnode
 	OpNode* oget = (OpNode*)(anode.getExprNode());
