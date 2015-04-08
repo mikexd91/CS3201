@@ -48,7 +48,8 @@ public:
 	string getSecondArgType();
 	bool getFirstArgFixed();
 	bool getSecondArgFixed();
-	virtual Results evaluate(); 
-	virtual bool isValid();
+
+	virtual Results evaluate()=0; 
+	virtual bool isValid()=0;
 	
 };

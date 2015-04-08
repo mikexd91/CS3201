@@ -90,28 +90,28 @@ string getClauseString(string s){
 	}
 }
 
-Clause createCorrectClause(string type){
-	Clause c;
+Clause* createCorrectClause(string type){
+	Clause* c;
 	if (type == stringconst::TYPE_PATTERN){
-		PatternClause clause;
-		c = clause;
+		/*PatternClause clause;
+		c = clause;*/
 	} else if (type == stringconst::TYPE_FOLLOWS){
-		FollowsClause clause;
+		FollowsClause* clause = new FollowsClause();
 		c = clause;		
 	} else if (type == stringconst::TYPE_PARENT){
-		ParentClause clause;
+		ParentClause* clause = new ParentClause();
 		c = clause;		
 	} else if (type == stringconst::TYPE_MODIFIES){
-		ModifiesClause clause;
+		ModifiesClause* clause = new ModifiesClause();
 		c = clause;		
 	} else if (type == stringconst::TYPE_USES){
-		UsesClause clause;
+		UsesClause* clause = new UsesClause();
 		c = clause;		
 	} else if (type == stringconst::TYPE_FOLLOWS_STAR){
-		FollowsStarClause clause;
+		FollowsStarClause* clause = new FollowsStarClause();
 		c = clause;		
 	} else if (type == stringconst::TYPE_PARENT_STAR){
-		ParentStarClause clause;
+		ParentStarClause* clause = new ParentStarClause();
 		c = clause;		
 	}
 	return c;
@@ -163,17 +163,17 @@ void parseSelect(vector<string> tokens, Query query){
 			} else {
 				if (containsClauseType(current)){
 					string clauseType = getClauseString(current);
-					Clause newClause = createCorrectClause(current);
+					Clause* newClause = createCorrectClause(current);
 					if (clauseType == stringconst::TYPE_PATTERN){
 						insidePattern = true;
-						currentClause.push_back(&newClause);
+						currentClause.push_back(newClause);
 					} else {
 						insideClause = true;
 						std::size_t index = current.find_first_of("(");
 						std::size_t endIndex = current.find_first_of(",");
 						string synonym = current.substr(index, endIndex);
-						newClause.setFirstArg(synonym);
-						currentClause.push_back(&newClause);
+						newClause->setFirstArg(synonym);
+						currentClause.push_back(newClause);
 					}
 				} else if (!containsKeyword(current)){
 					throw InvalidSelectException();

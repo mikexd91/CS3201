@@ -29,7 +29,7 @@ ProcTable::ProcedureTable::iterator ProcTable::getIterator() {
 }
 
 // gets iterator to end of proc table
-ProcTable::ProcedureTable::iterator ProcTable::getIterator() {
+ProcTable::ProcedureTable::iterator ProcTable::getEnd() {
 	ProcTable::ProcedureTable::iterator tableIter = table.end();
 
 	return tableIter;

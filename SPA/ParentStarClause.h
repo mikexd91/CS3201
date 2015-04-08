@@ -4,7 +4,7 @@ class ParentStarClause : public Clause{
 public:
 	ParentStarClause(void);
 	~ParentStarClause(void);
-
+	bool isValid(void);
 	Results evaluate(void);
 };
 
