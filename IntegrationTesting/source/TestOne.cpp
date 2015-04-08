@@ -82,28 +82,28 @@ void TestOne::testAddProc() {
 	CPPUNIT_ASSERT(stmt6->getParent() == 4);
 
 	Variable* varX = varTable->getVariable("x");
-	int initXUsedBy[] = {2, 3};
+	int initXUsedBy[] = {2, 3, 5};
 	int initXModifiedBy[] = {1};
-	set<int> setXUsedBy(initXUsedBy, initXUsedBy + 2);
+	set<int> setXUsedBy(initXUsedBy, initXUsedBy + 3);
 	set<int> setXModifiedBy(initXModifiedBy, initXModifiedBy + 1);
-	//CPPUNIT_ASSERT(varX->getUsedByStmts() == setXUsedBy);
-	//CPPUNIT_ASSERT(varX->getModifiedByStmts() == setXModifiedBy);
+	CPPUNIT_ASSERT(varX->getUsedByStmts() == setXUsedBy);
+	CPPUNIT_ASSERT(varX->getModifiedByStmts() == setXModifiedBy);
 
 	Variable* varY = varTable->getVariable("y");
 	int initYUsedBy[] = {3};
-	int initYModifiedBy[] = {2};
+	int initYModifiedBy[] = {2, 5};
 	set<int> setYUsedBy(initYUsedBy, initYUsedBy + 1);
-	set<int> setYModifiedBy(initYModifiedBy, initYModifiedBy + 1);
-	//CPPUNIT_ASSERT(varY->getUsedByStmts() == setYUsedBy);
-	//CPPUNIT_ASSERT(varY->getModifiedByStmts() == setYModifiedBy);
+	set<int> setYModifiedBy(initYModifiedBy, initYModifiedBy + 2);
+	CPPUNIT_ASSERT(varY->getUsedByStmts() == setYUsedBy);
+	CPPUNIT_ASSERT(varY->getModifiedByStmts() == setYModifiedBy);
 
 	Variable* varZ = varTable->getVariable("z");
 	int initZUsedBy[] = {2, 3};
 	int initZModifiedBy[] = {3};
 	set<int> setZUsedBy(initZUsedBy, initZUsedBy + 2);
 	set<int> setZModifiedBy(initZModifiedBy, initZModifiedBy + 1);
-	//CPPUNIT_ASSERT(varZ->getUsedByStmts() == setZUsedBy);
-	//CPPUNIT_ASSERT(varZ->getModifiedByStmts() == setZModifiedBy);
+	CPPUNIT_ASSERT(varZ->getUsedByStmts() == setZUsedBy);
+	CPPUNIT_ASSERT(varZ->getModifiedByStmts() == setZModifiedBy);
 }
 
 
