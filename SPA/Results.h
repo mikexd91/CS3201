@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <set>
 
 using namespace std;
 
@@ -23,8 +24,7 @@ public:
 	vector<string> getSinglesResults();
 	vector<pair<string, string>> getPairResults();
 
-	void eliminateSingle(Results res, string commonSyn);
-	void eliminatePair(Results res);
+	Results getIntercept(Results res);
 
 private:
 

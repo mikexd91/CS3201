@@ -51,10 +51,6 @@ vector<pair<string, string>> Results::getPairResults() {
 	return this->pairResults;
 }
 
-void eliminateSingle(Results res, string commonSyn) {
-
-}
-
-void eliminatePair(Results res) {
-
+Results Results::getIntercept(Results res) {
+	return Results();
 }
