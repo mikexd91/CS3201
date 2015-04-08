@@ -101,7 +101,7 @@ void PDR::processAssignStmt(ParsedData data) {
     assignNode->linkExprNode(assignExpChild);
     VarNode* modifiesVar = new VarNode(data.getAssignVar());
     assignNode->linkVarNode(modifiesVar);
-    addToVarTable(modifiesVar);
+    addToVarTable(modifiesVar, MODIFIES);
     
     
     // Populating the StmtTable
@@ -187,7 +187,7 @@ void PDR::processWhileStmt(ParsedData data) {
     }
     
 	stmtParentNumStack.push(stmtCounter);
-    addToVarTable(whileVar);
+    addToVarTable(whileVar, USES);
     stmtTable->addStmt(whileStmt);
 }
 
@@ -232,7 +232,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
                 VarNode* var = new VarNode(exp);
                 rpnNodeStack.push(var);
                 usesSet.insert(exp);
-                addToVarTable(var);
+                addToVarTable(var, USES);
             }
         }
     }
@@ -252,15 +252,26 @@ void PDR::addToProcTable(TNode* procedure) {
     procTable->addProc(proc);
 }
 
-void PDR::addToVarTable(TNode* variable) {
+void PDR::addToVarTable(TNode* variable, Flag statusFlag) {
     VarTable* varTable = VarTable::getInstance();
     
     if(varTable->contains(variable->getName())) {
         Variable* var = varTable->getVariable(variable->getName());
         var->addTNode(variable);
+		if(statusFlag == USES) {
+			var->addUsingStmt(stmtCounter);
+		} else {
+			var->addModifyingStmt(stmtCounter);
+		}
+
     } else {
         Variable* var = new Variable(variable->getName());
-        varTable->addVariable(var);
+        if(statusFlag == USES) {
+			var->addUsingStmt(stmtCounter);
+		} else {
+			var->addModifyingStmt(stmtCounter);
+		}
+		varTable->addVariable(var);
     }
 }
 
