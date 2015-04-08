@@ -29,7 +29,7 @@ protected:
 	string secondArgType;
 	string patternArg;
 
-	bool isValid();
+	
 public:
 	Clause(void);
 	Clause(ClauseType);
@@ -48,7 +48,7 @@ public:
 	string getSecondArgType();
 	bool getFirstArgFixed();
 	bool getSecondArgFixed();
-
 	virtual Results evaluate(); 
-
+	virtual bool isValid();
+	
 };
