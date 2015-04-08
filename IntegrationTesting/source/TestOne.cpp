@@ -69,18 +69,17 @@ void TestOne::testAddProc() {
 	set<string> strUses5(initUses5, initUses5 + 1);
 	CPPUNIT_ASSERT(stmt5->getUses() == strUses5);
 	CPPUNIT_ASSERT(stmt5->getParent() == 4);
-
+	
+	
 	Statement* stmt6 = stmtTable->getStmtObj(6);
 	string initModifies6[] = { "a" };
 	set<string> strModifies6(initModifies6, initModifies6 + 1);
 	CPPUNIT_ASSERT(stmt6->getModifies() == strModifies6);
-	string initUses6[] = { "a, b" };
+	
+	string initUses6[] = { "a", "b" };
 	set<string> strUses6(initUses6, initUses6 + 2);
 	CPPUNIT_ASSERT(stmt6->getUses() == strUses6);
 	CPPUNIT_ASSERT(stmt6->getParent() == 4);
-
-
-
 
 	Variable* varX = varTable->getVariable("x");
 	int initXUsedBy[] = {2, 3};
