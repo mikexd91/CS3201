@@ -92,4 +92,6 @@ Results PatternAssgClause::evaluateVarExpr(vector<int> assgNums, string expr) {
 	return *new Results();
 }
 
-
+bool PatternAssgClause::isValid() {
+	return true;
+}
