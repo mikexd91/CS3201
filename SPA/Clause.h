@@ -20,7 +20,7 @@ enum ClauseType{
 
 class Clause
 {
-private:
+protected:
 	ClauseType clauseType;
 	string firstArg;
 	bool firstArgFixed;
@@ -29,6 +29,7 @@ private:
 	bool secondArgFixed;
 	string secondArgType;
 	string patternArg;
+	bool isValid();
 public:
 	Clause(void);
 	Clause(ClauseType);
@@ -48,7 +49,6 @@ public:
 	bool getFirstArgFixed();
 	bool getSecondArgFixed();
 
-	bool isValid();
 	Results evaluate(); 
 
 };
