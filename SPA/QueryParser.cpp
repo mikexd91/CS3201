@@ -12,15 +12,12 @@
 #include "ParentStarClause.h"
 #include "PatternClause.h"
 #include "UsesClause.h"
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <vector>
 #include <sstream>
 
-using std::map;
-using std::string;
-using std::vector;
-using std::stringstream;
+using namespace std;
 using namespace boost;
 
 QueryParser::QueryParser(void){
@@ -224,11 +221,13 @@ Query QueryParser::processQuery(string input){
 	int numSynonyms = declarationTokens.size() - 1;
 	string selectStatement = declarationTokens.at(numSynonyms);
 	declarationTokens.pop_back();
-	map<string, string> declarations = map<string, string>();
+	unordered_map<string, string> declarations = unordered_map<string, string>();
 	for (int i=0; i<numSynonyms; i++){
 		string currentDeclaration = declarationTokens.at(i);
 		vector<string> declarationPair = tokeniser(currentDeclaration, ' ');
-		declarations.insert(declarationPair.at(1), declarationPair.at(0));
+		string variable = declarationPair.at(1);
+		string type = declarationPair.at(0);
+		declarations.emplace(variable, type);
 	}
 	parsedQuery.setDeclarationList(declarations);
 	selectStatement = util.sanitise(selectStatement);
