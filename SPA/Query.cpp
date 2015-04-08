@@ -23,14 +23,14 @@ void Query::addSelectSynonym(StringPair synonym){
 	this->selectList.push_back(synonym);
 }
 
-void Query::setClauseList(vector<Clause> list){
+void Query::setClauseList(vector<Clause*> list){
 	this->clauseList = list;
 	int sizeOf = list.size();
 	this->numClauses = sizeOf;
 }
 
 void Query::addClause(Clause item){
-	this->clauseList.push_back(item);
+	this->clauseList.push_back(&item);
 	this->numClauses = this->numClauses + 1;
 }
 
@@ -46,7 +46,7 @@ vector<StringPair> Query::getSelectList(){
 	return this->selectList;
 }
 
-vector<Clause> Query::getClauseList(){
+vector<Clause*> Query::getClauseList(){
 	return this->clauseList;
 }
 
