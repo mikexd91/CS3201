@@ -18,6 +18,7 @@ void TestOne::setUp() {
 
 void TestOne::tearDown() {
 	PDR::resetInstanceFlag();
+	AST::reset();
 }
 
 CPPUNIT_TEST_SUITE_REGISTRATION( TestOne );
