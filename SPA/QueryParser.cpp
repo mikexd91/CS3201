@@ -12,16 +12,14 @@
 #include "ParentStarClause.h"
 #include "PatternClause.h"
 #include "UsesClause.h"
-#include <map>
+#include "boost/unordered_map.hpp"
 #include <string>
 #include <vector>
 #include <sstream>
 
-using std::map;
-using std::string;
-using std::vector;
-using std::stringstream;
-using namespace boost;
+using namespace std;
+using boost::unordered_map;
+using namespace boost;	
 
 QueryParser::QueryParser(void){
 }
@@ -94,25 +92,25 @@ string getClauseString(string s){
 
 Clause createCorrectClause(string type){
 	Clause c;
-	if (type.compare(stringconst::TYPE_PATTERN)){
+	if (type == stringconst::TYPE_PATTERN){
 		PatternClause clause;
 		c = clause;
-	} else if (type.compare(stringconst::TYPE_FOLLOWS)){
+	} else if (type == stringconst::TYPE_FOLLOWS){
 		FollowsClause clause;
 		c = clause;		
-	} else if (type.compare(stringconst::TYPE_PARENT)){
+	} else if (type == stringconst::TYPE_PARENT){
 		ParentClause clause;
 		c = clause;		
-	} else if (type.compare(stringconst::TYPE_MODIFIES)){
+	} else if (type == stringconst::TYPE_MODIFIES){
 		ModifiesClause clause;
 		c = clause;		
-	} else if (type.compare(stringconst::TYPE_USES)){
+	} else if (type == stringconst::TYPE_USES){
 		UsesClause clause;
 		c = clause;		
-	} else if (type.compare(stringconst::TYPE_FOLLOWS_STAR)){
+	} else if (type == stringconst::TYPE_FOLLOWS_STAR){
 		FollowsStarClause clause;
 		c = clause;		
-	} else if (type.compare(stringconst::TYPE_PARENT_STAR)){
+	} else if (type == stringconst::TYPE_PARENT_STAR){
 		ParentStarClause clause;
 		c = clause;		
 	}
@@ -124,13 +122,13 @@ void parseSelect(vector<string> tokens, Query query){
 	bool insideClause = false;
 	bool insidePattern = false;
 	vector<Clause*> currentClause;
-	if (tokens.size() == 1 || !tokens.at(0).compare(stringconst::STRING_SELECT)){
+	if (tokens.size() == 1 || tokens.at(0) != stringconst::STRING_SELECT){
 		throw InvalidSelectException();
 	}
 	for (size_t i=1; i<tokens.size(); i++){
 		string current = tokens.at(i);
 		if (selectSynonyms){
-			if (!current.compare(stringconst::STRING_SUCH)){
+			if (current != stringconst::STRING_SUCH){
 				StringPair newSelect;
 				newSelect.setFirst(current);
 				query.addSelectSynonym(newSelect);
@@ -166,7 +164,7 @@ void parseSelect(vector<string> tokens, Query query){
 				if (containsClauseType(current)){
 					string clauseType = getClauseString(current);
 					Clause newClause = createCorrectClause(current);
-					if (clauseType.compare(stringconst::TYPE_PATTERN)){
+					if (clauseType == stringconst::TYPE_PATTERN){
 						insidePattern = true;
 						currentClause.push_back(&newClause);
 					} else {
@@ -189,7 +187,7 @@ void parseSelect(vector<string> tokens, Query query){
 }
 
 void vetQuery(Query query){
-	map<string, string> decList = query.getDeclarationList();
+	unordered_map<string, string> decList = query.getDeclarationList();
 	vector<Clause> clauseList = query.getClauseList();
 	vector<StringPair> selectList = query.getSelectList();
 	for (size_t i=0; i<selectList.size(); i++){
@@ -224,17 +222,20 @@ Query QueryParser::processQuery(string input){
 	int numSynonyms = declarationTokens.size() - 1;
 	string selectStatement = declarationTokens.at(numSynonyms);
 	declarationTokens.pop_back();
-	map<string, string> declarations = map<string, string>();
+	
+	unordered_map<string, string> *declarations = new unordered_map<string, string>();
 	for (int i=0; i<numSynonyms; i++){
 		string currentDeclaration = declarationTokens.at(i);
 		vector<string> declarationPair = tokeniser(currentDeclaration, ' ');
-		declarations.insert(declarationPair.at(1), declarationPair.at(0));
+		string variable = declarationPair.at(1);
+		string type = declarationPair.at(0);
+		declarations->emplace(variable, type);
 	}
-	parsedQuery.setDeclarationList(declarations);
+	parsedQuery.setDeclarationList(*declarations);
 	selectStatement = util.sanitise(selectStatement);
 	vector<string> tokens = util.explode(selectStatement);
 	parseSelect(tokens, parsedQuery);
-
+	
 	return parsedQuery;
 }
 
