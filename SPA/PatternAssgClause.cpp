@@ -69,7 +69,15 @@ Results PatternAssgClause::evaluate() {
 }
 
 Results PatternAssgClause::evaluateVarWildExprWild(vector<int> assgNums) {
-	return *new Results();
+	// return all a
+	Results* res = new Results();
+	res->setFirstClauseSyn(getSynonym());
+	for (int i = 0; i < assgNums.size(); i++) {
+		long long stmtNum = assgNums.at(i);
+		string stmtNumStr = to_string(stmtNum);
+		res->addSingleResult(stmtNumStr);
+	}
+	return *res;
 }
 
 Results PatternAssgClause::evaulateVarWildExpr(vector<int> assgNums, string expr) {
@@ -93,5 +101,6 @@ Results PatternAssgClause::evaluateVarExpr(vector<int> assgNums, string expr) {
 }
 
 bool PatternAssgClause::isValid() {
+	// TODO drew pls
 	return true;
 }
