@@ -31,6 +31,7 @@ private:
 	bool isValidName(string);
 	bool isValidConstant(string);
 	bool isValidFactor(string);
+	bool isValidSymbol(string);
 	void throwException(int);
 
 	void program();

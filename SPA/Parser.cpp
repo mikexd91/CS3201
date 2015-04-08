@@ -87,6 +87,7 @@ string Parser::getName() {
 		return result;
 	} else {
 		throwException(stmtCount);
+		return "";
 	}
 }
 
@@ -160,8 +161,12 @@ queue<string> Parser::getExpression() {
 	queue<string> expressionQueue;
 	//using Shunting-yard algorithm
 	string word;
+	int count = 0;
 	while ((word = getWord()) != ";") {
-		if (word == "+" || word == "-" || word == "*") {
+		if(count > 9999) {
+			throw runtime_error("Infinite loop!");
+			break;
+		} else if (count % 2 == 1 && isValidSymbol(word)) {
 			//if top of stack is *, all other operation (+-*) are lower or equal, so just add top to output queue
 			//if top of stack is + or -, only add top to output queue if word is + or -
 			while (!operationStack.empty() && !(operationStack.top() != "*" && word == "*")) {
@@ -169,13 +174,12 @@ queue<string> Parser::getExpression() {
 				operationStack.pop();
 			}
 			operationStack.push(word);
+		} else if (count % 2 == 0 && isValidFactor(word)) {
+			expressionQueue.push(word);
 		} else {
-			if(isValidFactor(word)) {
-				expressionQueue.push(word);
-			} else {
-				throwException(stmtCount);
-			}
+			throwException(stmtCount);
 		}	
+		count++;
 	}
 	while (!operationStack.empty()) {
 		expressionQueue.push(operationStack.top());
@@ -227,6 +231,10 @@ bool Parser::isValidConstant(string number) {
 
 bool Parser::isValidFactor(string factor) {
 	return isValidConstant(factor) || isValidName(factor);
+}
+
+bool Parser::isValidSymbol(string symbol) {
+	return symbol == "+" || symbol == "-" || symbol == "*";
 }
 
 void Parser::throwException(int lineNumber) {
