@@ -12,13 +12,14 @@
 #include "ParentStarClause.h"
 #include "PatternClause.h"
 #include "UsesClause.h"
-#include <unordered_map>
+#include "boost/unordered_map.hpp"
 #include <string>
 #include <vector>
 #include <sstream>
 
 using namespace std;
-using namespace boost;
+using boost::unordered_map;
+using namespace boost;	
 
 QueryParser::QueryParser(void){
 }
@@ -221,19 +222,20 @@ Query QueryParser::processQuery(string input){
 	int numSynonyms = declarationTokens.size() - 1;
 	string selectStatement = declarationTokens.at(numSynonyms);
 	declarationTokens.pop_back();
-	unordered_map<std::string, std::string> *declarations = new unordered_map<std::string, std::string>();
+	
+	unordered_map<string, string> *declarations = new unordered_map<string, string>();
 	for (int i=0; i<numSynonyms; i++){
 		string currentDeclaration = declarationTokens.at(i);
 		vector<string> declarationPair = tokeniser(currentDeclaration, ' ');
-		std::string variable = declarationPair.at(1);
-		std::string type = declarationPair.at(0);
+		string variable = declarationPair.at(1);
+		string type = declarationPair.at(0);
 		declarations->emplace(variable, type);
 	}
-	parsedQuery.setDeclarationList(declarations);
+	parsedQuery.setDeclarationList(*declarations);
 	selectStatement = util.sanitise(selectStatement);
 	vector<string> tokens = util.explode(selectStatement);
 	parseSelect(tokens, parsedQuery);
-
+	
 	return parsedQuery;
 }
 

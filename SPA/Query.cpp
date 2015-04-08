@@ -4,8 +4,11 @@
 #include "PQLExceptions.h"
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include "boost/unordered_map.hpp"
+
+using boost::unordered_map;
 using namespace stringconst;
+
 Query::Query(void){
 }
 
@@ -36,7 +39,7 @@ void Query::setDeclarationList(unordered_map<string, string> map){
 }
 
 void Query::addDeclaration(StringPair item){
-	this->declarationList.insert(item.getFirst(), item.getSecond());
+	this->declarationList.emplace(item.getFirst(), item.getSecond());
 }
 
 vector<StringPair> Query::getSelectList(){

@@ -1,11 +1,11 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include "boost/unordered_map.hpp"
 #include "StringPair.h"
 #include "Clause.h"
 
-using std::unordered_map;
+using boost::unordered_map;
 using std::string;
 using std::vector;
 class Query
