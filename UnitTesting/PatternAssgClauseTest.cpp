@@ -111,30 +111,43 @@ void PatternAssgClauseTest::tearDown() {
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( PatternAssgClauseTest );
 
-void PatternAssgClauseTest::testMatchVar() { 
+void PatternAssgClauseTest::evaluateVarWildExprWild() {
+	
+	PatternAssgClause* p1 = new PatternAssgClause("a");
+	p1->setVar("_");
+	p1->setVarFixed(true);
+	p1->setExpression("_");
+	Results r1 = p1->evaluate();
+	string syn1 = "a";
 
-	PatternAssgClause* p = new PatternAssgClause("a");
-	/*CPPUNIT_ASSERT(p->matchVar("i"));*/
+	//cout << r1.getFirstClauseSyn() << endl;
+	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == syn1);
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 3);
+	
+	vector<string> v = r1.getSinglesResults();
+	for (int i = 0; i < v.size(); i++) {
+		long long num = i + 1;
+		CPPUNIT_ASSERT(v.at(i) == to_string(num));
+	}
 
 	return;
 }
 
-void PatternAssgClauseTest::testIsFollowsStar() {
+void PatternAssgClauseTest::evaulateVarWildExpr() {
 	
 	PatternAssgClause* p1 = new PatternAssgClause("a");
-	/*CPPUNIT_ASSERT(p1->match("i", "_\"1\"_"));
-	CPPUNIT_ASSERT(p1->match("i", "_\"2\"_"));
-	CPPUNIT_ASSERT(p1->match("i", "_\"1 2 +\"_"));
-	CPPUNIT_ASSERT(!p1->match("i", "_\"3\"_"));*/
+	p1->setVar("_");
+	p1->setVarFixed(true);
+	p1->setExpression("_\"1 2 +\"_");
+	Results r1 = p1->evaluate();
+	
+	string syn1 = "a";
+	long long num = 1;
 
-	PatternAssgClause* p2 = new PatternAssgClause("a");
-	/*CPPUNIT_ASSERT(p2->match("j", "_\"2\"_"));
-	CPPUNIT_ASSERT(p2->match("j", "_\"3\"_"));
-	CPPUNIT_ASSERT(p2->match("j", "_\"4\"_"));
-	CPPUNIT_ASSERT(p2->match("j", "_\"2 3 +\"_"));
-	CPPUNIT_ASSERT(p2->match("j", "_\"2 3 + 4 +\"_"));
-	CPPUNIT_ASSERT(!p2->match("j", "_\"3 4 +\"_"));
-	CPPUNIT_ASSERT(!p2->match("i", "_\"3 4 +\"_"));*/
-
+	cout << r1.getFirstClauseSyn() << endl;
+	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == syn1);
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
+	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == to_string(num));
+	
 	return;
 }
