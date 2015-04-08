@@ -65,8 +65,6 @@ bool containsClauseType(string s){
 	clauseVector.push_back(stringconst::TYPE_USES);
 	clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
 	clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
-	clauseVector.push_back(stringconst::TYPE_MODIFIES_STAR);
-	clauseVector.push_back(stringconst::TYPE_USES_STAR);
 	return containsAny(s, clauseVector);
 }
 
@@ -88,8 +86,6 @@ string getClauseString(string s){
 	clauseVector.push_back(stringconst::TYPE_USES);
 	clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
 	clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
-	clauseVector.push_back(stringconst::TYPE_MODIFIES_STAR);
-	clauseVector.push_back(stringconst::TYPE_USES_STAR);
 	for (int i=0; i<clauseVector.size(); i++){
 		string current = clauseVector.at(i);
 		if (contains(s, current)){
@@ -121,12 +117,6 @@ Clause createCorrectClause(string type){
 	} else if (type.compare(stringconst::TYPE_PARENT_STAR)){
 		ParentStarClause clause;
 		c = clause;		
-	} else if (type.compare(stringconst::TYPE_MODIFIES_STAR)){
-		ModifiesStarClause clause;
-		c = clause;		
-	} else if (type.compare(stringconst::TYPE_USES_STAR)){
-		UsesStarClause clause;
-		c = clause;		
 	}
 	return c;
 }
@@ -134,7 +124,7 @@ Clause createCorrectClause(string type){
 void parseSelect(vector<string> tokens, Query query){
 	bool selectSynonyms = true;
 	bool insideClause = false;
-	bool insidePattern = false; //TODO PATTERN HANDLING
+	bool insidePattern = false;
 	vector<Clause*> currentClause;
 	if (tokens.size() == 1 || !tokens.at(0).compare(stringconst::STRING_SELECT)){
 		throw InvalidSelectException();
@@ -151,7 +141,22 @@ void parseSelect(vector<string> tokens, Query query){
 			}
 		} else {
 			if (insidePattern){
-				//TODO PATTERN ARGUMENT ASSIGNMENT
+				if (contains(current, "(")){
+					std::size_t index = current.find_first_of("(");
+					std::size_t endIndex = current.find_first_of(",");
+					string firstArg = current.substr(0, index);
+					string secondArg = current.substr(index, endIndex - index);
+					currentClause.at(0)->setFirstArg(firstArg);
+					currentClause.at(0)->setSecondArg(secondArg);
+				} else if (contains(current, ")")){
+					insidePattern = false;
+					std::size_t index = current.find_first_of(")");
+					string patternArg = current.substr(0, index);
+					//RPN method
+					query.addClause(*currentClause.at(0));
+					currentClause.pop_back();
+					insidePattern = false;
+				}
 			} else if(insideClause){
 				std::size_t index = current.find_first_of(")");
 				string synonym = current.substr(0, index);
@@ -163,11 +168,11 @@ void parseSelect(vector<string> tokens, Query query){
 				if (containsClauseType(current)){
 					string clauseType = getClauseString(current);
 					Clause newClause = createCorrectClause(current);
-					insideClause = true;
-					//ADD SPECIAL CASE FOR PATTERN
 					if (clauseType.compare(stringconst::TYPE_PATTERN)){
 						insidePattern = true;
+						currentClause.push_back(&newClause);
 					} else {
+						insideClause = true;
 						std::size_t index = current.find_first_of("(");
 						std::size_t endIndex = current.find_first_of(",");
 						string synonym = current.substr(index, endIndex);
