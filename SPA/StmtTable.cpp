@@ -32,6 +32,13 @@ StmtTable::StatementTable::iterator StmtTable::getIterator() {
 	return tableIter;
 }
 
+// gets iterator to end of stmt table
+StmtTable::StatementTable::iterator StmtTable::getEnd() {
+	StmtTable::StatementTable::iterator tableIter = table.end();
+
+	return tableIter;
+}
+
 // gets the stmt obj by stmt number
 Statement* StmtTable::getStmtObj(int stmtNum) {
 	StmtTableIterator iter = table.find(stmtNum);
