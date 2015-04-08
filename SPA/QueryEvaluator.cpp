@@ -21,6 +21,10 @@ set<string> getAllSynValues(vector<StringPair> selectList) {
 	// return set of strings
 }
 
+set<string> evaluateOneClause(Results r) {
+
+}
+
 set<string> QueryEvaluator::evaluateQuery(Query q) {
 	vector<Clause> clauseList = q.getClauseList();
 	vector<StringPair> selectList = q.getSelectList();
@@ -29,7 +33,22 @@ set<string> QueryEvaluator::evaluateQuery(Query q) {
 		set<string> result = getAllSynValues(selectList);
 		return result;
 	} else {
+		vector<Results> resultsList;
 
+		for (vector<Clause>::iterator iter = clauseList.begin() ; iter != clauseList.end(); iter++) {
+			Clause c = *iter;
+			Results res = c.evaluate();
+			resultsList.push_back(res);
+		}
+
+		if (resultsList.size() == 1) {
+			Results resultObj= resultsList.front();
+			set<string> result = evaluateOneClause(resultObj);
+			return result;
+
+		} else {
+
+		}
 	}
 	/*
 	1.check if clauseList is empty
