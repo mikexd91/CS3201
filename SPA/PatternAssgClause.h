@@ -13,5 +13,9 @@ public:
 
 	Results evaluate(void);
 
+private:
+	Results evaluateFixedVarNoExpr(vector<int>& stmtNum);
+	bool match(int stmtNum);
+	bool matchVar(int stmtNum);
 };
 
