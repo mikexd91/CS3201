@@ -67,7 +67,7 @@ void FollowsClauseTest::setUp() {
 	stable->addStmt(stmt2);
 	
 	Statement* stmt3 = new Statement();
-	stmt3->setStmtNum(2);
+	stmt3->setStmtNum(3);
 	stmt3->setType(ASSIGN_STMT_);
 	stmt3->setFollowsBefore(2);
 	stable->addStmt(stmt3);

@@ -34,7 +34,11 @@
     <ClInclude Include="Parent.h" />
     <ClInclude Include="ParsedData.h" />
     <ClInclude Include="Parser.h" />
+<<<<<<< HEAD
     <ClInclude Include="PatternClause.h" />
+=======
+    <ClInclude Include="PatternAssg.h" />
+>>>>>>> 6e6a2dab64bb22cd85466ee4f4de8cd60b2a8386
     <ClInclude Include="PDR.h" />
     <ClInclude Include="PQLController.h" />
     <ClInclude Include="PQLExceptions.h" />
@@ -74,7 +78,11 @@
     <ClCompile Include="Parent.cpp" />
     <ClCompile Include="ParsedData.cpp" />
     <ClCompile Include="Parser.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="PatternClause.cpp" />
+=======
+    <ClCompile Include="PatternAssg.cpp" />
+>>>>>>> 6e6a2dab64bb22cd85466ee4f4de8cd60b2a8386
     <ClCompile Include="PDR.cpp" />
     <ClCompile Include="PQLController.cpp" />
     <ClCompile Include="Procedure.cpp" />
@@ -130,7 +138,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)\SPA;$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)SPA;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
