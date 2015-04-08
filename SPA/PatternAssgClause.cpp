@@ -43,7 +43,6 @@ Results PatternAssgClause::evaluate() {
 		// expr:wildcard => return for each
 		// expr:notwild
 
-	
 	bool exprWildcard = getExpression() == stringconst::STRING_EMPTY;
 	bool varWildcard = getVar() == stringconst::STRING_EMPTY;
 	bool varFixed = getVarFixed();
@@ -68,4 +67,29 @@ Results PatternAssgClause::evaluate() {
 		}
 	}
 }
+
+Results PatternAssgClause::evaluateVarWildExprWild(vector<int> assgNums) {
+	return *new Results();
+}
+
+Results PatternAssgClause::evaulateVarWildExpr(vector<int> assgNums, string expr) {
+	return *new Results();
+}
+
+Results PatternAssgClause::evaluateVarFixedExprWild(vector<int> assgNums) {
+	return *new Results();
+}
+
+Results PatternAssgClause::evaluateVarFixedExpr(vector<int> assgNums, string expr) {
+	return *new Results();
+}
+
+Results PatternAssgClause::evaluateVarExprWild(vector<int> assgNums) {
+	return *new Results();
+}
+
+Results PatternAssgClause::evaluateVarExpr(vector<int> assgNums, string expr) {
+	return *new Results();
+}
+
 
