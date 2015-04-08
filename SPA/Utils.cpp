@@ -13,6 +13,10 @@ Utils::Utils(void){
 Utils::~Utils(void){
 }
 
+bool isNumber(string str){
+	return !str.empty() && find_if(str.begin(), str.end(), [](char c) { return !isdigit(c); }) == str.end();
+}
+
 string Utils::sanitise(string str) {
 	for (size_t i = 0; i < strlen(UtilsConstants::SANITISED_CHARS); i++) {
 		char sanitisedChar = UtilsConstants::SANITISED_CHARS[i];

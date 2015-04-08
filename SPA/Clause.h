@@ -32,6 +32,7 @@ private:
 	string secondArgType;
 	string patternArg;
 public:
+	Clause(void);
 	Clause(ClauseType);
 	~Clause(void);
 

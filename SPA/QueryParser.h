@@ -19,6 +19,7 @@ private:
 	bool containsClauseType(string);
 	string getClauseString(string);
 	void parseSelect(vector<string>, Query);
+	void vetQuery(Query);
 public:
 	QueryParser(void);
 	~QueryParser(void);
