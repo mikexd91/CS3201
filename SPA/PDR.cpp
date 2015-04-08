@@ -256,6 +256,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
 
 void PDR::addParentSet(set<string> setToBeAdded, Flag statusFlag) {
 	StmtTable* stmtTable = StmtTable::getInstance();
+	VarTable* varTable = VarTable::getInstance();
 	stack<int> holdingStack;
 
 	while(!stmtParentNumStack.empty()) {
@@ -272,6 +273,12 @@ void PDR::addParentSet(set<string> setToBeAdded, Flag statusFlag) {
 		for(iter = setToBeAdded.begin(); iter != setToBeAdded.end(); iter++) {
 			string var = *iter;
 			stmtSet.insert(var);
+			Variable* varObj = varTable->getVariable(var);
+			if(statusFlag == USES) {
+				varObj->addUsingStmt(stmtParentNumStack.top());
+			} else {
+				varObj->addModifyingStmt(stmtParentNumStack.top());
+			}
 		}
 
 		if(statusFlag == USES) {
