@@ -24,6 +24,7 @@ public:
 	static StmtTable* getInstance();			// gets instance of stmt table
 
 	StatementTable::iterator getIterator();		// gets iterator to stmt table
+	StatementTable::iterator getEnd();			// gets iterator to end of stmt table
 	Statement* getStmtObj(int stmtNum);			// gets the stmt obj by stmt number
 
 	const set<Statement*>& getAssgStmts();		// gets all assignment stmts
