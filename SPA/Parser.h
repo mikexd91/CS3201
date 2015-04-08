@@ -41,6 +41,8 @@ private:
 	void assign();
 	void parseWhile();
 	void endParse();
+	void parseFactor(string, queue<string>&);
+	void parseSymbol(string, queue<string>&, stack<string>&);
 };
 
 namespace ParserConstants {

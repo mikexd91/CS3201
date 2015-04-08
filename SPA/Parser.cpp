@@ -162,25 +162,21 @@ queue<string> Parser::getExpression() {
 	//using Shunting-yard algorithm
 	string word;
 	int count = 0;
+	word = getWord();
+	parseFactor(word, expressionQueue);
+	
 	while ((word = getWord()) != ";") {
 		if(count > 9999) {
 			throw runtime_error("Infinite loop!");
 			break;
-		} else if (count % 2 == 1 && isValidSymbol(word)) {
-			//if top of stack is *, all other operation (+-*) are lower or equal, so just add top to output queue
-			//if top of stack is + or -, only add top to output queue if word is + or -
-			while (!operationStack.empty() && !(operationStack.top() != "*" && word == "*")) {
-				expressionQueue.push(operationStack.top());
-				operationStack.pop();
-			}
-			operationStack.push(word);
-		} else if (count % 2 == 0 && isValidFactor(word)) {
-			expressionQueue.push(word);
 		} else {
-			throwException(stmtCount);
-		}	
+			parseSymbol(word, expressionQueue, operationStack);
+			word = getWord();
+			parseFactor(word, expressionQueue);
+		}
 		count++;
 	}
+
 	while (!operationStack.empty()) {
 		expressionQueue.push(operationStack.top());
 		operationStack.pop();
@@ -205,7 +201,27 @@ void Parser::endParse() {
 	parsedDataReceiver->processParsedData(endData);
 }
 
+void Parser::parseFactor(string word, queue<string> &expressionQueue) {
+	if (isValidFactor(word)) {
+		expressionQueue.push(word);
+	} else {
+		throwException(stmtCount);
+	}
+}
 
+void Parser::parseSymbol(string word, queue<string> &expressionQueue, stack<string> &operationStack) {
+	//if top of stack is *, all other operation (+-*) are lower or equal, so just add top to output queue
+	//if top of stack is + or -, only add top to output queue if word is + or -
+	if (isValidSymbol(word)) {
+		while (!operationStack.empty() && !(operationStack.top() != "*" && word == "*")) {
+			expressionQueue.push(operationStack.top());
+			operationStack.pop();
+		}
+		operationStack.push(word);
+	} else {
+		throwException(stmtCount);
+	}
+}
 
 bool Parser::isValidName(string name) {
 	if (!isalpha(name[0])) {
