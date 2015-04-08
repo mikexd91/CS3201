@@ -22,7 +22,7 @@ public:
 	void setSelectList(vector<StringPair>);
 	void addSelectSynonym(StringPair);
 	void setClauseList(vector<Clause*>);
-	void addClause(Clause);
+	void addClause(Clause*);
 	void setDeclarationList(unordered_map<string, string>);
 	void addDeclaration(StringPair);
 

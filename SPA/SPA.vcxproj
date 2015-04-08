@@ -25,6 +25,7 @@
     <ClInclude Include="Clause.h" />
     <ClInclude Include="ConstNode.h" />
     <ClInclude Include="Follows.h" />
+    <ClInclude Include="FollowsClause.h" />
     <ClInclude Include="FollowsStarClause.h" />
     <ClInclude Include="IfNode.h" />
     <ClInclude Include="InvalidCodeException.h" />
@@ -48,6 +49,7 @@
     <ClInclude Include="ProgNode.h" />
     <ClInclude Include="Query.h" />
     <ClInclude Include="QueryEvaluator.h" />
+    <ClInclude Include="QueryParser.h" />
     <ClInclude Include="Results.h" />
     <ClInclude Include="Statement.h" />
     <ClInclude Include="StmtLstNode.h" />
@@ -70,6 +72,7 @@
     <ClCompile Include="Clause.cpp" />
     <ClCompile Include="ConstNode.cpp" />
     <ClCompile Include="Follows.cpp" />
+    <ClCompile Include="FollowsClause.cpp" />
     <ClCompile Include="FollowsStarClause.cpp" />
     <ClCompile Include="IfNode.cpp" />
     <ClCompile Include="Modifies.cpp" />
@@ -91,6 +94,7 @@
     <ClCompile Include="ProgNode.cpp" />
     <ClCompile Include="Query.cpp" />
     <ClCompile Include="QueryEvaluator.cpp" />
+    <ClCompile Include="QueryParser.cpp" />
     <ClCompile Include="Results.cpp" />
     <ClCompile Include="Statement.cpp" />
     <ClCompile Include="StmtLstNode.cpp" />
