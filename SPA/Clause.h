@@ -48,6 +48,6 @@ public:
 	bool getFirstArgFixed();
 	bool getSecondArgFixed();
 
-	Results evaluate(); 
+	virtual Results evaluate(); 
 
 };

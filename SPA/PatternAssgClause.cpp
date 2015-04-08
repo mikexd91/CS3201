@@ -2,6 +2,7 @@
 #include "Utils.h"
 #include "StmtTable.h"
 #include <set>
+#include <iostream>
 
 using namespace std;
 using namespace stringconst;
@@ -26,53 +27,45 @@ Results PatternAssgClause::evaluate() {
 	set<Statement*>::iterator assgIter;
 	for (assgIter = allAssg.begin(); assgIter != allAssg.end(); assgIter++) {
 		Statement* assg = *assgIter;
+		cout << assg->getStmtNum() << endl;
 		assgNums.push_back(assg->getStmtNum());
 	}
 
-	// check if fixed var or not
-	bool fixedVar = this->getVarFixed();
-	string var = getSecondArg();
-	if (fixedVar) {
-		string expr = getExpression();
-		if (expr == stringconst::STRING_EMPTY) {
-			return *new Results();
-			//return evaluateFixedVarNoExpr(assgNums);
+	// var:wildcard
+		// expr:wildcard => return all a
+		// expr:notwild => return all a that match expr
+
+	// var:fixed
+		// expr:wildcard => return a using var
+		// expr:notwild	=> return a using var that match expr
+
+	// var:syn
+		// expr:wildcard => return for each
+		// expr:notwild
+
+	
+	bool exprWildcard = getExpression() == stringconst::STRING_EMPTY;
+	bool varWildcard = getVar() == stringconst::STRING_EMPTY;
+	bool varFixed = getVarFixed();
+
+	if (varWildcard) {
+		if (exprWildcard) {
+			return evaluateVarWildExprWild(assgNums);
+		} else {
+			return evaulateVarWildExpr(assgNums, getExpression());
 		}
-	} else if (true) {
+	} else if (varFixed) {
+		if (exprWildcard) {
+			return evaluateVarFixedExprWild(assgNums);
+		} else {
+			return evaluateVarFixedExpr(assgNums, getExpression());
+		}
+	} else {
+		if (exprWildcard) {
+			return evaluateVarExprWild(assgNums);
+		} else {
+			return evaluateVarExpr(assgNums, getExpression());
+		}
 	}
-	return *new Results();
 }
 
-Results PatternAssgClause::evaluateFixedVarNoExpr(vector<int>& assgNums) {
-	//Results* results = new Results();
-	//string var = getSecondArg();
-	//for (int i = 0; i < assgNums.size(); i++) {
-	//	if (match(assgNums.at(i))) {
-	//		//results->addPairResult
-	//	}
-	//}
-	return *new Results();
-}
-
-bool PatternAssgClause::matchVar(int stmtNum) {
-	// find the stmt that match this var
-	// then search its subtree for the expr
-	StmtTable* stable = StmtTable::getInstance();
-	set<Statement*> assgStmts = stable->getAssgStmts();
-
-	//set<Statement*>::iterator iter;
-	//for (iter = assgStmts.begin(); iter != assgStmts.end(); iter++) {
-	//	Statement* assg = *iter;
-	//	if (assg->getStmtNum() == stmtNum) {
-	//		set<string> uses = assg->getModifies();
-	//		if (uses.find(var) != uses.end()) {
-	//			return stmtNum((AssgNode*)(assg->getTNodeRef()), expr);
-	//			//return false;
-	//		} else {
-	//			return false;
-	//		}
-	//	}
-	//}
-
-	return false;
-}
