@@ -14,6 +14,10 @@ void Results::setClauseTrue() {
 	this->isValid = true;
 }
 
+void Results::setNumOfSyn(int n) {
+	this->numOfSyn = n;
+}
+
 void Results::addSingleResult(string s) {
 	this->singleResults.push_back(s);
 }
@@ -51,6 +55,18 @@ vector<pair<string, string>> Results::getPairResults() {
 	return this->pairResults;
 }
 
-Results Results::getIntercept(Results res) {
+int Results::getNumOfSyn() {
+	return this->numOfSyn;
+}
+
+Results Results::getIntersect(Results res) {
 	return Results();
+}
+
+set<string> Results::getSelectSynResult(string syn) {
+	return set<string>();
+}
+
+bool Results::usesSelectSyn(string syn) {
+
 }

@@ -14,6 +14,7 @@ public:
 	void setClauseTrue();
 	void setFirstClauseSyn(string s1);
 	void setSecondClauseSyn(string s2);
+	void setNumOfSyn(int n);
 	void addSingleResult(string s);
 	void addPairResult(string s1, string s2);
 
@@ -23,14 +24,18 @@ public:
 	string getSecondClauseSyn();
 	vector<string> getSinglesResults();
 	vector<pair<string, string>> getPairResults();
+	set<string> getSelectSynResult(string syn);
+	int getNumOfSyn();
+	bool usesSelectSyn(string syn);
 
-	Results getIntercept(Results res);
+	void getIntersect(Results res);
 
 private:
 
 	bool isValid;
 	string firstClauseSyn;
 	string secondClauseSyn;
+	int numOfSyn;
 	vector<pair<string, string>> pairResults;
 	vector<string> singleResults;
 

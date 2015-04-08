@@ -48,6 +48,7 @@
     <ClInclude Include="ProcTable.h" />
     <ClInclude Include="ProgNode.h" />
     <ClInclude Include="Query.h" />
+    <ClInclude Include="QueryEvaluator.h" />
     <ClInclude Include="QueryParser.h" />
     <ClInclude Include="Results.h" />
     <ClInclude Include="Statement.h" />
@@ -92,6 +93,7 @@
     <ClCompile Include="ProcTable.cpp" />
     <ClCompile Include="ProgNode.cpp" />
     <ClCompile Include="Query.cpp" />
+    <ClCompile Include="QueryEvaluator.cpp" />
     <ClCompile Include="QueryParser.cpp" />
     <ClCompile Include="Results.cpp" />
     <ClCompile Include="Statement.cpp" />

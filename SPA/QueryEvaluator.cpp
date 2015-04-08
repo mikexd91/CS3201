@@ -3,7 +3,9 @@
 #include "StringPair.h"
 #include "Utils.h"
 #include "StmtTable.h"
+#include "VarTable.h"
 #include <vector>
+#include <sstream>
 
 using namespace std;
 
@@ -17,27 +19,65 @@ QueryEvaluator::~QueryEvaluator(void)
 }
 
 set<string> getAllSynValues(vector<StringPair> selectList) {
-	StringPair syn = selectList.front();
+	StringPair syn = selectList.at(0);
 	string synType = syn.getSecond();
-	StmtTable* stmtTable = StmtTable::getInstance();
+	set<string> *results = new set<string>();
 
 	if (synType == stringconst::ARG_WHILE) {
-		set<Statement*> whileStmt = stmtTable->getWhileStmts();
-		for (set<Statement*>::iterator iter = whileStmt.begin() ; iter != whileStmt.end(); iter++) {
-			Statement* s = *iter;
-			//s->
+		StmtTable* stmtTable = StmtTable::getInstance();
+		set<Statement*> whileList = stmtTable->getWhileStmts();
+		for (set<Statement*>::iterator iter = whileList.begin() ; iter != whileList.end(); iter++) {
+			Statement* stmtObj = *iter;
+			int stmtNum = stmtObj->getStmtNum();
+			
+			string s;
+			ostringstream convert; // stringstream int to string
+			convert << stmtNum;
+			s = convert.str();
+			results->insert(s);
+
+			results->insert(stmtNum);
 		}
+		return *results;
 
 	} else if (synType == stringconst::ARG_STATEMENT) {
+		StmtTable* stmtTable = StmtTable::getInstance();
 		boost::unordered_map<int, Statement*>::iterator iter;
-
 		for (iter = stmtTable->getIterator(); iter != stmtTable->getEnd(); iter++) {
 			int stmtNum = iter->first;
 			
+			string s;
+			ostringstream convert; // stringstream int to string
+			convert << stmtNum;
+			s = convert.str();
+			results->insert(s); // might need to flush. currently not flushing
 		}
+		return *results;
+
 	} else if (synType == stringconst::ARG_ASSIGN) {
+		StmtTable* stmtTable = StmtTable::getInstance();
+		set<Statement*> assignList = stmtTable->getAssgStmts();
+		for (set<Statement*>::iterator iter = assignList.begin() ; iter != assignList.end(); iter++) {
+			Statement* stmtObj = *iter;
+			int stmtNum = stmtObj->getStmtNum();
+			
+			string s;
+			ostringstream convert; // stringstream int to string
+			convert << stmtNum;
+			s = convert.str();
+			results->insert(s);
+
+			results->insert(stmtNum);
+		}
+		return *results;
 
 	} else if (synType == stringconst::ARG_VARIABLE) {
+		VarTable* varTable = VarTable::getInstance();
+		boost::unordered_map<string, Variable*>::iterator iter;
+		for (iter = varTable->getIterator(); iter != varTable->getEnd(); iter++) {
+			results->insert(*iter); // might need to flush. currently not flushing
+		}
+		return *results;
 
 	} else {
 		//error
@@ -50,14 +90,65 @@ set<string> getAllSynValues(vector<StringPair> selectList) {
 	
 }
 
+// return the NUMBER of times syn appear in both obj1 and obj2
 int getSameClause(Results obj1, Results obj2) {
-	// return the NUMBER of syn that appear in both obj1 and obj2 has
-	return 0;
-}
+	int numSynObj1 = obj1.getNumOfSyn();
+	int numSynObj2 = obj2.getNumOfSyn();
 
-bool usesSelectSyn(Results obj) {
-	// checks if this obj uses the select synonym
-	return false;
+	if (numSynObj1 == 2 && numSynObj2 == 1) {
+		getSameClause(obj2, obj1);
+	}
+	string firstSyn;
+	string secondSyn;
+	string thirdSyn;
+	string forthSyn;
+	int count = 0;
+
+	if (numSynObj1 == 1 && numSynObj2 == 1) {
+		firstSyn = obj1.getFirstClauseSyn();
+		secondSyn = obj2.getFirstClauseSyn();
+		if (firstSyn == secondSyn) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
+	if (numSynObj1 == 1 && numSynObj2 == 2) {
+		firstSyn = obj1.getFirstClauseSyn();
+		secondSyn = obj2.getFirstClauseSyn();
+		thirdSyn = obj2.getSecondClauseSyn();
+		
+		if (firstSyn == secondSyn) {
+			count++;
+		}
+
+		if (firstSyn == thirdSyn) {
+			count++;
+		}
+		return count;
+	}
+
+	if (numSynObj1 == 2 && numSynObj2 == 2) {
+		firstSyn = obj1.getFirstClauseSyn();
+		secondSyn = obj1.getSecondClauseSyn();
+		thirdSyn = obj2.getFirstClauseSyn();
+		forthSyn = obj2.getSecondClauseSyn();
+
+		if (firstSyn == firstSyn) {
+			count++;
+		}
+
+		if (secondSyn == thirdSyn) {
+			count++;
+		}
+
+		if (secondSyn == forthSyn) {
+			count++;
+		}
+		return count;
+	}
+	return count;
 }
 
 // get the results of select syn. Have to pull results from both pair and single results
@@ -66,7 +157,8 @@ set<string> getSelectSynResult(Results mergedResult, vector<StringPair> selectLi
 }
 
 set<string> evaluateOneClause(Results res, vector<StringPair> selectList) {
-	if (usesSelectSyn(res)) {
+	string syn = selectList.at(0).getFirst();
+	if (res.usesSelectSyn(syn)) {
 		set<string> result = getSelectSynResult(res, selectList);
 		return result;
 	}
@@ -94,6 +186,7 @@ set<string> evaluateManyClause(vector<Results> resultList, vector<StringPair> se
 	Results obj1 = resultList.front();
 	Results obj2 = resultList.back();
 	int numRepeatingClause = getSameClause(obj1, obj2);
+	string syn = selectList.at(0).getFirst();
 	
 	switch (numRepeatingClause) {
 		case 0 : 
@@ -110,7 +203,7 @@ set<string> evaluateManyClause(vector<Results> resultList, vector<StringPair> se
 				Results mergedResult = obj1.getIntercept(obj2);
 				vector<string> res = mergedResult.getSinglesResults();
 
-				if (usesSelectSyn(obj1) || usesSelectSyn(obj2)) {
+				if (obj1.usesSelectSyn(syn) || obj2.usesSelectSyn(syn)) {
 					set<string> result = getSelectSynResult(mergedResult, selectList);
 					return result;
 				} 
@@ -124,10 +217,10 @@ set<string> evaluateManyClause(vector<Results> resultList, vector<StringPair> se
 
 		case 2 :
 			if (obj1.isClauseTrue() && obj2.isClauseTrue()) {
-				Results mergedResult = obj1.getIntercept(obj2);
+				Results mergedResult = obj1.getIntersect(obj2);
 				vector<pair<string, string>> res = mergedResult.getPairResults();
 
-				if (usesSelectSyn(obj1) || usesSelectSyn(obj2)) {
+				if (obj1.usesSelectSyn(syn) || obj2.usesSelectSyn(syn)) {
 					set<string> result = getSelectSynResult(mergedResult, selectList);
 					return result;
 				}
@@ -159,7 +252,7 @@ set<string> evaluateManyClause(vector<Results> resultList, vector<StringPair> se
 }
 
 set<string> QueryEvaluator::evaluateQuery(Query q) {
-	vector<Clause> clauseList = q.getClauseList();
+	vector<Clause*> clauseList = q.getClauseList();
 	vector<StringPair> selectList = q.getSelectList();
 	
 	if (clauseList.empty()) {
@@ -169,9 +262,9 @@ set<string> QueryEvaluator::evaluateQuery(Query q) {
 	} else {
 		vector<Results> resultsList;
 
-		for (vector<Clause>::iterator iter = clauseList.begin() ; iter != clauseList.end(); iter++) {
-			Clause c = *iter;
-			Results res = c.evaluate();
+		for (vector<Clause*>::iterator iter = clauseList.begin() ; iter != clauseList.end(); iter++) {
+			Clause* c = *iter;
+			Results res = c->evaluate();
 			resultsList.push_back(res);
 		}
 
