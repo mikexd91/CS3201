@@ -4,5 +4,7 @@ class PatternClause : public Clause{
 public:
 	PatternClause(void);
 	~PatternClause(void);
+
+	Results evaluate(void);
 };
 

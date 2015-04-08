@@ -4,5 +4,7 @@ class UsesClause : public Clause{
 public:
 	UsesClause(void);
 	~UsesClause(void);
+
+	Results evaluate(void);
 };
 

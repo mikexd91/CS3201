@@ -1,6 +1,7 @@
 #pragma once
 #include "Results.h"
 #include "Query.h"
+#include <set>
 
 //Query object to be passed between parser and evaluator
 using namespace std;
@@ -11,7 +12,7 @@ public:
 	QueryEvaluator(void);
 	~QueryEvaluator(void);
 
-	Results evaluateQuery(Query q);
+	set<string> evaluateQuery(Query q);
 
 private:
 	

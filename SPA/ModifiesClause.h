@@ -4,5 +4,7 @@ class ModifiesClause : public Clause{
 public:
 	ModifiesClause(void);
 	~ModifiesClause(void);
+
+	Results evaluate(void);
 };
 

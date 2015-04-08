@@ -6,6 +6,9 @@ class FollowsClause : public Clause
 public:
 	FollowsClause(void);
 	~FollowsClause(void);
+
+	Results evaluate(void);
+
 private:
 	bool checkValidFollows(void);
 

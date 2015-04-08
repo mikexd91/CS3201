@@ -26,7 +26,7 @@ public:
 	void setDeclarationList(map<string, string>);
 	void addDeclaration(StringPair);
 
-	vector<StringPair> getSelectList(void);
+	vector<StringPair> getSelectList(void); // stringPair <synonym, synonym type>
 	vector<Clause> getClauseList(void);
 	int getNumClauses(void);
 	map<string, string> getDeclarationList(void);

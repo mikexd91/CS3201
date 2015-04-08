@@ -1,4 +1,7 @@
 #include "QueryEvaluator.h"
+#include "Clause.h"
+#include "StringPair.h"
+#include <vector>
 
 using namespace std;
 
@@ -11,7 +14,23 @@ QueryEvaluator::~QueryEvaluator(void)
 {
 }
 
-Results QueryEvaluator::evaluateQuery(Query q) {
+set<string> getAllSynValues(vector<StringPair> selectList) {
+	// check the syn type
+	// get from the respective tables
+	// convert all to string (if required)
+	// return set of strings
+}
+
+set<string> QueryEvaluator::evaluateQuery(Query q) {
+	vector<Clause> clauseList = q.getClauseList();
+	vector<StringPair> selectList = q.getSelectList();
+	
+	if (clauseList.empty()) {
+		set<string> result = getAllSynValues(selectList);
+		return result;
+	} else {
+
+	}
 	/*
 	1.check if clauseList is empty
 	if empty, 
@@ -43,5 +62,5 @@ Results QueryEvaluator::evaluateQuery(Query q) {
 			if both are valid, return all possible select syn
 			if 1 clause is invalid, return none
 	*/
-	return Results();
+	return set<string>();
 }

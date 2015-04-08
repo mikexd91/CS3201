@@ -4,5 +4,7 @@ class ParentClause : public Clause{
 public:
 	ParentClause(void);
 	~ParentClause(void);
+
+	Results evaluate(void);
 };
 

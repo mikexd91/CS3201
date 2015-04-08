@@ -9,3 +9,7 @@ FollowsClause::~FollowsClause(void){
 bool FollowsClause::checkValidFollows(void){
 
 }
+
+Results FollowsClause::evaluate(void) {
+	return Results();
+}
