@@ -8,12 +8,10 @@
 #include "FollowsClause.h"
 #include "FollowsStarClause.h"
 #include "ModifiesClause.h"
-#include "ModifiesStarClause.h"
 #include "ParentClause.h"
 #include "ParentStarClause.h"
 #include "PatternClause.h"
 #include "UsesClause.h"
-#include "UsesStarClause.h"
 #include <map>
 #include <string>
 #include <vector>
@@ -47,7 +45,7 @@ vector<string> QueryParser::tokeniser(string input, char delim){
 }
 
 bool containsAny(string s, vector<string> list){
-	for (int i=0; i<list.size(); i++){
+	for (size_t i=0; i<list.size(); i++){
 		string current = list.at(i);
 		if (contains(s, current)){
 			return true;
@@ -86,7 +84,7 @@ string getClauseString(string s){
 	clauseVector.push_back(stringconst::TYPE_USES);
 	clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
 	clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
-	for (int i=0; i<clauseVector.size(); i++){
+	for (size_t i=0; i<clauseVector.size(); i++){
 		string current = clauseVector.at(i);
 		if (contains(s, current)){
 			return current;
@@ -129,7 +127,7 @@ void parseSelect(vector<string> tokens, Query query){
 	if (tokens.size() == 1 || !tokens.at(0).compare(stringconst::STRING_SELECT)){
 		throw InvalidSelectException();
 	}
-	for (int i=1; i<tokens.size(); i++){
+	for (size_t i=1; i<tokens.size(); i++){
 		string current = tokens.at(i);
 		if (selectSynonyms){
 			if (!current.compare(stringconst::STRING_SUCH)){
@@ -194,7 +192,7 @@ void vetQuery(Query query){
 	map<string, string> decList = query.getDeclarationList();
 	vector<Clause> clauseList = query.getClauseList();
 	vector<StringPair> selectList = query.getSelectList();
-	for (int i=0; i<selectList.size(); i++){
+	for (size_t i=0; i<selectList.size(); i++){
 		StringPair current = selectList.at(i);
 		string currentSelect = current.getFirst();
 		if (decList.find(currentSelect) == decList.end() ) {
@@ -204,7 +202,7 @@ void vetQuery(Query query){
 			selectList.at(i).setSecond(currentType);
 		}
 	}
-	for (int i=0; i<clauseList.size(); i++){
+	for (size_t i=0; i<clauseList.size(); i++){
 		Clause current = clauseList.at(i);
 		//DO CHECK FOR PATTERN
 		string currentSynonymOne = current.getFirstArg();

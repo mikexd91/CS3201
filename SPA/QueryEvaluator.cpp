@@ -27,6 +27,18 @@ set<string> evaluateOneClause(Results r) {
 }
 
 set<string> evaluateManyClause(vector<Results> resultList) {
+	/*
+	if both clauses use the same syn AND a clause uses select syn
+		reduce result set via elimination and return result
+	if both clauses use the same syn AND no clause uses select syn
+		check if both clauses are valid
+			if both are valid, return all possible select syn
+			if 1 clause is invalid, return none
+	if clauses do not use the same syn, 
+		check if both are valid
+			if both are valid, return all possible select syn
+			if 1 clause is invalid, return none
+	*/
 	return set<string>();
 }
 

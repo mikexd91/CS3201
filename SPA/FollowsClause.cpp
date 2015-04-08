@@ -6,7 +6,7 @@ FollowsClause::FollowsClause(void):Clause(FOLLOWS_){
 FollowsClause::~FollowsClause(void){
 }
 
-bool FollowsClause::checkValidFollows(void){
+bool FollowsClause::isValid(void){
 	return false;
 }
 
