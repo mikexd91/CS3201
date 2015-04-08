@@ -44,3 +44,9 @@ void VarTable::addVariable(Variable *var) {
 bool VarTable::contains(const string& varName) {
 	return (this->_table.find(varName) != _table.end());
 }
+
+// reset VarTable
+void VarTable::reset() {
+	VarTable::_hasInstance = false;
+	delete _instance;
+}
