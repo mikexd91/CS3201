@@ -22,6 +22,7 @@ public:
 	static ProcTable* getInstance();			// gets instance of proc table
 
 	ProcedureTable::iterator getIterator();		// gets iterator to proc table
+	ProcedureTable::iterator getEnd();			// gets iterator to end of proc table
 
 	// MUTATORS
 	void addProc(Procedure *proc);				// adds proc to table
