@@ -14,9 +14,7 @@ enum ClauseType{
 	PARENT_, 
 	PARENTSTAR_, 
 	USES_, 
-	USESSTAR_, 
 	MODIFIES_, 
-	MODIFIESSTAR_, 
 	PATTERN_
 };
 

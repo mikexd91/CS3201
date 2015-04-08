@@ -7,7 +7,7 @@ FollowsClause::~FollowsClause(void){
 }
 
 bool FollowsClause::checkValidFollows(void){
-
+	return false;
 }
 
 Results FollowsClause::evaluate(void) {
