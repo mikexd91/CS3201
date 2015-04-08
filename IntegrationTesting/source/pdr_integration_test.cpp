@@ -127,3 +127,21 @@ void PDR_Integration_Test::testSiblings() {
 	CPPUNIT_ASSERT(operat->getChildren().at(0)->getName() == "x");
 	CPPUNIT_ASSERT(operat->getChildren().at(1)->getName() == "y");
 }
+
+void PDR_Integration_Test::testMultipleProc() {
+	parser1.parse("procedure proc1{} procedure proc2{} procedure proc3{}");
+	CPPUNIT_ASSERT(ast1->contains("proc1"));
+	CPPUNIT_ASSERT(ast1->contains("proc2"));
+	CPPUNIT_ASSERT(ast1->contains("proc3"));
+
+	ProcNode* proc1 = ast1->getProcNode("proc1");
+	ProcNode* proc2 = ast1->getProcNode("proc2");
+	ProcNode* proc3 = ast1->getProcNode("proc3");
+
+	CPPUNIT_ASSERT(proc1->getLeftSibling() == NULL);
+	CPPUNIT_ASSERT(proc1->getRightSibling() == proc2);
+	CPPUNIT_ASSERT(proc2->getLeftSibling() == proc1);
+	CPPUNIT_ASSERT(proc2->getRightSibling() == proc3);
+	CPPUNIT_ASSERT(proc3->getLeftSibling() == proc2);
+	CPPUNIT_ASSERT(proc3->getRightSibling() == NULL);
+}
