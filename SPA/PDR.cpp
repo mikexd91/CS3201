@@ -101,7 +101,7 @@ void PDR::processAssignStmt(ParsedData data) {
     assignNode->linkExprNode(assignExpChild);
     VarNode* modifiesVar = new VarNode(data.getAssignVar());
     assignNode->linkVarNode(modifiesVar);
-    addToVarTable(modifiesVar);
+    addToVarTable(modifiesVar, MODIFIES);
     
     
     // Populating the StmtTable
@@ -159,10 +159,8 @@ void PDR::processWhileStmt(ParsedData data) {
     whileNode->linkParent(parentStmtLst);
     whileNode->linkVarNode(whileVar);
     whileNode->linkStmtLstNode(stmtLst);
-    
-    stmtParentNumStack.push(stmtCounter);
+
     nodeStack.push(stmtLst);
-    stmtParentNumStack.push(stmtCounter);
     currNestingLevel = data.getNestingLevel() + 1;
     
     // Populating StmtTable
@@ -188,7 +186,8 @@ void PDR::processWhileStmt(ParsedData data) {
 		parentStmt->setChildren(children);
     }
     
-    addToVarTable(whileVar);
+	stmtParentNumStack.push(stmtCounter);
+    addToVarTable(whileVar, USES);
     stmtTable->addStmt(whileStmt);
 }
 
@@ -196,9 +195,9 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
     // Assume expression to be the RPN of the variables and operators
     queue<string> expression = data.getAssignExpression();
     stack<TNode*> rpnNodeStack;
-	int numExpressions = expression.size();
+	int numExp = expression.size();
     
-    if(numExpressions == 1) {
+    if(numExp == 1) {
         string exp = expression.front();
         expression.pop();
         
@@ -212,7 +211,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
         }
     }
     
-    for(size_t i = 0; i < numExpressions; i++) {
+    for(size_t i = 0; i < numExp; i++) {
         string exp = expression.front();
         expression.pop();
         
@@ -233,7 +232,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
                 VarNode* var = new VarNode(exp);
                 rpnNodeStack.push(var);
                 usesSet.insert(exp);
-                addToVarTable(var);
+                addToVarTable(var, USES);
             }
         }
     }
@@ -253,15 +252,26 @@ void PDR::addToProcTable(TNode* procedure) {
     procTable->addProc(proc);
 }
 
-void PDR::addToVarTable(TNode* variable) {
+void PDR::addToVarTable(TNode* variable, Flag statusFlag) {
     VarTable* varTable = VarTable::getInstance();
     
     if(varTable->contains(variable->getName())) {
         Variable* var = varTable->getVariable(variable->getName());
         var->addTNode(variable);
+		if(statusFlag == USES) {
+			var->addUsingStmt(stmtCounter);
+		} else {
+			var->addModifyingStmt(stmtCounter);
+		}
+
     } else {
         Variable* var = new Variable(variable->getName());
-        varTable->addVariable(var);
+        if(statusFlag == USES) {
+			var->addUsingStmt(stmtCounter);
+		} else {
+			var->addModifyingStmt(stmtCounter);
+		}
+		varTable->addVariable(var);
     }
 }
 
