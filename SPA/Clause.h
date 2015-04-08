@@ -48,6 +48,7 @@ public:
 	bool getFirstArgFixed();
 	bool getSecondArgFixed();
 
+	bool isValid();
 	Results evaluate(); 
 
 };

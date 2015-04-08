@@ -9,8 +9,5 @@ public:
 
 	Results evaluate(void);
 
-private:
-	bool checkValidFollows(void);
-
 };
 

@@ -1,5 +1,6 @@
 #include "Query.h"
 #include "Clause.h"
+#include "Utils.h"
 #include "PQLExceptions.h"
 #include <string>
 #include <vector>
@@ -26,7 +27,7 @@ void Query::setClauseList(vector<Clause> list){
 
 void Query::addClause(Clause item){
 	this->clauseList.push_back(item);
-	this->numClauses++;
+	this->numClauses = this->numClauses + 1;
 }
 
 void Query::setDeclarationList(map<string, string> map){
