@@ -101,7 +101,7 @@ void PDR::processAssignStmt(ParsedData data) {
     assignNode->linkExprNode(assignExpChild);
     VarNode* modifiesVar = new VarNode(data.getAssignVar());
     assignNode->linkVarNode(modifiesVar);
-    addToVarTable(modifiesVar);
+    addToVarTable(modifiesVar, MODIFIES);
     
     
     // Populating the StmtTable
@@ -128,6 +128,9 @@ void PDR::processAssignStmt(ParsedData data) {
 		set<int> children = parentStmt->getChildren();
 		children.insert(assignNode->getStmtNum());
 		parentStmt->setChildren(children);
+
+		addParentSet(uses, USES);
+		addParentSet(modifies, MODIFIES);
     }
 	
     stmtTable->addStmt(stmt);
@@ -143,6 +146,8 @@ void PDR::processWhileStmt(ParsedData data) {
         }
     }
     
+	set<string> uses;
+	uses.insert(data.getWhileVar());
     WhileNode* whileNode = new WhileNode(++stmtCounter);
     StmtLstNode* stmtLst = new StmtLstNode();
     TNode* parentStmtLst = nodeStack.top();
@@ -154,11 +159,14 @@ void PDR::processWhileStmt(ParsedData data) {
         whileNode->linkLeftSibling(leftSibling);
     }
     
+
     // Linking the AST
     VarNode* whileVar = new VarNode(data.getWhileVar());
     whileNode->linkParent(parentStmtLst);
     whileNode->linkVarNode(whileVar);
     whileNode->linkStmtLstNode(stmtLst);
+	
+	addToVarTable(whileVar, USES);
 
     nodeStack.push(stmtLst);
     currNestingLevel = data.getNestingLevel() + 1;
@@ -169,7 +177,8 @@ void PDR::processWhileStmt(ParsedData data) {
     whileStmt->setType(whileNode->getNodeType());
     whileStmt->setStmtNum(whileNode->getStmtNum());
     whileStmt->setTNodeRef(whileNode);
-    
+	whileStmt->setUses(uses);
+
     if(whileNode->hasLeftSibling()) {
         StmtNode* leftSib = (StmtNode*)whileNode->getLeftSibling();
         whileStmt->setFollowsAfter(leftSib->getStmtNum());
@@ -184,10 +193,11 @@ void PDR::processWhileStmt(ParsedData data) {
 		set<int> children = parentStmt->getChildren();
 		children.insert(whileNode->getStmtNum());
 		parentStmt->setChildren(children);
+
+		addParentSet(uses, USES);
     }
     
 	stmtParentNumStack.push(stmtCounter);
-    addToVarTable(whileVar);
     stmtTable->addStmt(whileStmt);
 }
 
@@ -232,7 +242,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
                 VarNode* var = new VarNode(exp);
                 rpnNodeStack.push(var);
                 usesSet.insert(exp);
-                addToVarTable(var);
+                addToVarTable(var, USES);
             }
         }
     }
@@ -246,21 +256,75 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
     return result;
 }
 
+void PDR::addParentSet(set<string> setToBeAdded, Flag statusFlag) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	VarTable* varTable = VarTable::getInstance();
+	stack<int> holdingStack;
+
+	while(!stmtParentNumStack.empty()) {
+		Statement* parent = stmtTable->getStmtObj(stmtParentNumStack.top());	
+		set<string> stmtSet;
+		set<string>::iterator iter;	
+
+		if(statusFlag == USES) {
+			stmtSet = parent->getUses();
+		} else {
+			stmtSet = parent->getModifies();
+		}
+		
+		for(iter = setToBeAdded.begin(); iter != setToBeAdded.end(); iter++) {
+			string var = *iter;
+			stmtSet.insert(var);
+			Variable* varObj = varTable->getVariable(var);
+			if(statusFlag == USES) {
+				varObj->addUsingStmt(stmtParentNumStack.top());
+			} else {
+				varObj->addModifyingStmt(stmtParentNumStack.top());
+			}
+		}
+
+		if(statusFlag == USES) {
+			parent->setUses(stmtSet);
+		} else {
+			parent->setModifies(stmtSet);
+		}
+		
+		holdingStack.push(stmtParentNumStack.top());
+		stmtParentNumStack.pop();
+	}
+
+	while(!holdingStack.empty()) {
+		stmtParentNumStack.push(holdingStack.top());
+		holdingStack.pop();
+	}
+}
+
 void PDR::addToProcTable(TNode* procedure) {
     ProcTable* procTable = ProcTable::getInstance();
     Procedure* proc = new Procedure(procedure->getName(), procedure);
     procTable->addProc(proc);
 }
 
-void PDR::addToVarTable(TNode* variable) {
+void PDR::addToVarTable(TNode* variable, Flag statusFlag) {
     VarTable* varTable = VarTable::getInstance();
     
     if(varTable->contains(variable->getName())) {
         Variable* var = varTable->getVariable(variable->getName());
         var->addTNode(variable);
+		if(statusFlag == USES) {
+			var->addUsingStmt(stmtCounter);
+		} else {
+			var->addModifyingStmt(stmtCounter);
+		}
+
     } else {
         Variable* var = new Variable(variable->getName());
-        varTable->addVariable(var);
+        if(statusFlag == USES) {
+			var->addUsingStmt(stmtCounter);
+		} else {
+			var->addModifyingStmt(stmtCounter);
+		}
+		varTable->addVariable(var);
     }
 }
 
