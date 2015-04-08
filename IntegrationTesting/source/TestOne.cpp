@@ -263,19 +263,38 @@ void TestOne::testMultipleProcAST() {
 void TestOne::testFollows() {
 	//StmtTable* stmtTable = StmtTable::getInstance();
 	
-	parser.parse("procedure proc{x = 2; y = x + 3; while y{z = y + x;}}");
+	parser.parse("procedure proc{x = 2; y = x + 3; while y{z = y + x;} w = z + 2;}");
 	CPPUNIT_ASSERT(ast->contains("proc"));
 	
 	Statement* firstAssg = stmtTable->getStmtObj(1);
 	Statement* secAssg = stmtTable->getStmtObj(2);
 	Statement* whileStmt = stmtTable->getStmtObj(3);
 	Statement* thirdAssg = stmtTable->getStmtObj(4);
+	Statement* fourthAssg = stmtTable->getStmtObj(5);
 	CPPUNIT_ASSERT(firstAssg->getFollowsAfter() == -1);
 	CPPUNIT_ASSERT(firstAssg->getFollowsBefore() == 2);
 	CPPUNIT_ASSERT(secAssg->getFollowsAfter() == 1);
 	CPPUNIT_ASSERT(secAssg->getFollowsBefore() == 3);
 	CPPUNIT_ASSERT(whileStmt->getFollowsAfter() == 2);
-	CPPUNIT_ASSERT(whileStmt->getFollowsBefore() == -1);
+	CPPUNIT_ASSERT(whileStmt->getFollowsBefore() == 5);
 	CPPUNIT_ASSERT(thirdAssg->getFollowsAfter() == -1);
 	CPPUNIT_ASSERT(thirdAssg->getFollowsBefore() == -1);
+	CPPUNIT_ASSERT(fourthAssg->getFollowsAfter() == 3);
+	CPPUNIT_ASSERT(fourthAssg->getFollowsBefore() == -1);
+}
+
+void TestOne::testWhileUses() {
+	parser.parse("procedure proc { while w { while y { z = a + b; }} }");
+	
+	Statement* firstWhile = stmtTable->getStmtObj(1);
+	Statement* secWhile = stmtTable->getStmtObj(2);
+	
+	string firstInit[] = {"a", "b", "w", "y"};
+	set<string> firstUses(firstInit, firstInit + 4);
+	CPPUNIT_ASSERT(firstWhile->getUses() == firstUses);
+
+	string secInit[] = {"a", "b", "y"};
+	set<string> secUses(secInit, secInit + 3);
+	CPPUNIT_ASSERT(secWhile->getUses() == secUses);
+
 }
