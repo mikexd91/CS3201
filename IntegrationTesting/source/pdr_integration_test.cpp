@@ -98,6 +98,9 @@ void PDR_Integration_Test::testSiblings() {
 	CPPUNIT_ASSERT(secAssg->getVarNode()->getName() == "y");
 	CPPUNIT_ASSERT(secAssg->getExprNode()->getName() == "3");
 	CPPUNIT_ASSERT(whileNode->getVarNode()->getName() == "x");
+	CPPUNIT_ASSERT(firstAssg->getStmtNum() == 1);
+	CPPUNIT_ASSERT(secAssg->getStmtNum() == 2);
+	CPPUNIT_ASSERT(whileNode->getStmtNum() == 3);
 
 	// testing sibling linkages
 	CPPUNIT_ASSERT(firstAssg->getLeftSibling() == NULL);
@@ -112,6 +115,7 @@ void PDR_Integration_Test::testSiblings() {
 	CPPUNIT_ASSERT(whileStmtLst->hasChildren());
 
 	AssgNode* thirdAssg = (AssgNode*)whileStmtLst->getChildren().at(0);
+	CPPUNIT_ASSERT(thirdAssg->getStmtNum() == 4);
 	CPPUNIT_ASSERT(thirdAssg->getLeftSibling() == NULL);
 	CPPUNIT_ASSERT(thirdAssg->getRightSibling() == NULL);
 	CPPUNIT_ASSERT(thirdAssg->getVarNode()->getName() == "z");
