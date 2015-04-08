@@ -5,7 +5,6 @@ using namespace std;
 
 bool VarTable::_hasInstance = false;
 VarTable* VarTable::_instance;
-//VarTable::Table VarTable::_table;
 
 // constructors
 VarTable::VarTable() {
@@ -28,8 +27,14 @@ Variable* VarTable::getVariable(const string& varName) {
 	}
 }
 
-VarTable::VarIter VarTable::getIterator() {
-	VarTable::VarIter tableIter = _table.begin();
+boost::unordered_map<string, Variable*>::iterator VarTable::getIterator() {
+	boost::unordered_map<string, Variable*>::iterator tableIter = _table.begin();
+
+	return tableIter;
+}
+
+boost::unordered_map<string, Variable*>::iterator VarTable::getEnd() {
+	boost::unordered_map<string, Variable*>::iterator tableIter = _table.end();
 
 	return tableIter;
 }
