@@ -8,6 +8,7 @@
 #include "InvalidCodeException.h"
 #include "Parser.h"
 #include "ParsedData.h"
+#include "InvalidExpressionException.h"
 
 using namespace std;
 
@@ -166,39 +167,26 @@ queue<string> Parser::getExpression() {
 			throwException(stmtCount);
 		}
 	}
-	queue<string> rpn = getRPN(originalExpression);
-	if (rpn.empty()) {
+	try {
+		return getRPN(originalExpression);
+	} catch (InvalidExpressionException) {
 		throwException(stmtCount);
-	} 
-	return rpn;
+	}
 }
 
 queue<string> Parser::getRPN(queue<string> originalExpression) {
-	if (originalExpression.empty()) {
-		return queue<string>();
-	}
 	stack<string> operationStack;
 	queue<string> expressionQueue;
 	//using Shunting-yard algorithm
 	string word;
 	int count = 0;
-	word = originalExpression.front();
-	originalExpression.pop();
+	word = getWordAndPop(originalExpression);
 	parseFactor(word, expressionQueue);
-	
 	while (!originalExpression.empty()) {
-		if(count > 9999) {
-			throw runtime_error("Infinite loop!");
-			break;
-		} else {
-			word = originalExpression.front();
-			originalExpression.pop();
-			parseSymbol(word, expressionQueue, operationStack);
-			word = originalExpression.front();
-			originalExpression.pop();
-			parseFactor(word, expressionQueue);
-		}
-		count++;
+		word = getWordAndPop(originalExpression);
+		parseSymbol(word, expressionQueue, operationStack);
+		word = getWordAndPop(originalExpression);
+		parseFactor(word, expressionQueue);
 	}
 	while (!operationStack.empty()) {
 		expressionQueue.push(operationStack.top());
@@ -224,11 +212,21 @@ void Parser::endParse() {
 	parsedDataReceiver->processParsedData(endData);
 }
 
+string Parser::getWordAndPop(queue<string> &originalExpression) {
+	if(originalExpression.empty()) {
+		throw InvalidExpressionException("Invalid Expression!");
+	} else {
+		string word = originalExpression.front();
+		originalExpression.pop();
+		return word;
+	}
+}
+
 void Parser::parseFactor(string word, queue<string> &expressionQueue) {
 	if (isValidFactor(word)) {
 		expressionQueue.push(word);
 	} else {
-		throwException(stmtCount);
+		throw InvalidExpressionException("Invalid Expression!");
 	}
 }
 
@@ -242,7 +240,7 @@ void Parser::parseSymbol(string word, queue<string> &expressionQueue, stack<stri
 		}
 		operationStack.push(word);
 	} else {
-		throwException(stmtCount);
+		throw InvalidExpressionException("Invalid Expression!");
 	}
 }
 

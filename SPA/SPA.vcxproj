@@ -26,6 +26,7 @@
     <ClInclude Include="ConstNode.h" />
     <ClInclude Include="IfNode.h" />
     <ClInclude Include="InvalidCodeException.h" />
+    <ClInclude Include="InvalidExpressionException.h" />
     <ClInclude Include="OpNode.h" />
     <ClInclude Include="ParsedData.h" />
     <ClInclude Include="Parser.h" />
