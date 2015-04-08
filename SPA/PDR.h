@@ -40,6 +40,8 @@ public:
 
 private:
 	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHILE};
+	enum Flag {USES, MODIFIES};
+
 	int stmtCounter;
 	int currNestingLevel;
     static bool instanceFlag;
@@ -56,7 +58,7 @@ private:
     void processEndProgram();
     
     void addToProcTable(TNode*);
-    void addToVarTable(TNode*);
+    void addToVarTable(TNode*, Flag);
     
     TNode* breakDownAssignExpression(ParsedData, set<string>&);
     
