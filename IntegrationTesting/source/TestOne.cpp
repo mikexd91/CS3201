@@ -251,5 +251,23 @@ void TestOne::testMultipleProcAST() {
 }
 
 void TestOne::testFollows() {
-	parser.parse("procedure proc{x = 2; y = x + 3; while y{z = y + x;}}}");
+	StmtTable* stmtTable = StmtTable::getInstance();
+	
+	parser.parse("procedure proc{x = 2; y = x + 3; while y{z = y + x;}}");
+	CPPUNIT_ASSERT(ast->contains("proc"));
+	
+	Statement* firstAssg = stmtTable->getStmtObj(1);
+	Statement* secAssg = stmtTable->getStmtObj(2);
+	Statement* whileStmt = stmtTable->getStmtObj(3);
+	Statement* thirdAssg = stmtTable->getStmtObj(4);
+	CPPUNIT_ASSERT(firstAssg->getFollowsAfter() == -1);
+	CPPUNIT_ASSERT(firstAssg->getFollowsBefore() == 2);
+	CPPUNIT_ASSERT(secAssg->getFollowsAfter() == 1);
+	CPPUNIT_ASSERT(secAssg->getFollowsBefore() == 3);
+	CPPUNIT_ASSERT(whileStmt->getFollowsAfter() == 2);
+	CPPUNIT_ASSERT(whileStmt->getFollowsBefore() == 4);
+	CPPUNIT_ASSERT(thirdAssg->getFollowsAfter() == -1);
+	CPPUNIT_ASSERT(thirdAssg->getFollowsBefore() == -1);
+	
+	
 }
