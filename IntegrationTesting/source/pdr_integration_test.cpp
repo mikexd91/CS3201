@@ -73,3 +73,53 @@ void PDR_Integration_Test::testNestedWhile() {
 	ConstNode* constant = (ConstNode*)assign->getChildren().at(1);
 	CPPUNIT_ASSERT(constant->getName() == "2");
 }
+
+void PDR_Integration_Test::testSiblings() {
+	parser1.parse("procedure testSiblings {x = 2; y = 3; while x{z = x + y;}}");
+	CPPUNIT_ASSERT(ast1->contains("testSiblings"));
+
+	ProcNode* proc = ast1->getProcNode("testSiblings");
+	CPPUNIT_ASSERT(proc->hasChildren());
+
+	StmtLstNode* procStmtLst = proc->getStmtLstNode();
+	CPPUNIT_ASSERT(procStmtLst->hasChildren());
+	CPPUNIT_ASSERT(procStmtLst->getChildren().size() == 3);
+	CPPUNIT_ASSERT(procStmtLst->getChildren().at(0)->getNodeType() == NodeType::ASSIGN_STMT_);
+	CPPUNIT_ASSERT(procStmtLst->getChildren().at(1)->getNodeType() == NodeType::ASSIGN_STMT_);
+	CPPUNIT_ASSERT(procStmtLst->getChildren().at(2)->getNodeType() == NodeType::WHILE_STMT_);
+
+	AssgNode* firstAssg = (AssgNode*)procStmtLst->getChildren().at(0);
+	AssgNode* secAssg = (AssgNode*)procStmtLst->getChildren().at(1);
+	WhileNode* whileNode = (WhileNode*)procStmtLst->getChildren().at(2);
+
+	// testing the nodes
+	CPPUNIT_ASSERT(firstAssg->getVarNode()->getName() == "x");
+	CPPUNIT_ASSERT(firstAssg->getExprNode()->getName() == "2");
+	CPPUNIT_ASSERT(secAssg->getVarNode()->getName() == "y");
+	CPPUNIT_ASSERT(secAssg->getExprNode()->getName() == "3");
+	CPPUNIT_ASSERT(whileNode->getVarNode()->getName() == "x");
+
+	// testing sibling linkages
+	CPPUNIT_ASSERT(firstAssg->getLeftSibling() == NULL);
+	CPPUNIT_ASSERT(firstAssg->getRightSibling() == secAssg);
+	CPPUNIT_ASSERT(secAssg->getLeftSibling() == firstAssg);
+	CPPUNIT_ASSERT(secAssg->getRightSibling() == whileNode);
+	CPPUNIT_ASSERT(whileNode->getLeftSibling() == secAssg);
+	CPPUNIT_ASSERT(whileNode->getRightSibling() == NULL);
+
+	// test while child
+	StmtLstNode* whileStmtLst = whileNode->getStmtLstNode();
+	CPPUNIT_ASSERT(whileStmtLst->hasChildren());
+
+	AssgNode* thirdAssg = (AssgNode*)whileStmtLst->getChildren().at(0);
+	CPPUNIT_ASSERT(thirdAssg->getLeftSibling() == NULL);
+	CPPUNIT_ASSERT(thirdAssg->getRightSibling() == NULL);
+	CPPUNIT_ASSERT(thirdAssg->getVarNode()->getName() == "z");
+	CPPUNIT_ASSERT(thirdAssg->getExprNode()->getNodeType() == NodeType::OPERATOR_);
+
+	OpNode* operat = (OpNode*)thirdAssg->getExprNode();
+	CPPUNIT_ASSERT(operat->getName() == "+");
+	CPPUNIT_ASSERT(operat->getChildren().size() == 2);
+	CPPUNIT_ASSERT(operat->getChildren().at(0)->getName() == "x");
+	CPPUNIT_ASSERT(operat->getChildren().at(1)->getName() == "y");
+}

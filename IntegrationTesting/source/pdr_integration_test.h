@@ -6,6 +6,7 @@ class PDR_Integration_Test : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( PDR_Integration_Test );
 	CPPUNIT_TEST( testWhile );
 	CPPUNIT_TEST( testNestedWhile );
+	CPPUNIT_TEST( testSiblings );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -15,5 +16,6 @@ public:
 
 	void testWhile();
 	void testNestedWhile();
+	void testSiblings();
 
 };
