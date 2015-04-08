@@ -259,17 +259,15 @@ void PDR::addParentSet(set<string> setToBeAdded, Flag statusFlag) {
 	stack<int> holdingStack;
 
 	while(!stmtParentNumStack.empty()) {
-		Statement* parent = stmtTable->getStmtObj(stmtParentNumStack.top());
-		
+		Statement* parent = stmtTable->getStmtObj(stmtParentNumStack.top());	
 		set<string> stmtSet;
+		set<string>::iterator iter;	
 
 		if(statusFlag == USES) {
 			stmtSet = parent->getUses();
 		} else {
 			stmtSet = parent->getModifies();
 		}
-
-		set<string>::iterator iter;	
 		
 		for(iter = setToBeAdded.begin(); iter != setToBeAdded.end(); iter++) {
 			string var = *iter;
