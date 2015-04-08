@@ -15,6 +15,10 @@ public:
 
 	void testAddProc();			
 	void testAssign();				
-	void testFalseAddProc();	
+	void testFalseAddProc();
 
+	void testWhileAST();
+	void testNestedWhileAST();
+	void testSiblingsAST();
+	void testMultipleProcAST();
 };
