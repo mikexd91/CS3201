@@ -16,6 +16,7 @@ using namespace std;
 Parser::Parser() {
 	nestingLevel = 0;
 	parsedDataReceiver = PDR::getInstance();
+	stmtCount = 0;
 }
 
 //e.g. string content = "procedure test { a = 2; a = 5;} ";
@@ -61,7 +62,8 @@ void Parser::match(string token) {
 		getNextToken();
 	}
 	else {
-		throw InvalidCodeException();
+		throwException(stmtCount);
+		//throw InvalidCodeException(stmtCount);
 	}
 }
 
@@ -79,6 +81,27 @@ string Parser::getWord() {
 	return result;
 }
 
+string Parser::getName() {
+	string result = getWord();
+	if (isValidName(result)) {
+		return result;
+	} else {
+		throwException(stmtCount);
+		return "";
+	}
+}
+
+/**
+string Parser::getFactor() {
+	string result = getWord();
+	if (isValidName(result) || isValidConstant(result)) {
+		return result;
+	} else {
+		throw InvalidCodeException(stmtCount);
+	}
+}
+**/
+
 void Parser::program() {
 	getNextToken();
 	while (!nextToken.empty()) {
@@ -88,7 +111,7 @@ void Parser::program() {
 
 void Parser::procedure() {
 	match("procedure");
-	string procName = getWord();
+	string procName = getName();
 	ParsedData procedure = ParsedData(ParsedData::PROCEDURE, this->nestingLevel);
 	procedure.setProcName(procName);
 	parsedDataReceiver->processParsedData(procedure);
@@ -106,6 +129,7 @@ void Parser::stmtLst() {
 }
 
 void Parser::stmt() {
+	stmtCount++;
 	if (nextToken == "while") {
 		parseWhile();
 	} else {
@@ -114,7 +138,7 @@ void Parser::stmt() {
 }
 
 void Parser::assign() {
-	string var = getWord();
+	string var = getName();
 	match("=");
 	ParsedData assignment = ParsedData(ParsedData::ASSIGNMENT, nestingLevel);
 	assignment.setAssignVar(var);
@@ -137,19 +161,22 @@ queue<string> Parser::getExpression() {
 	queue<string> expressionQueue;
 	//using Shunting-yard algorithm
 	string word;
+	int count = 0;
+	word = getWord();
+	parseFactor(word, expressionQueue);
+	
 	while ((word = getWord()) != ";") {
-		if (word == "+" || word == "-" || word == "*") {
-			//if top of stack is *, all other operation (+-*) are lower or equal, so just add top to output queue
-			//if top of stack is + or -, only add top to output queue if word is + or -
-			while (!operationStack.empty() && !(operationStack.top() != "*" && word == "*")) {
-				expressionQueue.push(operationStack.top());
-				operationStack.pop();
-			}
-			operationStack.push(word);
+		if(count > 9999) {
+			throw runtime_error("Infinite loop!");
+			break;
 		} else {
-			expressionQueue.push(word);
-		}	
+			parseSymbol(word, expressionQueue, operationStack);
+			word = getWord();
+			parseFactor(word, expressionQueue);
+		}
+		count++;
 	}
+
 	while (!operationStack.empty()) {
 		expressionQueue.push(operationStack.top());
 		operationStack.pop();
@@ -160,7 +187,7 @@ queue<string> Parser::getExpression() {
 
 void Parser::parseWhile() {
 	match("while");
-	string conditionVar = getWord();
+	string conditionVar = getName();
 	ParsedData whileStmt = ParsedData(ParsedData::WHILE, nestingLevel);
 	whileStmt.setWhileVar(conditionVar);
 	parsedDataReceiver->processParsedData(whileStmt);
@@ -174,5 +201,62 @@ void Parser::endParse() {
 	parsedDataReceiver->processParsedData(endData);
 }
 
+void Parser::parseFactor(string word, queue<string> &expressionQueue) {
+	if (isValidFactor(word)) {
+		expressionQueue.push(word);
+	} else {
+		throwException(stmtCount);
+	}
+}
 
+void Parser::parseSymbol(string word, queue<string> &expressionQueue, stack<string> &operationStack) {
+	//if top of stack is *, all other operation (+-*) are lower or equal, so just add top to output queue
+	//if top of stack is + or -, only add top to output queue if word is + or -
+	if (isValidSymbol(word)) {
+		while (!operationStack.empty() && !(operationStack.top() != "*" && word == "*")) {
+			expressionQueue.push(operationStack.top());
+			operationStack.pop();
+		}
+		operationStack.push(word);
+	} else {
+		throwException(stmtCount);
+	}
+}
 
+bool Parser::isValidName(string name) {
+	if (!isalpha(name[0])) {
+		return false;
+	} else {
+		for (int i = 1; i < name.size(); i++) {
+			if(!isalnum(name[i])) {
+				return false;
+			}
+		}
+		return true;
+	}
+}
+
+bool Parser::isValidConstant(string number) {
+	for (int i = 0; i < number.size(); i++) {
+		if (!isdigit(number[i])) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool Parser::isValidFactor(string factor) {
+	return isValidConstant(factor) || isValidName(factor);
+}
+
+bool Parser::isValidSymbol(string symbol) {
+	return symbol == "+" || symbol == "-" || symbol == "*";
+}
+
+void Parser::throwException(int lineNumber) {
+	ostringstream output;
+	output.str("");
+	output << "Error at line " << lineNumber;
+	throw InvalidCodeException(output.str());
+
+}

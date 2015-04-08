@@ -2,7 +2,6 @@
 #include "TestOne.h"
 #include "../../SPA/Parser.h"
 #include "../../SPA/PDR.h"
-#include "../../SPA/ProcTable.h"
 
 // TEST VARIABLES
 
@@ -23,17 +22,91 @@ CPPUNIT_TEST_SUITE_REGISTRATION( TestOne );
 
 // method to test adding of proc to table
 void TestOne::testAddProc() {
-	parser.parse("procedure test {x = 2; y=3;}");
+	parser.parse("procedure test {x = 2; y=x+z; z=x+y+z; while i {y=x+1; a=a+b;} }");
 	ProcTable* procTable = ProcTable::getInstance();
-	CPPUNIT_ASSERT(procTable->contains("test"));
 	StmtTable* stmtTable = StmtTable::getInstance();
+	VarTable* varTable = VarTable::getInstance();
+	CPPUNIT_ASSERT(procTable->contains("test"));
 	
-	Statement* stmt = stmtTable->getStmtObj(1);
 	
-	string init[] = { "x" };
-	set<string> str(init, init + 1);
-	CPPUNIT_ASSERT(stmt->getModifies() == str);
+	Statement* stmt1 = stmtTable->getStmtObj(1);
+	string initUses1[] = { "x" };
+	set<string> str1(initUses1, initUses1 + 1);
+	CPPUNIT_ASSERT(stmt1->getModifies() == str1);
+	
+	Statement* stmt2 = stmtTable->getStmtObj(2);
+	string initModifies2[] = { "y" };
+	set<string> strModifies2(initModifies2, initModifies2 + 1);
+	CPPUNIT_ASSERT(stmt2->getModifies() == strModifies2);
+	string initUses2[] = { "x", "z" };
+	set<string> strUses2(initUses2, initUses2 + 2);
+	CPPUNIT_ASSERT(stmt2->getUses() == strUses2);
+
+	Statement* stmt3 = stmtTable->getStmtObj(3);
+	string initModifies3[] = { "z" };
+	set<string> strModifies3(initModifies3, initModifies3 + 1);
+	CPPUNIT_ASSERT(stmt3->getModifies() == strModifies3);
+	string initUses3[] = { "x", "y", "z" };
+	set<string> strUses3(initUses3, initUses3 + 3);
+	CPPUNIT_ASSERT(stmt3->getUses() == strUses3);
+
+	Statement* stmt4 = stmtTable->getStmtObj(4);
+	string initModifies4[] = { "y" };
+	set<string> strModifies4(initModifies4, initModifies4 + 1);
+	//CPPUNIT_ASSERT(stmt4->getModifies() == strModifies4);
+	string initUses4[] = { "x", "i" };
+	set<string> strUses4(initUses4, initUses4 + 1);
+	//CPPUNIT_ASSERT(stmt4->getUses() == strUses4);
+	int initChildren4[] = {5, 6};
+	set<int> setChildren4(initChildren4, initChildren4 + 2);
+	CPPUNIT_ASSERT(stmt4->getChildren() == setChildren4);
+
+	Statement* stmt5 = stmtTable->getStmtObj(5);
+	string initModifies5[] = { "y" };
+	set<string> strModifies5(initModifies5, initModifies5 + 1);
+	CPPUNIT_ASSERT(stmt5->getModifies() == strModifies5);
+	string initUses5[] = { "x" };
+	set<string> strUses5(initUses5, initUses5 + 1);
+	CPPUNIT_ASSERT(stmt5->getUses() == strUses5);
+	CPPUNIT_ASSERT(stmt5->getParent() == 4);
+	
+	
+	Statement* stmt6 = stmtTable->getStmtObj(6);
+	string initModifies6[] = { "a" };
+	set<string> strModifies6(initModifies6, initModifies6 + 1);
+	CPPUNIT_ASSERT(stmt6->getModifies() == strModifies6);
+	
+	string initUses6[] = { "a", "b" };
+	set<string> strUses6(initUses6, initUses6 + 2);
+	CPPUNIT_ASSERT(stmt6->getUses() == strUses6);
+	CPPUNIT_ASSERT(stmt6->getParent() == 4);
+
+	Variable* varX = varTable->getVariable("x");
+	int initXUsedBy[] = {2, 3, 5};
+	int initXModifiedBy[] = {1};
+	set<int> setXUsedBy(initXUsedBy, initXUsedBy + 3);
+	set<int> setXModifiedBy(initXModifiedBy, initXModifiedBy + 1);
+	CPPUNIT_ASSERT(varX->getUsedByStmts() == setXUsedBy);
+	CPPUNIT_ASSERT(varX->getModifiedByStmts() == setXModifiedBy);
+
+	Variable* varY = varTable->getVariable("y");
+	int initYUsedBy[] = {3};
+	int initYModifiedBy[] = {2, 5};
+	set<int> setYUsedBy(initYUsedBy, initYUsedBy + 1);
+	set<int> setYModifiedBy(initYModifiedBy, initYModifiedBy + 2);
+	CPPUNIT_ASSERT(varY->getUsedByStmts() == setYUsedBy);
+	CPPUNIT_ASSERT(varY->getModifiedByStmts() == setYModifiedBy);
+
+	Variable* varZ = varTable->getVariable("z");
+	int initZUsedBy[] = {2, 3};
+	int initZModifiedBy[] = {3};
+	set<int> setZUsedBy(initZUsedBy, initZUsedBy + 2);
+	set<int> setZModifiedBy(initZModifiedBy, initZModifiedBy + 1);
+	CPPUNIT_ASSERT(varZ->getUsedByStmts() == setZUsedBy);
+	CPPUNIT_ASSERT(varZ->getModifiedByStmts() == setZModifiedBy);
 }
+
+
 
 void TestOne::testAssign() {
 	
