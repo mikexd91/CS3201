@@ -11,7 +11,12 @@ public:
 	PatternAssgClause(string syn);
 	~PatternAssgClause(void);
 
-	Results evaluate(void);
-
+private:
+	Results evaluateVarWildExprWild(void);
+	Results evaulateVarWildExpr(void);
+	Results evaluateVarFixedExprWild(void);
+	Results evaluateVarFixedExpr(void);
+	Results evaluateVarExprWild(void);
+	Results evaluateVarExpr(void);
 };
 

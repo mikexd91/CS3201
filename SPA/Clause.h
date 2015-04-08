@@ -1,5 +1,5 @@
 #pragma once
-#include <Results.h>
+#include "Results.h"
 #include <vector>
 #include <string>
 #include <map>
@@ -49,6 +49,6 @@ public:
 	bool getFirstArgFixed();
 	bool getSecondArgFixed();
 
-	Results evaluate(); 
+	virtual Results evaluate(); 
 
 };
