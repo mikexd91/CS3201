@@ -19,10 +19,15 @@ set<string> getAllSynValues(vector<StringPair> selectList) {
 	// get from the respective tables
 	// convert all to string (if required)
 	// return set of strings
+	return set<string>();
 }
 
 set<string> evaluateOneClause(Results r) {
+	return set<string>();
+}
 
+set<string> evaluateManyClause(vector<Results> resultList) {
+	return set<string>();
 }
 
 set<string> QueryEvaluator::evaluateQuery(Query q) {
@@ -32,6 +37,7 @@ set<string> QueryEvaluator::evaluateQuery(Query q) {
 	if (clauseList.empty()) {
 		set<string> result = getAllSynValues(selectList);
 		return result;
+
 	} else {
 		vector<Results> resultsList;
 
@@ -47,7 +53,8 @@ set<string> QueryEvaluator::evaluateQuery(Query q) {
 			return result;
 
 		} else {
-
+			set<string> result = evaluateManyClause(resultsList);
+			return result;
 		}
 	}
 	/*
@@ -81,5 +88,4 @@ set<string> QueryEvaluator::evaluateQuery(Query q) {
 			if both are valid, return all possible select syn
 			if 1 clause is invalid, return none
 	*/
-	return set<string>();
 }
