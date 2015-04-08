@@ -159,11 +159,14 @@ void PDR::processWhileStmt(ParsedData data) {
         whileNode->linkLeftSibling(leftSibling);
     }
     
+
     // Linking the AST
     VarNode* whileVar = new VarNode(data.getWhileVar());
     whileNode->linkParent(parentStmtLst);
     whileNode->linkVarNode(whileVar);
     whileNode->linkStmtLstNode(stmtLst);
+	
+	addToVarTable(whileVar, USES);
 
     nodeStack.push(stmtLst);
     currNestingLevel = data.getNestingLevel() + 1;
@@ -195,7 +198,6 @@ void PDR::processWhileStmt(ParsedData data) {
     }
     
 	stmtParentNumStack.push(stmtCounter);
-    addToVarTable(whileVar, USES);
     stmtTable->addStmt(whileStmt);
 }
 
