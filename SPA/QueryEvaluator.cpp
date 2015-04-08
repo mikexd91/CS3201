@@ -2,6 +2,7 @@
 #include "Clause.h"
 #include "StringPair.h"
 #include "Utils.h"
+#include "StmtTable.h"
 #include <vector>
 
 using namespace std;
@@ -18,11 +19,17 @@ QueryEvaluator::~QueryEvaluator(void)
 set<string> getAllSynValues(vector<StringPair> selectList) {
 	StringPair syn = selectList.front();
 	string synType = syn.getSecond();
-	
+	StmtTable* stmtTable = StmtTable::getInstance();
+
 	if (synType == stringconst::ARG_WHILE) {
+		set<Statement*> whileStmt = stmtTable->getWhileStmts();
+		for (set<Statement*>::iterator iter = whileStmt.begin() ; iter != whileStmt.end(); iter++) {
+			Statement* s = *iter;
+			//s->
+		}
 
 	} else if (synType == stringconst::ARG_STATEMENT) {
-
+		
 	} else if (synType == stringconst::ARG_ASSIGN) {
 
 	} else if (synType == stringconst::ARG_VARIABLE) {
