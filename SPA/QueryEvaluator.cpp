@@ -29,7 +29,12 @@ set<string> getAllSynValues(vector<StringPair> selectList) {
 		}
 
 	} else if (synType == stringconst::ARG_STATEMENT) {
-		
+		boost::unordered_map<int, Statement*>::iterator iter;
+
+		for (iter = stmtTable->getIterator(); iter != stmtTable->getEnd(); iter++) {
+			int stmtNum = iter->first;
+			
+		}
 	} else if (synType == stringconst::ARG_ASSIGN) {
 
 	} else if (synType == stringconst::ARG_VARIABLE) {
