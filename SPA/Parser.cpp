@@ -170,7 +170,7 @@ queue<string> Parser::getExpression() {
 	if (rpn.empty()) {
 		throwException(stmtCount);
 	} 
-	return getRPN(originalExpression);
+	return rpn;
 }
 
 queue<string> Parser::getRPN(queue<string> originalExpression) {
