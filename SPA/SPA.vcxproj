@@ -24,6 +24,7 @@
     <ClInclude Include="CallNode.h" />
     <ClInclude Include="Clause.h" />
     <ClInclude Include="ConstNode.h" />
+    <ClInclude Include="Follows.h" />
     <ClInclude Include="IfNode.h" />
     <ClInclude Include="InvalidCodeException.h" />
     <ClInclude Include="InvalidExpressionException.h" />
@@ -44,6 +45,7 @@
     <ClInclude Include="StmtTable.h" />
     <ClInclude Include="StringPair.h" />
     <ClInclude Include="TNode.h" />
+    <ClInclude Include="Utils.h" />
     <ClInclude Include="Variable.h" />
     <ClInclude Include="VarNode.h" />
     <ClInclude Include="VarTable.h" />
@@ -55,6 +57,7 @@
     <ClCompile Include="CallNode.cpp" />
     <ClCompile Include="Clause.cpp" />
     <ClCompile Include="ConstNode.cpp" />
+    <ClCompile Include="Follows.cpp" />
     <ClCompile Include="IfNode.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="OpNode.cpp" />
@@ -73,6 +76,7 @@
     <ClCompile Include="StmtTable.cpp" />
     <ClCompile Include="StringPair.cpp" />
     <ClCompile Include="TNode.cpp" />
+    <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Variable.cpp" />
     <ClCompile Include="VarNode.cpp" />
     <ClCompile Include="VarTable.cpp" />
@@ -84,7 +88,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -110,7 +114,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)SPA;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\SPA;$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
