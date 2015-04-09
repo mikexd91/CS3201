@@ -1,5 +1,6 @@
 #include "VarTable.h"
 #include <unordered_map>
+#include <boost/foreach.hpp>
 
 using namespace std;
 
@@ -37,6 +38,22 @@ boost::unordered_map<string, Variable*>::iterator VarTable::getEnd() {
 	boost::unordered_map<string, Variable*>::iterator tableIter = _table.end();
 
 	return tableIter;
+}
+
+vector<string>* VarTable::getAllVarNames() {
+	vector<string>* allVarNames = new vector<string>;
+	BOOST_FOREACH(auto p, _table) {
+		allVarNames->push_back(p.first);
+	}
+	return allVarNames;
+}
+
+vector<Variable*>* VarTable::getAllVariables() {
+	vector<Variable*>* allVars = new vector<Variable*>;
+	BOOST_FOREACH(auto p, _table) {
+		allVars->push_back(p.second);
+	}
+	return allVars;
 }
 
 // setters
