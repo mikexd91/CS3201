@@ -9,6 +9,11 @@ VarTable* VarTable::_instance;
 
 // constructors
 VarTable::VarTable() {
+
+}
+
+VarTable::~VarTable() {
+
 }
 
 // general getters
@@ -69,6 +74,7 @@ bool VarTable::contains(const string& varName) {
 
 // reset VarTable
 void VarTable::reset() {
-	VarTable::_hasInstance = false;
-	delete _instance;
+	//VarTable::_hasInstance = false;
+	//_instance->reset();
+	_instance->_table.clear();
 }

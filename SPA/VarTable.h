@@ -21,6 +21,7 @@ class VarTable {
 	*/
 
 public:
+	~VarTable();
 	
 	// getters
 	static VarTable* getInstance();

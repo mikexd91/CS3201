@@ -6,6 +6,9 @@
 class ModifiesClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( ModifiesClauseTest );
 	CPPUNIT_TEST( testModifiesNumNum );
+	CPPUNIT_TEST( testModifiesSynNum );
+	CPPUNIT_TEST( testModifiesNumSyn );
+	CPPUNIT_TEST( testModifiesSynSyn );
 	//CPPUNIT_TEST( evaulateVarWildExpr );
 	//CPPUNIT_TEST( evaluateVarFixedExprWild );
 	//CPPUNIT_TEST( evaluateVarFixedExpr );
