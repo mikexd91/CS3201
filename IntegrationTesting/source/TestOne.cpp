@@ -298,3 +298,46 @@ void TestOne::testWhileUses() {
 	CPPUNIT_ASSERT(secWhile->getUses() == secUses);
 
 }
+
+void TestOne::testWhileModifies() {
+	parser.parse("procedure proc { while x { while y {x = 2; y = 2; z = x + y;}}} ");
+	
+	Statement* firstWhile = stmtTable->getStmtObj(1);
+	Statement* secWhile = stmtTable->getStmtObj(2);
+	Statement* firstAssg = stmtTable->getStmtObj(3);
+	Statement* secAssg = stmtTable->getStmtObj(4);
+	Statement* thirdAssg = stmtTable->getStmtObj(5);
+	
+	string modi[] = {"x", "y", "z"};
+	set<string> modifiesSet(modi, modi + 3);
+	CPPUNIT_ASSERT(firstWhile->getModifies() == modifiesSet);
+	CPPUNIT_ASSERT(secWhile->getModifies() == modifiesSet);
+	
+
+	set<string> firstAssgModSet;
+	firstAssgModSet.insert("x");
+	CPPUNIT_ASSERT(firstAssg->getModifies() == firstAssgModSet);
+	
+	set<string> secondAssgModSet;
+	secondAssgModSet.insert("y");
+	CPPUNIT_ASSERT(secAssg->getModifies() == secondAssgModSet);
+
+	set<string> thirdAssgModSet;
+	thirdAssgModSet.insert("z");
+	CPPUNIT_ASSERT(thirdAssg->getModifies() == thirdAssgModSet);
+}
+
+void TestOne::testStmtTableAllWhile() {
+	parser.parse("procedure proc { while x {} while y{} while z{x = 2; while w {}} }");
+
+	set<Statement*> whileStmts = stmtTable->getWhileStmts();
+	set<Statement*>::iterator iter;
+	int stmtNums[] = {1, 2, 3, 5};
+
+	int count = 0;
+	for(iter = whileStmts.begin(); iter != whileStmts.end(); iter++) {
+		Statement* stmt = *iter;
+		CPPUNIT_ASSERT(stmt->getStmtNum() == stmtNums[count]);
+	}
+}
+
