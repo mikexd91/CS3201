@@ -11,7 +11,7 @@ FollowsClause::FollowsClause(void):Clause(FOLLOWS_){
 FollowsClause::~FollowsClause(void){
 }
 
-bool checkIsSameType(NodeType type, string stmtType) {
+bool FollowsClause::checkIsSameType(NodeType type, string stmtType) {
 	if((type == STMTLST_ && stmtType == stringconst::ARG_STATEMENT) || 
 		(type == WHILE_STMT_ && stmtType == stringconst::ARG_WHILE) ||
 		(type == ASSIGN_STMT_ && stmtType == stringconst::ARG_STATEMENT)) {
@@ -26,20 +26,23 @@ bool checkIsSameType(NodeType type, string stmtType) {
 string FollowsClause::getFollows(string stmtNum, string unfixedStmtType) {
 	StmtTable* table = StmtTable::getInstance();
 	int stmt = stoi(stmtNum);
-	Statement* stmtObj = table->getStmtObj(stmt);
+	Statement* stmtObj1 = table->getStmtObj(stmt);
 	
-	if (stmtObj != NULL) {
-		int stmt2 = stmtObj->getFollowsAfter();
-		Statement* stmtObj2 = table->getStmtObj(stmt2);
-		NodeType type = stmtObj2->getType();
-		bool isSameType = checkIsSameType(type, unfixedStmtType);
+	if (stmtObj1 != NULL) {
+		int stmt2 = stmtObj1->getFollowsAfter();
+		if (stmt2 != -1) {
+			Statement* stmtObj2 = table->getStmtObj(stmt2);
+			NodeType type = stmtObj2->getType();
+			bool isSameType = checkIsSameType(type, unfixedStmtType);
 		
-		if (stmt != -1 && isSameType) {
-			 stringstream ss;
-			 ss << stmt;
-			 string str;
-			 ss >> str;
-			return str;
+			if (isSameType) {
+				 stringstream ss;
+				 ss << stmt2;
+				 string str;
+				 ss >> str;
+
+				return str;
+			}
 		}
 	} 
 	return "-1";
@@ -48,29 +51,41 @@ string FollowsClause::getFollows(string stmtNum, string unfixedStmtType) {
 // gets immediate statement before stmtNum
 string FollowsClause::getFollowedBy(string stmtNum, string unfixedStmtType) {
 	StmtTable* table = StmtTable::getInstance();
-	int stmt = stoi(stmtNum);
-	Statement* stmtObj = table->getStmtObj(stmt);
+	int stmt2 = stoi(stmtNum);
+	Statement* stmtObj2 = table->getStmtObj(stmt2);
 	
-	if (stmtObj != NULL) {
-		int stmt1 = stmtObj->getFollowsBefore();
-		Statement* stmtObj1 = table->getStmtObj(stmt1);
-		NodeType type = stmtObj1->getType();
-		bool isSameType = checkIsSameType(type, unfixedStmtType);
+	if (stmtObj2 != NULL) {
+		int stmt1 = stmtObj2->getFollowsBefore();
+		if (stmt1 != -1) {
+			Statement* stmtObj1 = table->getStmtObj(stmt1);
+			NodeType type = stmtObj1->getType();
+			bool isSameType = checkIsSameType(type, unfixedStmtType);
 
-		if (stmt != -1 && isSameType) {
-			 stringstream ss;
-			 ss << stmt;
-			 string str;
-			 ss >> str;
-			return str;
+			if (isSameType) {
+				 stringstream ss;
+				 ss << stmt1;
+				 string str;
+				 ss >> str;
+
+				return str;
+			}
 		}
 	}
 	return "-1";
 }
 
 bool FollowsClause::isFollows(string stmtNum1, string stmtNum2) {
-	string stmt2 = getFollows(stmtNum1);
-	if (stmt2 != "-1" && stmt2 == stmtNum2) {
+	StmtTable* table = StmtTable::getInstance();
+	int stmt1 = stoi(stmtNum1);
+	Statement* stmtObj1 = table->getStmtObj(stmt1);
+	int stmt2 = stmtObj1->getFollowsAfter();
+
+	stringstream ss;
+	ss << stmt2;
+	string stmt2Str;
+	ss >> stmt2Str;
+
+	if (stmt2Str != "-1" && stmt2Str == stmtNum2) {
 		return true;
 	} else {
 		return false;
@@ -85,7 +100,7 @@ bool FollowsClause::isValid(void){
 	return (firstArg && secondArg);
 }
 
-void followsBothUnfixedArg(string firstArgType, string secondArgType, Results &resObj) {
+void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgType, Results &resObj) {
 	if (firstArgType == stringconst::ARG_ASSIGN) {
 		StmtTable* stmtTable = StmtTable::getInstance();
 		set<Statement*> assignList = stmtTable->getAssgStmts();
@@ -100,9 +115,6 @@ void followsBothUnfixedArg(string firstArgType, string secondArgType, Results &r
 				bool isSameType = checkIsSameType(type, secondArgType);
 
 				if (isSameType) {
-					resObj.setClauseBool(true);
-					resObj.setNumOfSyn(2);
-
 					stringstream ss;
 					ss << stmt1 << stmt2;
 					string strStmt1, strStmt2;
@@ -127,9 +139,6 @@ void followsBothUnfixedArg(string firstArgType, string secondArgType, Results &r
 				bool isSameType = checkIsSameType(type, secondArgType);
 
 				if (isSameType) {
-					resObj.setClauseBool(true);
-					resObj.setNumOfSyn(2);
-
 					stringstream ss;
 					ss << stmt1 << stmt2;
 					string strStmt1, strStmt2;
@@ -155,9 +164,6 @@ void followsBothUnfixedArg(string firstArgType, string secondArgType, Results &r
 				bool isSameType = checkIsSameType(type, secondArgType);
 
 				if (isSameType) {
-					resObj.setClauseBool(true);
-					resObj.setNumOfSyn(2);
-					
 					stringstream ss;
 					ss << stmt1 << stmt2;
 					string strStmt1, strStmt2;
@@ -184,34 +190,36 @@ Results FollowsClause::evaluate(void) {
 
 	if (isFirstFixed && isSecondFixed) {
 		bool isClauseTrue = isFollows(firstArgSyn, secondArgSyn);
-		resultsObj->setClauseBool(isClauseTrue);
+		resultsObj->setClausePassed(isClauseTrue);
 		resultsObj->setNumOfSyn(0);
 		return *resultsObj;
 
 	} else if (isFirstFixed && !isSecondFixed) {
 		string stmt2 = getFollows(firstArgSyn, secondArgType);
 		if (stmt2 != "-1") {
-			resultsObj->setClauseBool(true);
+			resultsObj->setClausePassed(true);
+			resultsObj->setNumOfSyn(1);
+			resultsObj->setFirstClauseSyn(secondArgSyn);
+			resultsObj->addSingleResult(stmt2);
 		} 
-		resultsObj->setNumOfSyn(1);
-		resultsObj->setFirstClauseSyn(secondArgSyn);
-		resultsObj->addSingleResult(stmt2);
 		return *resultsObj;
 
 	} else if (!isFirstFixed && isSecondFixed) {
 		string stmt1 = getFollowedBy(secondArgSyn, firstArgType);
 		if (stmt1 != "-1") {
-			resultsObj->setClauseBool(true);
+			resultsObj->setClausePassed(true);
 			resultsObj->setNumOfSyn(1);
 			resultsObj->setFirstClauseSyn(firstArgSyn);
 			resultsObj->addSingleResult(stmt1);
-			return *resultsObj;
 		}
+		return *resultsObj;
 
 	} else if (!isFirstFixed && !isSecondFixed) {
 		Results resObj = *resultsObj;
 		followsBothUnfixedArg(firstArgType, secondArgType, resObj);
-		if (resObj.isClauseTrue()) {
+		if (resObj.isClausePassed()) {
+			resObj.setClausePassed(true);
+			resObj.setNumOfSyn(2);
 			resObj.setFirstClauseSyn(firstArgSyn);
 			resObj.setSecondClauseSyn(secondArgSyn);
 		}
