@@ -328,7 +328,7 @@ void TestOne::testWhileModifies() {
 }
 
 void TestOne::testStmtTableAllWhile() {
-	parser.parse("procedure proc { while x {} while y{} while z{x = 2; while w {}} }");
+	parser.parse("procedure proc3 { while x {} while y{} while z{x = 2; while w {}} }");
 
 	set<Statement*> whileStmts = stmtTable->getWhileStmts();
 	CPPUNIT_ASSERT(whileStmts.size() == 4);
@@ -343,5 +343,8 @@ void TestOne::testStmtTableAllWhile() {
 	}
 
 	CPPUNIT_ASSERT(vectorWhileStmts[0]->getStmtNum() == 1);
+	CPPUNIT_ASSERT(vectorWhileStmts[1]->getStmtNum() == 2);
+	CPPUNIT_ASSERT(vectorWhileStmts[2]->getStmtNum() == 3);
+	CPPUNIT_ASSERT(vectorWhileStmts[3]->getStmtNum() == 5);
 }
 
