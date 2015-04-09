@@ -15,6 +15,7 @@ PatternAssgClause::PatternAssgClause(const string& syn)
 	firstArgType = ARG_ASSIGN;
 	firstArg = syn;
 	firstArgFixed = false;
+	secondArgType = ARG_VARIABLE;
 	//cout << "setting " << syn << endl;
 }
 
@@ -22,8 +23,10 @@ PatternAssgClause::~PatternAssgClause(void) {
 }
 
 bool PatternAssgClause::isValid() {
-	// TODO drew pls
-	return true;
+	string varType = this->getVarType();
+	bool checkVar = (varType == stringconst::ARG_VARIABLE);
+	bool valid = checkVar;
+	return valid;
 }
 
 Results PatternAssgClause::evaluate() {
@@ -93,6 +96,10 @@ Results PatternAssgClause::evaluateVarWildExprWild(vector<int> assgNums) {
 		res->addSingleResult(stmtNumStr);
 	}
 
+	if (res->getFirstClauseSyn().size() > 0) {
+		res->setClausePassed(true);
+	}
+
 	return *res;
 }
 
@@ -113,6 +120,10 @@ Results PatternAssgClause::evaulateVarWildExpr(vector<int> assgNums, string expr
 			string stmtNumStr = to_string(stmtNum);
 			res->addSingleResult(stmtNumStr);
 		}
+	}
+
+	if (res->getFirstClauseSyn().size() > 0) {
+		res->setClausePassed(true);
 	}
 
 	return *res;
@@ -204,9 +215,4 @@ bool PatternAssgClause::matchExpr(AssgNode* assg, string expr) {
 	}
 
 	return true;
-}
-
-bool PatternAssgClause::isValid(){
-	string varType = this->getVarType();
-	bool checkVar = (varType == stringconst::ARG_VARIABLE);
 }

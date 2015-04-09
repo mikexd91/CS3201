@@ -117,10 +117,13 @@ void PatternAssgClauseTest::evaluateVarWildExprWild() {
 	p1->setVar("_");
 	p1->setVarFixed(true);
 	p1->setExpression("_");
+	CPPUNIT_ASSERT(p1->isValid());
+	
 	Results r1 = p1->evaluate();
 	string syn1 = "a";
 
 	//cout << r1.getFirstClauseSyn() << endl;
+	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == syn1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 3);
 	
@@ -139,12 +142,15 @@ void PatternAssgClauseTest::evaulateVarWildExpr() {
 	p1->setVar("_");
 	p1->setVarFixed(true);
 	p1->setExpression("_\"1 2 +\"_");
+	CPPUNIT_ASSERT(p1->isValid());
+
 	Results r1 = p1->evaluate();
 	
 	string syn1 = "a";
 	long long num = 1;
 
 	cout << r1.getFirstClauseSyn() << endl;
+	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == syn1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == to_string(num));
