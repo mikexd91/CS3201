@@ -87,22 +87,40 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FollowsClauseTest );
 void FollowsClauseTest::testIsFollows() { 
 
 	FollowsClause fol = *new FollowsClause();
-	fol.setFirstArg("s");
-	fol.setSecondArg("1");
+	fol.setFirstArg("a1");
+	fol.setSecondArg("s1");
 	
-	fol.setFirstArgFixed(true);
+	fol.setFirstArgFixed(false);
 	fol.setSecondArgFixed(false);
 
-	fol.setFirstArgType(stringconst::ARG_STATEMENT);
+	fol.setFirstArgType(stringconst::ARG_ASSIGN);
 	fol.setSecondArgType(stringconst::ARG_STATEMENT);
 
-	//string gtFollows = fol.getFollows("1", stringconst::ARG_STATEMENT);
-	string gtFollowsBy = fol.getFollowedBy("4", stringconst::ARG_STATEMENT);
-
-	//cout << "JIAWEI: ";
-	//cout << gtFollowsBy;
-	//cout << " end";
+	Results r = fol.evaluate();
 	
+	bool passed = r.isClausePassed();
+	int nSyn = r.getNumOfSyn();
+
+	cout << "JIAWEI: ";
+	cout << passed;
+	cout << " end";
+	
+	/*
+	fol.followsBothUnfixedArg(stringconst::ARG_ASSIGN,
+		stringconst::ARG_STATEMENT, r);
+	
+	int size = r.getPairResults().size();
+	string left = r.getPairResults().at(1).first;
+	string right = r.getPairResults().at(1).second;
+
+	cout << "JIAWEI: ";
+	cout << size;
+	cout << ": ";
+	cout << left;
+	cout << ", ";
+	cout << right;
+	cout << " end";
+	*/
 	//CPPUNIT_ASSERT(fol.isFollows("1", "2"));
 	//CPPUNIT_ASSERT(resObj.getSinglesResults().at(0) == res);
 	//CPPUNIT_ASSERT(!fol.isFollows(2, 1));

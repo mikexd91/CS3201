@@ -12,9 +12,9 @@ FollowsClause::~FollowsClause(void){
 }
 
 bool FollowsClause::checkIsSameType(NodeType type, string stmtType) {
-	if((type == STMTLST_ && stmtType == stringconst::ARG_STATEMENT) || 
+	if ((stmtType == stringconst::ARG_STATEMENT) ||
 		(type == WHILE_STMT_ && stmtType == stringconst::ARG_WHILE) ||
-		(type == ASSIGN_STMT_ && stmtType == stringconst::ARG_STATEMENT)) {
+		(type == ASSIGN_STMT_ && stmtType == stringconst::ARG_ASSIGN)) {
 		return true;
 	
 	} else {
@@ -104,6 +104,7 @@ void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgT
 	if (firstArgType == stringconst::ARG_ASSIGN) {
 		StmtTable* stmtTable = StmtTable::getInstance();
 		set<Statement*> assignList = stmtTable->getAssgStmts();
+		
 		for (set<Statement*>::iterator iter = assignList.begin() ; iter != assignList.end(); iter++) {
 			Statement* stmtObj1 = *iter;
 			int stmt1 = stmtObj1->getStmtNum();
@@ -116,7 +117,7 @@ void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgT
 
 				if (isSameType) {
 					stringstream ss;
-					ss << stmt1 << stmt2;
+					ss << stmt1 << ' ' << stmt2;
 					string strStmt1, strStmt2;
 					ss >> strStmt1 >> strStmt2;
 
@@ -140,7 +141,7 @@ void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgT
 
 				if (isSameType) {
 					stringstream ss;
-					ss << stmt1 << stmt2;
+					ss << stmt1 << ' ' << stmt2;
 					string strStmt1, strStmt2;
 					ss >> strStmt1 >> strStmt2;
 
@@ -165,7 +166,7 @@ void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgT
 
 				if (isSameType) {
 					stringstream ss;
-					ss << stmt1 << stmt2;
+					ss << stmt1 << ' ' << stmt2;
 					string strStmt1, strStmt2;
 					ss >> strStmt1 >> strStmt2;
 
