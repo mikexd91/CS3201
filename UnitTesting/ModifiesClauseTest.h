@@ -18,6 +18,9 @@ public:
 	void tearDown();
 	
 	void testModifiesNumNum();
+	void testModifiesSynNum();
+	void testModifiesNumSyn();
+	void testModifiesSynSyn();
 
 	/*void evaluateVarWildExprWild();
 	void evaulateVarWildExpr();

@@ -190,7 +190,7 @@ void ModifiesClauseTest::tearDown() {
 	// to clear the pkb
 	AST::reset();
 	StmtTable::getInstance()->clearTable();
-	VarTable::
+	VarTable::reset();
 }
 
 // Registers the fixture into the 'registry'
@@ -198,5 +198,17 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ModifiesClauseTest );
 
 
 void ModifiesClauseTest::testModifiesNumNum() {
+
+}
+
+void ModifiesClauseTest::testModifiesSynNum() {
+
+}
+
+void ModifiesClauseTest::testModifiesNumSyn() {
+
+}
+
+void ModifiesClauseTest::testModifiesSynSyn() {
 
 }
