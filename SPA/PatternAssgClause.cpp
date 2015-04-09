@@ -96,7 +96,7 @@ Results PatternAssgClause::evaluateVarWildExprWild(vector<int> assgNums) {
 		res->addSingleResult(stmtNumStr);
 	}
 
-	if (res->getFirstClauseSyn().size() > 0) {
+	if (res->getSinglesResults().size() > 0) {
 		res->setClausePassed(true);
 	}
 
@@ -122,7 +122,7 @@ Results PatternAssgClause::evaulateVarWildExpr(vector<int> assgNums, string expr
 		}
 	}
 
-	if (res->getFirstClauseSyn().size() > 0) {
+	if (res->getSinglesResults().size() > 0) {
 		res->setClausePassed(true);
 	}
 
@@ -130,11 +130,55 @@ Results PatternAssgClause::evaulateVarWildExpr(vector<int> assgNums, string expr
 }
 
 Results PatternAssgClause::evaluateVarFixedExprWild(vector<int> assgNums) {
-	return *new Results();
+	// return all a using var
+	Results* res = new Results();
+	res->setFirstClauseSyn(getSynonym());
+
+	StmtTable* stable = StmtTable::getInstance();
+
+	// go through all assgs
+	// if match expr then insert
+	for (int i = 0; i < assgNums.size(); i++) {
+		long long stmtNum = assgNums.at(i);
+		Statement* assg = stable->getStmtObj(stmtNum);
+		AssgNode* assgNode = (AssgNode*) assg->getTNodeRef();
+		if (matchVar(assgNode, getVar())) {
+			string stmtNumStr = to_string(stmtNum);
+			res->addSingleResult(stmtNumStr);
+		}
+	}
+
+	if (res->getSinglesResults().size() > 0) {
+		res->setClausePassed(true);
+	}
+
+	return *res;
 }
 
 Results PatternAssgClause::evaluateVarFixedExpr(vector<int> assgNums, string expr) {
-	return *new Results();
+	// return all a using var that match expr
+	Results* res = new Results();
+	res->setFirstClauseSyn(getSynonym());
+
+	StmtTable* stable = StmtTable::getInstance();
+
+	// go through all assgs
+	// if match expr then insert
+	for (int i = 0; i < assgNums.size(); i++) {
+		long long stmtNum = assgNums.at(i);
+		Statement* assg = stable->getStmtObj(stmtNum);
+		AssgNode* assgNode = (AssgNode*) assg->getTNodeRef();
+		if (matchVar(assgNode, getVar()) && matchExpr(assgNode, getExpression())) {
+			string stmtNumStr = to_string(stmtNum);
+			res->addSingleResult(stmtNumStr);
+		}
+	}
+
+	if (res->getSinglesResults().size() > 0) {
+		res->setClausePassed(true);
+	}
+
+	return *res;
 }
 
 Results PatternAssgClause::evaluateVarExprWild(vector<int> assgNums) {
@@ -143,6 +187,14 @@ Results PatternAssgClause::evaluateVarExprWild(vector<int> assgNums) {
 
 Results PatternAssgClause::evaluateVarExpr(vector<int> assgNums, string expr) {
 	return *new Results();
+}
+
+bool PatternAssgClause::matchVar(AssgNode* assgnode, string var) {
+
+	// match var based on varnode name
+	VarNode* varnode = assgnode->getVarNode();
+
+	return varnode->getName() == var;
 }
 
 bool PatternAssgClause::matchExpr(AssgNode* assg, string expr) {

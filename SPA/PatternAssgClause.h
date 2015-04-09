@@ -24,5 +24,6 @@ private:
 	Results evaluateVarExpr(vector<int> assgNums, string expr);
 
 	bool matchExpr(AssgNode* assg, string expr);
+	bool matchVar(AssgNode* assg, string var);
 };
 

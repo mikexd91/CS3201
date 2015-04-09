@@ -157,3 +157,57 @@ void PatternAssgClauseTest::evaulateVarWildExpr() {
 	
 	return;
 }
+
+void PatternAssgClauseTest::evaluateVarFixedExprWild() {
+	
+	PatternAssgClause* p1 = new PatternAssgClause("a");
+	p1->setVar("i");
+	p1->setVarFixed(true);
+	p1->setExpression("_");
+	CPPUNIT_ASSERT(p1->isValid());
+
+	Results r1 = p1->evaluate();
+	
+	string syn1 = "a";
+	long long num = 1;
+
+	cout << r1.getFirstClauseSyn() << endl;
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == syn1);
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
+	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == to_string(num));
+	
+	return;
+}
+
+void PatternAssgClauseTest::evaluateVarFixedExpr() {
+	
+	PatternAssgClause* p1 = new PatternAssgClause("a");
+	p1->setVar("i");
+	p1->setVarFixed(true);
+	p1->setExpression("_\"1 2 +\"_");
+	CPPUNIT_ASSERT(p1->isValid());
+
+	Results r1 = p1->evaluate();
+	
+	string syn1 = "a";
+	long long num = 1;
+
+	cout << r1.getFirstClauseSyn() << endl;
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == syn1);
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
+	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == to_string(num));
+
+	PatternAssgClause* p2 = new PatternAssgClause("a");
+	p2->setVar("i");
+	p2->setVarFixed(true);
+	p2->setExpression("_\"3 4 +\"_");
+	CPPUNIT_ASSERT(p2->isValid());
+
+	Results r2 = p2->evaluate();
+
+	CPPUNIT_ASSERT(!r2.isClausePassed());
+	
+	return;
+}
