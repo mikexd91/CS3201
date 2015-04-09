@@ -331,13 +331,17 @@ void TestOne::testStmtTableAllWhile() {
 	parser.parse("procedure proc { while x {} while y{} while z{x = 2; while w {}} }");
 
 	set<Statement*> whileStmts = stmtTable->getWhileStmts();
-	set<Statement*>::iterator iter;
-	int stmtNums[] = {1, 2, 3, 5};
+	CPPUNIT_ASSERT(whileStmts.size() == 4);
+	
+	vector<Statement*> vectorWhileStmts;
 
-	int count = 0;
+	set<Statement*>::iterator iter;
+
 	for(iter = whileStmts.begin(); iter != whileStmts.end(); iter++) {
 		Statement* stmt = *iter;
-		CPPUNIT_ASSERT(stmt->getStmtNum() == stmtNums[count]);
+		vectorWhileStmts.push_back(stmt);
 	}
+
+	CPPUNIT_ASSERT(vectorWhileStmts[0]->getStmtNum() == 1);
 }
 
