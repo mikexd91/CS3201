@@ -63,7 +63,7 @@ void ParentClause::addParentPairToResult(set<Statement*> containerStmts, NodeTyp
 		if (type == NodeType::NULL_) {
 			children = containerStmt->getChildren();
 		} else {
-			children = Utils.filterStatements(containerStmt->getChildren(), type);
+			children = Utils::filterStatements(containerStmt->getChildren(), type);
 		}
 		if (!children.empty()) {
 			resultsObj->setClausePassed(true);
@@ -114,12 +114,12 @@ Results ParentClause::evaluate(void) {
 			set<Statement*> whileStmts = stmtTable->getWhileStmts();
 			if(secondArgType == stringconst::ARG_ASSIGN) {
 				//for each while statement, get the children, add
-				addParentPairToResult(whileStmts, NodeType::ASSIGN_STMT_, resultsObj);
+				addParentPairToResult(whileStmts, ASSIGN_STMT_, resultsObj);
 			} else if (secondArgType == stringconst::ARG_WHILE) {
-				addParentPairToResult(whileStmts, NodeType::WHILE_STMT_, resultsObj);
+				addParentPairToResult(whileStmts, WHILE_STMT_, resultsObj);
 			} else {
 				assert(secondArgType == stringconst::ARG_STATEMENT);
-				addParentPairToResult(whileStmts, NodeType::NULL_, resultsObj);
+				addParentPairToResult(whileStmts, NULL_, resultsObj);
 			}
 		}
 		if (resultsObj->isClausePassed()) {
