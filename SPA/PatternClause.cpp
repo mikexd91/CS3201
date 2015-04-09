@@ -18,6 +18,10 @@ string PatternClause::getVar() {
 	return getSecondArg();
 }
 
+string PatternClause::getVarType() {
+	return getSecondArgType();
+}
+
 bool PatternClause::getVarFixed() {
 	return getSecondArgFixed();
 }

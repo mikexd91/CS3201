@@ -205,3 +205,8 @@ bool PatternAssgClause::matchExpr(AssgNode* assg, string expr) {
 
 	return true;
 }
+
+bool PatternAssgClause::isValid(){
+	string varType = this->getVarType();
+	bool checkVar = (varType == stringconst::ARG_VARIABLE);
+}
