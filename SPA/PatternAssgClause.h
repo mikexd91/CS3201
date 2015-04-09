@@ -16,12 +16,12 @@ public:
 	bool isValid();
 
 private:
-	Results evaluateVarWildExprWild(vector<int> assgNums);
-	Results evaulateVarWildExpr(vector<int> assgNums, string expr);
-	Results evaluateVarFixedExprWild(vector<int> assgNums);
-	Results evaluateVarFixedExpr(vector<int> assgNums, string expr);
-	Results evaluateVarExprWild(vector<int> assgNums);
-	Results evaluateVarExpr(vector<int> assgNums, string expr);
+	Results evaluateVarWildExprWild(vector<int>& assgNums);
+	Results evaulateVarWildExpr(vector<int>& assgNums, string expr);
+	Results evaluateVarFixedExprWild(vector<int>& assgNums);
+	Results evaluateVarFixedExpr(vector<int>& assgNums, string expr);
+	Results evaluateVarExprWild(vector<int>& assgNums, vector<string>& varNames);
+	Results evaluateVarExpr(vector<int>& assgNums, vector<string>& varNames, string expr);
 
 	bool matchExpr(AssgNode* assg, string expr);
 	bool matchVar(AssgNode* assg, string var);

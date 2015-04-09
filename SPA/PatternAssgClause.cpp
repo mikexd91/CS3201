@@ -1,6 +1,7 @@
 #include "PatternAssgClause.h"
 #include "Utils.h"
 #include "StmtTable.h"
+#include "VarTable.h"
 #include "OpNode.h"
 
 #include <set>
@@ -43,6 +44,9 @@ Results PatternAssgClause::evaluate() {
 		assgNums.push_back(assg->getStmtNum());
 	}
 
+	VarTable* vtable = VarTable::getInstance();
+	vector<string> varNames = *vtable->getAllVarNames();
+
 	// var:wildcard
 		// expr:wildcard => return all a
 		// expr:notwild => return all a that match expr
@@ -59,32 +63,38 @@ Results PatternAssgClause::evaluate() {
 	bool varWildcard = getVar() == stringconst::STRING_EMPTY;
 	bool varFixed = getVarFixed();
 
-	cout << getExpression() << endl;
+	/*cout << getExpression() << endl;
 	cout << getVar() << endl;
-	cout << getVarFixed() << endl;
+	cout << getVarFixed() << endl;*/
 
 	if (varWildcard) {
 		if (exprWildcard) {
+			//cout << "varwildexprwild" << endl;
 			return evaluateVarWildExprWild(assgNums);
 		} else {
+			//cout << "varwildexpr" << endl;
 			return evaulateVarWildExpr(assgNums, getExpression());
 		}
 	} else if (varFixed) {
 		if (exprWildcard) {
+			//cout << "varfixedexprwild" << endl;
 			return evaluateVarFixedExprWild(assgNums);
 		} else {
+			//cout << "varfixedexpr" << endl;
 			return evaluateVarFixedExpr(assgNums, getExpression());
 		}
 	} else {
 		if (exprWildcard) {
-			return evaluateVarExprWild(assgNums);
+			//cout << "varexprwild" << endl;
+			return evaluateVarExprWild(assgNums, varNames);
 		} else {
-			return evaluateVarExpr(assgNums, getExpression());
+			//cout << "varexpr" << endl;
+			return evaluateVarExpr(assgNums, varNames, getExpression());
 		}
 	}
 }
 
-Results PatternAssgClause::evaluateVarWildExprWild(vector<int> assgNums) {
+Results PatternAssgClause::evaluateVarWildExprWild(vector<int>& assgNums) {
 	// return all a
 	Results* res = new Results();
 	res->setFirstClauseSyn(getSynonym());
@@ -103,7 +113,7 @@ Results PatternAssgClause::evaluateVarWildExprWild(vector<int> assgNums) {
 	return *res;
 }
 
-Results PatternAssgClause::evaulateVarWildExpr(vector<int> assgNums, string expr) {
+Results PatternAssgClause::evaulateVarWildExpr(vector<int>& assgNums, string expr) {
 	// return all a that match expr
 	Results* res = new Results();
 	res->setFirstClauseSyn(getSynonym());
@@ -129,7 +139,7 @@ Results PatternAssgClause::evaulateVarWildExpr(vector<int> assgNums, string expr
 	return *res;
 }
 
-Results PatternAssgClause::evaluateVarFixedExprWild(vector<int> assgNums) {
+Results PatternAssgClause::evaluateVarFixedExprWild(vector<int>& assgNums) {
 	// return all a using var
 	Results* res = new Results();
 	res->setFirstClauseSyn(getSynonym());
@@ -155,7 +165,7 @@ Results PatternAssgClause::evaluateVarFixedExprWild(vector<int> assgNums) {
 	return *res;
 }
 
-Results PatternAssgClause::evaluateVarFixedExpr(vector<int> assgNums, string expr) {
+Results PatternAssgClause::evaluateVarFixedExpr(vector<int>& assgNums, string expr) {
 	// return all a using var that match expr
 	Results* res = new Results();
 	res->setFirstClauseSyn(getSynonym());
@@ -181,12 +191,64 @@ Results PatternAssgClause::evaluateVarFixedExpr(vector<int> assgNums, string exp
 	return *res;
 }
 
-Results PatternAssgClause::evaluateVarExprWild(vector<int> assgNums) {
-	return *new Results();
+Results PatternAssgClause::evaluateVarExprWild(vector<int>& assgNums, vector<string>& varNames) {
+	// for all a and all var, return <a, var> such that matchvar(a, var)
+	Results* res = new Results();
+	res->setFirstClauseSyn(getSynonym());
+	res->setSecondClauseSyn(getVar());
+
+	StmtTable* stable = StmtTable::getInstance();
+
+	// go through all assgs
+	for (int i = 0; i < assgNums.size(); i++) {
+		long long stmtNum = assgNums.at(i);
+		Statement* assg = stable->getStmtObj(stmtNum);
+		AssgNode* assgNode = (AssgNode*) assg->getTNodeRef();
+		// go through all vars
+		for (int j = 0; j < varNames.size(); j++) {
+			string var = varNames.at(j);
+			if (matchVar(assgNode, var)) {
+				string stmtNumStr = to_string(stmtNum);
+				res->addPairResult(stmtNumStr, var);
+			}
+		}
+	}
+
+	if (res->getPairResults().size() > 0) {
+		res->setClausePassed(true);
+	}
+
+	return *res;
 }
 
-Results PatternAssgClause::evaluateVarExpr(vector<int> assgNums, string expr) {
-	return *new Results();
+Results PatternAssgClause::evaluateVarExpr(vector<int>& assgNums, vector<string>& varNames, string expr) {
+	// for all a and all var, return <a, var> such that matchvar(a, var)
+	Results* res = new Results();
+	res->setFirstClauseSyn(getSynonym());
+	res->setSecondClauseSyn(getVar());
+
+	StmtTable* stable = StmtTable::getInstance();
+
+	// go through all assgs
+	for (int i = 0; i < assgNums.size(); i++) {
+		long long stmtNum = assgNums.at(i);
+		Statement* assg = stable->getStmtObj(stmtNum);
+		AssgNode* assgNode = (AssgNode*) assg->getTNodeRef();
+		// go through all vars
+		for (int j = 0; j < varNames.size(); j++) {
+			string var = varNames.at(j);
+			if (matchVar(assgNode, var) && matchExpr(assgNode, getExpression())) {
+				string stmtNumStr = to_string(stmtNum);
+				res->addPairResult(stmtNumStr, var);
+			}
+		}
+	}
+
+	if (res->getPairResults().size() > 0) {
+		res->setClausePassed(true);
+	}
+
+	return *res;
 }
 
 bool PatternAssgClause::matchVar(AssgNode* assgnode, string var) {

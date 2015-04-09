@@ -27,6 +27,8 @@ public:
 	Variable* getVariable(const string& varName);
 	boost::unordered_map<string, Variable*>::iterator getIterator();
 	boost::unordered_map<string, Variable*>::iterator getEnd();
+	vector<string>* getAllVarNames();
+	vector<Variable*>* getAllVariables();
 
 	// setters
 	void addVariable(Variable *var);
