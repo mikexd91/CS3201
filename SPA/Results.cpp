@@ -3,7 +3,7 @@
 
 Results::Results(void)
 {
-	isValid = false;
+	hasResults = false;
 }
 
 Results::~Results(void)
@@ -11,7 +11,7 @@ Results::~Results(void)
 }
 
 void Results::setClauseTrue() {
-	this->isValid = true;
+	this->hasResults = true;
 }
 
 void Results::setNumOfSyn(int n) {

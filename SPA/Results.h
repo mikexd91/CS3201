@@ -11,7 +11,7 @@ public:
 	Results(void);
 	~Results(void);
 
-	void setClauseTrue();
+	void setClauseTrue();					// clause is true if it contains at least 1 result for unfixed arg or returns true for boolean
 	void setFirstClauseSyn(string s1);
 	void setSecondClauseSyn(string s2);
 	void setNumOfSyn(int n);
@@ -32,7 +32,7 @@ public:
 											// Transfer all result to the mutated obj
 private:
 
-	bool isValid;
+	bool hasResults;
 	string firstClauseSyn;
 	string secondClauseSyn;
 	int numOfSyn;

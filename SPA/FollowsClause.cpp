@@ -15,5 +15,7 @@ bool FollowsClause::isValid(void){
 }
 
 Results FollowsClause::evaluate(void) {
-	return Results();
+	Results* resultObj = new Results();
+
+	return *resultObj;
 }
