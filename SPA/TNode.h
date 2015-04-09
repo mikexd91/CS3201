@@ -7,7 +7,7 @@ using namespace std;
 
 enum NodeType {
     PROGRAM_, PROCEDURE_, STMTLST_, CALL_STMT_, WHILE_STMT_, 
-    IF_STMT_, ASSIGN_STMT_, OPERATOR_, VARIABLE_, CONSTANT_
+    IF_STMT_, ASSIGN_STMT_, OPERATOR_, VARIABLE_, CONSTANT_, NULL_
 };
 
 class TNode {

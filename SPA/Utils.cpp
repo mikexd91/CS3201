@@ -8,9 +8,9 @@
 #include <stack>
 
 #include "InvalidExpressionException.h"
+#include "StmtTable.h"
 
 using namespace std;
-
 
 //Removes the sanitised characters from str, and return a new string
 string Utils::sanitise(string str) {
@@ -141,4 +141,18 @@ bool Utils::isValidFactor(string factor) {
 //Check if a string is a valid symbol
 bool Utils::isValidSymbol(string symbol) {
 	return symbol == "+" || symbol == "-" || symbol == "*";
+}
+
+//filters the set to retrieve the statement of the specified type
+set<int> Utils::filterStatements(set<int> stmtSet, NodeType type) {
+	StmtTable * stmtTable = StmtTable::getInstance();
+	set<int>::iterator it;
+	set<int> finalValue;
+	for (it = stmtSet.begin(); it != stmtSet.end(); ++it) {
+		Statement* currentStmt = stmtTable->getStmtObj(*it);
+		if (currentStmt->getType() == type) {
+			finalValue.insert(*it);
+		}
+	}
+	return finalValue;
 }

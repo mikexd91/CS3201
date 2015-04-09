@@ -4,14 +4,15 @@
 #include <regex>
 #include <queue>
 #include <stack>
-
+#include <set>
+#include "Statement.h"
 using namespace std;
 
 class Utils
 {
 public:
 	
-	static string sanitise(string str);
+	static std::string sanitise(string str);
 	static vector<string> explode(const string&, const string, const char[7]);
 	static queue<string> getRPN(queue<string>);
 	static string getWordAndPop(queue<string>&);
@@ -21,7 +22,8 @@ public:
 	static bool isValidSymbol(string);
 	static bool isValidName(string);
 	static bool isValidConstant(string);
-	
+
+	static set<int> filterStatements(set<int>, NodeType);
 };
 
 namespace UtilsConstants {
