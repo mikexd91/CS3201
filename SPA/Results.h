@@ -11,14 +11,14 @@ public:
 	Results(void);
 	~Results(void);
 
-	void setClauseTrue();					// clause is true if it contains at least 1 result for unfixed arg or returns true for boolean
+	void setClausePassed(bool passed);			// clause is true if it contains at least 1 result for unfixed arg or returns true for boolean
 	void setFirstClauseSyn(string s1);
 	void setSecondClauseSyn(string s2);
 	void setNumOfSyn(int n);
 	void addSingleResult(string s);
 	void addPairResult(string s1, string s2);
 
-	bool isClauseTrue();
+	bool isClausePassed();
 
 	string getFirstClauseSyn();
 	string getSecondClauseSyn();
@@ -32,7 +32,7 @@ public:
 											// Transfer all result to the mutated obj
 private:
 
-	bool hasResults;
+	bool clausePassed;
 	string firstClauseSyn;
 	string secondClauseSyn;
 	int numOfSyn;

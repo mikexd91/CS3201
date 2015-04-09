@@ -3,15 +3,15 @@
 
 Results::Results(void)
 {
-	hasResults = false;
+	clausePassed = false;
 }
 
 Results::~Results(void)
 {
 }
 
-void Results::setClauseTrue() {
-	this->hasResults = true;
+void Results::setClausePassed(bool passed) {
+	this->clausePassed = passed;
 }
 
 void Results::setNumOfSyn(int n) {
@@ -35,8 +35,8 @@ void Results::setSecondClauseSyn(string s2) {
 	this->secondClauseSyn = s2;
 }
 
-bool Results::isClauseTrue() {
-	return this->isValid;
+bool Results::isClausePassed() {
+	return this->clausePassed;
 }
 
 string Results::getFirstClauseSyn() {

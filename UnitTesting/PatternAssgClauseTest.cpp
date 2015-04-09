@@ -6,6 +6,7 @@
 #include "../SPA/ConstNode.h"
 #include "../SPA/OpNode.h"
 #include "../SPA/StmtTable.h"
+#include "../SPA/VarTable.h"
 
 #include <iostream>
 #include <string>
@@ -100,6 +101,24 @@ void PatternAssgClauseTest::setUp() {
 	stmt3->setModifies(uses3);
 	stmt3->setTNodeRef(assg3);
 	stable->addStmt(stmt3);
+
+	// to set up the vartable manually
+	VarTable* vtable = VarTable::getInstance();
+
+	Variable* vi = new Variable("i");
+	vi->addModifyingStmt(1);
+	vi->addTNode(assg1);
+	vtable->addVariable(vi);
+
+	Variable* vj = new Variable("j");
+	vj->addModifyingStmt(2);
+	vj->addTNode(assg2);
+	vtable->addVariable(vj);
+
+	Variable* vk = new Variable("k");
+	vk->addModifyingStmt(2);
+	vk->addTNode(assg3);
+	vtable->addVariable(vk);
 }
 
 void PatternAssgClauseTest::tearDown() {
@@ -117,17 +136,19 @@ void PatternAssgClauseTest::evaluateVarWildExprWild() {
 	p1->setVar("_");
 	p1->setVarFixed(true);
 	p1->setExpression("_");
+	CPPUNIT_ASSERT(p1->isValid());
+	
 	Results r1 = p1->evaluate();
 	string syn1 = "a";
 
 	//cout << r1.getFirstClauseSyn() << endl;
+	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == syn1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 3);
 	
 	vector<string> v = r1.getSinglesResults();
-	for (int i = 0; i < v.size(); i++) {
-		long long num = i + 1;
-		CPPUNIT_ASSERT(v.at(i) == to_string(num));
+	for (int j = 0; j < v.size(); j++) {
+		//cout << v.at(j) << endl;
 	}
 
 	return;
@@ -139,15 +160,182 @@ void PatternAssgClauseTest::evaulateVarWildExpr() {
 	p1->setVar("_");
 	p1->setVarFixed(true);
 	p1->setExpression("_\"1 2 +\"_");
+	CPPUNIT_ASSERT(p1->isValid());
+
 	Results r1 = p1->evaluate();
 	
 	string syn1 = "a";
 	long long num = 1;
 
-	cout << r1.getFirstClauseSyn() << endl;
+	//cout << r1.getFirstClauseSyn() << endl;
+	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == syn1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == to_string(num));
+
+	// expr fail
+	PatternAssgClause* p2 = new PatternAssgClause("a");
+	p2->setVar("_");
+	p2->setVarFixed(true);
+	p2->setExpression("_\"3 4 +\"_");
+	CPPUNIT_ASSERT(p2->isValid());
+
+	Results r2 = p2->evaluate();
+
+	CPPUNIT_ASSERT(!r2.isClausePassed());
 	
+	return;
+}
+
+void PatternAssgClauseTest::evaluateVarFixedExprWild() {
+	// pass
+	PatternAssgClause* p1 = new PatternAssgClause("a");
+	p1->setVar("i");
+	p1->setVarFixed(true);
+	p1->setExpression("_");
+	CPPUNIT_ASSERT(p1->isValid());
+
+	Results r1 = p1->evaluate();
+	
+	string syn1 = "a";
+	long long num = 1;
+
+	//cout << r1.getFirstClauseSyn() << endl;
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == syn1);
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
+	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == to_string(num));
+
+	// var fail
+	PatternAssgClause* p2 = new PatternAssgClause("a");
+	p2->setVar("x");
+	p2->setVarFixed(true);
+	p1->setExpression("_");
+	CPPUNIT_ASSERT(p2->isValid());
+
+	Results r2 = p2->evaluate();
+
+	CPPUNIT_ASSERT(!r2.isClausePassed());
+	
+	return;
+}
+
+void PatternAssgClauseTest::evaluateVarFixedExpr() {
+	// pass targeting j = 2+3+4
+	PatternAssgClause* p1 = new PatternAssgClause("a");
+	p1->setVar("j");
+	p1->setVarFixed(true);
+	p1->setExpression("_\"2 3 +\"_");
+	CPPUNIT_ASSERT(p1->isValid());
+
+	Results r1 = p1->evaluate();
+	
+	string syn1 = "a";
+	long long num = 2;
+
+	//cout << r1.getFirstClauseSyn() << endl;
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == syn1);
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
+	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == to_string(num));
+
+	// expr fail targeting j = 2+3+4
+	PatternAssgClause* p2 = new PatternAssgClause("a");
+	p2->setVar("j");
+	p2->setVarFixed(true);
+	p2->setExpression("_\"3 4 +\"_");
+	CPPUNIT_ASSERT(p2->isValid());
+
+	Results r2 = p2->evaluate();
+
+	CPPUNIT_ASSERT(!r2.isClausePassed());
+
+	// var fail
+	PatternAssgClause* p3 = new PatternAssgClause("a");
+	p3->setVar("x");
+	p3->setVarFixed(true);
+	p3->setExpression("_\"1 2 +\"_");
+	CPPUNIT_ASSERT(p3->isValid());
+
+	Results r3 = p3->evaluate();
+
+	CPPUNIT_ASSERT(!r3.isClausePassed());
+
+	return;
+}
+
+void PatternAssgClauseTest::evaluateVarExprWild() {
+	// pass
+	PatternAssgClause* p1 = new PatternAssgClause("a");
+	p1->setVar("v");
+	p1->setVarFixed(false);
+	p1->setExpression("_");
+	CPPUNIT_ASSERT(p1->isValid());
+
+	Results r1 = p1->evaluate();
+	
+	string syn1 = "a";
+	string syn2 = "v";
+	long long num = 1;
+
+	//cout << r1.getFirstClauseSyn() << endl;
+	//cout << r1.getSecondClauseSyn() << endl;
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == syn1);
+	CPPUNIT_ASSERT(r1.getSecondClauseSyn() == syn2);
+	CPPUNIT_ASSERT(r1.getPairResults().size() == 3);
+
+	//cout << "print the thing" << endl;
+	for (int i = 0; i < r1.getPairResults().size(); i++) {
+		//cout << r1.getPairResults().at(i).first << " " 
+			//<< r1.getPairResults().at(i).second << endl;
+		if (r1.getPairResults().at(i).first == "1") {
+			CPPUNIT_ASSERT(r1.getPairResults().at(i).second == "i");
+		}
+		if (r1.getPairResults().at(i).first == "2") {
+			CPPUNIT_ASSERT(r1.getPairResults().at(i).second == "j");
+		}
+		if (r1.getPairResults().at(i).first == "3") {
+			CPPUNIT_ASSERT(r1.getPairResults().at(i).second == "k");
+		}
+	}
+	
+	return;
+}
+
+void PatternAssgClauseTest::evaluateVarExpr() {
+	// pass targeting j = 2+3+4
+	PatternAssgClause* p1 = new PatternAssgClause("a");
+	p1->setVar("v");
+	p1->setVarFixed(false);
+	p1->setExpression("_\"2 3 +\"_");
+	CPPUNIT_ASSERT(p1->isValid());
+
+	Results r1 = p1->evaluate();
+	
+	string syn1 = "a";
+	string syn2 = "v";
+	long long num = 2;
+
+	//cout << r1.getFirstClauseSyn() << endl;
+	//cout << r1.getSecondClauseSyn() << endl;
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == syn1);
+	CPPUNIT_ASSERT(r1.getSecondClauseSyn() == syn2);
+	CPPUNIT_ASSERT(r1.getPairResults().size() == 1);
+	CPPUNIT_ASSERT(r1.getPairResults().at(0).first == to_string(num));
+	CPPUNIT_ASSERT(r1.getPairResults().at(0).second == "j");
+	
+	// expr fail
+	PatternAssgClause* p2 = new PatternAssgClause("a");
+	p2->setVar("j");
+	p2->setVarFixed(false);
+	p2->setExpression("_\"3 4 +\"_");
+	CPPUNIT_ASSERT(p2->isValid());
+
+	Results r2 = p2->evaluate();
+
+	CPPUNIT_ASSERT(!r2.isClausePassed());
+
 	return;
 }

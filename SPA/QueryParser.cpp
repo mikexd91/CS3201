@@ -12,7 +12,9 @@
 #include "ParentStarClause.h"
 #include "PatternClause.h"
 #include "UsesClause.h"
+#include "PatternAssgClause.h"
 #include "boost/unordered_map.hpp"
+#include <queue>
 #include <string>
 #include <vector>
 #include <sstream>
@@ -54,7 +56,6 @@ bool containsAny(string s, vector<string> list){
 
 bool containsClauseType(string s){
 	vector<string> clauseVector;
-	clauseVector.push_back(stringconst::TYPE_PATTERN);
 	clauseVector.push_back(stringconst::TYPE_FOLLOWS);
 	clauseVector.push_back(stringconst::TYPE_PARENT);
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
@@ -75,7 +76,6 @@ bool containsKeyword(string s){
 
 string getClauseString(string s){
 	vector<string> clauseVector;
-	clauseVector.push_back(stringconst::TYPE_PATTERN);
 	clauseVector.push_back(stringconst::TYPE_FOLLOWS);
 	clauseVector.push_back(stringconst::TYPE_PARENT);
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
@@ -88,14 +88,12 @@ string getClauseString(string s){
 			return current;
 		}
 	}
+	return stringconst::STRING_EMPTY;
 }
 
 Clause* createCorrectClause(string type){
 	Clause* c;
-	if (type == stringconst::TYPE_PATTERN){
-		/*PatternClause clause;
-		c = clause;*/
-	} else if (type == stringconst::TYPE_FOLLOWS){
+	if (type == stringconst::TYPE_FOLLOWS){
 		FollowsClause* clause = new FollowsClause();
 		c = clause;		
 	} else if (type == stringconst::TYPE_PARENT){
@@ -118,99 +116,163 @@ Clause* createCorrectClause(string type){
 }
 
 void parseSelect(vector<string> tokens, Query query){
-	bool selectSynonyms = true;
-	bool insideClause = false;
-	bool insidePattern = false;
+	//get the var table
+	unordered_map<string, string> decList = query.getDeclarationList();
+	bool expectSelect = true;
+	bool expectClause = false;
+	bool expectPattern = false;
+	bool expectExpression = false;
+	bool expressionBegin = false;
 	vector<Clause*> currentClause;
+	string patternExpression = "";
 	if (tokens.size() == 1 || tokens.at(0) != stringconst::STRING_SELECT){
 		throw InvalidSelectException();
 	}
+	//Select
 	for (size_t i=1; i<tokens.size(); i++){
 		string current = tokens.at(i);
-		if (selectSynonyms){
-			if (current != stringconst::STRING_SUCH){
-				StringPair newSelect;
+		if (expectSelect){
+			if (!containsKeyword(current)){
+				StringPair newSelect = StringPair();
 				newSelect.setFirst(current);
-				query.addSelectSynonym(newSelect);
+				if (decList.find(current) == decList.end()){
+					throw MissingDeclarationException();
+				} else {
+					string currentType = decList.at(current);
+					newSelect.setSecond(currentType);
+					query.addSelectSynonym(newSelect);
+				}
 			} else {
-				selectSynonyms = false;
+				expectSelect = false;
+			}
+		} else if (expectClause){
+			size_t endIndex = current.find_first_of(")");
+			string secondArg = current.substr(0, endIndex);
+			currentClause.at(0)->setSecondArg(secondArg);
+			if (Utils.isNumber(secondArg)){
+				currentClause.at(0)->setSecondArgType(stringconst::ARG_STATEMENT);
+				currentClause.at(0)->setSecondArgFixed(true);
+			} else if (contains(secondArg, "\"")){
+				size_t first = secondArg.find_first_of("\"");
+				size_t end = secondArg.find_last_of("\"");
+				if (first==end){
+					throw InvalidArgumentException();
+				} else {
+					secondArg = secondArg.substr(first, end-first);
+					currentClause.at(0)->setSecondArg(secondArg);
+					currentClause.at(0)->setSecondArgFixed(true);
+					currentClause.at(0)->setSecondArgType(stringconst::ARG_VARIABLE);
+				}
+			} else {
+				if (decList.find(secondArg) == decList.end()){
+					throw MissingDeclarationException();
+				} else {
+					string currentType = decList.at(secondArg);
+					currentClause.at(0)->setSecondArgType(currentType);
+				}
+			}
+			query.addClause(currentClause.at(0));
+			currentClause.pop_back();
+			expectClause = false;
+		} else if (expectPattern){
+			if (expectExpression){
+				if (!expressionBegin){
+					size_t size = current.size();
+					if (size == 2){
+						if (current.at(0) == '_' && current.at(1) == '"'){
+							expressionBegin = true;
+						}
+					} else if (size > 2){
+						if (current.at(0) == '_' && current.at(1) == '"'){
+							expressionBegin = true;
+
+						}
+					} else {
+						if (current != stringconst::STRING_EMPTY){
+							throw InvalidArgumentException();
+						} else {
+							currentClause.at(0)->setExpression(current);
+							expectPattern = false;
+							expectExpression = false;
+						}
+					}
+				} else {
+					
+				}
+			} else {
+				size_t startIndex = current.find_first_of("(");
+				size_t endIndex = current.find_first_of(",");
+				string firstArg = current.substr(0, startIndex);
+				string secondArg = current.substr(startIndex, endIndex-startIndex);
+				if (decList.find(firstArg) == decList.end()){
+					throw MissingDeclarationException();
+				} else if (decList.at(firstArg) != stringconst::ARG_ASSIGN){
+					throw InvalidDeclarationException();
+				} else {
+					PatternAssgClause* newClause = new PatternAssgClause(firstArg);
+					if (decList.find(secondArg) == decList.end()){
+						size_t first = secondArg.find_first_of("\"");
+						size_t end = secondArg.find_last_of("\"");
+						if (first==end){
+							throw InvalidArgumentException();
+						} else {
+							secondArg = secondArg.substr(first, end-first);
+							newClause->setVar(secondArg);
+							newClause->setVarType(true);
+							newClause->setSecondArgType(stringconst::ARG_VARIABLE);
+						}
+					} else {
+						string secondType = decList.find(secondArg);
+						if (secondType != stringconst::ARG_VARIABLE){
+							throw InvalidDeclarationException();
+						} else {
+							newClause->setVar(secondArg);
+							newClause->setVarFixed(false);
+						}
+					}
+				}
+				currentClause.push_back(newClause);
+				expectExpression = true;
 			}
 		} else {
-			if (insidePattern){
-				if (contains(current, "(")){
-					std::size_t index = current.find_first_of("(");
-					std::size_t endIndex = current.find_first_of(",");
-					string firstArg = current.substr(0, index);
-					string secondArg = current.substr(index, endIndex - index);
-					currentClause.at(0)->setFirstArg(firstArg);
-					currentClause.at(0)->setSecondArg(secondArg);
-				} else if (contains(current, ")")){
-					insidePattern = false;
-					std::size_t index = current.find_first_of(")");
-					string patternArg = current.substr(0, index);
-					//RPN method
-					query.addClause(currentClause.at(0));
-					currentClause.pop_back();
-					insidePattern = false;
-				}
-			} else if(insideClause){
-				std::size_t index = current.find_first_of(")");
-				string synonym = current.substr(0, index);
-				currentClause.at(0)->setSecondArg(synonym);
-				query.addClause(currentClause.at(0));
-				currentClause.pop_back();
-				insideClause = false;
-			} else {
-				if (containsClauseType(current)){
-					string clauseType = getClauseString(current);
-					Clause* newClause = createCorrectClause(current);
-					if (clauseType == stringconst::TYPE_PATTERN){
-						insidePattern = true;
-						currentClause.push_back(newClause);
+			if (containsClauseType(current)){
+				expectClause = true;
+				Clause* newClause;
+				newClause = createCorrectClause(getClauseString(current));
+				size_t startIndex = current.find_first_of("(");
+				size_t endIndex = current.find_first_of(",");
+				string firstArg = current.substr(startIndex, endIndex - startIndex);
+				newClause->setFirstArg(firstArg);
+				if (Utils::isNumber(firstArg)){
+					newClause->setFirstArgType(stringconst::ARG_STATEMENT);
+					newClause->setFirstArgFixed(true);
+				} else if (contains(firstArg, "\"")){
+					size_t first = firstArg.find_first_of("\"");
+					size_t end = firstArg.find_last_of("\"");
+					if (first==end){
+						throw InvalidArgumentException();
 					} else {
-						insideClause = true;
-						std::size_t index = current.find_first_of("(");
-						std::size_t endIndex = current.find_first_of(",");
-						string synonym = current.substr(index, endIndex);
-						newClause->setFirstArg(synonym);
-						currentClause.push_back(newClause);
+						firstArg = firstArg.substr(first, end-first);
+						newClause->setFirstArg(firstArg);
+						newClause->setFirstArgFixed(true);
+						newClause->setFirstArgType(stringconst::ARG_VARIABLE);
 					}
-				} else if (!containsKeyword(current)){
+				} else {
+					if (decList.find(firstArg) == decList.end()){
+						throw MissingDeclarationException();
+					} else {
+						string currentType = decList.at(firstArg);
+						newClause->setFirstArgType(currentType);
+					}
+				}
+				currentClause.push_back(newClause);
+			} else if (contains(current, stringconst::TYPE_PATTERN){
+				expectPattern = true;
+			} else {
+				if (!containsKeywword(current)){
 					throw InvalidSelectException();
 				}
 			}
-		}
-	}
-	if (query.getSelectList().size() == 0){
-		throw InvalidSelectException();
-	}
-}
-
-void vetQuery(Query query){
-	unordered_map<string, string> decList = query.getDeclarationList();
-	vector<Clause*> clauseList = query.getClauseList();
-	vector<StringPair> selectList = query.getSelectList();
-	for (size_t i=0; i<selectList.size(); i++){
-		StringPair current = selectList.at(i);
-		string currentSelect = current.getFirst();
-		if (decList.find(currentSelect) == decList.end() ) {
-			throw MissingDeclarationException();
-		} else {
-			string currentType = decList.at(currentSelect);
-			selectList.at(i).setSecond(currentType);
-		}
-	}
-	for (size_t i=0; i<clauseList.size(); i++){
-		Clause* current = clauseList.at(i);
-		//DO CHECK FOR PATTERN
-		string currentSynonymOne = current->getFirstArg();
-		if (decList.find(currentSynonymOne) == decList.end() ) {
-			throw MissingDeclarationException();
-		} else {
-			string currentTypeOne = decList.at(currentSynonymOne);
-			current->setFirstArgType(currentTypeOne);
-			//check for fixed statement number and variable call
-
 		}
 	}
 }
@@ -239,4 +301,126 @@ Query QueryParser::processQuery(string input){
 	return parsedQuery;
 }
 
+void createClause(Query query, string argument){
+	if (decList.find(argument) == decList.end()){
+		if (!isNumber(argument)){
+			if (!contains(argument, "\"")){
+				throw MissingDeclarationException();
+			} else {
+				size_t start = argument.find_first_of("\"");
+				size_t end = argument.find_last_of("\"");
+				string firstArg = secondArg.substr(start+1, end-start-1);
+				newClause->setSecondArg(secondArg);
+				newClause->setSecondArgFixed(true);
+				newClause->setSecondArgType(stringconst::ARG_VARIABLE);
+			}
+		} else {
+			newClause->setSecondArg(secondArg);
+			newClause->setSecondArgFixed(true);
+			newClause->setSecondArgType(stringconst::ARG_STATEMENT);
+		}
+	} else {
+		string secondArgType = decList.at(secondArg);
+		newClause->setSecondArg(secondArg);
+		newClause->setSecondArgFixed(false);
+		newClause->setSecondArgType(secondArgType);
+	}
+}
 
+void parseSelectSynonyms(Query query, queue<string> line){
+	unordered_map<string, string> decList = query.getDeclarationList();
+	string first = getWordAndPop(line);
+	if (first != stringconst::STRING_SELECT){
+		throw InvalidSelectException();
+	} else {
+		bool expectSelect = true;
+		while (expectSelect){
+			string current = getWordAndPop(line);
+			if (decList.find(current) == decList.end()){
+				throw MissingDeclarationException();
+			} else {
+				string type = decList.at(current);
+				StringPair* newPair = new StringPair();
+				newPair->setFirst(current);
+				newPair->setSecond(type);
+				query.addSelectSynonym(*newPair);
+			}
+			string next = line.front();
+			if (containsKeyword(next)){
+				expectSelect = false;
+			}
+		}
+	}
+}
+
+void parseClause(Query query, queue<string> line){
+	unordered_map<string, string> decList = query.getDeclarationList();
+	string current = getWordAndPop(line);
+	string next = line.front();
+	if (!contains(next, ")")){
+		throw InvalidArgumentException();
+	}
+	Clause* newClause;
+	newClause = createCorrectClause(current);
+	size_t startIndex = current.find_first_of("(");
+	size_t endIndex = current.find_first_of(",");
+	string firstArg = current.substr(startIndex+1, endIndex-startIndex-1);
+	size_t last_index = next.find_first_of(")");
+	string secondArg = next.substr(0,  last_index);
+	if (decList.find(firstArg) == decList.end()){
+		if (!isNumber(firstArg)){
+			if (!contains(firstArg, "\"")){
+				throw MissingDeclarationException();
+			} else {
+				size_t start = current.find_first_of("\"");
+				size_t end = current.find_last_of("\"");
+				string firstArg = firstArg.substr(start+1, end-start-1);
+				newClause->setFirstArg(firstArg);
+				newClause->setFirstArgFixed(true);
+				newClause->setFirstArgType(stringconst::ARG_VARIABLE);
+			}
+		} else {
+			newClause->setFirstArg(firstArg);
+			newClause->setFirstArgFixed(true);
+			newClause->setFirstArgType(stringconst::ARG_STATEMENT);
+		}
+	} else {
+		string firstArgType = decList.at(firstArg);
+		newClause->setFirstArg(firstArg);
+		newClause->setFirstArgFixed(false);
+		newClause->setFirstArgType(firstArgType);
+	}
+
+	if (decList.find(secondArg) == decList.end()){
+		if (!isNumber(secondArg)){
+			if (!contains(secondArg, "\"")){
+				throw MissingDeclarationException();
+			} else {
+				size_t start = current.find_first_of("\"");
+				size_t end = current.find_last_of("\"");
+				string firstArg = secondArg.substr(start+1, end-start-1);
+				newClause->setSecondArg(secondArg);
+				newClause->setSecondArgFixed(true);
+				newClause->setSecondArgType(stringconst::ARG_VARIABLE);
+			}
+		} else {
+			newClause->setSecondArg(secondArg);
+			newClause->setSecondArgFixed(true);
+			newClause->setSecondArgType(stringconst::ARG_STATEMENT);
+		}
+	} else {
+		string secondArgType = decList.at(secondArg);
+		newClause->setSecondArg(secondArg);
+		newClause->setSecondArgFixed(false);
+		newClause->setSecondArgType(secondArgType);
+	}
+	query.addClause(newClause);
+	line.pop();
+}
+
+void parsePattern(Query query, queue<string> line){
+	unordered_map<string, string> decList = query.getDeclarationList();
+	string current = getWordAndPop(line);
+	string next = line.front();
+	
+}

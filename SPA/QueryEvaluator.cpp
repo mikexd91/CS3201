@@ -156,7 +156,7 @@ set<string> QueryEvaluator::evaluateOneClause(Results res, vector<StringPair> se
 		return result;
 	}
 
-	if (res.isClauseTrue()) {
+	if (res.isClausePassed()) {
 		set<string> result = getAllSynValues(selectList);
 		return result;
 	}
@@ -168,7 +168,7 @@ set<string> QueryEvaluator::evaluateOneClause(Results res, vector<StringPair> se
 		return getSingleResults
 
 	else // if selectSynonym is not used in resultObj
-		if (resultObj.isClauseTrue())
+		if (resultObj.isClausePassed())
 			return all possible values of selectSyn
 		else
 			return none
@@ -183,7 +183,7 @@ set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vecto
 	
 	switch (numRepeatingClause) {
 		case 0 : 
-			if (obj1.isClauseTrue() && obj2.isClauseTrue()) {
+			if (obj1.isClausePassed() && obj2.isClausePassed()) {
 				set<string> result = getAllSynValues(selectList);
 				return result;
 			} else {
@@ -192,7 +192,7 @@ set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vecto
 			break;
 
 		case 1 :
-			if (obj1.isClauseTrue() && obj2.isClauseTrue()) {
+			if (obj1.isClausePassed() && obj2.isClausePassed()) {
 				obj1.getIntersect(obj2);
 				vector<string> res = obj1.getSinglesResults();
 
@@ -209,7 +209,7 @@ set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vecto
 			return set<string>();
 
 		case 2 :
-			if (obj1.isClauseTrue() && obj2.isClauseTrue()) {
+			if (obj1.isClausePassed() && obj2.isClausePassed()) {
 				obj1.getIntersect(obj2);
 				vector<pair<string, string>> res = obj1.getPairResults();
 
@@ -286,7 +286,7 @@ set<string> QueryEvaluator::evaluateQuery(Query q) {
 		return getSingleResults
 
 	else // if selectSynonym is not used in resultObj
-		if (resultObj.isClauseTrue())
+		if (resultObj.isClausePassed())
 			return all possible values of selectSyn
 		else
 			return none

@@ -128,6 +128,9 @@ void PDR::processAssignStmt(ParsedData data) {
 		set<int> children = parentStmt->getChildren();
 		children.insert(assignNode->getStmtNum());
 		parentStmt->setChildren(children);
+
+		addParentSet(uses, USES);
+		addParentSet(modifies, MODIFIES);
     }
 	
     stmtTable->addStmt(stmt);
@@ -143,6 +146,8 @@ void PDR::processWhileStmt(ParsedData data) {
         }
     }
     
+	set<string> uses;
+	uses.insert(data.getWhileVar());
     WhileNode* whileNode = new WhileNode(++stmtCounter);
     StmtLstNode* stmtLst = new StmtLstNode();
     TNode* parentStmtLst = nodeStack.top();
@@ -154,11 +159,14 @@ void PDR::processWhileStmt(ParsedData data) {
         whileNode->linkLeftSibling(leftSibling);
     }
     
+
     // Linking the AST
     VarNode* whileVar = new VarNode(data.getWhileVar());
     whileNode->linkParent(parentStmtLst);
     whileNode->linkVarNode(whileVar);
     whileNode->linkStmtLstNode(stmtLst);
+	
+	addToVarTable(whileVar, USES);
 
     nodeStack.push(stmtLst);
     currNestingLevel = data.getNestingLevel() + 1;
@@ -169,7 +177,8 @@ void PDR::processWhileStmt(ParsedData data) {
     whileStmt->setType(whileNode->getNodeType());
     whileStmt->setStmtNum(whileNode->getStmtNum());
     whileStmt->setTNodeRef(whileNode);
-    
+	whileStmt->setUses(uses);
+
     if(whileNode->hasLeftSibling()) {
         StmtNode* leftSib = (StmtNode*)whileNode->getLeftSibling();
         whileStmt->setFollowsAfter(leftSib->getStmtNum());
@@ -184,10 +193,11 @@ void PDR::processWhileStmt(ParsedData data) {
 		set<int> children = parentStmt->getChildren();
 		children.insert(whileNode->getStmtNum());
 		parentStmt->setChildren(children);
+
+		addParentSet(uses, USES);
     }
     
 	stmtParentNumStack.push(stmtCounter);
-    addToVarTable(whileVar, USES);
     stmtTable->addStmt(whileStmt);
 }
 
@@ -244,6 +254,49 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
     }
     
     return result;
+}
+
+void PDR::addParentSet(set<string> setToBeAdded, Flag statusFlag) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	VarTable* varTable = VarTable::getInstance();
+	stack<int> holdingStack;
+
+	while(!stmtParentNumStack.empty()) {
+		Statement* parent = stmtTable->getStmtObj(stmtParentNumStack.top());	
+		set<string> stmtSet;
+		set<string>::iterator iter;	
+
+		if(statusFlag == USES) {
+			stmtSet = parent->getUses();
+		} else {
+			stmtSet = parent->getModifies();
+		}
+		
+		for(iter = setToBeAdded.begin(); iter != setToBeAdded.end(); iter++) {
+			string var = *iter;
+			stmtSet.insert(var);
+			Variable* varObj = varTable->getVariable(var);
+			if(statusFlag == USES) {
+				varObj->addUsingStmt(stmtParentNumStack.top());
+			} else {
+				varObj->addModifyingStmt(stmtParentNumStack.top());
+			}
+		}
+
+		if(statusFlag == USES) {
+			parent->setUses(stmtSet);
+		} else {
+			parent->setModifies(stmtSet);
+		}
+		
+		holdingStack.push(stmtParentNumStack.top());
+		stmtParentNumStack.pop();
+	}
+
+	while(!holdingStack.empty()) {
+		stmtParentNumStack.push(holdingStack.top());
+		holdingStack.pop();
+	}
 }
 
 void PDR::addToProcTable(TNode* procedure) {

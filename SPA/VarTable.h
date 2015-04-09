@@ -21,15 +21,19 @@ class VarTable {
 	*/
 
 public:
+	~VarTable();
 	
 	// getters
 	static VarTable* getInstance();
 	Variable* getVariable(const string& varName);
 	boost::unordered_map<string, Variable*>::iterator getIterator();
 	boost::unordered_map<string, Variable*>::iterator getEnd();
+	vector<string>* getAllVarNames();
+	vector<Variable*>* getAllVariables();
 
 	// setters
 	void addVariable(Variable *var);
+	static void reset();
 
 	// general methods
 	bool contains(const string& varName);
