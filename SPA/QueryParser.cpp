@@ -301,6 +301,32 @@ Query QueryParser::processQuery(string input){
 	return parsedQuery;
 }
 
+void createClause(Query query, string argument){
+	if (decList.find(argument) == decList.end()){
+		if (!isNumber(argument)){
+			if (!contains(argument, "\"")){
+				throw MissingDeclarationException();
+			} else {
+				size_t start = argument.find_first_of("\"");
+				size_t end = argument.find_last_of("\"");
+				string firstArg = secondArg.substr(start+1, end-start-1);
+				newClause->setSecondArg(secondArg);
+				newClause->setSecondArgFixed(true);
+				newClause->setSecondArgType(stringconst::ARG_VARIABLE);
+			}
+		} else {
+			newClause->setSecondArg(secondArg);
+			newClause->setSecondArgFixed(true);
+			newClause->setSecondArgType(stringconst::ARG_STATEMENT);
+		}
+	} else {
+		string secondArgType = decList.at(secondArg);
+		newClause->setSecondArg(secondArg);
+		newClause->setSecondArgFixed(false);
+		newClause->setSecondArgType(secondArgType);
+	}
+}
+
 void parseSelectSynonyms(Query query, queue<string> line){
 	unordered_map<string, string> decList = query.getDeclarationList();
 	string first = getWordAndPop(line);
@@ -388,5 +414,13 @@ void parseClause(Query query, queue<string> line){
 		newClause->setSecondArgFixed(false);
 		newClause->setSecondArgType(secondArgType);
 	}
+	query.addClause(newClause);
 	line.pop();
+}
+
+void parsePattern(Query query, queue<string> line){
+	unordered_map<string, string> decList = query.getDeclarationList();
+	string current = getWordAndPop(line);
+	string next = line.front();
+	
 }
