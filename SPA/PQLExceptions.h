@@ -20,3 +20,9 @@ struct InvalidSelectException : public exception{
 		return "Query invalid!";
 	}
 };
+
+struct InvalidArgumentException : public exception{
+	const char * what() const throw(){
+		return "Argument invalid";
+	}
+};

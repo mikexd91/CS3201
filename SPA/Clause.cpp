@@ -7,6 +7,8 @@ using std::map;
 using std::string;
 
 Clause::Clause(void){
+	this->firstArgFixed = false;
+	this->secondArgFixed = false;
 }
 
 Clause::Clause(ClauseType type){

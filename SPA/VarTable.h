@@ -21,6 +21,7 @@ class VarTable {
 	*/
 
 public:
+	~VarTable();
 	
 	// getters
 	static VarTable* getInstance();
@@ -32,6 +33,7 @@ public:
 
 	// setters
 	void addVariable(Variable *var);
+	static void reset();
 
 	// general methods
 	bool contains(const string& varName);
