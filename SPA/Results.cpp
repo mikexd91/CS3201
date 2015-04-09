@@ -10,8 +10,8 @@ Results::~Results(void)
 {
 }
 
-void Results::setClauseTrue() {
-	this->hasResults = true;
+void Results::setClauseBool(bool n) {
+	this->hasResults = n;
 }
 
 void Results::setNumOfSyn(int n) {

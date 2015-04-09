@@ -11,7 +11,7 @@ public:
 	Results(void);
 	~Results(void);
 
-	void setClauseTrue();					// clause is true if it contains at least 1 result for unfixed arg or returns true for boolean
+	void setClauseBool(bool n);			// clause is true if it contains at least 1 result for unfixed arg or returns true for boolean
 	void setFirstClauseSyn(string s1);
 	void setSecondClauseSyn(string s2);
 	void setNumOfSyn(int n);
