@@ -28,8 +28,8 @@ public:
 	int getNumOfSyn();
 	bool usesSelectSyn(string syn);
 
-	void getIntersect(Results res);
-
+	void getIntersect(Results res);			// Mutates the obj that called this method.
+											// Transfer all result to the mutated obj
 private:
 
 	bool isValid;

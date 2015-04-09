@@ -59,8 +59,8 @@ int Results::getNumOfSyn() {
 	return this->numOfSyn;
 }
 
-Results Results::getIntersect(Results res) {
-	return Results();
+void Results::getIntersect(Results res) {
+	
 }
 
 set<string> Results::getSelectSynResult(string syn) {
@@ -68,5 +68,5 @@ set<string> Results::getSelectSynResult(string syn) {
 }
 
 bool Results::usesSelectSyn(string syn) {
-
+	return false;
 }

@@ -18,7 +18,7 @@ QueryEvaluator::~QueryEvaluator(void)
 {
 }
 
-set<string> getAllSynValues(vector<StringPair> selectList) {
+set<string> QueryEvaluator::getAllSynValues(vector<StringPair> selectList) {
 	StringPair syn = selectList.at(0);
 	string synType = syn.getSecond();
 	set<string> *results = new set<string>();
@@ -35,8 +35,6 @@ set<string> getAllSynValues(vector<StringPair> selectList) {
 			convert << stmtNum;
 			s = convert.str();
 			results->insert(s);
-
-			results->insert(stmtNum);
 		}
 		return *results;
 
@@ -66,8 +64,6 @@ set<string> getAllSynValues(vector<StringPair> selectList) {
 			convert << stmtNum;
 			s = convert.str();
 			results->insert(s);
-
-			results->insert(stmtNum);
 		}
 		return *results;
 
@@ -75,7 +71,9 @@ set<string> getAllSynValues(vector<StringPair> selectList) {
 		VarTable* varTable = VarTable::getInstance();
 		boost::unordered_map<string, Variable*>::iterator iter;
 		for (iter = varTable->getIterator(); iter != varTable->getEnd(); iter++) {
-			results->insert(*iter); // might need to flush. currently not flushing
+			Variable v = *iter->second;
+			string varName = v.getName();
+			results->insert(varName); // might need to flush. currently not flushing
 		}
 		return *results;
 
@@ -91,7 +89,7 @@ set<string> getAllSynValues(vector<StringPair> selectList) {
 }
 
 // return the NUMBER of times syn appear in both obj1 and obj2
-int getSameClause(Results obj1, Results obj2) {
+int QueryEvaluator::getSameClause(Results obj1, Results obj2) {
 	int numSynObj1 = obj1.getNumOfSyn();
 	int numSynObj2 = obj2.getNumOfSyn();
 
@@ -151,15 +149,10 @@ int getSameClause(Results obj1, Results obj2) {
 	return count;
 }
 
-// get the results of select syn. Have to pull results from both pair and single results
-set<string> getSelectSynResult(Results mergedResult, vector<StringPair> selectList) {
-	return set<string>();
-}
-
-set<string> evaluateOneClause(Results res, vector<StringPair> selectList) {
+set<string> QueryEvaluator::evaluateOneClause(Results res, vector<StringPair> selectList) {
 	string syn = selectList.at(0).getFirst();
 	if (res.usesSelectSyn(syn)) {
-		set<string> result = getSelectSynResult(res, selectList);
+		set<string> result = res.getSelectSynResult(syn);
 		return result;
 	}
 
@@ -182,7 +175,7 @@ set<string> evaluateOneClause(Results res, vector<StringPair> selectList) {
 	*/
 }
 
-set<string> evaluateManyClause(vector<Results> resultList, vector<StringPair> selectList) {
+set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vector<StringPair> selectList) {
 	Results obj1 = resultList.front();
 	Results obj2 = resultList.back();
 	int numRepeatingClause = getSameClause(obj1, obj2);
@@ -200,11 +193,11 @@ set<string> evaluateManyClause(vector<Results> resultList, vector<StringPair> se
 
 		case 1 :
 			if (obj1.isClauseTrue() && obj2.isClauseTrue()) {
-				Results mergedResult = obj1.getIntercept(obj2);
-				vector<string> res = mergedResult.getSinglesResults();
+				obj1.getIntersect(obj2);
+				vector<string> res = obj1.getSinglesResults();
 
 				if (obj1.usesSelectSyn(syn) || obj2.usesSelectSyn(syn)) {
-					set<string> result = getSelectSynResult(mergedResult, selectList);
+					set<string> result = obj1.getSelectSynResult(syn);
 					return result;
 				} 
 
@@ -217,11 +210,11 @@ set<string> evaluateManyClause(vector<Results> resultList, vector<StringPair> se
 
 		case 2 :
 			if (obj1.isClauseTrue() && obj2.isClauseTrue()) {
-				Results mergedResult = obj1.getIntersect(obj2);
-				vector<pair<string, string>> res = mergedResult.getPairResults();
+				obj1.getIntersect(obj2);
+				vector<pair<string, string>> res = obj1.getPairResults();
 
 				if (obj1.usesSelectSyn(syn) || obj2.usesSelectSyn(syn)) {
-					set<string> result = getSelectSynResult(mergedResult, selectList);
+					set<string> result = obj1.getSelectSynResult(syn);
 					return result;
 				}
 				
