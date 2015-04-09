@@ -17,6 +17,18 @@ PatternAssgClause::PatternAssgClause(const string& syn)
 	firstArg = syn;
 	firstArgFixed = false;
 	secondArgType = ARG_VARIABLE;
+	secondArgFixed = false;
+}
+
+PatternAssgClause::PatternAssgClause(const string& syn, const string& var, const string& expr) 
+	: PatternClause() {
+	firstArgType = ARG_ASSIGN;
+	firstArg = syn;
+	firstArgFixed = false;
+	secondArg = var;
+	secondArgType = ARG_VARIABLE;
+	secondArgFixed = false;
+	this->_expr = expr;
 	//cout << "setting " << syn << endl;
 }
 

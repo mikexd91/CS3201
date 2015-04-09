@@ -9,7 +9,8 @@ class PatternAssgClause :
 	public PatternClause {
 
 public:
-	PatternAssgClause(const string&);
+	PatternAssgClause(const string& syn);
+	PatternAssgClause(const string& syn, const string& var, const string& expr);
 	~PatternAssgClause(void);
 
 	Results evaluate();
