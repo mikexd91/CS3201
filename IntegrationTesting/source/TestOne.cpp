@@ -9,16 +9,26 @@
 	Parser parser;
 	PDR* pdr;
 	AST* ast;
+	VarTable* varTable;
+	ProcTable* procTable;
+	StmtTable* stmtTable;
 
 void TestOne::setUp() {
 	pdr = PDR::getInstance();
 	ast = AST::getInstance();
 	parser = Parser();
+	varTable = VarTable::getInstance();
+	procTable = ProcTable::getInstance();
+	stmtTable = StmtTable::getInstance();
+
 }
 
 void TestOne::tearDown() {
 	PDR::resetInstanceFlag();
 	AST::reset();
+	VarTable::reset();
+	procTable->clearTable();
+	stmtTable->clearTable();
 }
 
 CPPUNIT_TEST_SUITE_REGISTRATION( TestOne );
@@ -26,9 +36,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION( TestOne );
 // method to test adding of proc to table
 void TestOne::testAddProc() {
 	parser.parse("procedure test {x = 2; y=x+z; z=x+y+z; while i {y=x+1; a=a+b;} }");
-	ProcTable* procTable = ProcTable::getInstance();
-	StmtTable* stmtTable = StmtTable::getInstance();
-	VarTable* varTable = VarTable::getInstance();
+	//ProcTable* procTable = ProcTable::getInstance();
+	//StmtTable* stmtTable = StmtTable::getInstance();
+	//VarTable* varTable = VarTable::getInstance();
 	CPPUNIT_ASSERT(procTable->contains("test"));
 	
 	
@@ -115,7 +125,7 @@ void TestOne::testAssign() {
 	
 	parser.parse("procedure test {x = 2; y=x;}");
 	
-	StmtTable* stmtTable = StmtTable::getInstance();
+	//StmtTable* stmtTable = StmtTable::getInstance();
 	
 	Statement* stmt = stmtTable->getStmtObj(2);
 	
@@ -251,7 +261,7 @@ void TestOne::testMultipleProcAST() {
 }
 
 void TestOne::testFollows() {
-	StmtTable* stmtTable = StmtTable::getInstance();
+	//StmtTable* stmtTable = StmtTable::getInstance();
 	
 	parser.parse("procedure proc{x = 2; y = x + 3; while y{z = y + x;}}");
 	CPPUNIT_ASSERT(ast->contains("proc"));
@@ -265,9 +275,7 @@ void TestOne::testFollows() {
 	CPPUNIT_ASSERT(secAssg->getFollowsAfter() == 1);
 	CPPUNIT_ASSERT(secAssg->getFollowsBefore() == 3);
 	CPPUNIT_ASSERT(whileStmt->getFollowsAfter() == 2);
-	CPPUNIT_ASSERT(whileStmt->getFollowsBefore() == 4);
+	CPPUNIT_ASSERT(whileStmt->getFollowsBefore() == -1);
 	CPPUNIT_ASSERT(thirdAssg->getFollowsAfter() == -1);
 	CPPUNIT_ASSERT(thirdAssg->getFollowsBefore() == -1);
-	
-	
 }
