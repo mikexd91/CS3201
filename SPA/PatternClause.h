@@ -9,6 +9,7 @@ public:
 
 	string getSynonym();
 	string getVar();
+	string getVarType();
 	bool getVarFixed();
 	string getExpression();
 
