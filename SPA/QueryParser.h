@@ -2,10 +2,14 @@
 #include "Query.h"
 #include "Clause.h"
 #include "StringPair.h"
+#include <queue>
 #include <string>
 #include <vector>
 #include <sstream>
 
+using std::queue;
+using std::vector;
+using std::stringstream;
 using std::string;
 
 class QueryParser
@@ -19,7 +23,11 @@ private:
 	bool containsClauseType(string);
 	string getClauseString(string);
 	void parseSelect(vector<string>, Query);
-	void vetQuery(Query);
+
+	void parseSelectSynonyms(Query, queue<string>);
+	void parseClause(Query, queue<string>);
+	void parsePattern(Query, queue<string>);
+
 public:
 	QueryParser(void);
 	~QueryParser(void);
