@@ -164,28 +164,6 @@ void Parser::endParse() {
 	parsedDataReceiver->processParsedData(endData);
 }
 
-string Utils::getWordAndPop(queue<string> &originalExpression) {
-	if(originalExpression.empty()) {
-		throw InvalidExpressionException("Invalid Expression!");
-	} else {
-		string word = originalExpression.front();
-		originalExpression.pop();
-		return word;
-	}
-}
-
-void Utils::parseFactor(string word, queue<string> &expressionQueue) {
-	if (isValidFactor(word)) {
-		expressionQueue.push(word);
-	} else {
-		throw InvalidExpressionException("Invalid Expression!");
-	}
-}
-
-
-
-
-
 void Parser::throwException(int lineNumber) {
 	ostringstream output;
 	output.str("");
