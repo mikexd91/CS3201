@@ -11,7 +11,7 @@ public:
 
 private:
 	bool isFollows(string stmtNum1, string stmtNum2);
-	string getFollows(string stmtNum);			// gets list of statements that follows stmtNum
-	string getFollowedBy(string stmtNum);		// gets list of statements that stmtNum follows
+	string getFollows(string stmtNum, string unfixedStmtType);			// gets list of statements that follows stmtNum
+	string getFollowedBy(string stmtNum, string unfixedStmtType);		// gets list of statements that stmtNum follows
 };
 
