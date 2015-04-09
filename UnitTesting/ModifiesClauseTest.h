@@ -5,9 +5,9 @@
 
 class ModifiesClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( ModifiesClauseTest );
-	CPPUNIT_TEST( testModifiesNumNum );
-	CPPUNIT_TEST( testModifiesSynNum );
-	CPPUNIT_TEST( testModifiesNumSyn );
+	CPPUNIT_TEST( testModifiesFixedFixed );
+	CPPUNIT_TEST( testModifiesSynFixed );
+	CPPUNIT_TEST( testModifiesFixedSyn );
 	CPPUNIT_TEST( testModifiesSynSyn );
 	//CPPUNIT_TEST( evaulateVarWildExpr );
 	//CPPUNIT_TEST( evaluateVarFixedExprWild );
@@ -20,9 +20,9 @@ public:
 	void setUp();
 	void tearDown();
 	
-	void testModifiesNumNum();
-	void testModifiesSynNum();
-	void testModifiesNumSyn();
+	void testModifiesFixedFixed();
+	void testModifiesSynFixed();
+	void testModifiesFixedSyn();
 	void testModifiesSynSyn();
 
 	/*void evaluateVarWildExprWild();
