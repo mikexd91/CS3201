@@ -16,6 +16,8 @@ class QueryParser
 {
 
 private:
+	string removeSpace(string);
+	queue<string> queueBuilder(string, char);
 	vector<string> split(string, char, vector<string>);
 	vector<string> tokeniser(string, char);
 	bool checkValidity();
@@ -24,6 +26,8 @@ private:
 	string getClauseString(string);
 	void parseSelect(vector<string>, Query);
 
+	Query queryProcessor(string);
+	void parseDeclarations(Query, vector<string>);
 	void parseSelectSynonyms(Query, queue<string>);
 	void parseClause(Query, queue<string>);
 	void parsePattern(Query, queue<string>);

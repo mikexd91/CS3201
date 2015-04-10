@@ -24,6 +24,6 @@ private:
 	Results evaluateSynFixed(string stmt, string varName);
 	Results evaluateSynSyn(string stmt, string var);
 	
-	bool isParent(int stmtNum, string var);
+	bool isModifies(int stmtNum, string var);
 };
 
