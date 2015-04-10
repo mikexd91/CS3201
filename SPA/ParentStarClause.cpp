@@ -10,8 +10,8 @@ ParentStarClause::~ParentStarClause(void){
 bool ParentStarClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
-	bool firstArg = (firstType == stringconst::ARG_WHILE);
-	bool secondArg = (secondType == stringconst::ARG_WHILE);
+	bool firstArg = ((firstType == stringconst::ARG_WHILE) || (firstType == stringconst::ARG_STATEMENT));
+	bool secondArg = ((secondType == stringconst::ARG_WHILE) || (secondType == stringconst::ARG_ASSIGN) || (secondType == stringconst::ARG_STATEMENT));
 	return (firstArg && secondArg);
 }
 
