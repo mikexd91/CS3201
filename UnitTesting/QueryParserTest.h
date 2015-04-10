@@ -2,12 +2,14 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 class QueryParserTest : public CPPUNIT_NS::TestFixture{
-private:
-	void testRemoveSpace(void);
-public:
-	void setUp();
-	void tearDown();
-	void testProperties();
-	void testLinks();
-};
 
+	CPPUNIT_TEST_SUITE ( QueryParserTest );
+	CPPUNIT_TEST ( testParser );
+	CPPUNIT_TEST_SUITE_END();
+
+public:
+	void setUp(void);
+	void tearDown(void);
+
+	void testParser(void);
+};
