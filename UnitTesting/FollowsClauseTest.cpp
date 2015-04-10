@@ -84,8 +84,9 @@ void FollowsClauseTest::tearDown() {
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( FollowsClauseTest );
 
+// Test argument-type combinations of Follows(a,b) where a and b are unfixed
 void FollowsClauseTest::testIsFollows() { 
-
+	// Test Follows(a1, a2) where a1 and a2 are both assign
 	FollowsClause fol = *new FollowsClause();
 	fol.setFirstArg("a1");
 	fol.setSecondArg("a2");
@@ -95,58 +96,176 @@ void FollowsClauseTest::testIsFollows() {
 
 	fol.setFirstArgType(stringconst::ARG_ASSIGN);
 	fol.setSecondArgType(stringconst::ARG_ASSIGN);
-	//
-	bool isFirstFixed = fol.getFirstArgFixed();
-	bool isSecondFixed = fol.getSecondArgFixed();
-
-	string firstArgSyn = fol.getFirstArg();
-	string secondArgSyn = fol.getSecondArg();
-
-	string firstArgType = fol.getFirstArgType();
-	string secondArgType = fol.getSecondArgType();
-	//
+	
 	Results r = fol.evaluate();
-	/*
-	fol.followsBothUnfixedArg(stringconst::ARG_STATEMENT,
-		stringconst::ARG_STATEMENT, r);
-	*/
-	bool passed = r.isClausePassed();
-	
-	int nSyn = r.getNumOfSyn();
-	string syn1 = r.getFirstClauseSyn();
-	string syn2 = r.getSecondClauseSyn();
-	
-	cout << "JIAWEI: ";
-	cout << nSyn;
-	cout << ": ";
-	cout << syn1;
-	cout << ", ";
-	cout << syn2;
-	cout << " end";
-	
-	
-	cout << "JIAWEI: ";
-	cout << passed;
-	cout << " end";
-	
-	
-	
-	int size = r.getPairResults().size();
-	string left = r.getPairResults().at(1).first;
-	string right = r.getPairResults().at(1).second;
 
-	cout << "JIAWEI: ";
-	cout << size;
-	cout << ": ";
-	cout << left;
-	cout << ", ";
-	cout << right;
-	cout << " end";
-	
+	string res1 = "1";
+	string res2 = "2";
+	string res3 = "3";
 
-	//CPPUNIT_ASSERT(fol.isFollows("1", "2"));
-	//CPPUNIT_ASSERT(resObj.getSinglesResults().at(0) == res);
-	//CPPUNIT_ASSERT(!fol.isFollows(2, 1));
+	CPPUNIT_ASSERT(r.isClausePassed());
+	CPPUNIT_ASSERT(r.getPairResults().size() == 2);
+	CPPUNIT_ASSERT(r.getPairResults().at(1).first == res2);
+	CPPUNIT_ASSERT(r.getPairResults().at(1).second == res3);
+	
+	// Test Follows(a1, a1) where a1 is assign
+	fol.setFirstArg("a1");
+	fol.setSecondArg("a1");
+
+	fol.setFirstArgType(stringconst::ARG_ASSIGN);
+	fol.setSecondArgType(stringconst::ARG_ASSIGN);
+
+	Results r2 = fol.evaluate();
+
+	CPPUNIT_ASSERT(!r2.isClausePassed());
+	CPPUNIT_ASSERT(r2.getPairResults().size() == 0);
+	
+	// Test Follows(a1, s1) where a1 is assign and s1 is statement
+	fol.setFirstArg("a1");
+	fol.setSecondArg("s1");
+
+	fol.setFirstArgType(stringconst::ARG_ASSIGN);
+	fol.setSecondArgType(stringconst::ARG_STATEMENT);
+
+	Results r3 = fol.evaluate();
+
+	CPPUNIT_ASSERT(r3.isClausePassed());
+	CPPUNIT_ASSERT(r3.getPairResults().size() == 2);
+	CPPUNIT_ASSERT(r3.getPairResults().at(1).first == res2);
+	CPPUNIT_ASSERT(r3.getPairResults().at(1).second == res3);
+
+	// Test Follows(s1, a1) where a1 is assign and s1 is statement
+	fol.setFirstArg("s1");
+	fol.setSecondArg("a1");
+
+	fol.setFirstArgType(stringconst::ARG_STATEMENT);
+	fol.setSecondArgType(stringconst::ARG_ASSIGN);
+
+	Results r4 = fol.evaluate();
+
+	CPPUNIT_ASSERT(r4.isClausePassed());
+	CPPUNIT_ASSERT(r4.getPairResults().size() == 2);
+	CPPUNIT_ASSERT(r4.getPairResults().at(1).first == res1);
+	CPPUNIT_ASSERT(r4.getPairResults().at(1).second == res2);
+
+	return;
+}
+
+// Test augument-type combinations of Follows (1, a) where a is unfixed
+void FollowsClauseTest::testIsFollows2() {
+	FollowsClause fol = *new FollowsClause();
+	
+	// Test Follows(1, a) where a is an assign type
+	fol.setFirstArg("1");
+	fol.setSecondArg("a");
+	
+	fol.setFirstArgFixed(true);
+	fol.setSecondArgFixed(false);
+
+	fol.setFirstArgType(stringconst::ARG_ASSIGN);
+	fol.setSecondArgType(stringconst::ARG_ASSIGN);
+	
+	Results r = fol.evaluate();
+
+	string res1 = "1";
+	string res2 = "2";
+	string res3 = "3";
+
+	CPPUNIT_ASSERT(r.isClausePassed());
+	CPPUNIT_ASSERT(r.getSinglesResults().at(0) == res2);
+
+	// Test Follows(2, a) where a is an assign type
+	fol.setFirstArg("2");
+	fol.setSecondArg("a");
+
+	fol.setFirstArgType(stringconst::ARG_STATEMENT);
+	fol.setSecondArgType(stringconst::ARG_ASSIGN);
+	
+	Results r1 = fol.evaluate();
+
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == res3);
+
+	// Test Follows(2, a) where a is an assign type
+	fol.setFirstArg("3");
+	fol.setSecondArg("a");
+
+	fol.setFirstArgType(stringconst::ARG_STATEMENT);
+	fol.setSecondArgType(stringconst::ARG_ASSIGN);
+	
+	Results r2 = fol.evaluate();
+
+	CPPUNIT_ASSERT(!r2.isClausePassed());
+
+	return ;
+}
+
+// Test augument-type combinations of Follows (a, 1) where a is unfixed
+void FollowsClauseTest::testIsFollows3() {
+	FollowsClause fol = *new FollowsClause();
+	
+	// Test Follows(a, 1) where a is an assign type
+	fol.setFirstArg("a");
+	fol.setSecondArg("2");
+	
+	fol.setFirstArgFixed(false);
+	fol.setSecondArgFixed(true);
+
+	fol.setFirstArgType(stringconst::ARG_STATEMENT);
+	fol.setSecondArgType(stringconst::ARG_ASSIGN);
+	
+	Results r = fol.evaluate();
+
+	string res1 = "1";
+	string res2 = "2";
+	string res3 = "3";
+
+	CPPUNIT_ASSERT(r.isClausePassed());
+	CPPUNIT_ASSERT(r.getSinglesResults().at(0) == res1);
+
+	// Test Follows(a, 1) where a is an assign type
+	fol.setFirstArg("a");
+	fol.setSecondArg("1");
+
+	fol.setFirstArgType(stringconst::ARG_STATEMENT);
+	fol.setSecondArgType(stringconst::ARG_ASSIGN);
+	
+	Results r2 = fol.evaluate();
+
+	CPPUNIT_ASSERT(!r2.isClausePassed());
+
+	return ;
+}
+
+// Test Follows (1, 2)
+void FollowsClauseTest::testIsFollows4() {
+	FollowsClause fol = *new FollowsClause();
+	
+	// Test Follows(a, 1) where a is an assign type
+	fol.setFirstArg("1");
+	fol.setSecondArg("2");
+	
+	fol.setFirstArgFixed(true);
+	fol.setSecondArgFixed(true);
+
+	Results r = fol.evaluate();
+
+	string res1 = "1";
+	string res2 = "2";
+	string res3 = "3";
+
+	CPPUNIT_ASSERT(r.isClausePassed());
+
+	// Test Follows(1, 3) where a is an assign type
+	fol.setFirstArg("1");
+	fol.setSecondArg("3");
+	
+	fol.setFirstArgFixed(true);
+	fol.setSecondArgFixed(true);
+
+	Results r2 = fol.evaluate();
+
+	CPPUNIT_ASSERT(!r2.isClausePassed());
 
 	return;
 }
