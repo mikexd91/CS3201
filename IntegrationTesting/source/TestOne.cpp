@@ -334,7 +334,6 @@ void TestOne::testStmtTableAllWhile() {
 	CPPUNIT_ASSERT(whileStmts.size() == 4);
 	
 	vector<Statement*> vectorWhileStmts;
-
 	set<Statement*>::iterator iter;
 
 	for(iter = whileStmts.begin(); iter != whileStmts.end(); iter++) {
@@ -342,9 +341,9 @@ void TestOne::testStmtTableAllWhile() {
 		vectorWhileStmts.push_back(stmt);
 	}
 
-	CPPUNIT_ASSERT(vectorWhileStmts[0]->getStmtNum() == 1);
-	CPPUNIT_ASSERT(vectorWhileStmts[1]->getStmtNum() == 2);
-	CPPUNIT_ASSERT(vectorWhileStmts[2]->getStmtNum() == 3);
-	CPPUNIT_ASSERT(vectorWhileStmts[3]->getStmtNum() == 5);
+	CPPUNIT_ASSERT(vectorWhileStmts[0]->getType() == NodeType::WHILE_STMT_);
+	CPPUNIT_ASSERT(vectorWhileStmts[1]->getType() == NodeType::WHILE_STMT_);
+	CPPUNIT_ASSERT(vectorWhileStmts[2]->getType() == NodeType::WHILE_STMT_);
+	CPPUNIT_ASSERT(vectorWhileStmts[3]->getType() == NodeType::WHILE_STMT_);
 }
 
