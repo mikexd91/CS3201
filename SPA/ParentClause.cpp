@@ -14,8 +14,8 @@ ParentClause::~ParentClause(void){
 bool ParentClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
-	bool firstArg = (firstType == stringconst::ARG_WHILE);
-	bool secondArg = (secondType == stringconst::ARG_WHILE);
+	bool firstArg = (firstType == stringconst::ARG_WHILE) || (firstType == stringconst::ARG_STATEMENT);
+	bool secondArg = (secondType == stringconst::ARG_WHILE) || (secondType == stringconst::ARG_STATEMENT) || (secondType == stringconst::ARG_ASSIGN);
 	return firstArg && secondArg;
 }
 
@@ -96,7 +96,7 @@ Results ParentClause::evaluate(void) {
 			resultsObj->setNumOfSyn(1);
 			resultsObj->setFirstClauseSyn(secondArgSyn);
 			for (set<int>::iterator it = children.begin(); it != children.end(); ++it) {
-				resultsObj->addPairResult(firstArgSyn, boost::lexical_cast<string>(*it));
+				resultsObj->addSingleResult(boost::lexical_cast<string>(*it));
 			}
 		} 
 	} else if (!isFirstFixed && isSecondFixed) {
