@@ -20,3 +20,27 @@ Results ParentStarClause::evaluate(void) {
 
 	return Results();
 }
+
+// Case: Parent*(s1,s2) - stmt1 wild, stmt2 wild
+Results ParentStarClause::evaluateS1WildS2Wild() {
+
+
+}
+
+// Case: Parent*(s1,2) - stmt1 wild, stmt2 fixed
+Results ParentStarClause::evaluateS1WildS2Fixed() {
+
+
+}
+
+// Case: Parent*(1,s2) - stmt1 fixed, stmt2 wild
+Results ParentStarClause::evaluateS1FixedS2Wild() {
+
+
+}
+
+// Case: Parent*(1,2) - stmt1 fixed, stmt2 fixed
+Results ParentStarClause::evaluateS1FixedS2Fixed() {
+
+
+}
