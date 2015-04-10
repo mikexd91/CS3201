@@ -160,11 +160,11 @@ Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
 	//cout << endl << "all stmt size " << allStmt.size() << endl;
 
 	BOOST_FOREACH(auto p, allStmt) {
-		long long stmtNum = p->getStmtNum();
+		int stmtNum = p->getStmtNum();
 
 		//BOOST_FOREACH(string varName, allVarNames) {
 		for (size_t i = 0; i < allVarNames->size(); i++) {
-			string varName = allVarNames->at((int)i);
+			string varName = allVarNames->at(i);
 			if (isModifies(stmtNum, varName)) {
 				res->addPairResult(lexical_cast<string>(stmtNum), varName);
 			}
