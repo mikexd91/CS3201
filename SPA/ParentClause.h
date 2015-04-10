@@ -12,6 +12,11 @@ public:
 	Results evaluate(void);
 
 private: 
+	Results* evaluateS1WildS2Wild(string, string);				// Case: Parent(s1,s2) - stmt1 wild, stmt2 wild
+	Results* evaluateS1WildS2Fixed(string, string);			// Case: Parent(s1,2) - stmt1 wild, stmt2 fixed
+	Results* evaluateS1FixedS2Wild(string, string, string);			// Case: Parent(1,s2) - stmt1 fixed, stmt2 wild
+	Results* evaluateS1FixedS2Fixed(string, string);	// Case: Parent(1,2) - stmt1 fixed, stmt2 fixed
+
 	bool isParent(string stmtNum1, string stmtNum2);				// checks if s2 follows s1
 
 	int getParent(int stmtNum);										// gets immdiate parent of stmtNum
@@ -26,6 +31,6 @@ private:
 
 	StmtTable* stmtTable;
 
-	void addParentPairToResult(set<Statement*>, NodeType, Results*);
+	Results* addParentPairToResult(set<Statement*>, NodeType);
 };
 

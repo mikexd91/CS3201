@@ -55,7 +55,8 @@ int ParentClause::getParent(int stmtNum) {
 	}
 }
 
-void ParentClause::addParentPairToResult(set<Statement*> containerStmts, NodeType type, Results* resultsObj) {
+Results* ParentClause::addParentPairToResult(set<Statement*> containerStmts, NodeType type) {
+	Results* resultsObj = new Results();
 	for (set<Statement*>::iterator containerIter = containerStmts.begin(); containerIter != containerStmts.end(); containerIter++) {
 		Statement* containerStmt = *containerIter;
 		string containerStmtNo = boost::lexical_cast<string>(containerStmt->getStmtNum());
@@ -72,8 +73,66 @@ void ParentClause::addParentPairToResult(set<Statement*> containerStmts, NodeTyp
 				resultsObj->addPairResult(containerStmtNo, childStmtNo);
 			}
 		}
-		
 	}
+	return resultsObj;
+}
+
+Results* ParentClause::evaluateS1FixedS2Fixed(string firstArgSyn, string secondArgSyn) {
+	Results* resultsObj = new Results();
+	bool isClauseTrue = this->isParent(firstArgSyn, secondArgSyn);
+	resultsObj->setClausePassed(isClauseTrue);
+	resultsObj->setNumOfSyn(0);
+	return resultsObj;
+}
+
+Results* ParentClause::evaluateS1FixedS2Wild(string firstArgSyn, string secondArgSyn, string secondArgType) {
+	Results* resultsObj = new Results();
+	set<int> children = getChildren(firstArgSyn, secondArgType);
+	if (!children.empty()) {
+		resultsObj->setClausePassed(true);
+		resultsObj->setNumOfSyn(1);
+		resultsObj->setFirstClauseSyn(secondArgSyn);
+		for (set<int>::iterator it = children.begin(); it != children.end(); ++it) {
+			resultsObj->addSingleResult(boost::lexical_cast<string>(*it));
+		}
+	}
+	return resultsObj;
+}
+
+Results* ParentClause::evaluateS1WildS2Fixed(string firstArgSyn, string secondArgSyn) {
+	Results* resultsObj = new Results();
+	int stmt1 = getParent(atoi(secondArgSyn.c_str()));
+	if (stmt1 != -1) {
+		resultsObj->setClausePassed(true);
+		resultsObj->setNumOfSyn(1);
+		resultsObj->setFirstClauseSyn(firstArgSyn);
+		resultsObj->addSingleResult(boost::lexical_cast<string>(stmt1));
+	}
+	return resultsObj;
+}
+
+Results* ParentClause::evaluateS1WildS2Wild(string firstArgSyn, string secondArgSyn) {
+	Results* resultsObj = new Results();
+	if (firstArgType != stringconst::ARG_ASSIGN) {
+		//first arg type can only be while
+		//get all while statements
+		set<Statement*> whileStmts = stmtTable->getWhileStmts();
+		if(secondArgType == stringconst::ARG_ASSIGN) {
+			//for each while statement, get the children, add
+			resultsObj = addParentPairToResult(whileStmts, ASSIGN_STMT_);
+		} else if (secondArgType == stringconst::ARG_WHILE) {
+			resultsObj = addParentPairToResult(whileStmts, WHILE_STMT_);
+		} else {
+			assert(secondArgType == stringconst::ARG_STATEMENT);
+			resultsObj = addParentPairToResult(whileStmts, NULL_);
+		}
+	}
+	if (resultsObj->isClausePassed()) {
+		resultsObj->setNumOfSyn(2);
+		resultsObj->setFirstClauseSyn(firstArgSyn);
+		resultsObj->setSecondClauseSyn(secondArgSyn);
+	}
+	return resultsObj;
 }
 
 Results ParentClause::evaluate(void) {
@@ -86,47 +145,13 @@ Results ParentClause::evaluate(void) {
 	string secondArgType = this->getSecondArgType();
 
 	if (isFirstFixed && isSecondFixed) {
-		bool isClauseTrue = isParent(firstArgSyn, secondArgSyn);
-		resultsObj->setClausePassed(isClauseTrue);
-		resultsObj->setNumOfSyn(0);
+		resultsObj = evaluateS1FixedS2Fixed(firstArgSyn, secondArgSyn);
 	} else if (isFirstFixed && !isSecondFixed) {
-		set<int> children = getChildren(firstArgSyn, secondArgType);
-		if (!children.empty()) {
-			resultsObj->setClausePassed(true);
-			resultsObj->setNumOfSyn(1);
-			resultsObj->setFirstClauseSyn(secondArgSyn);
-			for (set<int>::iterator it = children.begin(); it != children.end(); ++it) {
-				resultsObj->addSingleResult(boost::lexical_cast<string>(*it));
-			}
-		} 
+		resultsObj = evaluateS1FixedS2Wild(firstArgSyn, secondArgSyn, secondArgType);
 	} else if (!isFirstFixed && isSecondFixed) {
-		int stmt1 = getParent(atoi(secondArgSyn.c_str()));
-		if (stmt1 != -1) {
-			resultsObj->setClausePassed(true);
-			resultsObj->setNumOfSyn(1);
-			resultsObj->setFirstClauseSyn(firstArgSyn);
-			resultsObj->addSingleResult(boost::lexical_cast<string>(stmt1));
-		}
+		resultsObj = evaluateS1WildS2Fixed(firstArgSyn, secondArgSyn);
 	} else if (!isFirstFixed && !isSecondFixed) {
-		if (firstArgType != stringconst::ARG_ASSIGN) {
-			//first arg type can only be while
-			//get all while statements
-			set<Statement*> whileStmts = stmtTable->getWhileStmts();
-			if(secondArgType == stringconst::ARG_ASSIGN) {
-				//for each while statement, get the children, add
-				addParentPairToResult(whileStmts, ASSIGN_STMT_, resultsObj);
-			} else if (secondArgType == stringconst::ARG_WHILE) {
-				addParentPairToResult(whileStmts, WHILE_STMT_, resultsObj);
-			} else {
-				assert(secondArgType == stringconst::ARG_STATEMENT);
-				addParentPairToResult(whileStmts, NULL_, resultsObj);
-			}
-		}
-		if (resultsObj->isClausePassed()) {
-			resultsObj->setNumOfSyn(2);
-			resultsObj->setFirstClauseSyn(firstArgSyn);
-			resultsObj->setSecondClauseSyn(secondArgSyn);
-		}
+		resultsObj = evaluateS1WildS2Wild(firstArgSyn, secondArgSyn);
 	}
 	return *resultsObj;
 }
