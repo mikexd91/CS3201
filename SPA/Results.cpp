@@ -77,8 +77,8 @@ void Results::getSingleIntercept(Results &res1, Results &res2) {
 		vector<string> res2List = res2.getSinglesResults();
 		vector<string> temp = *new vector<string>();
 
-		for (int i = 0; i < res1List.size(); i++) {
-			for (int j = 0; j < res2List.size(); j++) {
+		for (size_t i = 0; i < res1List.size(); i++) {
+			for (size_t j = 0; j < res2List.size(); j++) {
 				if (res1List.at(i) == res2List.at(j)) {
 					temp.push_back(res1List.at(i));
 				}
