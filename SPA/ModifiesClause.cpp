@@ -151,7 +151,7 @@ Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
 		allStmt = stable->getAllStmts();
 	}
 
-	cout << endl << "all stmt size " << allStmt.size() << endl;
+	//cout << endl << "all stmt size " << allStmt.size() << endl;
 
 	BOOST_FOREACH(auto p, allStmt) {
 		long long stmtNum = p->getStmtNum();
