@@ -23,24 +23,21 @@ Results ParentStarClause::evaluate(void) {
 
 // Case: Parent*(s1,s2) - stmt1 wild, stmt2 wild
 Results ParentStarClause::evaluateS1WildS2Wild() {
-
+	return Results();
 
 }
 
 // Case: Parent*(s1,2) - stmt1 wild, stmt2 fixed
 Results ParentStarClause::evaluateS1WildS2Fixed() {
-
-
+	return Results();
 }
 
 // Case: Parent*(1,s2) - stmt1 fixed, stmt2 wild
 Results ParentStarClause::evaluateS1FixedS2Wild() {
-
-
+	return Results();
 }
 
 // Case: Parent*(1,2) - stmt1 fixed, stmt2 fixed
 Results ParentStarClause::evaluateS1FixedS2Fixed() {
-
-
+	return Results();
 }
