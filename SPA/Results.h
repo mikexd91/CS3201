@@ -17,8 +17,11 @@ public:
 	void setNumOfSyn(int n);
 	void addSingleResult(string s);
 	void addPairResult(string s1, string s2);
+	void setSingleResult(vector<string> v);
+	void setPairResult(vector<pair<string, string>> v);
 
 	bool isClausePassed();
+	bool usesSelectSyn(string syn);
 
 	string getFirstClauseSyn();
 	string getSecondClauseSyn();
@@ -26,11 +29,14 @@ public:
 	vector<pair<string, string>> getPairResults();
 	set<string> getSelectSynResult(string syn);
 	int getNumOfSyn();
-	bool usesSelectSyn(string syn);
 
-	void getIntersect(Results res);			// Mutates the obj that called this method.
+	void getIntersect(Results &res);		// Mutates the obj that called this method.
 											// Transfer all result to the mutated obj
 private:
+
+	void getSingleIntercept(Results &res1, Results &res2);
+	void getSinglePairIntercept(Results &res1, Results &res2);
+	void getPairIntercept(Results &res1, Results &res2);
 
 	bool clausePassed;
 	string firstClauseSyn;

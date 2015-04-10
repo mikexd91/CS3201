@@ -78,7 +78,7 @@ bool PatternAssg::matchExpr(AssgNode* assg, string expr) {
 	//std::stack<string> tempstack = stack<string>();
 	//std::stack<string> rpnstack = stack<string>();
 	std::vector<string> rpnarr = vector<string>();
-	for (int i = 0; i < rpn.length(); i++) {
+	for (size_t i = 0; i < rpn.length(); i++) {
 		string token = rpn.substr(i, 1);
 		if (token != " ") {
 			//tempstack.push(token);
@@ -113,7 +113,7 @@ bool PatternAssg::matchExpr(AssgNode* assg, string expr) {
 	// compare rpn with dfs nodes
 	// once start to match rpn must match all the way
 	// then only considered subtree
-	for (int compared = 0; compared < rpnarr.size() && i < 9999; compared++) {
+	for (size_t compared = 0; compared < rpnarr.size() && i < 9999; compared++) {
 		if (nodestack.empty()) {
 			return false;
 		}
