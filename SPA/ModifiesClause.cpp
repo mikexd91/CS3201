@@ -96,7 +96,7 @@ Results ModifiesClause::evaluateFixedSyn(int stmtNum, string var) {
 	VarTable* vtable = VarTable::getInstance();
 	vector<string>* allVarNames = vtable->getAllVarNames();
 
-	for (int i = 0; i < allVarNames->size(); i++) {
+	for (size_t i = 0; i < allVarNames->size(); i++) {
 		if (isModifies(stmtNum, allVarNames->at(i))) {
 			res->addSingleResult(allVarNames->at(i));
 		}
@@ -161,7 +161,7 @@ Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
 		long long stmtNum = p->getStmtNum();
 
 		//BOOST_FOREACH(string varName, allVarNames) {
-		for (int i = 0; i < allVarNames->size(); i++) {
+		for (size_t i = 0; i < allVarNames->size(); i++) {
 			string varName = allVarNames->at(i);
 			if (isModifies(stmtNum, varName)) {
 				res->addPairResult(to_string(stmtNum), varName);
