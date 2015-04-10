@@ -16,10 +16,10 @@ class StmtTable {
 
 	*/
 
+public:
 	typedef boost::unordered_map<int, Statement*> StatementTable;
 	typedef StatementTable::iterator StmtTableIterator;
 
-public:
 	// ACCESSORS
 	static StmtTable* getInstance();			// gets instance of stmt table
 
