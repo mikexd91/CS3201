@@ -16,5 +16,7 @@ bool ParentStarClause::isValid(void){
 }
 
 Results ParentStarClause::evaluate(void) {
+
+
 	return Results();
 }
