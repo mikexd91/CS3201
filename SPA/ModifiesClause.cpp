@@ -2,6 +2,9 @@
 #include "StmtTable.h"
 #include "VarTable.h"
 #include "Utils.h"
+#include <boost/foreach.hpp>
+
+using namespace stringconst;
 
 ModifiesClause::ModifiesClause(void):Clause(MODIFIES_){
 }
@@ -78,7 +81,7 @@ Results ModifiesClause::evaluate(void) {
 
 Results ModifiesClause::evaluateFixedFixed(int stmtNum, string varName) {
 	Results* res = new Results();
-	res->setClausePassed(isParent(stmtNum, varName));
+	res->setClausePassed(isModifies(stmtNum, varName));
 
 	return *res;
 }
@@ -91,7 +94,7 @@ Results ModifiesClause::evaluateFixedSyn(int stmtNum, string var) {
 	vector<string>* allVarNames = vtable->getAllVarNames();
 
 	for (int i = 0; i < allVarNames->size(); i++) {
-		if (isParent(stmtNum, allVarNames->at(i))) {
+		if (isModifies(stmtNum, allVarNames->at(i))) {
 			res->addSingleResult(allVarNames->at(i));
 		}
 	}
@@ -102,14 +105,66 @@ Results ModifiesClause::evaluateFixedSyn(int stmtNum, string var) {
 }
 
 Results ModifiesClause::evaluateSynFixed(string stmt, string varName) {
-	return *new Results();
+	Results* res = new Results();
+	res->setFirstClauseSyn(stmt);
+
+	StmtTable* stable = StmtTable::getInstance();
+	set<Statement*> allStmt;	
+	
+	if (getStmtType() == stringconst::ARG_ASSIGN) {
+		allStmt = stable->getAssgStmts();
+	} else if (getStmtType() == stringconst::ARG_WHILE) {
+		allStmt = stable->getWhileStmts();
+	} else {
+		allStmt = stable->getAllStmts();
+	}
+
+	BOOST_FOREACH(auto p, allStmt) {
+		long long stmtNum = p->getStmtNum();
+		if (isModifies(stmtNum, varName)) {
+			res->addSingleResult(to_string(stmtNum));
+		}
+	}
+
+	res->setClausePassed(res->getSinglesResults().size() > 0);
+
+	return *res;
 }
 
 Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
-	return *new Results();
+	Results* res = new Results();
+	res->setFirstClauseSyn(stmt);
+	res->setSecondClauseSyn(var);
+
+	StmtTable* stable = StmtTable::getInstance();
+	set<Statement*> allStmt;
+	
+	VarTable* vtable = VarTable::getInstance();
+	vector<string>* allVarNames = vtable->getAllVarNames();
+	
+	if (getStmtType() == stringconst::ARG_ASSIGN) {
+		allStmt = stable->getAssgStmts();
+	} else if (getStmtType() == stringconst::ARG_WHILE) {
+		allStmt = stable->getWhileStmts();
+	} else {
+		allStmt = stable->getAllStmts();
+	}
+
+	BOOST_FOREACH(auto p, allStmt) {
+		long long stmtNum = p->getStmtNum();
+		BOOST_FOREACH(string varName, allVarNames) {
+			if (isModifies(stmtNum, varName)) {
+				res->addPairResult(to_string(stmtNum), varName);
+			}
+		}
+	}
+
+	res->setClausePassed(res->getPairResults().size() > 0);
+
+	return *res;
 }
 
-bool ModifiesClause::isParent(int stmtNum, string varName) {
+bool ModifiesClause::isModifies(int stmtNum, string varName) {
 	StmtTable* stable = StmtTable::getInstance();
 	Statement* stmt = stable->getStmtObj(stmtNum);
 

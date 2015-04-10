@@ -5,6 +5,7 @@
 #include "StmtTable.h"
 #include "Statement.h"
 #include "TNode.h"
+#include <boost/foreach.hpp>
 
 using namespace boost;
 
@@ -69,6 +70,15 @@ const set<Statement*>& StmtTable::getWhileStmts() {
 // gets all if stmts
 const set<Statement*>& StmtTable::getIfStmts() {
 	return ifStmtSet;
+}
+
+// gets all stmts
+const set<Statement*>& StmtTable::getAllStmts() {
+	set<Statement*>* allStmt = new set<Statement*>();
+	BOOST_FOREACH(auto p, table) {
+		allStmt->emplace(p.second);
+	}
+	return *allStmt;
 }
 
 // MUTATORS

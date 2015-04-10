@@ -23,6 +23,7 @@ void ModifiesClauseTest::setUp() {
 		k = 3;		//3
 		w = i;		//4
 		x = w+k;	//5
+		i = i;		//6
 	}
 	*/
 
@@ -84,6 +85,13 @@ void ModifiesClauseTest::setUp() {
 	assg5->linkExprNode(plus5);
 	procsl->linkStmtNode(assg5);
 
+	AssgNode* assg6 = new AssgNode(6);
+	VarNode* i6 = new VarNode("i");
+	assg6->linkVarNode(i6);
+	VarNode* i6_2 = new VarNode("i");
+	assg6->linkExprNode(i6_2);
+	procsl->linkStmtNode(assg6);
+
 	ast->addProcNode(proc);
 
 	// to set up the stmttable manually
@@ -142,6 +150,7 @@ void ModifiesClauseTest::setUp() {
 	stmt5->setStmtNum(5);
 	stmt5->setType(ASSIGN_STMT_);
 	stmt5->setFollowsBefore(4);
+	stmt5->setFollowsAfter(6);
 	string xvar = "x";
 	set<string> mods5 = set<string>();
 	mods5.emplace(xvar);
@@ -153,12 +162,27 @@ void ModifiesClauseTest::setUp() {
 	stmt5->setTNodeRef(assg5);
 	stable->addStmt(stmt5);
 
+	Statement* stmt6 = new Statement();
+	stmt6->setStmtNum(6);
+	stmt6->setType(ASSIGN_STMT_);
+	stmt6->setFollowsBefore(5);
+	set<string> mods6 = set<string>();
+	mods6.emplace(ivar);
+	stmt6->setModifies(mods6);
+	set<string> uses6 = set<string>();
+	uses6.emplace(ivar);
+	stmt6->setUses(uses6);
+	stmt6->setTNodeRef(assg6);
+	stable->addStmt(stmt6);
+
 	// to set up the vartable manually
 	VarTable* vtable = VarTable::getInstance();
 
 	Variable* vi = new Variable("i");
 	vi->addModifyingStmt(1);
+	vi->addModifyingStmt(6);
 	vi->addUsingStmt(4);
+	vi->addUsingStmt(6);
 	vi->addTNode(i1);
 	vi->addTNode(i4);
 	vtable->addVariable(vi);
@@ -231,9 +255,32 @@ void ModifiesClauseTest::testModifiesFixedSyn() {
 }
 
 void ModifiesClauseTest::testModifiesSynFixed() {
+	ModifiesClause* m1 = new ModifiesClause();
+	m1->setFirstArg("a");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_ASSIGN);
+	m1->setSecondArg("i");
+	m1->setSecondArgFixed(true);
+	m1->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m1->isValid());
 
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 2); // 1 and 6 mods i
+	//CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "i");
 }
 
 void ModifiesClauseTest::testModifiesSynSyn() {
+	ModifiesClause* m1 = new ModifiesClause();
+	m1->setFirstArg("a");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_ASSIGN);
+	m1->setSecondArg("i");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m1->isValid());
 
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 6);
 }
