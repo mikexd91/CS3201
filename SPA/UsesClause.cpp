@@ -67,7 +67,7 @@ Results UsesClause::evaluateStmtWildVarWild() {
 		Statement* currentStmt = stmtTIter->second;
 
 		// check if current stmt conforms to specific stmt type, if not, skip to next statement
-		if(!isSameType(this->firstArgType, currentStmt->getType()) {
+		if(!Utils::isSameType(this->firstArgType, currentStmt->getType())) {
 			continue;
 		}
 
@@ -104,9 +104,9 @@ Results UsesClause::evaluateStmtWildVarFixed() {
 		Results res = Results();
 		res.setClausePassed(true);
 		for(stmtIter=stmtSet.begin(); stmtIter!=stmtSet.end(); stmtIter++) {
-			Statement* currentStmt = stmtTable.getStmtObj(*stmtIter);
+			Statement* currentStmt = stmtTable->getStmtObj(*stmtIter);
 			// check if current stmt conforms to specific stmt type
-			if(isSameType(this->firstArgType, currentStmt->getType()) {
+			if(Utils::isSameType(this->firstArgType, currentStmt->getType())) {
 				res.addSingleResult(lexical_cast<string>(*stmtIter));
 			}
 		}

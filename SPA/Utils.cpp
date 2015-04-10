@@ -114,7 +114,7 @@ bool Utils::isValidName(string name) {
 	if (!isalpha(name[0])) {
 		return false;
 	} else {
-		for (int i = 1; i < name.size(); i++) {
+		for (size_t i = 1; i < name.size(); i++) {
 			if(!isalnum(name[i])) {
 				return false;
 			}
@@ -125,7 +125,7 @@ bool Utils::isValidName(string name) {
 
 //Check if a string is a valid constant
 bool Utils::isValidConstant(string number) {
-	for (int i = 0; i < number.size(); i++) {
+	for (size_t i = 0; i < number.size(); i++) {
 		if (!isdigit(number[i])) {
 			return false;
 		}
@@ -148,7 +148,7 @@ bool Utils::isSameType(string argType, NodeType stmt) {
 	//TODO implement all other types
 	if(argType==stringconst::ARG_STATEMENT
 		|| (argType==stringconst::ARG_WHILE && stmt==WHILE_STMT_)
-		|| (argType==stringconst::ARG_ASSIGN && stmt==ASSIGN_STMT_) {
+		|| (argType==stringconst::ARG_ASSIGN && stmt==ASSIGN_STMT_)) {
 
 		return true;
 	}
