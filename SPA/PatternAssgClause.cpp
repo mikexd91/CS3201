@@ -7,9 +7,11 @@
 #include <set>
 #include <stack>
 #include <iostream>
+#include "boost\lexical_cast.hpp"
 
 using namespace std;
 using namespace stringconst;
+using namespace boost;
 
 PatternAssgClause::PatternAssgClause(const string& syn) 
 	: PatternClause() {
@@ -113,7 +115,7 @@ Results PatternAssgClause::evaluateVarWildExprWild(vector<int>& assgNums) {
 	res->setNumOfSyn(1);
 	
 	// simply insert all assgs
-	for (int i = 0; i < assgNums.size(); i++) {
+	for (size_t i = 0; i < assgNums.size(); i++) {
 		long long stmtNum = assgNums.at(i);
 		string stmtNumStr = to_string(stmtNum);
 		res->addSingleResult(stmtNumStr);
@@ -136,12 +138,12 @@ Results PatternAssgClause::evaulateVarWildExpr(vector<int>& assgNums, string exp
 
 	// go through all assgs
 	// if match expr then insert
-	for (int i = 0; i < assgNums.size(); i++) {
-		long long stmtNum = assgNums.at(i);
+	for (size_t i = 0; i < assgNums.size(); i++) {
+		int stmtNum = assgNums.at(i);
 		Statement* assg = stable->getStmtObj(stmtNum);
 		AssgNode* assgNode = (AssgNode*) assg->getTNodeRef();
 		if (matchExpr(assgNode, getExpression())) {
-			string stmtNumStr = to_string(stmtNum);
+			string stmtNumStr = lexical_cast<string>(stmtNum);
 			res->addSingleResult(stmtNumStr);
 		}
 	}
@@ -163,12 +165,12 @@ Results PatternAssgClause::evaluateVarFixedExprWild(vector<int>& assgNums) {
 
 	// go through all assgs
 	// if match expr then insert
-	for (int i = 0; i < assgNums.size(); i++) {
-		long long stmtNum = assgNums.at(i);
+	for (size_t i = 0; i < assgNums.size(); i++) {
+		int stmtNum = assgNums.at(i);
 		Statement* assg = stable->getStmtObj(stmtNum);
 		AssgNode* assgNode = (AssgNode*) assg->getTNodeRef();
 		if (matchVar(assgNode, getVar())) {
-			string stmtNumStr = to_string(stmtNum);
+			string stmtNumStr = lexical_cast<string>(stmtNum);
 			res->addSingleResult(stmtNumStr);
 		}
 	}
@@ -190,12 +192,12 @@ Results PatternAssgClause::evaluateVarFixedExpr(vector<int>& assgNums, string ex
 
 	// go through all assgs
 	// if match expr then insert
-	for (int i = 0; i < assgNums.size(); i++) {
-		long long stmtNum = assgNums.at(i);
+	for (size_t i = 0; i < assgNums.size(); i++) {
+		int stmtNum = assgNums.at(i);
 		Statement* assg = stable->getStmtObj(stmtNum);
 		AssgNode* assgNode = (AssgNode*) assg->getTNodeRef();
 		if (matchVar(assgNode, getVar()) && matchExpr(assgNode, getExpression())) {
-			string stmtNumStr = to_string(stmtNum);
+			string stmtNumStr = lexical_cast<string>(stmtNum);
 			res->addSingleResult(stmtNumStr);
 		}
 	}
@@ -217,15 +219,15 @@ Results PatternAssgClause::evaluateVarExprWild(vector<int>& assgNums, vector<str
 	StmtTable* stable = StmtTable::getInstance();
 
 	// go through all assgs
-	for (int i = 0; i < assgNums.size(); i++) {
-		long long stmtNum = assgNums.at(i);
+	for (size_t i = 0; i < assgNums.size(); i++) {
+		int stmtNum = assgNums.at(i);
 		Statement* assg = stable->getStmtObj(stmtNum);
 		AssgNode* assgNode = (AssgNode*) assg->getTNodeRef();
 		// go through all vars
-		for (int j = 0; j < varNames.size(); j++) {
+		for (size_t j = 0; j < varNames.size(); j++) {
 			string var = varNames.at(j);
 			if (matchVar(assgNode, var)) {
-				string stmtNumStr = to_string(stmtNum);
+				string stmtNumStr = lexical_cast<string>(stmtNum);
 				res->addPairResult(stmtNumStr, var);
 			}
 		}
@@ -248,15 +250,15 @@ Results PatternAssgClause::evaluateVarExpr(vector<int>& assgNums, vector<string>
 	StmtTable* stable = StmtTable::getInstance();
 
 	// go through all assgs
-	for (int i = 0; i < assgNums.size(); i++) {
-		long long stmtNum = assgNums.at(i);
+	for (size_t i = 0; i < assgNums.size(); i++) {
+		int stmtNum = assgNums.at(i);
 		Statement* assg = stable->getStmtObj(stmtNum);
 		AssgNode* assgNode = (AssgNode*) assg->getTNodeRef();
 		// go through all vars
-		for (int j = 0; j < varNames.size(); j++) {
+		for (size_t j = 0; j < varNames.size(); j++) {
 			string var = varNames.at(j);
 			if (matchVar(assgNode, var) && matchExpr(assgNode, getExpression())) {
-				string stmtNumStr = to_string(stmtNum);
+				string stmtNumStr = lexical_cast<string>(stmtNum);
 				res->addPairResult(stmtNumStr, var);
 			}
 		}
@@ -290,7 +292,7 @@ bool PatternAssgClause::matchExpr(AssgNode* assg, string expr) {
 	//std::stack<string> tempstack = stack<string>();
 	//std::stack<string> rpnstack = stack<string>();
 	std::vector<string> rpnarr = vector<string>();
-	for (int i = 0; i < rpn.length(); i++) {
+	for (size_t i = 0; i < rpn.length(); i++) {
 		string token = rpn.substr(i, 1);
 		if (token != " ") {
 			//tempstack.push(token);
@@ -325,7 +327,7 @@ bool PatternAssgClause::matchExpr(AssgNode* assg, string expr) {
 	// compare rpn with dfs nodes
 	// once start to match rpn must match all the way
 	// then only considered subtree
-	for (int compared = 0; compared < rpnarr.size() && i < 9999; compared++) {
+	for (size_t compared = 0; compared < rpnarr.size() && i < 9999; compared++) {
 		if (nodestack.empty()) {
 			return false;
 		}

@@ -2,10 +2,12 @@
 #include "StmtTable.h"
 #include "VarTable.h"
 #include "Utils.h"
+#include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
 #include <iostream>
 
 using namespace stringconst;
+using namespace boost;
 
 ModifiesClause::ModifiesClause(void):Clause(MODIFIES_){
 }
@@ -124,9 +126,9 @@ Results ModifiesClause::evaluateSynFixed(string stmt, string varName) {
 	}
 
 	BOOST_FOREACH(auto p, allStmt) {
-		long long stmtNum = p->getStmtNum();
+		int stmtNum = p->getStmtNum();
 		if (isModifies(stmtNum, varName)) {
-			res->addSingleResult(to_string(stmtNum));
+			res->addSingleResult(lexical_cast<string>(stmtNum));
 		}
 	}
 
@@ -158,13 +160,13 @@ Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
 	//cout << endl << "all stmt size " << allStmt.size() << endl;
 
 	BOOST_FOREACH(auto p, allStmt) {
-		long long stmtNum = p->getStmtNum();
+		int stmtNum = p->getStmtNum();
 
 		//BOOST_FOREACH(string varName, allVarNames) {
 		for (size_t i = 0; i < allVarNames->size(); i++) {
 			string varName = allVarNames->at(i);
 			if (isModifies(stmtNum, varName)) {
-				res->addPairResult(to_string(stmtNum), varName);
+				res->addPairResult(lexical_cast<string>(stmtNum), varName);
 			}
 		}
 	}
