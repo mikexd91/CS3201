@@ -1,16 +1,18 @@
 #include <cppunit/config/SourcePrefix.h>
 #include "ModifiesClauseTest.h"
-#include "../SPA/PatternAssgClause.h"
+#include "../SPA/ModifiesClause.h"
 #include "../SPA/AST.h"
 #include "../SPA/AssgNode.h"
 #include "../SPA/ConstNode.h"
 #include "../SPA/OpNode.h"
 #include "../SPA/StmtTable.h"
 #include "../SPA/VarTable.h"
+#include "../SPA/Utils.h"
 
 #include <iostream>
 #include <string>
 
+using namespace stringconst;
 using namespace std;
 
 void ModifiesClauseTest::setUp() {
@@ -167,7 +169,7 @@ void ModifiesClauseTest::setUp() {
 	vtable->addVariable(vj);
 
 	Variable* vk = new Variable("k");
-	vk->addModifyingStmt(2);
+	vk->addModifyingStmt(3);
 	vk->addUsingStmt(5);
 	vk->addTNode(k3);
 	vtable->addVariable(vk);
@@ -197,15 +199,38 @@ void ModifiesClauseTest::tearDown() {
 CPPUNIT_TEST_SUITE_REGISTRATION( ModifiesClauseTest );
 
 
-void ModifiesClauseTest::testModifiesNumNum() {
+void ModifiesClauseTest::testModifiesFixedFixed() {
+	ModifiesClause* m1 = new ModifiesClause();
+	m1->setFirstArg("1");
+	m1->setFirstArgFixed(true);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("i");
+	m1->setSecondArgFixed(true);
+	m1->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m1->isValid());
+
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
 
 }
 
-void ModifiesClauseTest::testModifiesSynNum() {
+void ModifiesClauseTest::testModifiesFixedSyn() {
+	ModifiesClause* m1 = new ModifiesClause();
+	m1->setFirstArg("1");
+	m1->setFirstArgFixed(true);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("f");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m1->isValid());
 
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
+	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "i");
 }
 
-void ModifiesClauseTest::testModifiesNumSyn() {
+void ModifiesClauseTest::testModifiesSynFixed() {
 
 }
 

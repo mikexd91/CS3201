@@ -87,22 +87,63 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FollowsClauseTest );
 void FollowsClauseTest::testIsFollows() { 
 
 	FollowsClause fol = *new FollowsClause();
-	fol.setFirstArg("s");
-	fol.setSecondArg("1");
+	fol.setFirstArg("a1");
+	fol.setSecondArg("a2");
 	
-	fol.setFirstArgFixed(true);
+	fol.setFirstArgFixed(false);
 	fol.setSecondArgFixed(false);
 
-	fol.setFirstArgType(stringconst::ARG_STATEMENT);
-	fol.setSecondArgType(stringconst::ARG_STATEMENT);
+	fol.setFirstArgType(stringconst::ARG_ASSIGN);
+	fol.setSecondArgType(stringconst::ARG_ASSIGN);
+	//
+	bool isFirstFixed = fol.getFirstArgFixed();
+	bool isSecondFixed = fol.getSecondArgFixed();
 
-	//string gtFollows = fol.getFollows("1", stringconst::ARG_STATEMENT);
-	string gtFollowsBy = fol.getFollowedBy("4", stringconst::ARG_STATEMENT);
+	string firstArgSyn = fol.getFirstArg();
+	string secondArgSyn = fol.getSecondArg();
 
-	//cout << "JIAWEI: ";
-	//cout << gtFollowsBy;
-	//cout << " end";
+	string firstArgType = fol.getFirstArgType();
+	string secondArgType = fol.getSecondArgType();
+	//
+	Results r = fol.evaluate();
+	/*
+	fol.followsBothUnfixedArg(stringconst::ARG_STATEMENT,
+		stringconst::ARG_STATEMENT, r);
+	*/
+	bool passed = r.isClausePassed();
 	
+	int nSyn = r.getNumOfSyn();
+	string syn1 = r.getFirstClauseSyn();
+	string syn2 = r.getSecondClauseSyn();
+	
+	cout << "JIAWEI: ";
+	cout << nSyn;
+	cout << ": ";
+	cout << syn1;
+	cout << ", ";
+	cout << syn2;
+	cout << " end";
+	
+	
+	cout << "JIAWEI: ";
+	cout << passed;
+	cout << " end";
+	
+	
+	
+	int size = r.getPairResults().size();
+	string left = r.getPairResults().at(1).first;
+	string right = r.getPairResults().at(1).second;
+
+	cout << "JIAWEI: ";
+	cout << size;
+	cout << ": ";
+	cout << left;
+	cout << ", ";
+	cout << right;
+	cout << " end";
+	
+
 	//CPPUNIT_ASSERT(fol.isFollows("1", "2"));
 	//CPPUNIT_ASSERT(resObj.getSinglesResults().at(0) == res);
 	//CPPUNIT_ASSERT(!fol.isFollows(2, 1));
