@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Clause.h"
+#include "Statement.h"
+
 class UsesClause : public Clause{
 public:
 	UsesClause(void);
@@ -15,4 +17,5 @@ private:
 	Results evaluateStmtWildVarFixed();			// Case: Uses(s,'x') - stmt wild, var fixed
 	Results evaluateStmtFixedVarWild();			// Case: Uses(1,v) - stmt fixed, var wild
 	Results evaluateStmtFixedVarFixed();		// Case: Uses(1,'x') - stmt fixed, var fixed
+
 };

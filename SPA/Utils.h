@@ -5,6 +5,8 @@
 #include <queue>
 #include <stack>
 
+#include "Statement.h"
+
 using namespace std;
 
 class Utils
@@ -21,7 +23,7 @@ public:
 	static bool isValidSymbol(string);
 	static bool isValidName(string);
 	static bool isValidConstant(string);
-	
+	static bool isSameType(string, NodeType);
 };
 
 namespace UtilsConstants {

@@ -66,6 +66,11 @@ Results UsesClause::evaluateStmtWildVarWild() {
 	for(stmtTIter=stmtTable->getIterator(); stmtTIter!=stmtTable->getEnd(); stmtTIter++) {
 		Statement* currentStmt = stmtTIter->second;
 
+		// check if current stmt conforms to specific stmt type
+		if(isSameType(this->firstArgType, currentStmt->getType()) {
+			res.addSingleResult(lexical_cast<string>(*stmtIter));
+		}
+
 		// for each stmt generate result pair for vars that it uses
 		Statement::UsesSet currentUseSet = currentStmt->getUses();
 		Statement::UsesSet::iterator useIter;
@@ -99,7 +104,11 @@ Results UsesClause::evaluateStmtWildVarFixed() {
 		Results res = Results();
 		res.setClausePassed(true);
 		for(stmtIter=stmtSet.begin(); stmtIter!=stmtSet.end(); stmtIter++) {
-			res.addSingleResult(lexical_cast<string>(*stmtIter));
+			Statement* currentStmt = stmtTable.getStmtObj(*stmtIter);
+			// check if current stmt conforms to specific stmt type
+			if(isSameType(this->firstArgType, currentStmt->getType()) {
+				res.addSingleResult(lexical_cast<string>(*stmtIter));
+			}
 		}
 
 		return res;

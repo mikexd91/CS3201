@@ -142,3 +142,16 @@ bool Utils::isValidFactor(string factor) {
 bool Utils::isValidSymbol(string symbol) {
 	return symbol == "+" || symbol == "-" || symbol == "*";
 }
+
+//Checks if the arg type and statement type are matching
+bool Utils::isSameType(string argType, NodeType stmt) {
+	//TODO implement all other types
+	if(argType==stringconst::ARG_STATEMENT
+		|| (argType==stringconst::ARG_WHILE && stmt==WHILE_STMT_)
+		|| (argType==stringconst::ARG_ASSIGN && stmt==ASSIGN_STMT_) {
+
+		return true;
+	}
+
+	return false;
+}
