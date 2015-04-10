@@ -83,6 +83,7 @@ Results ModifiesClause::evaluate(void) {
 Results ModifiesClause::evaluateFixedFixed(int stmtNum, string varName) {
 	Results* res = new Results();
 	res->setClausePassed(isModifies(stmtNum, varName));
+	res->setNumOfSyn(0);
 
 	return *res;
 }
@@ -90,6 +91,7 @@ Results ModifiesClause::evaluateFixedFixed(int stmtNum, string varName) {
 Results ModifiesClause::evaluateFixedSyn(int stmtNum, string var) {
 	Results* res = new Results();
 	res->setFirstClauseSyn(var);
+	res->setNumOfSyn(1);
 	
 	VarTable* vtable = VarTable::getInstance();
 	vector<string>* allVarNames = vtable->getAllVarNames();
@@ -108,6 +110,7 @@ Results ModifiesClause::evaluateFixedSyn(int stmtNum, string var) {
 Results ModifiesClause::evaluateSynFixed(string stmt, string varName) {
 	Results* res = new Results();
 	res->setFirstClauseSyn(stmt);
+	res->setNumOfSyn(1);
 
 	StmtTable* stable = StmtTable::getInstance();
 	set<Statement*> allStmt;	
@@ -136,6 +139,7 @@ Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
 	Results* res = new Results();
 	res->setFirstClauseSyn(stmt);
 	res->setSecondClauseSyn(var);
+	res->setNumOfSyn(2);
 
 	StmtTable* stable = StmtTable::getInstance();
 	set<Statement*> allStmt;
