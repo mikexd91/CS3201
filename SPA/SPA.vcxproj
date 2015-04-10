@@ -50,6 +50,7 @@
     <ClInclude Include="ProgNode.h" />
     <ClInclude Include="Query.h" />
     <ClInclude Include="QueryEvaluator.h" />
+    <ClInclude Include="QueryParser.h" />
     <ClInclude Include="Results.h" />
     <ClInclude Include="Statement.h" />
     <ClInclude Include="StmtLstNode.h" />
@@ -94,6 +95,7 @@
     <ClCompile Include="ProgNode.cpp" />
     <ClCompile Include="Query.cpp" />
     <ClCompile Include="QueryEvaluator.cpp" />
+    <ClCompile Include="QueryParser.cpp" />
     <ClCompile Include="Results.cpp" />
     <ClCompile Include="Statement.cpp" />
     <ClCompile Include="StmtLstNode.cpp" />

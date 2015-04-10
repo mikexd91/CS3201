@@ -27,7 +27,7 @@ private:
 	void parseSelect(vector<string>, Query);
 
 	Query queryProcessor(string);
-	void parseDeclarations(Query, vector<string);
+	void parseDeclarations(Query, vector<string>);
 	void parseSelectSynonyms(Query, queue<string>);
 	void parseClause(Query, queue<string>);
 	void parsePattern(Query, queue<string>);
