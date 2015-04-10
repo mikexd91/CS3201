@@ -26,3 +26,9 @@ struct InvalidArgumentException : public exception{
 		return "Argument invalid";
 	}
 };
+
+struct UnexpectedEndException : public exception{
+	const char * what() const throw(){
+		return "Unexpected end of query!";
+	}
+};
