@@ -66,9 +66,9 @@ Results UsesClause::evaluateStmtWildVarWild() {
 	for(stmtTIter=stmtTable->getIterator(); stmtTIter!=stmtTable->getEnd(); stmtTIter++) {
 		Statement* currentStmt = stmtTIter->second;
 
-		// check if current stmt conforms to specific stmt type
-		if(isSameType(this->firstArgType, currentStmt->getType()) {
-			res.addSingleResult(lexical_cast<string>(*stmtIter));
+		// check if current stmt conforms to specific stmt type, if not, skip to next statement
+		if(!isSameType(this->firstArgType, currentStmt->getType()) {
+			continue;
 		}
 
 		// for each stmt generate result pair for vars that it uses
