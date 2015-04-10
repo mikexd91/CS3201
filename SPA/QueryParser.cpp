@@ -11,7 +11,7 @@
 #include "ParentClause.h"
 #include "ParentStarClause.h"
 #include "PatternClause.h"
-#include "UsesClause.h"
+//#include "UsesClause.h"
 #include "PatternAssgClause.h"
 #include "boost/unordered_map.hpp"
 #include <queue>
@@ -24,19 +24,13 @@ using namespace std;
 using boost::unordered_map;
 using namespace boost;	
 
-QueryParser::QueryParser(void){
-}
-
-QueryParser::~QueryParser(void){
-}
-
-string removeSpace(string s){
+string QueryParser::removeSpace(string s){
 	std::string::iterator end_pos = std::remove(s.begin(), s.end(), ' ');
 	s.erase(end_pos, s.end());
 	return s;
 }
 
-vector<string> split(string s, char delim, vector<string> elems) {
+vector<string> QueryParser::split(string s, char delim, vector<string> elems) {
     stringstream ss(s);
     string item;
     while (getline(ss, item, delim)) {
@@ -45,7 +39,7 @@ vector<string> split(string s, char delim, vector<string> elems) {
     return elems;
 }
 
-queue<string> queueBuilder(string input, char delim){
+queue<string> QueryParser::queueBuilder(string input, char delim){
 	queue<string> elems;
 	stringstream ss(input);
 	string item;
@@ -55,7 +49,7 @@ queue<string> queueBuilder(string input, char delim){
 	return elems;
 }
 
-string queueToString(queue<string> input){
+string QueryParser::queueToString(queue<string> input){
 	string item = Utils::getWordAndPop(input);
 	stringstream ss("");
 	ss << item;
@@ -66,13 +60,13 @@ string queueToString(queue<string> input){
 	return ss.str();
 }
 
-vector<string> tokeniser(string input, char delim){
+vector<string> QueryParser::tokeniser(string input, char delim){
 	vector<string> elems;
     split(input, delim, elems);
     return elems;
 }
 
-bool containsAny(string s, vector<string> list){
+bool QueryParser::containsAny(string s, vector<string> list){
 	for (size_t i=0; i<list.size(); i++){
 		string current = list.at(i);
 		if (contains(s, current)){
@@ -82,7 +76,7 @@ bool containsAny(string s, vector<string> list){
 	return false;
 }
 
-bool containsClauseType(string s){
+bool QueryParser::containsClauseType(string s){
 	vector<string> clauseVector;
 	clauseVector.push_back(stringconst::TYPE_FOLLOWS);
 	clauseVector.push_back(stringconst::TYPE_PARENT);
@@ -93,7 +87,7 @@ bool containsClauseType(string s){
 	return containsAny(s, clauseVector);
 }
 
-bool containsKeyword(string s){
+bool QueryParser::containsKeyword(string s){
 	vector<string> wordVector;
 	wordVector.push_back(stringconst::STRING_SUCH);
 	wordVector.push_back(stringconst::STRING_THAT);
@@ -102,7 +96,7 @@ bool containsKeyword(string s){
 	return containsAny(s, wordVector);
 }
 
-string getClauseString(string s){
+string QueryParser::getClauseString(string s){
 	vector<string> clauseVector;
 	clauseVector.push_back(stringconst::TYPE_FOLLOWS);
 	clauseVector.push_back(stringconst::TYPE_PARENT);
@@ -119,7 +113,7 @@ string getClauseString(string s){
 	return stringconst::STRING_EMPTY;
 }
 
-Clause* createCorrectClause(string type){
+Clause* QueryParser::createCorrectClause(string type){
 	Clause* c;
 	if (type == stringconst::TYPE_FOLLOWS){
 		FollowsClause* clause = new FollowsClause();
@@ -143,30 +137,7 @@ Clause* createCorrectClause(string type){
 	return c;
 }
 
-Query QueryParser::queryProcessor(string input){
-	Query* output = new Query();
-	vector<string> splitBySC = tokeniser(input, ';');
-	int numDeclarations = splitBySC.size() - 1;
-	string selectStatement = splitBySC.at(splitBySC.size()-1);
-	queue<string> selectQueue = queueBuilder(selectStatement, ' ');
-	splitBySC.pop_back();
-	parseDeclarations(*output, splitBySC);
-	while(!selectQueue.empty()){
-		string current = selectQueue.front();
-		if (current == stringconst::STRING_SELECT){
-			parseSelectSynonyms(*output, selectQueue);
-		} else if (containsClauseType(current)){
-			parseClause(*output, selectQueue);
-		} else if (contains(current, stringconst::TYPE_PATTERN)){
-			parsePattern(*output, selectQueue);
-		} else if (containsKeyword(current)){
-			selectQueue.pop();
-		}
-	}
-	return *output;
-}
-
-void parseDeclarations(Query* query, vector<string> list){
+void QueryParser::parseDeclarations(Query* query, vector<string> list){
 	for (size_t i=0; i<list.size(); i++){
 		string current = list.at(i);
 		vector<string> tokens = tokeniser(current, ',');
@@ -190,7 +161,7 @@ void parseDeclarations(Query* query, vector<string> list){
 	}
 }
 
-void parseSelectSynonyms(Query* query, queue<string> line){
+void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string first = Utils::getWordAndPop(line);
 	if (first != stringconst::STRING_SELECT){
@@ -216,7 +187,7 @@ void parseSelectSynonyms(Query* query, queue<string> line){
 	}
 }
 
-void parseClause(Query* query, queue<string> line){
+void QueryParser::parseClause(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string current = Utils::getWordAndPop(line);
 	if (line.empty()){
@@ -284,7 +255,7 @@ void parseClause(Query* query, queue<string> line){
 	line.pop();
 }
 
-void parsePattern(Query* query, queue<string> line){
+void QueryParser::parsePattern(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string current = Utils::getWordAndPop(line);
 	if (line.empty()){
@@ -354,4 +325,28 @@ void parsePattern(Query* query, queue<string> line){
 	string expr = queueToString(exprRPN);
 	PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expr);
 	query->addClause(newClause);
+} 
+
+Query QueryParser::queryProcessor(string input){
+	Query* output = new Query();
+	vector<string> splitBySC = tokeniser(input, ';');
+	int numDeclarations = splitBySC.size() - 1;
+	string selectStatement = splitBySC.at(splitBySC.size()-1);
+	queue<string> selectQueue = queueBuilder(selectStatement, ' ');
+	splitBySC.pop_back();
+	parseDeclarations(output, splitBySC);
+	while(!selectQueue.empty()){
+		string current = selectQueue.front();
+		if (current == stringconst::STRING_SELECT){
+			parseSelectSynonyms(output, selectQueue);
+		} else if (containsClauseType(current)){
+			parseClause(output, selectQueue);
+		} else if (contains(current, stringconst::TYPE_PATTERN)){
+			parsePattern(output, selectQueue);
+		} else if (containsKeyword(current)){
+			selectQueue.pop();
+		}
+	}
+	return *output;
 }
+
