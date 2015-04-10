@@ -50,8 +50,6 @@ Results UsesClause::evaluate(void) {
 	} else {
 		return evaluateStmtFixedVarFixed();
 	}
-
-	return Results();
 }
 
 
