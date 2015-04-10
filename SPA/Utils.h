@@ -5,6 +5,8 @@
 #include <queue>
 #include <stack>
 
+#include "Statement.h"
+
 using namespace std;
 
 class Utils
@@ -21,7 +23,7 @@ public:
 	static bool isValidSymbol(string);
 	static bool isValidName(string);
 	static bool isValidConstant(string);
-	
+	static bool isSameType(string, NodeType);
 };
 
 namespace UtilsConstants {
@@ -52,10 +54,10 @@ namespace stringconst{
 	string const TYPE_FOLLOWS_STAR = "Follows*";
 	string const TYPE_PARENT_STAR = "Parent*";
 
-	string const ARG_WHILE = "while";
-	string const ARG_STATEMENT = "statement";
-	string const ARG_ASSIGN = "assign";
-	string const ARG_VARIABLE = "variable";
+	string const ARG_WHILE = "While";
+	string const ARG_STATEMENT = "Statement";
+	string const ARG_ASSIGN = "Assign";
+	string const ARG_VARIABLE = "Variable";
 	string const ARG_BOOLEAN = "boolean";
 
 	const string DELIM_STRING = " ;={}";

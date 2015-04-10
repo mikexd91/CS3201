@@ -110,6 +110,7 @@ Results PatternAssgClause::evaluateVarWildExprWild(vector<int>& assgNums) {
 	// return all a
 	Results* res = new Results();
 	res->setFirstClauseSyn(getSynonym());
+	res->setNumOfSyn(1);
 	
 	// simply insert all assgs
 	for (int i = 0; i < assgNums.size(); i++) {
@@ -129,6 +130,7 @@ Results PatternAssgClause::evaulateVarWildExpr(vector<int>& assgNums, string exp
 	// return all a that match expr
 	Results* res = new Results();
 	res->setFirstClauseSyn(getSynonym());
+	res->setNumOfSyn(1);
 
 	StmtTable* stable = StmtTable::getInstance();
 
@@ -155,6 +157,7 @@ Results PatternAssgClause::evaluateVarFixedExprWild(vector<int>& assgNums) {
 	// return all a using var
 	Results* res = new Results();
 	res->setFirstClauseSyn(getSynonym());
+	res->setNumOfSyn(1);
 
 	StmtTable* stable = StmtTable::getInstance();
 
@@ -181,6 +184,7 @@ Results PatternAssgClause::evaluateVarFixedExpr(vector<int>& assgNums, string ex
 	// return all a using var that match expr
 	Results* res = new Results();
 	res->setFirstClauseSyn(getSynonym());
+	res->setNumOfSyn(1);
 
 	StmtTable* stable = StmtTable::getInstance();
 
@@ -208,6 +212,7 @@ Results PatternAssgClause::evaluateVarExprWild(vector<int>& assgNums, vector<str
 	Results* res = new Results();
 	res->setFirstClauseSyn(getSynonym());
 	res->setSecondClauseSyn(getVar());
+	res->setNumOfSyn(2);
 
 	StmtTable* stable = StmtTable::getInstance();
 
@@ -238,6 +243,7 @@ Results PatternAssgClause::evaluateVarExpr(vector<int>& assgNums, vector<string>
 	Results* res = new Results();
 	res->setFirstClauseSyn(getSynonym());
 	res->setSecondClauseSyn(getVar());
+	res->setNumOfSyn(2);
 
 	StmtTable* stable = StmtTable::getInstance();
 

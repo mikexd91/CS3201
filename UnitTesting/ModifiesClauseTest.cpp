@@ -15,6 +15,8 @@
 using namespace stringconst;
 using namespace std;
 
+// note: while stmt not tested yet
+
 void ModifiesClauseTest::setUp() {
 	/* testing this source
 	procedure zumba {
@@ -23,6 +25,7 @@ void ModifiesClauseTest::setUp() {
 		k = 3;		//3
 		w = i;		//4
 		x = w+k;	//5
+		i = i;		//6
 	}
 	*/
 
@@ -84,6 +87,13 @@ void ModifiesClauseTest::setUp() {
 	assg5->linkExprNode(plus5);
 	procsl->linkStmtNode(assg5);
 
+	AssgNode* assg6 = new AssgNode(6);
+	VarNode* i6 = new VarNode("i");
+	assg6->linkVarNode(i6);
+	VarNode* i6_2 = new VarNode("i");
+	assg6->linkExprNode(i6_2);
+	procsl->linkStmtNode(assg6);
+
 	ast->addProcNode(proc);
 
 	// to set up the stmttable manually
@@ -142,6 +152,7 @@ void ModifiesClauseTest::setUp() {
 	stmt5->setStmtNum(5);
 	stmt5->setType(ASSIGN_STMT_);
 	stmt5->setFollowsBefore(4);
+	stmt5->setFollowsAfter(6);
 	string xvar = "x";
 	set<string> mods5 = set<string>();
 	mods5.emplace(xvar);
@@ -153,12 +164,27 @@ void ModifiesClauseTest::setUp() {
 	stmt5->setTNodeRef(assg5);
 	stable->addStmt(stmt5);
 
+	Statement* stmt6 = new Statement();
+	stmt6->setStmtNum(6);
+	stmt6->setType(ASSIGN_STMT_);
+	stmt6->setFollowsBefore(5);
+	set<string> mods6 = set<string>();
+	mods6.emplace(ivar);
+	stmt6->setModifies(mods6);
+	set<string> uses6 = set<string>();
+	uses6.emplace(ivar);
+	stmt6->setUses(uses6);
+	stmt6->setTNodeRef(assg6);
+	stable->addStmt(stmt6);
+
 	// to set up the vartable manually
 	VarTable* vtable = VarTable::getInstance();
 
 	Variable* vi = new Variable("i");
 	vi->addModifyingStmt(1);
+	vi->addModifyingStmt(6);
 	vi->addUsingStmt(4);
+	vi->addUsingStmt(6);
 	vi->addTNode(i1);
 	vi->addTNode(i4);
 	vtable->addVariable(vi);
@@ -200,6 +226,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ModifiesClauseTest );
 
 
 void ModifiesClauseTest::testModifiesFixedFixed() {
+	// pass
 	ModifiesClause* m1 = new ModifiesClause();
 	m1->setFirstArg("1");
 	m1->setFirstArgFixed(true);
@@ -211,10 +238,37 @@ void ModifiesClauseTest::testModifiesFixedFixed() {
 
 	Results r1 = m1->evaluate();
 	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 0);
 
+	// fail targeting wrong var
+	ModifiesClause* m2 = new ModifiesClause();
+	m2->setFirstArg("1");
+	m2->setFirstArgFixed(true);
+	m2->setFirstArgType(ARG_WHILE);
+	m2->setSecondArg("v");
+	m2->setSecondArgFixed(true);
+	m2->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m2->isValid());
+
+	Results r2 = m2->evaluate();
+	CPPUNIT_ASSERT(!r2.isClausePassed());
+
+	// fail targeting exceed stmt num
+	ModifiesClause* m3 = new ModifiesClause();
+	m3->setFirstArg("7");
+	m3->setFirstArgFixed(true);
+	m3->setFirstArgType(ARG_WHILE);
+	m3->setSecondArg("i");
+	m3->setSecondArgFixed(true);
+	m3->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m3->isValid());
+
+	Results r3 = m3->evaluate();
+	CPPUNIT_ASSERT(!r3.isClausePassed());
 }
 
 void ModifiesClauseTest::testModifiesFixedSyn() {
+	// pass
 	ModifiesClause* m1 = new ModifiesClause();
 	m1->setFirstArg("1");
 	m1->setFirstArgFixed(true);
@@ -228,12 +282,97 @@ void ModifiesClauseTest::testModifiesFixedSyn() {
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "i");
+
+	// fail targeting stmt num exceed
+	ModifiesClause* m2 = new ModifiesClause();
+	m2->setFirstArg("7");
+	m2->setFirstArgFixed(true);
+	m2->setFirstArgType(ARG_WHILE);
+	m2->setSecondArg("v");
+	m2->setSecondArgFixed(false);
+	m2->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m2->isValid());
+
+	Results r2 = m2->evaluate();
+	CPPUNIT_ASSERT(!r2.isClausePassed());
 }
 
 void ModifiesClauseTest::testModifiesSynFixed() {
+	// pass
+	ModifiesClause* m1 = new ModifiesClause();
+	m1->setFirstArg("a");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_ASSIGN);
+	m1->setSecondArg("i");
+	m1->setSecondArgFixed(true);
+	m1->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m1->isValid());
 
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 2); // 1 and 6 mods i
+	for (int i = 0; i < r1.getSinglesResults().size(); i++) {
+		if (r1.getSinglesResults().at(i) == "1" 
+			|| r1.getSinglesResults().at(i) == "6") {
+			CPPUNIT_ASSERT(true);
+		} else {
+			CPPUNIT_ASSERT(false);
+		}
+	}
+	
+	// fail targeting wrong statement type
+	ModifiesClause* m2 = new ModifiesClause();
+	m2->setFirstArg("a");
+	m2->setFirstArgFixed(false);
+	m2->setFirstArgType(ARG_WHILE);
+	m2->setSecondArg("i");
+	m2->setSecondArgFixed(fixed);
+	m2->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m2->isValid());
+
+	Results r2 = m2->evaluate();
+	CPPUNIT_ASSERT(!r2.isClausePassed());
+
+	// fail targeting var not exist
+	ModifiesClause* m3 = new ModifiesClause();
+	m3->setFirstArg("a");
+	m3->setFirstArgFixed(false);
+	m3->setFirstArgType(ARG_STATEMENT);
+	m3->setSecondArg("q");
+	m3->setSecondArgFixed(true);
+	m3->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m3->isValid());
+
+	Results r3 = m3->evaluate();
+	CPPUNIT_ASSERT(!r3.isClausePassed());
 }
 
 void ModifiesClauseTest::testModifiesSynSyn() {
+	// pass 
+	ModifiesClause* m1 = new ModifiesClause();
+	m1->setFirstArg("a");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_ASSIGN);
+	m1->setSecondArg("i");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m1->isValid());
 
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getPairResults().size() == 6);
+
+	// fail targeting wrong stmt type
+	ModifiesClause* m2 = new ModifiesClause();
+	m2->setFirstArg("a");
+	m2->setFirstArgFixed(false);
+	m2->setFirstArgType(ARG_WHILE);
+	m2->setSecondArg("i");
+	m2->setSecondArgFixed(false);
+	m2->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m2->isValid());
+
+	Results r2 = m2->evaluate();
+	CPPUNIT_ASSERT(!r2.isClausePassed());
+	//CPPUNIT_ASSERT(r1.getPairResults().size() == 6);
 }
