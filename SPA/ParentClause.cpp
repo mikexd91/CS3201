@@ -35,9 +35,9 @@ set<int> ParentClause::getChildren(string stmt, string stmtArgType) {
 	} else {
 		set<int> stmtSet = stmtObj->getChildren();
 		if (stmtArgType == stringconst::ARG_ASSIGN) {
-			return Utils::filterStatements(stmtSet, NodeType::ASSIGN_STMT_);
+			return Utils::filterStatements(stmtSet, ASSIGN_STMT_);
 		} else if (stmtArgType == stringconst::ARG_WHILE ) {
-			return Utils::filterStatements(stmtSet, NodeType::WHILE_STMT_);
+			return Utils::filterStatements(stmtSet, WHILE_STMT_);
 		} else {
 			assert(stmtArgType == stringconst::ARG_STATEMENT);
 			return stmtSet;
@@ -60,7 +60,7 @@ void ParentClause::addParentPairToResult(set<Statement*> containerStmts, NodeTyp
 		Statement* containerStmt = *containerIter;
 		string containerStmtNo = boost::lexical_cast<string>(containerStmt->getStmtNum());
 		set<int> children;
-		if (type == NodeType::NULL_) {
+		if (type == NULL_) {
 			children = containerStmt->getChildren();
 		} else {
 			children = Utils::filterStatements(containerStmt->getChildren(), type);

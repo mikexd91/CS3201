@@ -154,6 +154,7 @@ bool Utils::isSameType(string argType, NodeType stmt) {
 	}
 
 	return false;
+}
 
 //filters the set to retrieve the statement of the specified type
 set<int> Utils::filterStatements(set<int> stmtSet, NodeType type) {

@@ -1,7 +1,7 @@
 #include "ParentStarClause.h"
 #include "Utils.h"
 
-ParentStarClause::ParentStarClause(void):Clause(PARENTSTAR_){
+ParentStarClause::ParentStarClause(void):ParentClause(){
 }
 
 ParentStarClause::~ParentStarClause(void){
