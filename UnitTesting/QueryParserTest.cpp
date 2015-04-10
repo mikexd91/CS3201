@@ -12,7 +12,7 @@
 #include "../SPA/ParentClause.h"
 #include "../SPA/ParentStarClause.h"
 #include "../SPA/PatternClause.h"
-//#include "../SPA/UsesClause.h"
+#include "../SPA/UsesClause.h"
 #include "../SPA/PatternAssgClause.h"
 #include "boost/unordered_map.hpp"
 #include <queue>

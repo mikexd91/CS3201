@@ -11,7 +11,7 @@
 #include "ParentClause.h"
 #include "ParentStarClause.h"
 #include "PatternClause.h"
-//#include "UsesClause.h"
+#include "UsesClause.h"
 #include "PatternAssgClause.h"
 #include "boost/unordered_map.hpp"
 #include <queue>
