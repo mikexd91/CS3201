@@ -332,18 +332,41 @@ void TestOne::testStmtTableAllWhile() {
 
 	set<Statement*> whileStmts = stmtTable->getWhileStmts();
 	CPPUNIT_ASSERT(whileStmts.size() == 4);
-	
-	vector<Statement*> vectorWhileStmts;
+
 	set<Statement*>::iterator iter;
 
 	for(iter = whileStmts.begin(); iter != whileStmts.end(); iter++) {
 		Statement* stmt = *iter;
-		vectorWhileStmts.push_back(stmt);
+		int stmtNum = stmt->getStmtNum();
+		switch(stmtNum) {
+			case 1: {
+				string arrInit[] = {"x"};
+				set<string> usesSet(arrInit, arrInit + 1);
+				CPPUNIT_ASSERT(stmt->getUses() == usesSet);
+				break;
+			}
+			case 2: {
+				string arrInit[] = {"y"};
+				set<string> usesSet(arrInit, arrInit + 1);
+				CPPUNIT_ASSERT(stmt->getUses() == usesSet);
+				break;
+			}
+			case 3: {
+				string arrInit[] = {"w", "z"};
+				set<string> usesSet(arrInit, arrInit + 2);
+				CPPUNIT_ASSERT(stmt->getUses() == usesSet);
+				break;
+			}
+			case 5: {
+				string arrInit[] = {"w"};
+				set<string> usesSet(arrInit, arrInit + 1);
+				stmt->getUses();
+				CPPUNIT_ASSERT(stmt->getUses() == usesSet);
+				break;
+			}
+			default: 
+				break;
+		}
 	}
-
-	CPPUNIT_ASSERT(vectorWhileStmts[0]->getType() == NodeType::WHILE_STMT_);
-	CPPUNIT_ASSERT(vectorWhileStmts[1]->getType() == NodeType::WHILE_STMT_);
-	CPPUNIT_ASSERT(vectorWhileStmts[2]->getType() == NodeType::WHILE_STMT_);
-	CPPUNIT_ASSERT(vectorWhileStmts[3]->getType() == NodeType::WHILE_STMT_);
 }
 
