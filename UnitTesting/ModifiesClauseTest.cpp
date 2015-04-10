@@ -15,6 +15,8 @@
 using namespace stringconst;
 using namespace std;
 
+// note: while stmt not tested yet
+
 void ModifiesClauseTest::setUp() {
 	/* testing this source
 	procedure zumba {
@@ -224,6 +226,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ModifiesClauseTest );
 
 
 void ModifiesClauseTest::testModifiesFixedFixed() {
+	// pass
 	ModifiesClause* m1 = new ModifiesClause();
 	m1->setFirstArg("1");
 	m1->setFirstArgFixed(true);
@@ -235,10 +238,37 @@ void ModifiesClauseTest::testModifiesFixedFixed() {
 
 	Results r1 = m1->evaluate();
 	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 0);
 
+	// fail targeting wrong var
+	ModifiesClause* m2 = new ModifiesClause();
+	m2->setFirstArg("1");
+	m2->setFirstArgFixed(true);
+	m2->setFirstArgType(ARG_WHILE);
+	m2->setSecondArg("v");
+	m2->setSecondArgFixed(true);
+	m2->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m2->isValid());
+
+	Results r2 = m2->evaluate();
+	CPPUNIT_ASSERT(!r2.isClausePassed());
+
+	// fail targeting exceed stmt num
+	ModifiesClause* m3 = new ModifiesClause();
+	m3->setFirstArg("7");
+	m3->setFirstArgFixed(true);
+	m3->setFirstArgType(ARG_WHILE);
+	m3->setSecondArg("i");
+	m3->setSecondArgFixed(true);
+	m3->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m3->isValid());
+
+	Results r3 = m3->evaluate();
+	CPPUNIT_ASSERT(!r3.isClausePassed());
 }
 
 void ModifiesClauseTest::testModifiesFixedSyn() {
+	// pass
 	ModifiesClause* m1 = new ModifiesClause();
 	m1->setFirstArg("1");
 	m1->setFirstArgFixed(true);
@@ -252,9 +282,23 @@ void ModifiesClauseTest::testModifiesFixedSyn() {
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "i");
+
+	// fail targeting stmt num exceed
+	ModifiesClause* m2 = new ModifiesClause();
+	m2->setFirstArg("7");
+	m2->setFirstArgFixed(true);
+	m2->setFirstArgType(ARG_WHILE);
+	m2->setSecondArg("v");
+	m2->setSecondArgFixed(false);
+	m2->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m2->isValid());
+
+	Results r2 = m2->evaluate();
+	CPPUNIT_ASSERT(!r2.isClausePassed());
 }
 
 void ModifiesClauseTest::testModifiesSynFixed() {
+	// pass
 	ModifiesClause* m1 = new ModifiesClause();
 	m1->setFirstArg("a");
 	m1->setFirstArgFixed(false);
@@ -267,10 +311,44 @@ void ModifiesClauseTest::testModifiesSynFixed() {
 	Results r1 = m1->evaluate();
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 2); // 1 and 6 mods i
-	//CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "i");
+	for (int i = 0; i < r1.getSinglesResults().size(); i++) {
+		if (r1.getSinglesResults().at(i) == "1" 
+			|| r1.getSinglesResults().at(i) == "6") {
+			CPPUNIT_ASSERT(true);
+		} else {
+			CPPUNIT_ASSERT(false);
+		}
+	}
+	
+	// fail targeting wrong statement type
+	ModifiesClause* m2 = new ModifiesClause();
+	m2->setFirstArg("a");
+	m2->setFirstArgFixed(false);
+	m2->setFirstArgType(ARG_WHILE);
+	m2->setSecondArg("i");
+	m2->setSecondArgFixed(fixed);
+	m2->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m2->isValid());
+
+	Results r2 = m2->evaluate();
+	CPPUNIT_ASSERT(!r2.isClausePassed());
+
+	// fail targeting var not exist
+	ModifiesClause* m3 = new ModifiesClause();
+	m3->setFirstArg("a");
+	m3->setFirstArgFixed(false);
+	m3->setFirstArgType(ARG_STATEMENT);
+	m3->setSecondArg("q");
+	m3->setSecondArgFixed(true);
+	m3->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m3->isValid());
+
+	Results r3 = m3->evaluate();
+	CPPUNIT_ASSERT(!r3.isClausePassed());
 }
 
 void ModifiesClauseTest::testModifiesSynSyn() {
+	// pass 
 	ModifiesClause* m1 = new ModifiesClause();
 	m1->setFirstArg("a");
 	m1->setFirstArgFixed(false);
@@ -282,5 +360,19 @@ void ModifiesClauseTest::testModifiesSynSyn() {
 
 	Results r1 = m1->evaluate();
 	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 6);
+	CPPUNIT_ASSERT(r1.getPairResults().size() == 6);
+
+	// fail targeting wrong stmt type
+	ModifiesClause* m2 = new ModifiesClause();
+	m2->setFirstArg("a");
+	m2->setFirstArgFixed(false);
+	m2->setFirstArgType(ARG_WHILE);
+	m2->setSecondArg("i");
+	m2->setSecondArgFixed(false);
+	m2->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m2->isValid());
+
+	Results r2 = m2->evaluate();
+	CPPUNIT_ASSERT(!r2.isClausePassed());
+	//CPPUNIT_ASSERT(r1.getPairResults().size() == 6);
 }

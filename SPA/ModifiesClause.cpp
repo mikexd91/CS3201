@@ -3,6 +3,7 @@
 #include "VarTable.h"
 #include "Utils.h"
 #include <boost/foreach.hpp>
+#include <iostream>
 
 using namespace stringconst;
 
@@ -38,7 +39,7 @@ string ModifiesClause::getVar() {
 }
 
 string ModifiesClause::getStmtType() {
-	return "";
+	return firstArgType;
 }
 
 
@@ -142,17 +143,22 @@ Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
 	VarTable* vtable = VarTable::getInstance();
 	vector<string>* allVarNames = vtable->getAllVarNames();
 	
-	if (getStmtType() == stringconst::ARG_ASSIGN) {
+	if (getStmtType() == ARG_ASSIGN) {
 		allStmt = stable->getAssgStmts();
-	} else if (getStmtType() == stringconst::ARG_WHILE) {
+	} else if (getStmtType() == ARG_WHILE) {
 		allStmt = stable->getWhileStmts();
 	} else {
 		allStmt = stable->getAllStmts();
 	}
 
+	cout << endl << "all stmt size " << allStmt.size() << endl;
+
 	BOOST_FOREACH(auto p, allStmt) {
 		long long stmtNum = p->getStmtNum();
-		BOOST_FOREACH(string varName, allVarNames) {
+
+		//BOOST_FOREACH(string varName, allVarNames) {
+		for (int i = 0; i < allVarNames->size(); i++) {
+			string varName = allVarNames->at(i);
 			if (isModifies(stmtNum, varName)) {
 				res->addPairResult(to_string(stmtNum), varName);
 			}
@@ -166,9 +172,14 @@ Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
 
 bool ModifiesClause::isModifies(int stmtNum, string varName) {
 	StmtTable* stable = StmtTable::getInstance();
-	Statement* stmt = stable->getStmtObj(stmtNum);
+	int maxStmts = stable->getAllStmts().size();
+	if (stmtNum > maxStmts) {
+		return false;
+	} else {
+		Statement* stmt = stable->getStmtObj(stmtNum);
 
-	set<string> mods = stmt->getModifies();
+		set<string> mods = stmt->getModifies();
 
-	return mods.find(varName) != mods.end();
+		return mods.find(varName) != mods.end();
+	}
 }
