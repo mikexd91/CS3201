@@ -134,7 +134,31 @@ void Results::getIntersect(Results &res) {
 }
 
 set<string> Results::getSelectSynResult(string syn) {
-	return set<string>();
+	string syn1 = this->getFirstClauseSyn();
+	string syn2 = this->getSecondClauseSyn();
+	int numSyn = this->getNumOfSyn();
+	set<string>* results = new set<string>();
+	
+	if (numSyn == 1 && syn == syn1) {
+		vector<string> singleList = this->getSinglesResults();
+		for (vector<string>::iterator iter = singleList.begin(); iter != singleList.end(); iter++) {
+			results->insert(*iter);
+		}
+		return *results;
+
+	} else if (numSyn == 2 && syn == syn1) {
+		vector<pair<string, string>> pairList = this->getPairResults();
+		for (int i = 0; i < pairList.size(); i++) {
+			pair<string, string> p = pairList.at(i);
+			results->insert(p.first);
+		}
+		return *results;
+
+	} else if (numSyn == 2 && syn == syn2) {
+
+	} else {
+		return *results;
+	}
 }
 
 bool Results::usesSelectSyn(string syn) {
