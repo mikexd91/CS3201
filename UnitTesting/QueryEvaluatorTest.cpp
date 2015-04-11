@@ -12,6 +12,9 @@ void QueryEvaluatorTest::testEvaluator() {
 	Results* resObj2 = new Results();
 
 	resObj1->setClausePassed(true);
+	resObj2->setClausePassed(true);
+
+	resObj1->
 }
 
 void QueryEvaluatorTest::testEvaluator2() {

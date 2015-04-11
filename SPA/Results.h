@@ -17,8 +17,8 @@ public:
 	void setNumOfSyn(int n);
 	void addSingleResult(string s);
 	void addPairResult(string s1, string s2);
-	void setSingleResult(vector<string> v);
-	void setPairResult(vector<pair<string, string>> v);
+	void setSingleResult(vector<string>& v);
+	void setPairResult(vector<pair<string, string>>& v);
 
 	bool isClausePassed();
 	bool usesSyn(string syn);
