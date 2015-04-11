@@ -23,6 +23,7 @@ public:
 	static bool isValidName(string);
 	static bool isValidConstant(string);
 	static bool isSameType(string, NodeType);
+	static string convertNodeTypeToArgType(NodeType);
 	static set<int> filterStatements(set<int>, NodeType);
 };
 
