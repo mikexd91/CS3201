@@ -1,8 +1,10 @@
 #include "ParentStarClause.h"
 #include "Utils.h"
+#include <iostream>
 
 #include "boost\lexical_cast.hpp"
 
+using namespace std;
 using namespace boost;
 
 ParentStarClause::ParentStarClause(void):ParentClause(){
@@ -69,16 +71,16 @@ Results ParentStarClause::evaluateS1WildS2Wild() {
 
 	if(secondArgType == stringconst::ARG_STATEMENT) {
 		s2Set = stmtTable->getAllStmts();
-	} else if(firstArgType == stringconst::ARG_WHILE) {
+	} else if(secondArgType == stringconst::ARG_WHILE) {
 		s2Set = stmtTable->getWhileStmts();
-	} else if(firstArgType == stringconst::ARG_ASSIGN) {
+	} else if(secondArgType == stringconst::ARG_ASSIGN) {
 		s2Set = stmtTable->getAssgStmts();
 	}
 
 	for(s1Iter=s1Set.begin(); s1Iter!=s1Set.end(); s1Iter++) {
 		for(s2Iter=s2Set.begin(); s2Iter!=s2Set.end(); s2Iter++) {
 			// skip if both stmts are the same
-			if(s1Iter == s2Iter) {
+			if(*s1Iter == *s2Iter) {
 				continue;
 			}
 
@@ -138,7 +140,7 @@ Results ParentStarClause::evaluateS1WildS2Fixed() {
 		
 		for(stmtIter=whileSet.begin(); stmtIter!=whileSet.end(); stmtIter++) {
 			string currentStmtNum = lexical_cast<string>((*stmtIter)->getStmtNum());
-			recurParentCheckS1WildS2Fixed(res, currentStmtNum);
+			recurParentCheckS1WildS2Fixed(res, currentStmtNum, currentStmtNum);
 		}
 
 	} else if(firstArgType == stringconst::ARG_STATEMENT) {
@@ -146,20 +148,20 @@ Results ParentStarClause::evaluateS1WildS2Fixed() {
 
 		for(stmtIter=stmtTable->getIterator(); stmtIter!=stmtTable->getEnd(); stmtIter++) {
 			string currentStmtNum = lexical_cast<string>(stmtIter->first);
-			recurParentCheckS1WildS2Fixed(res, currentStmtNum);
+			recurParentCheckS1WildS2Fixed(res, currentStmtNum, currentStmtNum);
 		}	
 	}
 
 	return res;
 }
 
-void ParentStarClause::recurParentCheckS1WildS2Fixed(Results &res, string s1) {
+void ParentStarClause::recurParentCheckS1WildS2Fixed(Results &res, string s1, string originS1) {
 	string secondArg = this->getSecondArg();
 
 	// base case 1 - stmts are direct parent/child
 	if(isParent(s1, secondArg)) {
 		res.setClausePassed(true);
-		res.addPairResult(this->getFirstArg(), secondArg);
+		res.addSingleResult(originS1);
 	} else {
 		// get all children of first arg (type does not matter)
 		set<int> argChildren = stmtTable->getStmtObj(lexical_cast<int>(s1))->getChildren();
@@ -175,7 +177,7 @@ void ParentStarClause::recurParentCheckS1WildS2Fixed(Results &res, string s1) {
 			for(setIter=argChildren.begin(); setIter!=argChildren.end(); setIter++) {
 				string currentStmt = lexical_cast<string>(*setIter);
 
-				recurParentCheckS1WildS2Fixed(res, currentStmt);
+				recurParentCheckS1WildS2Fixed(res, currentStmt, originS1);
 			}
 		}
 	}
@@ -200,7 +202,7 @@ Results ParentStarClause::evaluateS1FixedS2Wild() {
 		
 		for(stmtIter=assignSet.begin(); stmtIter!=assignSet.end(); stmtIter++) {
 			string currentStmtNum = lexical_cast<string>((*stmtIter)->getStmtNum());
-			recurParentCheckS1FixedS2Wild(res, firstArg, currentStmtNum);
+			recurParentCheckS1FixedS2Wild(res, firstArg, currentStmtNum, currentStmtNum);
 		}
 
 	} else if(secondArgType == stringconst::ARG_WHILE) {
@@ -209,7 +211,7 @@ Results ParentStarClause::evaluateS1FixedS2Wild() {
 		
 		for(stmtIter=whileSet.begin(); stmtIter!=whileSet.end(); stmtIter++) {
 			string currentStmtNum = lexical_cast<string>((*stmtIter)->getStmtNum());
-			recurParentCheckS1FixedS2Wild(res, firstArg, currentStmtNum);
+			recurParentCheckS1FixedS2Wild(res, firstArg, currentStmtNum, currentStmtNum);
 		}
 
 	} else if(secondArgType == stringconst::ARG_STATEMENT) {
@@ -217,22 +219,22 @@ Results ParentStarClause::evaluateS1FixedS2Wild() {
 
 		for(stmtIter=stmtTable->getIterator(); stmtIter!=stmtTable->getEnd(); stmtIter++) {
 			string currentStmtNum = lexical_cast<string>(stmtIter->first);
-			recurParentCheckS1FixedS2Wild(res, firstArg, currentStmtNum);
+			recurParentCheckS1FixedS2Wild(res, firstArg, currentStmtNum, currentStmtNum);
 		}		
 	}
 
 	return res;
 }
 
-void ParentStarClause::recurParentCheckS1FixedS2Wild(Results &res, string s1, string s2) {
+void ParentStarClause::recurParentCheckS1FixedS2Wild(Results &res, string s1, string s2, string originS2) {
 
 	// base case 1 - stmts are direct parent/child
 	if(isParent(s1, s2)) {
 		res.setClausePassed(true);
-		res.addPairResult(this->getFirstArg(), s2);
+		res.addSingleResult(originS2);
 	} else {
 		// get all children of first arg
-		set<int> argChildren = getChildren(firstArg, this->getFirstArgType());
+		set<int> argChildren = stmtTable->getStmtObj(lexical_cast<int>(s1))->getChildren();
 
 		// base case 2 - s1 has no children
 		if(argChildren.size() == 0) {
@@ -245,7 +247,7 @@ void ParentStarClause::recurParentCheckS1FixedS2Wild(Results &res, string s1, st
 			for(setIter=argChildren.begin(); setIter!=argChildren.end(); setIter++) {
 				string currentStmt = lexical_cast<string>(*setIter);
 
-				recurParentCheckS1FixedS2Wild(res, currentStmt, s2);
+				recurParentCheckS1FixedS2Wild(res, currentStmt, s2, originS2);
 			}
 		}
 	}
@@ -273,7 +275,7 @@ void ParentStarClause::recurParentCheckS1FixedS2Fixed(Results &res, string s1, s
 
 	} else {
 		// get all children of first arg
-		set<int> argChildren = getChildren(firstArg, this->getFirstArgType());
+		set<int> argChildren = stmtTable->getStmtObj(lexical_cast<int>(s1))->getChildren();
 
 		// base case 2 - s1 has no children
 		if(argChildren.size() == 0) {

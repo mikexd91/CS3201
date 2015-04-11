@@ -20,7 +20,7 @@ private:
 
 	// Other Private Functions
 	void recurParentCheckS1WildS2Wild(Results&, string, string, string, string);
-	void recurParentCheckS1WildS2Fixed(Results&, string);
-	void recurParentCheckS1FixedS2Wild(Results&, string, string);
+	void recurParentCheckS1WildS2Fixed(Results&, string, string);
+	void recurParentCheckS1FixedS2Wild(Results&, string, string, string);
 	void recurParentCheckS1FixedS2Fixed(Results&, string, string);
 };

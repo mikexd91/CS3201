@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <string>
+#include <algorithm>
 
 using namespace stringconst;
 using namespace std;
@@ -230,8 +231,8 @@ void ParentStarClauseTest::testParentStarFixedFixedPass() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	//Results r1 = m1->evaluate();
-	//CPPUNIT_ASSERT(r1.isClausePassed());
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
 }
 
 void ParentStarClauseTest::testParentStarFixedFixedFail() {
@@ -244,8 +245,8 @@ void ParentStarClauseTest::testParentStarFixedFixedFail() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	//Results r1 = m1->evaluate();
-	//CPPUNIT_ASSERT(!r1.isClausePassed());
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(!r1.isClausePassed());
 
 }
 
@@ -259,13 +260,13 @@ void ParentStarClauseTest::testParentStarSynFixedPass() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	/**
+	
 	Results r1 = m1->evaluate();
+	vector<string> singleResults = r1.getSinglesResults();
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 2);
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "2");
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "4");
-	**/
+	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "2") != singleResults.end());
+	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "4") != singleResults.end());
 }
 
 void ParentStarClauseTest::testParentStarSynFixedFail() {
@@ -278,8 +279,8 @@ void ParentStarClauseTest::testParentStarSynFixedFail() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	//Results r1 = m1->evaluate();
-	//CPPUNIT_ASSERT(!r1.isClausePassed());
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(!r1.isClausePassed());
 }
 
 void ParentStarClauseTest::testParentStarFixedSynPass() {
@@ -292,17 +293,16 @@ void ParentStarClauseTest::testParentStarFixedSynPass() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	/**
 	Results r1 = m1->evaluate();
-	
+	vector<string> singleResults = r1.getSinglesResults();
+
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 5);
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "3");
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(1) == "4");
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(2) == "5");
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(3) == "6");
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(4) == "7");
-	**/
+	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "3") != singleResults.end());
+	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "4") != singleResults.end());
+	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "5") != singleResults.end());
+	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "6") != singleResults.end());
+	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "7") != singleResults.end());
 }
 
 void ParentStarClauseTest::testParentStarFixedSynPassWithWhile() {
@@ -315,12 +315,10 @@ void ParentStarClauseTest::testParentStarFixedSynPassWithWhile() {
 	m1->setSecondArgType(ARG_WHILE);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	/**
 	Results r1 = m1->evaluate();
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "4");
-	**/
 }
 
 void ParentStarClauseTest::testParentStarFixedSynFail() {
@@ -333,10 +331,8 @@ void ParentStarClauseTest::testParentStarFixedSynFail() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	/**
 	Results r1 = m1->evaluate();
 	CPPUNIT_ASSERT(!r1.isClausePassed());
-	**/
 }
 
 void ParentStarClauseTest::testParentStarFixedSynFailWithWhile() {
@@ -349,10 +345,8 @@ void ParentStarClauseTest::testParentStarFixedSynFailWithWhile() {
 	m1->setSecondArgType(ARG_WHILE);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	/**
 	Results r1 = m1->evaluate();
 	CPPUNIT_ASSERT(!r1.isClausePassed());
-	**/
 }
 
 void ParentStarClauseTest::testParentStarSynSynPass() {
@@ -364,8 +358,10 @@ void ParentStarClauseTest::testParentStarSynSynPass() {
 	m1->setSecondArgFixed(false);
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
-	/**
+
 	Results r1 = m1->evaluate();
+	vector<pair<string, string>> pairResults = r1.getPairResults();
+
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getPairResults().size() == 7);
 	pair<string, string> pair0("2","3");
@@ -375,14 +371,13 @@ void ParentStarClauseTest::testParentStarSynSynPass() {
 	pair<string, string> pair4("2","7");
 	pair<string, string> pair5("4","5");
 	pair<string, string> pair6("4","6");
-	CPPUNIT_ASSERT(r1.getPairResults().at(0) == pair0);
-	CPPUNIT_ASSERT(r1.getPairResults().at(1) == pair1);
-	CPPUNIT_ASSERT(r1.getPairResults().at(2) == pair2);
-	CPPUNIT_ASSERT(r1.getPairResults().at(3) == pair3);
-	CPPUNIT_ASSERT(r1.getPairResults().at(4) == pair4);
-	CPPUNIT_ASSERT(r1.getPairResults().at(5) == pair5);
-	CPPUNIT_ASSERT(r1.getPairResults().at(6) == pair6);
-	**/
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair0) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair1) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair2) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair3) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair4) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair5) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair6) != pairResults.end());
 
 }
 
@@ -396,13 +391,11 @@ void ParentStarClauseTest::testParentStarSynSynPassWithWhile() {
 	m1->setSecondArgType(ARG_WHILE);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	/**
 	Results r1 = m1->evaluate();
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getPairResults().size() == 1);
 	pair<string, string> pair0("2","4");
 	CPPUNIT_ASSERT(r1.getPairResults().at(0) == pair0);
-	**/
 }
 
 void ParentStarClauseTest::testParentStarInvalid() {
