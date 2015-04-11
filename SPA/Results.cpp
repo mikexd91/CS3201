@@ -36,11 +36,11 @@ void Results::setSecondClauseSyn(string s2) {
 	this->secondClauseSyn = s2;
 }
 
-void Results::setSingleResult(vector<string> v) {
+void Results::setSingleResult(vector<string>& v) {
 	this->singleResults = v;
 }
 
-void Results::setPairResult(vector<pair<string, string>> v) {
+void Results::setPairResult(vector<pair<string, string>>& v) {
 	this->pairResults = v;
 }
 
@@ -84,14 +84,55 @@ void Results::getSingleIntercept(Results &res1, Results &res2) {
 				}
 			}
 		}
-	
 		res1.setSingleResult(temp);
 		res2.setSingleResult(temp);
 	}
 }
 
 void Results::getSinglePairIntercept(Results &res1, Results &res2) {
+	string res1Syn1 = res1.getFirstClauseSyn();
+	string res2Syn1 = res2.getFirstClauseSyn();
+	string res2Syn2 = res2.getSecondClauseSyn();
+	
+	if (res1Syn1 == res2Syn1) {
+		vector<string> res1List = res1.getSinglesResults();
+		vector<pair<string, string>> res2List = res2.getPairResults();
+		vector<string> temp1 = *new vector<string>();
+		vector<pair<string, string>> temp2 = *new vector<pair<string, string>>();
 
+		for (size_t  i = 0; i < res1List.size(); i++) {
+			for (size_t  j = 0; j < res2List.size(); j++) {
+				
+				string syn = res2List.at(j).first;
+				if (res1Syn1 == syn) {
+					temp1.push_back(res1List.at(i));
+					temp2.push_back(res2List.at(j));
+				}
+			}
+		}
+		res1.setSingleResult(temp1);
+		res2.setPairResult(temp2);
+
+	} else if (res1Syn1 == res2Syn2) {
+		vector<string> res1List = res1.getSinglesResults();
+		vector<pair<string, string>> res2List = res2.getPairResults();
+		vector<string> temp1 = *new vector<string>();
+		vector<pair<string, string>> temp2 = *new vector<pair<string, string>>();
+		
+		for (size_t  i = 0; i < res1List.size(); i++) {
+			for (size_t  j = 0; j < res2List.size(); j++) {
+				
+				string syn = res2List.at(j).second;
+				if (res1Syn1 == syn) {
+					temp1.push_back(res1List.at(i));
+					temp2.push_back(res2List.at(j));
+				}
+			}
+		}
+		res1.setSingleResult(temp1);
+		res2.setPairResult(temp2);
+
+	} 
 }
 
 void Results::getPairIntercept(Results &res1, Results &res2) {

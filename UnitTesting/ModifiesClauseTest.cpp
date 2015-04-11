@@ -224,7 +224,6 @@ void ModifiesClauseTest::tearDown() {
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ModifiesClauseTest );
 
-
 void ModifiesClauseTest::testModifiesFixedFixed() {
 	// pass
 	ModifiesClause* m1 = new ModifiesClause();

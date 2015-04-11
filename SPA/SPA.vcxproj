@@ -28,7 +28,6 @@
     <ClInclude Include="FollowsStarClause.h" />
     <ClInclude Include="IfNode.h" />
     <ClInclude Include="InvalidCodeException.h" />
-    <ClInclude Include="ModifiesClause.h" />
     <ClInclude Include="InvalidExpressionException.h" />
     <ClInclude Include="OpNode.h" />
     <ClInclude Include="ParentClause.h" />
@@ -47,7 +46,6 @@
     <ClInclude Include="ProgNode.h" />
     <ClInclude Include="Query.h" />
     <ClInclude Include="QueryEvaluator.h" />
-    <ClInclude Include="QueryParser.h" />
     <ClInclude Include="Results.h" />
     <ClInclude Include="Statement.h" />
     <ClInclude Include="StmtLstNode.h" />
@@ -55,7 +53,6 @@
     <ClInclude Include="StmtTable.h" />
     <ClInclude Include="StringPair.h" />
     <ClInclude Include="TNode.h" />
-    <ClInclude Include="UsesClause.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Variable.h" />
     <ClInclude Include="VarNode.h" />
@@ -71,7 +68,6 @@
     <ClCompile Include="FollowsClause.cpp" />
     <ClCompile Include="FollowsStarClause.cpp" />
     <ClCompile Include="IfNode.cpp" />
-    <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="OpNode.cpp" />
     <ClCompile Include="ParentClause.cpp" />
     <ClCompile Include="ParentStarClause.cpp" />
@@ -88,7 +84,6 @@
     <ClCompile Include="ProgNode.cpp" />
     <ClCompile Include="Query.cpp" />
     <ClCompile Include="QueryEvaluator.cpp" />
-    <ClCompile Include="QueryParser.cpp" />
     <ClCompile Include="Results.cpp" />
     <ClCompile Include="Statement.cpp" />
     <ClCompile Include="StmtLstNode.cpp" />
@@ -96,7 +91,6 @@
     <ClCompile Include="StmtTable.cpp" />
     <ClCompile Include="StringPair.cpp" />
     <ClCompile Include="TNode.cpp" />
-    <ClCompile Include="UsesClause.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Variable.cpp" />
     <ClCompile Include="VarNode.cpp" />
