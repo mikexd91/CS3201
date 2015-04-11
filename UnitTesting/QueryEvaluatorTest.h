@@ -1,14 +1,21 @@
 #pragma once
-#include <cppunit/config/SourcePrefix.h>
-#include "QueryEvaluatorTest.h"
-#include "../SPA/QueryEvaluator.h"
+
+// Note 1
+#include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;
 
-class QueryEvaluatorTest
-{
+class QueryEvaluatorTest: public CPPUNIT_NS::TestFixture {
+	CPPUNIT_TEST_SUITE( QueryEvaluatorTest );
+	CPPUNIT_TEST( testEvaluator );
+	CPPUNIT_TEST( testEvaluator2 );
+	CPPUNIT_TEST( testEvaluator3 );
+	CPPUNIT_TEST_SUITE_END();
+
 public:
-	QueryEvaluatorTest(void);
-	~QueryEvaluatorTest(void);
+
+	void testEvaluator();
+	void testEvaluator2();
+	void testEvaluator3();
 };
 

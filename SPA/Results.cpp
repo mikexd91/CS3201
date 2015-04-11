@@ -77,8 +77,8 @@ void Results::getSingleIntercept(Results &res1, Results &res2) {
 		vector<string> res2List = res2.getSinglesResults();
 		vector<string> temp = *new vector<string>();
 
-		for (int i = 0; i < res1List.size(); i++) {
-			for (int j = 0; j < res2List.size(); j++) {
+		for (size_t  i = 0; i < res1List.size(); i++) {
+			for (size_t  j = 0; j < res2List.size(); j++) {
 				if (res1List.at(i) == res2List.at(j)) {
 					temp.push_back(res1List.at(i));
 				}
@@ -148,7 +148,7 @@ set<string> Results::getSelectSynResult(string syn) {
 
 	} else if (numSyn == 2 && syn == syn1) {
 		vector<pair<string, string>> pairList = this->getPairResults();
-		for (int i = 0; i < pairList.size(); i++) {
+		for (size_t  i = 0; i < pairList.size(); i++) {
 			pair<string, string> p = pairList.at(i);
 			results->insert(p.first);
 		}
@@ -156,7 +156,7 @@ set<string> Results::getSelectSynResult(string syn) {
 
 	} else if (numSyn == 2 && syn == syn2) {
 		vector<pair<string, string>> pairList = this->getPairResults();
-		for (int i = 0; i < pairList.size(); i++) {
+		for (size_t  i = 0; i < pairList.size(); i++) {
 			pair<string, string> p = pairList.at(i);
 			results->insert(p.second);
 		}

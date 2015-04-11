@@ -7,8 +7,8 @@
 #include <set>
 #include "boost\lexical_cast.hpp"
 
-using namespace std;
 using namespace boost;
+using namespace std;
 
 StmtTable* stmtTable = StmtTable::getInstance();
 VarTable* varTable = VarTable::getInstance();
