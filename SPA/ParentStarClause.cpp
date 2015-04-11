@@ -5,9 +5,6 @@
 
 using namespace boost;
 
-// table instances
-stmtTable = StmtTable::getInstance();
-
 ParentStarClause::ParentStarClause(void):ParentClause(){
 }
 
@@ -61,45 +58,65 @@ Results ParentStarClause::evaluateS1WildS2Wild() {
 
 	// get the right statement set
 	set<Statement*> s1Set, s2Set;
+	set<Statement*>::iterator s1Iter, s2Iter;
+
+	// TODO did not include if statements
 	if(firstArgType == stringconst::ARG_STATEMENT) {
-		StmtTable::StmtTableIterator stmtIter1;
-		StmtTable::StmtTableIterator stmtIter2;
+		s1Set = stmtTable->getAllStmts();
+	} else if(firstArgType == stringconst::ARG_WHILE) {
+		s1Set = stmtTable->getWhileStmts();
+	}
 
-		for(stmtIter1=stmtTable->getIterator(); stmtIter1!=stmtTable->getEnd(); stmtIter1++) {
-			for(stmtIter2=stmtIter1+1; stmtIter2!=stmtTable->getEnd(); stmtIter2++) {
-				// skip if both stmts are the same
-				if(stmtIter1 == stmtIter2) {
-					continue;
-				}
+	if(secondArgType == stringconst::ARG_STATEMENT) {
+		s2Set = stmtTable->getAllStmts();
+	} else if(firstArgType == stringconst::ARG_WHILE) {
+		s2Set = stmtTable->getWhileStmts();
+	} else if(firstArgType == stringconst::ARG_ASSIGN) {
+		s2Set = stmtTable->getAssgStmts();
+	}
 
-				string currentS1 = lexical_cast<string>(stmtIter1->first);
-				string currentS2 = lexical_cast<string>(stmtIter2->first);
-
-				recurParentCheckS1FixedS2Fixed(res, currentS1, currentS2);
+	for(s1Iter=s1Set.begin(); s1Iter!=s1Set.end(); s1Iter++) {
+		for(s2Iter=s2Set.begin(); s2Iter!=s2Set.end(); s2Iter++) {
+			// skip if both stmts are the same
+			if(s1Iter == s2Iter) {
+				continue;
 			}
-		}	
-	} else {
-		
 
-		// TODO add case for if statements
-		// getting the right s1 statement set
-		if(firstArgType == stringconst::ARG_WHILE) {
-			s1Set = stmtTable->getWhileStmts();
+			string currentS1 = lexical_cast<string>((*s1Iter)->getStmtNum());
+			string currentS2 = lexical_cast<string>((*s2Iter)->getStmtNum());
+
+			recurParentCheckS1WildS2Wild(res, currentS1, currentS2, currentS1, currentS2);
 		}
+	}
 
-		// getting the right s2 statement set
-		if(secondArgType == stringconst::ARG_WHILE)
-		
-			for(stmtIter=whileSet.begin(); stmtIter!=whileSet.end(); stmtIter++) {
-				string currentStmtNum = lexical_cast<string>((*stmtIter)->getStmtNum());
-				recurParentCheckS1WildS2Fixed(res, currentStmtNum, secondArg);
+	return res;
+}
+
+void ParentStarClause::recurParentCheckS1WildS2Wild(Results& res, string s1, string s2, string originS1, string originS2) {
+
+	// base case 1 - stmts are direct parent/child
+	if(isParent(s1, s2)) {
+		res.setClausePassed(true);
+		res.addPairResult(originS1, originS2);
+	} else {
+		// get all children of first arg
+		set<int> argChildren = stmtTable->getStmtObj(lexical_cast<int>(s1))->getChildren();
+
+		// base case 2 - s1 has no children
+		if(argChildren.size() == 0) {
+			return;
+
+		// recursive case - for each child check evaluation
+		} else {
+			// iterate through children and recursively check for parent
+			set<int>::iterator setIter;
+			for(setIter=argChildren.begin(); setIter!=argChildren.end(); setIter++) {
+				string currentStmt = lexical_cast<string>(*setIter);
+
+				recurParentCheckS1WildS2Wild(res, currentStmt, s2, originS1, originS2);
 			}
 		}
 	}
-	
-
-
-	return res;
 }
 
 // Case: Parent*(s1,2) - stmt1 wild, stmt2 fixed
@@ -116,12 +133,12 @@ Results ParentStarClause::evaluateS1WildS2Fixed() {
 
 	// get the right statement set
 	if(firstArgType == stringconst::ARG_WHILE) {
-		set<Statement*> whileSet = stmtTable->getWhileStmts());
+		set<Statement*> whileSet = stmtTable->getWhileStmts();
 		set<Statement*>::iterator stmtIter;
 		
 		for(stmtIter=whileSet.begin(); stmtIter!=whileSet.end(); stmtIter++) {
 			string currentStmtNum = lexical_cast<string>((*stmtIter)->getStmtNum());
-			recurParentCheckS1WildS2Fixed(res, currentStmtNum, secondArg);
+			recurParentCheckS1WildS2Fixed(res, currentStmtNum);
 		}
 
 	} else if(firstArgType == stringconst::ARG_STATEMENT) {
@@ -129,7 +146,7 @@ Results ParentStarClause::evaluateS1WildS2Fixed() {
 
 		for(stmtIter=stmtTable->getIterator(); stmtIter!=stmtTable->getEnd(); stmtIter++) {
 			string currentStmtNum = lexical_cast<string>(stmtIter->first);
-			recurParentCheckS1WildS2Fixed(res, currentStmtNum, secondArg);
+			recurParentCheckS1WildS2Fixed(res, currentStmtNum);
 		}	
 	}
 
@@ -137,11 +154,12 @@ Results ParentStarClause::evaluateS1WildS2Fixed() {
 }
 
 void ParentStarClause::recurParentCheckS1WildS2Fixed(Results &res, string s1) {
+	string secondArg = this->getSecondArg();
 
 	// base case 1 - stmts are direct parent/child
-	if(isParent(s1, s2)) {
+	if(isParent(s1, secondArg)) {
 		res.setClausePassed(true);
-		res.addPairResult(this->getFirstArg(), this->getSecondArg());
+		res.addPairResult(this->getFirstArg(), secondArg);
 	} else {
 		// get all children of first arg (type does not matter)
 		set<int> argChildren = stmtTable->getStmtObj(lexical_cast<int>(s1))->getChildren();
@@ -186,7 +204,7 @@ Results ParentStarClause::evaluateS1FixedS2Wild() {
 		}
 
 	} else if(secondArgType == stringconst::ARG_WHILE) {
-		set<Statement*> whileSet = stmtTable->getWhileStmts());
+		set<Statement*> whileSet = stmtTable->getWhileStmts();
 		set<Statement*>::iterator stmtIter;
 		
 		for(stmtIter=whileSet.begin(); stmtIter!=whileSet.end(); stmtIter++) {

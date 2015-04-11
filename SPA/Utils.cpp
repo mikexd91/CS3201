@@ -166,6 +166,8 @@ string Utils::convertNodeTypeToArgType(NodeType stmtType) {
 		case WHILE_STMT_:
 			return stringconst::ARG_WHILE;
 	}
+
+	return NULL;
 }
 
 //filters the set to retrieve the statement of the specified type

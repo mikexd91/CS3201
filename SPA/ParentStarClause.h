@@ -19,7 +19,7 @@ private:
 	Results evaluateS1FixedS2Fixed();									// Case: Parent*(1,2) - stmt1 fixed, stmt2 fixed
 
 	// Other Private Functions
-	void recurParentCheckS1WildS2Wild(Results&, string, string);
+	void recurParentCheckS1WildS2Wild(Results&, string, string, string, string);
 	void recurParentCheckS1WildS2Fixed(Results&, string);
 	void recurParentCheckS1FixedS2Wild(Results&, string, string);
 	void recurParentCheckS1FixedS2Fixed(Results&, string, string);
