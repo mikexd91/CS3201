@@ -1,11 +1,11 @@
 #include <cppunit/config/SourcePrefix.h>
 #include "FollowsClauseTest.h"
-#include "../SPA/Follows.h"
 #include "../SPA/AST.h"
 #include "../SPA/AssgNode.h"
 #include "../SPA/ConstNode.h"
 #include "../SPA/FollowsClause.h"
 #include "../SPA/Utils.h"
+#include "../SPA/StmtTable.h"
 
 #include <iostream>
 #include <string>

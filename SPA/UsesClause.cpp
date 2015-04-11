@@ -59,6 +59,10 @@ Results UsesClause::evaluate(void) {
 // Case: Uses(s,v) - stmt wild, var wild
 Results UsesClause::evaluateStmtWildVarWild() {
 	Results res = Results();
+	// set synonyms
+	res.setNumOfSyn(2);
+	res.setFirstClauseSyn(this->getFirstArg());
+	res.setSecondClauseSyn(this->getSecondArg());
 
 	// generate all possible combinations using stmtTable as reference
 	StmtTable::StmtTableIterator stmtTIter;
@@ -92,16 +96,18 @@ Results UsesClause::evaluateStmtWildVarWild() {
 
 // Case: Uses(s,'x') - stmt wild, var fixed
 Results UsesClause::evaluateStmtWildVarFixed() {
+	Results res = Results();
+	// set synonyms
+	res.setNumOfSyn(1);
+	res.setFirstClauseSyn(this->getFirstArg());
+
 	// get the fixed var and usedby
 	Variable* fixedVar = varTable->getVariable(this->getSecondArgType());
 	set<int>::iterator stmtIter;
 	set<int> stmtSet = fixedVar->getUsedByStmts();
 
 	// check set for results
-	if(stmtSet.size() == 0) {		// no stmts uses variable
-		return Results();
-	} else {						// deal with results
-		Results res = Results();
+	if(stmtSet.size() != 0) {
 		res.setClausePassed(true);
 		for(stmtIter=stmtSet.begin(); stmtIter!=stmtSet.end(); stmtIter++) {
 			Statement* currentStmt = stmtTable->getStmtObj(*stmtIter);
@@ -110,13 +116,18 @@ Results UsesClause::evaluateStmtWildVarFixed() {
 				res.addSingleResult(lexical_cast<string>(*stmtIter));
 			}
 		}
-
-		return res;
 	}
+
+	return res;
 }
 
 // Case: Uses(1,v) - stmt fixed, var wild
 Results UsesClause::evaluateStmtFixedVarWild() {
+	Results res = Results();
+	// set synonyms
+	res.setNumOfSyn(1);
+	res.setSecondClauseSyn(this->getSecondArg());
+
 	// get relevant stmts
 	string firstArgType = this->getFirstArgType();
 	set<Statement*>::iterator stmtIter;
@@ -140,27 +151,27 @@ Results UsesClause::evaluateStmtFixedVarWild() {
 			Statement::UsesSet currentUses = currentStmt->getUses();
 
 			// check if stmt uses any variable
-			if(currentUses.size() == 0) {		// no results
-				return Results();
-			} else {							// add all results
-				Results res = Results();
+			if(currentUses.size() != 0) {
 				res.setClausePassed(true);
 
+				// add all pairs into results
 				Statement::UsesSet::iterator setIter;
 				for(setIter=currentUses.begin(); setIter!=currentUses.end(); setIter++) {
-					Results res = Results();
-					res.setClausePassed(true);
 					res.addSingleResult(*setIter);
 				}
 			}
 		}
 	}
 
-	return Results();
+	return res;
 }
 
 // Case: Uses(1,'x') - stmt fixed, var fixed
 Results UsesClause::evaluateStmtFixedVarFixed() {
+	Results res = Results();
+	// set synonyms
+	res.setNumOfSyn(0);
+
 	// get relevant stmts
 	string firstArgType = this->getFirstArgType();
 	set<Statement*>::iterator stmtIter;
@@ -185,12 +196,11 @@ Results UsesClause::evaluateStmtFixedVarFixed() {
 					
 			// checks if current stmt uses variable
 			if(currentUses.find(this->getSecondArg()) != currentUses.end()) {
-				Results res = Results();
 				res.setClausePassed(true);
-				return res;
 			}
+			break;
 		}
 	}
 
-	return Results();
+	return res;
 }
