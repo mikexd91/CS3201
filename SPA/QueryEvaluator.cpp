@@ -150,7 +150,7 @@ int QueryEvaluator::getSameClause(Results obj1, Results obj2) {
 
 set<string> QueryEvaluator::evaluateOneClause(Results res, vector<StringPair> selectList) {
 	string syn = selectList.at(0).getFirst();
-	if (res.usesSelectSyn(syn)) {
+	if (res.usesSyn(syn)) {
 		set<string> result = res.getSelectSynResult(syn);
 		return result;
 	}
@@ -195,7 +195,7 @@ set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vecto
 				obj1.getIntersect(obj2);
 				vector<string> res = obj1.getSinglesResults();
 
-				if (obj1.usesSelectSyn(syn) || obj2.usesSelectSyn(syn)) {
+				if (obj1.usesSyn(syn) || obj2.usesSyn(syn)) {
 					set<string> result = obj1.getSelectSynResult(syn);
 					return result;
 				} 
@@ -212,7 +212,7 @@ set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vecto
 				obj1.getIntersect(obj2);
 				vector<pair<string, string>> res = obj1.getPairResults();
 
-				if (obj1.usesSelectSyn(syn) || obj2.usesSelectSyn(syn)) {
+				if (obj1.usesSyn(syn) || obj2.usesSyn(syn)) {
 					set<string> result = obj1.getSelectSynResult(syn);
 					return result;
 				}

@@ -155,12 +155,32 @@ set<string> Results::getSelectSynResult(string syn) {
 		return *results;
 
 	} else if (numSyn == 2 && syn == syn2) {
+		vector<pair<string, string>> pairList = this->getPairResults();
+		for (int i = 0; i < pairList.size(); i++) {
+			pair<string, string> p = pairList.at(i);
+			results->insert(p.second);
+		}
+		return *results;
 
 	} else {
 		return *results;
 	}
 }
 
-bool Results::usesSelectSyn(string syn) {
-	return false;
+bool Results::usesSyn(string syn) {
+	int nSyn = this->getNumOfSyn();
+	string syn1 = this->getFirstClauseSyn();
+	string syn2 = this->getSecondClauseSyn();
+
+	if (nSyn == 1 && syn1 == syn) {
+		return true;
+
+	} else if (nSyn == 2 && syn1 == syn) {
+		return true;
+	
+	} else if (nSyn == 2 && syn2 == syn) {
+		return true;
+	} else {
+		return false;
+	}
 }

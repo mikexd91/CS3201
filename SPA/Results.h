@@ -21,7 +21,7 @@ public:
 	void setPairResult(vector<pair<string, string>> v);
 
 	bool isClausePassed();
-	bool usesSelectSyn(string syn);
+	bool usesSyn(string syn);
 
 	string getFirstClauseSyn();
 	string getSecondClauseSyn();
