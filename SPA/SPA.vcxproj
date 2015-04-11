@@ -28,14 +28,10 @@
     <ClInclude Include="FollowsStarClause.h" />
     <ClInclude Include="IfNode.h" />
     <ClInclude Include="InvalidCodeException.h" />
-    <ClInclude Include="ModifiesClause.h" />
     <ClInclude Include="InvalidExpressionException.h" />
     <ClInclude Include="OpNode.h" />
-    <ClInclude Include="ParentClause.h" />
-    <ClInclude Include="ParentStarClause.h" />
     <ClInclude Include="ParsedData.h" />
     <ClInclude Include="Parser.h" />
-    <ClInclude Include="PatternAssgClause.h" />
     <ClInclude Include="PatternClause.h" />
     <ClInclude Include="PatternAssg.h" />
     <ClInclude Include="PDR.h" />
@@ -55,7 +51,6 @@
     <ClInclude Include="StmtTable.h" />
     <ClInclude Include="StringPair.h" />
     <ClInclude Include="TNode.h" />
-    <ClInclude Include="UsesClause.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Variable.h" />
     <ClInclude Include="VarNode.h" />
@@ -71,13 +66,9 @@
     <ClCompile Include="FollowsClause.cpp" />
     <ClCompile Include="FollowsStarClause.cpp" />
     <ClCompile Include="IfNode.cpp" />
-    <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="OpNode.cpp" />
-    <ClCompile Include="ParentClause.cpp" />
-    <ClCompile Include="ParentStarClause.cpp" />
     <ClCompile Include="ParsedData.cpp" />
     <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="PatternAssgClause.cpp" />
     <ClCompile Include="PatternClause.cpp" />
     <ClCompile Include="PatternAssg.cpp" />
     <ClCompile Include="PDR.cpp" />
@@ -96,7 +87,6 @@
     <ClCompile Include="StmtTable.cpp" />
     <ClCompile Include="StringPair.cpp" />
     <ClCompile Include="TNode.cpp" />
-    <ClCompile Include="UsesClause.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Variable.cpp" />
     <ClCompile Include="VarNode.cpp" />
