@@ -156,6 +156,20 @@ bool Utils::isSameType(string argType, NodeType stmt) {
 	return false;
 }
 
+//Converts statement NodeType to ArgType for clauses
+string Utils::convertNodeTypeToArgType(NodeType stmtType) {
+	switch(stmtType) {
+		case ASSIGN_STMT_:
+			return stringconst::ARG_ASSIGN;
+		case IF_STMT_:
+			//return stringconst::ARG_IF;
+		case WHILE_STMT_:
+			return stringconst::ARG_WHILE;
+	}
+
+	return NULL;
+}
+
 //filters the set to retrieve the statement of the specified type
 set<int> Utils::filterStatements(set<int> stmtSet, NodeType type) {
 	StmtTable * stmtTable = StmtTable::getInstance();
