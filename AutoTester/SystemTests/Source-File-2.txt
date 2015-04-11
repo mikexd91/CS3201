@@ -34,7 +34,7 @@ procedure Main {
 			right = x + 3;
 			x = x + left + right;
 			x = x + left + right + quota + radius;
-			x = right+3 + 2+left;;
+			x = right+3 + 2+left;
 	iter = iter + 1;
 			x = x + center;
 	}
