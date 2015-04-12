@@ -134,7 +134,7 @@
     <ClCompile Include="FollowsClauseTest.cpp" />
     <ClCompile Include="IfNodeTest.cpp" />
     <ClCompile Include="OpNodeTest.cpp" />
-    <ClCompile Include="PatternAssgTest.cpp" />
+    <ClCompile Include="ParserTest.cpp" />
     <ClCompile Include="ProcNodeTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
     <ClCompile Include="source\AllUnitTest.cpp" />
@@ -143,7 +143,6 @@
     <ClCompile Include="source\TNodeTest.cpp" />
     <ClCompile Include="StmtLstNodeTest.cpp" />
     <ClCompile Include="VarNodeTest.cpp" />
-    <ClCompile Include="VarTableTest.cpp" />
     <ClCompile Include="WhileNodeTest.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +153,7 @@
     <ClInclude Include="FollowsClauseTest.h" />
     <ClInclude Include="IfNodeTest.h" />
     <ClInclude Include="OpNodeTest.h" />
+    <ClInclude Include="ParserTest.h" />
     <ClInclude Include="PatternAssgTest.h" />
     <ClInclude Include="ProcNodeTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
