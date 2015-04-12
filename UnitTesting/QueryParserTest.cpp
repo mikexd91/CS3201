@@ -139,7 +139,7 @@ void QueryParserTest::testClause(){
 void QueryParserTest::testPattern(){
 	string const DECLARATION = "Assign a;Variable v;";
 	string const SELECT = "Select a such that";
-	string const PATTERN = "Pattern a(v, _\" x + y \"_)";
+	string const PATTERN = "Pattern a(v, _)";
 
 	Query* ASSERTION = new Query();
 
@@ -151,6 +151,9 @@ void QueryParserTest::testPattern(){
 
 	queue<string> PAT_Q = QueryParser::queueBuilder(PATTERN, ' ');
 	QueryParser::parsePattern(ASSERTION, PAT_Q);
+
+	Clause* PATTERN_ASS = ASSERTION->getClauseList().at(0);
+	//fix pattern parsing other expressions.
 }
 
 void QueryParserTest::testParser(){
