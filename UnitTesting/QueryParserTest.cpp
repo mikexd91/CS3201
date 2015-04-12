@@ -29,6 +29,7 @@ using std::exception;
 using std::stringstream;
 using std::vector;
 using boost::unordered_map;
+using namespace boost;
 
 void QueryParserTest::setUp(){
 }
@@ -97,31 +98,7 @@ void QueryParserTest::testSelect(){
 	CPPUNIT_ASSERT(decs.at("a") == decList.at("a"));
 
 	string first = Utils::getWordAndPop(line);
-	if (first != stringconst::STRING_SELECT){
-		throw InvalidSelectException();
-	} else {
-		bool expectSelect = true;
-		while (expectSelect){
-			string current = Utils::getWordAndPop(line);
-			if (decList.find(current) == decList.end()){
-				throw MissingDeclarationException();
-			} else {
-				string type = decList.at(current);
-				StringPair* newPair = new StringPair();
-				newPair->setFirst(current);
-				newPair->setSecond(type);
-				result->addSelectSynonym(*newPair);
-			}
-			if (line.empty()){
-				expectSelect = false;
-			} else {
-				string next = line.front();
-				if (QueryParser::containsKeyword(next)){
-					expectSelect = false;
-				}
-			}
-		}
-	}
+	CPPUNIT_ASSERT(first == stringconst::STRING_SELECT);
 }
 
 void QueryParserTest::testClause(){
@@ -150,8 +127,13 @@ void QueryParserTest::testClause(){
 	
 	Clause* TEST = cls.at(0);
 	bool FIRST_FIXED = TEST->getFirstArgFixed();
-	CPPUNIT_ASSERT(FIRST_FIXED);
-
+	CPPUNIT_ASSERT(!FIRST_FIXED);
+	CPPUNIT_ASSERT(TEST->getFirstArg() == "a");
+	CPPUNIT_ASSERT(TEST->getFirstArgType() == stringconst::ARG_ASSIGN);
+	bool SECOND_FIXED = TEST->getSecondArgFixed();
+	CPPUNIT_ASSERT(!SECOND_FIXED);
+	CPPUNIT_ASSERT(TEST->getSecondArg() == "v");
+	CPPUNIT_ASSERT(TEST->getSecondArgType() == stringconst::ARG_VARIABLE);
 }
 
 void QueryParserTest::testParser(){

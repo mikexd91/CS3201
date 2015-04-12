@@ -115,26 +115,25 @@ string QueryParser::getClauseString(string s){
 
 Clause* QueryParser::createCorrectClause(string type){
 	Clause* c;
-	if (type == stringconst::TYPE_FOLLOWS){
+	if (contains(type, stringconst::TYPE_FOLLOWS)){
 		FollowsClause* clause = new FollowsClause();
-		c = clause;		
-	} else if (type == stringconst::TYPE_PARENT){
+		return clause;		
+	} else if (contains(type, stringconst::TYPE_PARENT)){
 		ParentClause* clause = new ParentClause();
-		c = clause;		
-	} else if (type == stringconst::TYPE_MODIFIES){
+		return clause;		
+	} else if (contains(type, stringconst::TYPE_MODIFIES)){
 		ModifiesClause* clause = new ModifiesClause();
-		c = clause;		
-	} else if (type == stringconst::TYPE_USES){
+		return clause;		
+	} else if (contains(type, stringconst::TYPE_USES)){
 		UsesClause* clause = new UsesClause();
-		c = clause;		
-	} else if (type == stringconst::TYPE_FOLLOWS_STAR){
+		return clause;		
+	} else if (contains(type, stringconst::TYPE_FOLLOWS_STAR)){
 		FollowsStarClause* clause = new FollowsStarClause();
-		c = clause;		
-	} else if (type == stringconst::TYPE_PARENT_STAR){
+		return clause;		
+	} else if (contains(type, stringconst::TYPE_PARENT_STAR)){
 		ParentStarClause* clause = new ParentStarClause();
-		c = clause;		
+		return clause;		
 	}
-	return c;
 }
 
 void QueryParser::parseDeclarations(Query* query, vector<string> list){
