@@ -134,13 +134,11 @@
     <ClCompile Include="FollowsClauseTest.cpp" />
     <ClCompile Include="IfNodeTest.cpp" />
     <ClCompile Include="OpNodeTest.cpp" />
-    <ClCompile Include="ParentClauseTest.cpp" />
-    <ClCompile Include="ParentStarClauseTest.cpp" />
-    <ClCompile Include="PatternAssgClauseTest.cpp" />
     <ClCompile Include="PatternAssgTest.cpp" />
     <ClCompile Include="ProcNodeTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
     <ClCompile Include="QueryEvaluatorTest.cpp" />
+    <ClCompile Include="ResultsTest.cpp" />
     <ClCompile Include="source\AllUnitTest.cpp" />
     <ClCompile Include="source\ProcTableTest.cpp" />
     <ClCompile Include="source\StmtTableTest.cpp" />
@@ -165,6 +163,7 @@
     <ClInclude Include="ProcNodeTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
     <ClInclude Include="QueryEvaluatorTest.h" />
+    <ClInclude Include="ResultsTest.h" />
     <ClInclude Include="source\ProcTableTest.h" />
     <ClInclude Include="source\StmtTableTest.h" />
     <ClInclude Include="source\TNodeTest.h" />

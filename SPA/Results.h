@@ -29,9 +29,8 @@ public:
 	vector<pair<string, string>> getPairResults();
 	set<string> getSelectSynResult(string syn);
 	int getNumOfSyn();
-
 	void getIntersect(Results &res);		// Mutates the obj that called this method.
-											// Transfer all result to the mutated obj
+											// if no intercept found, object results will be empty
 private:
 
 	void getSingleIntercept(Results &res1, Results &res2);

@@ -6,6 +6,7 @@
 #include "VarTable.h"
 #include <vector>
 #include <sstream>
+#include <iostream>
 
 using namespace std;
 
@@ -20,7 +21,7 @@ QueryEvaluator::~QueryEvaluator(void)
 set<string> QueryEvaluator::getAllSynValues(vector<StringPair> selectList) {
 	StringPair syn = selectList.at(0);
 	string synType = syn.getSecond();
-	set<string> *results = new set<string>();
+	set<string>* results = new set<string>();
 
 	if (synType == stringconst::ARG_WHILE) {
 		StmtTable* stmtTable = StmtTable::getInstance();
@@ -93,8 +94,10 @@ int QueryEvaluator::getSameClause(Results obj1, Results obj2) {
 	int numSynObj2 = obj2.getNumOfSyn();
 
 	if (numSynObj1 == 2 && numSynObj2 == 1) {
-		getSameClause(obj2, obj1);
+		int countr = getSameClause(obj2, obj1);
+		return countr;
 	}
+	
 	string firstSyn;
 	string secondSyn;
 	string thirdSyn;
@@ -105,17 +108,16 @@ int QueryEvaluator::getSameClause(Results obj1, Results obj2) {
 		firstSyn = obj1.getFirstClauseSyn();
 		secondSyn = obj2.getFirstClauseSyn();
 		if (firstSyn == secondSyn) {
-			return 1;
-		} else {
-			return 0;
-		}
+			count++;
+		} 
+		return count;
 	}
 
 	if (numSynObj1 == 1 && numSynObj2 == 2) {
 		firstSyn = obj1.getFirstClauseSyn();
 		secondSyn = obj2.getFirstClauseSyn();
 		thirdSyn = obj2.getSecondClauseSyn();
-		
+
 		if (firstSyn == secondSyn) {
 			count++;
 		}
@@ -132,7 +134,7 @@ int QueryEvaluator::getSameClause(Results obj1, Results obj2) {
 		thirdSyn = obj2.getFirstClauseSyn();
 		forthSyn = obj2.getSecondClauseSyn();
 
-		if (firstSyn == firstSyn) {
+		if (firstSyn == thirdSyn) {
 			count++;
 		}
 
@@ -145,6 +147,7 @@ int QueryEvaluator::getSameClause(Results obj1, Results obj2) {
 		}
 		return count;
 	}
+
 	return count;
 }
 
@@ -175,8 +178,8 @@ set<string> QueryEvaluator::evaluateOneClause(Results res, vector<StringPair> se
 }
 
 set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vector<StringPair> selectList) {
-	Results obj1 = resultList.front();
-	Results obj2 = resultList.back();
+	Results obj1 = resultList.at(0);
+	Results obj2 = resultList.at(1);
 	int numRepeatingClause = getSameClause(obj1, obj2);
 	string syn = selectList.at(0).getFirst();
 	
@@ -185,42 +188,47 @@ set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vecto
 			if (obj1.isClausePassed() && obj2.isClausePassed()) {
 				set<string> result = getAllSynValues(selectList);
 				return result;
+
 			} else {
 				return set<string>();
+
 			}
-			break;
 
 		case 1 :
 			if (obj1.isClausePassed() && obj2.isClausePassed()) {
 				obj1.getIntersect(obj2);
-				vector<string> res = obj1.getSinglesResults();
 
-				if (obj1.usesSyn(syn) || obj2.usesSyn(syn)) {
-					set<string> result = obj1.getSelectSynResult(syn);
-					return result;
-				} 
-
-				if (!res.empty()) {
-					set<string> result = getAllSynValues(selectList);
-					return result;
-				} 
-			} 
-			return set<string>();
-
-		case 2 :
-			if (obj1.isClausePassed() && obj2.isClausePassed()) {
-				obj1.getIntersect(obj2);
-				vector<pair<string, string>> res = obj1.getPairResults();
-
-				if (obj1.usesSyn(syn) || obj2.usesSyn(syn)) {
+				if (obj1.usesSyn(syn)) {
 					set<string> result = obj1.getSelectSynResult(syn);
 					return result;
 				}
-				
-				if (!res.empty()) {
+
+				if (obj2.usesSyn(syn)) {
+					set<string> result = obj2.getSelectSynResult(syn);
+					return result;
+				}
+
+				if (!obj1.usesSyn(syn) && !obj2.usesSyn(syn)) {
 					set<string> result = getAllSynValues(selectList);
 					return result;
-				} 
+				}
+
+				return set<string>();
+			}
+			
+		case 2 :
+			if (obj1.isClausePassed() && obj2.isClausePassed()) {
+				obj1.getIntersect(obj2);
+
+				if (obj1.usesSyn(syn)) {
+					set<string> result = obj1.getSelectSynResult(syn);
+					return result;
+				
+				} else {
+					set<string> result = getAllSynValues(selectList);
+					return result;
+				}
+				
 			}
 			return set<string>();
 
