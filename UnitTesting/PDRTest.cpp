@@ -61,4 +61,41 @@ void PDRTest::testProcessAssign() {
 
 	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 1);
 	CPPUNIT_ASSERT(pdr->getCurrStmtNumber() == 1);
+
+	ParsedData assign2 = ParsedData(ParsedData::ASSIGNMENT, 1);
+	assign2.setAssignVar("y");
+	queue<string> assign2Exp;
+	assign2Exp.push("3");
+	assign2.setAssignExpression(assign2Exp);
+	pdr->processParsedData(assign2);
+
+	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 1);
+	CPPUNIT_ASSERT(pdr->getCurrStmtNumber() == 2);
+}
+
+void PDRTest::testProcessWhile() {
+	ParsedData procedure = ParsedData(ParsedData::PROCEDURE, 0);
+	procedure.setProcName("proc");
+	pdr->processParsedData(procedure);
+
+	ParsedData while1 = ParsedData(ParsedData::WHILE, 1);
+	while1.setWhileVar("x");
+	pdr->processParsedData(while1);
+
+	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 2);
+	CPPUNIT_ASSERT(pdr->getCurrStmtNumber() == 1);
+	
+	ParsedData while2 = ParsedData(ParsedData::WHILE, 1);
+	while2.setWhileVar("y");
+	pdr->processParsedData(while2);
+
+	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 2);
+	CPPUNIT_ASSERT(pdr->getCurrStmtNumber() == 2);
+
+	ParsedData while3 = ParsedData(ParsedData::WHILE, 2);
+	while3.setWhileVar("z");
+	pdr->processParsedData(while3);
+
+	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 3);
+	CPPUNIT_ASSERT(pdr->getCurrStmtNumber() == 3);
 }
