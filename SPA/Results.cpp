@@ -1,6 +1,7 @@
 #pragma once
 #include "Results.h"
 #include <algorithm>
+#include <iostream>
 
 Results::Results(void)
 {
@@ -93,63 +94,132 @@ void Results::getSinglePairIntercept(Results &res1, Results &res2) {
 	string res1Syn1 = res1.getFirstClauseSyn();
 	string res2Syn1 = res2.getFirstClauseSyn();
 	string res2Syn2 = res2.getSecondClauseSyn();
-	
-	if (res1Syn1 == res2Syn1) {
-		vector<string> res1List = res1.getSinglesResults();
-		vector<pair<string, string>> res2List = res2.getPairResults();
-		vector<string> temp1 = *new vector<string>();
-		vector<pair<string, string>> temp2 = *new vector<pair<string, string>>();
+	vector<string> res1List = res1.getSinglesResults();
+	vector<pair<string, string>> res2List = res2.getPairResults();
+	set<string> temp1 = *new set<string>();
+	set<pair<string, string>> temp2 = *new set<pair<string, string>>();
 
+	bool modifiedFlag = false;
+
+	if (res1Syn1 == res2Syn1) {
+		modifiedFlag = true;
 		for (size_t  i = 0; i < res1List.size(); i++) {
 			for (size_t  j = 0; j < res2List.size(); j++) {
-				
-				string syn = res2List.at(j).first;
-				if (res1Syn1 == syn) {
-					temp1.push_back(res1List.at(i));
-					temp2.push_back(res2List.at(j));
+
+				if (res1List.at(i) == res2List.at(j).first) {
+					temp1.emplace(res1List.at(i));
+					temp2.emplace(res2List.at(j));
 				}
 			}
 		}
-		res1.setSingleResult(temp1);
-		res2.setPairResult(temp2);
 
 	} else if (res1Syn1 == res2Syn2) {
-		vector<string> res1List = res1.getSinglesResults();
-		vector<pair<string, string>> res2List = res2.getPairResults();
-		vector<string> temp1 = *new vector<string>();
-		vector<pair<string, string>> temp2 = *new vector<pair<string, string>>();
-		
+		modifiedFlag = true;
 		for (size_t  i = 0; i < res1List.size(); i++) {
 			for (size_t  j = 0; j < res2List.size(); j++) {
 				
-				string syn = res2List.at(j).second;
-				if (res1Syn1 == syn) {
-					temp1.push_back(res1List.at(i));
-					temp2.push_back(res2List.at(j));
+				if (res1List.at(i) == res2List.at(j).second) {
+					temp1.emplace(res1List.at(i));
+					temp2.emplace(res2List.at(j));
 				}
 			}
 		}
-		res1.setSingleResult(temp1);
-		res2.setPairResult(temp2);
-
 	} 
+
+	if (modifiedFlag) {
+		res1.setSingleResult(vector<string>());
+		res2.setPairResult(vector<pair<string, string>>());
+		
+		for (set<string>::iterator iter = temp1.begin(); iter != temp1.end(); iter++) {
+			res1.addSingleResult(*iter);
+		}
+
+		for (set<pair<string, string>>::iterator iter = temp2.begin(); iter != temp2.end(); iter++) {
+			pair<string, string> p = *iter;
+			res2.addPairResult(p.first, p.second);
+		}
+	}
 }
 
 void Results::getPairIntercept(Results &res1, Results &res2) {
 	string res1Syn1 = res1.getFirstClauseSyn();
 	string res1Syn2 = res1.getSecondClauseSyn();
-
 	string res2Syn1 = res2.getFirstClauseSyn();
 	string res2Syn2 = res2.getSecondClauseSyn();
 
-	if (res1Syn1 == res2Syn1) {			// assign or statement
+	vector<pair<string, string>> res1List = res1.getPairResults();
+	vector<pair<string, string>> res2List = res2.getPairResults();
+	set<pair<string, string>> temp1 = *new set<pair<string, string>>();
+	set<pair<string, string>> temp2 = *new set<pair<string, string>>();
 
-	} else if (res1Syn2 == res2Syn1) {	// assign
+	bool resultsModifiedFlag = false;
 
-	} else if (res1Syn2 == res2Syn2) {	// variable
+	if (res1Syn1 == res2Syn1 && res1Syn2 == res2Syn2) {
+		resultsModifiedFlag = true;
+		for (size_t  i = 0; i < res1List.size(); i++) {
+			for (size_t  j = 0; j < res2List.size(); j++) {
+
+				if ((res1List.at(i).first == res2List.at(j).first) &&
+					(res1List.at(i).second == res2List.at(j).second)){
+					temp1.emplace(res1List.at(i));
+					temp2.emplace(res2List.at(j));
+				}
+			}
+		}
+
+	} else if (res1Syn1 == res2Syn1) {
+		resultsModifiedFlag = true;
+		for (size_t  i = 0; i < res1List.size(); i++) {
+			for (size_t  j = 0; j < res2List.size(); j++) {
+
+				if (res1List.at(i).first == res2List.at(j).first) {
+					temp1.emplace(res1List.at(i));
+					temp2.emplace(res2List.at(j));
+				}
+			}
+		}
+
+	} else if (res1Syn2 == res2Syn1) {
+		resultsModifiedFlag = true;
+		for (size_t  i = 0; i < res1List.size(); i++) {
+			for (size_t  j = 0; j < res2List.size(); j++) {
+
+				if (res1List.at(i).second == res2List.at(j).first) {
+					temp1.emplace(res1List.at(i));
+					temp2.emplace(res2List.at(j));
+				}
+			}
+		}
+
+	} else if (res1Syn2 == res2Syn2) {
+		resultsModifiedFlag = true;
+		for (size_t  i = 0; i < res1List.size(); i++) {
+			for (size_t  j = 0; j < res2List.size(); j++) {
+
+				if (res1List.at(i).second == res2List.at(j).second) {
+					temp1.emplace(res1List.at(i));
+					temp2.emplace(res2List.at(j));
+				}
+			}
+		}
 
 	} else {
 		// error
+	}
+
+	if (resultsModifiedFlag) {
+		res1.setPairResult(vector<pair<string, string>>());
+		res2.setPairResult(vector<pair<string, string>>());
+
+		for (set<pair<string, string>>::iterator iter = temp1.begin(); iter != temp1.end(); iter++) {
+			pair<string, string> p = *iter;
+			res1.addPairResult(p.first, p.second);
+		}
+
+		for (set<pair<string, string>>::iterator iter = temp2.begin(); iter != temp2.end(); iter++) {
+			pair<string, string> p = *iter;
+			res2.addPairResult(p.first, p.second);
+		}
 	}
 }
 

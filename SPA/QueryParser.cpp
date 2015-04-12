@@ -30,13 +30,13 @@ string QueryParser::removeSpace(string s){
 	return s;
 }
 
-vector<string> QueryParser::split(string s, char delim, vector<string> elems) {
+vector<string> QueryParser::split(string s, char delim, vector<string>* elems) {
     stringstream ss(s);
     string item;
     while (getline(ss, item, delim)) {
-        elems.push_back(item);
+        elems->push_back(item);
     }
-    return elems;
+    return *elems;
 }
 
 queue<string> QueryParser::queueBuilder(string input, char delim){
@@ -61,9 +61,9 @@ string QueryParser::queueToString(queue<string> input){
 }
 
 vector<string> QueryParser::tokeniser(string input, char delim){
-	vector<string> elems;
+	vector<string>* elems = new vector<string>();
     split(input, delim, elems);
-    return elems;
+    return *elems;
 }
 
 bool QueryParser::containsAny(string s, vector<string> list){
@@ -179,9 +179,13 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 				newPair->setSecond(type);
 				query->addSelectSynonym(*newPair);
 			}
-			string next = line.front();
-			if (containsKeyword(next)){
+			if (line.empty()){
 				expectSelect = false;
+			} else {
+				string next = line.front();
+				if (containsKeyword(next)){
+					expectSelect = false;
+				}
 			}
 		}
 	}
