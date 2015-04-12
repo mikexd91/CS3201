@@ -132,7 +132,9 @@ Clause* QueryParser::createCorrectClause(string type){
 		return clause;		
 	} else if (contains(type, stringconst::TYPE_PARENT_STAR)){
 		ParentStarClause* clause = new ParentStarClause();
-		return clause;		
+		return clause;			
+	} else {
+		throw UnexpectedClauseException();
 	}
 }
 

@@ -12,9 +12,12 @@ public:
 	PatternAssgClause(const string& syn);
 	PatternAssgClause(const string& syn, const string& var, const string& expr);
 	~PatternAssgClause(void);
-
+	
+	string getExpression();
 	Results evaluate();
 	bool isValid();
+
+	void setExpression(string expr);
 
 private:
 	Results evaluateVarWildExprWild(vector<int>& assgNums);
@@ -26,5 +29,7 @@ private:
 
 	bool matchExpr(AssgNode* assg, string expr);
 	bool matchVar(AssgNode* assg, string var);
+	
+	string _expr;
 };
 
