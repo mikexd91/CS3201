@@ -37,6 +37,14 @@ PatternAssgClause::PatternAssgClause(const string& syn, const string& var, const
 PatternAssgClause::~PatternAssgClause(void) {
 }
 
+string PatternAssgClause::getExpression() {
+	return _expr;
+}
+
+void PatternAssgClause::setExpression(string expr) {
+	_expr = expr;
+}
+
 bool PatternAssgClause::isValid() {
 	string varType = this->getVarType();
 	bool checkVar = (varType == stringconst::ARG_VARIABLE);
