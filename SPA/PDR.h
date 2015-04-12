@@ -38,6 +38,10 @@ public:
 
 	void processParsedData(ParsedData);
 
+	int getCurrNestingLevel();
+	int getCurrStmtNumber();
+	stack<TNode*> getNodeStack();
+
 private:
 	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHILE};
 	enum Flag {USES, MODIFIES};
