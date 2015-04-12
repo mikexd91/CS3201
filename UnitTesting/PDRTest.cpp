@@ -7,22 +7,21 @@
 using namespace std;
 
 	PDR* pdr;
-	VarTable* varTable;
 	ProcTable* procTable;
-	StmtTable* stmtTable;
+	StmtTable* sTable;
 
 void PDRTest::setUp() {
 	pdr = PDR::getInstance();
-	varTable = VarTable::getInstance();
 	procTable = ProcTable::getInstance();
-	stmtTable = StmtTable::getInstance();
+	sTable = StmtTable::getInstance();
 }
 
 void PDRTest::tearDown() {
 	PDR::resetInstanceFlag();
+	AST::reset();
 	VarTable::reset();
 	procTable->clearTable();
-	stmtTable->clearTable();
+	sTable->clearTable();
 }
 
 CPPUNIT_TEST_SUITE_REGISTRATION( PDRTest );
