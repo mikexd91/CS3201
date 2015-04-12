@@ -17,7 +17,7 @@ class QueryParser
 	
 public:
 	static string removeSpace(string);
-	static vector<string> split(string, char, vector<string>);
+	static vector<string> split(string, char, vector<string>*);
 	static queue<string> queueBuilder(string, char);
 	static string queueToString(queue<string>);
 	static vector<string> tokeniser(string, char);
