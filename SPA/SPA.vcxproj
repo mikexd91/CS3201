@@ -71,6 +71,7 @@
     <ClCompile Include="FollowsClause.cpp" />
     <ClCompile Include="FollowsStarClause.cpp" />
     <ClCompile Include="IfNode.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="OpNode.cpp" />
     <ClCompile Include="ParentClause.cpp" />

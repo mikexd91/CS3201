@@ -197,14 +197,12 @@ FakesAssemblies/
 *.opt
 
 # I WANT THESE FILES COMMITTED
-!include/boost/*/debug
-!include/boost/*/release
+!include/boost/*
+!include/cppunit/*
 
 # ECLIPSE IGNORE FILES
 *.suo
 *.ini
 .cproject
 .project
-SPA/SPA.vcxproj
-SPA/SPA.vcxproj
 SPA/SPA.vcxproj
