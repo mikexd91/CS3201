@@ -136,6 +136,23 @@ void QueryParserTest::testClause(){
 	CPPUNIT_ASSERT(TEST->getSecondArgType() == stringconst::ARG_VARIABLE);
 }
 
+void QueryParserTest::testPattern(){
+	string const DECLARATION = "Assign a;Variable v;";
+	string const SELECT = "Select a such that";
+	string const PATTERN = "Pattern a(v, _\" x + y \"_)";
+
+	Query* ASSERTION = new Query();
+
+	vector<string> DEC_LIST = QueryParser::tokeniser(DECLARATION, ';');
+	QueryParser::parseDeclarations(ASSERTION, DEC_LIST);
+
+	queue<string> SEL_Q = QueryParser::queueBuilder(SELECT, ' ');
+	QueryParser::parseSelectSynonyms(ASSERTION, SEL_Q);
+
+	queue<string> PAT_Q = QueryParser::queueBuilder(PATTERN, ' ');
+	QueryParser::parsePattern(ASSERTION, PAT_Q);
+}
+
 void QueryParserTest::testParser(){
 	string const USER_INPUT1 = "Assign a;Variable v;Select a such that Uses(a, v)";
 	string const USER_INPUT2 = "Assign a, a1; Select a such that Follows(a, a1)";

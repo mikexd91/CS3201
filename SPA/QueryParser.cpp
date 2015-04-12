@@ -325,11 +325,16 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 		ss << s;
 	}
 	string expression = ss.str();
-	queue<string> exprQ = queueBuilder(expression, ' ');
-	queue<string> exprRPN = Utils::getRPN(exprQ);
-	string expr = queueToString(exprRPN);
-	PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expr);
-	query->addClause(newClause);
+	if (expression != ""){
+		queue<string> exprQ = queueBuilder(expression, ' ');
+		queue<string> exprRPN = Utils::getRPN(exprQ);
+		string expr = queueToString(exprRPN);
+		PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expr);
+		query->addClause(newClause);
+	} else {
+		PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expression);
+		query->addClause(newClause);
+	}
 } 
 
 Query QueryParser::queryProcessor(string input){
