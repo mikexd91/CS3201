@@ -59,7 +59,7 @@ void PDR::processProcedureStmt(ParsedData data) {
 
     ProcNode* procedure = new ProcNode(data.getProcName());
     StmtLstNode* stmtLst = new StmtLstNode();
-    procedure->addChild(stmtLst);
+    procedure->linkChild(stmtLst);
     
     nodeStack.push(procedure);
     nodeStack.push(stmtLst);
@@ -348,4 +348,16 @@ bool PDR::isInteger(string exp) {
     }
     
     return false;
+}
+
+int PDR::getCurrNestingLevel() {
+	return currNestingLevel;
+}
+
+int PDR::getCurrStmtNumber() {
+	return stmtCounter;
+}
+
+stack<TNode*> PDR::getNodeStack() {
+	return nodeStack;
 }

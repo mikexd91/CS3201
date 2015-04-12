@@ -132,6 +132,7 @@
     <ClCompile Include="CallNodeTest.cpp" />
     <ClCompile Include="ConstNodeTest.cpp" />
     <ClCompile Include="IfNodeTest.cpp" />
+    <ClCompile Include="PDRTest.cpp" />
     <ClCompile Include="ProcNodeTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
     <ClCompile Include="source\PKBUnitTest.cpp" />
@@ -148,6 +149,7 @@
     <ClInclude Include="CallNodeTest.h" />
     <ClInclude Include="ConstNodeTest.h" />
     <ClInclude Include="IfNodeTest.h" />
+    <ClInclude Include="PDRTest.h" />
     <ClInclude Include="ProcNodeTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
     <ClInclude Include="source\ProcTableTest.h" />
