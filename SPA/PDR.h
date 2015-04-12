@@ -32,7 +32,7 @@ class PDR {
 	
 public:
     
-    PDR();
+
     static PDR* getInstance();
 	static void resetInstanceFlag();
 
@@ -68,6 +68,9 @@ private:
     TNode* breakDownAssignExpression(ParsedData, set<string>&);
     
     bool isInteger(string);
+
+	// constructor
+	PDR();
 
 };
 #endif
