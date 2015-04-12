@@ -318,16 +318,17 @@ void ParentClauseTest::testParentSynSynPass() {
 	CPPUNIT_ASSERT(m1->isValid());
 
 	Results r1 = m1->evaluate();
+	vector<pair<string, string>> resultVector = r1.getPairResults();
 	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getPairResults().size() == 4);
+	CPPUNIT_ASSERT(resultVector.size() == 4);
 	pair<string, string> pair0("1","2");
 	pair<string, string> pair1("1","3");
 	pair<string, string> pair2("3","4");
 	pair<string, string> pair3("3","5");
-	CPPUNIT_ASSERT(r1.getPairResults().at(0) == pair0);
-	CPPUNIT_ASSERT(r1.getPairResults().at(1) == pair1);
-	CPPUNIT_ASSERT(r1.getPairResults().at(2) == pair2);
-	CPPUNIT_ASSERT(r1.getPairResults().at(3) == pair3);
+	CPPUNIT_ASSERT(find(resultVector.begin(), resultVector.end(), pair0) != resultVector.end());
+	CPPUNIT_ASSERT(find(resultVector.begin(), resultVector.end(), pair1) != resultVector.end());
+	CPPUNIT_ASSERT(find(resultVector.begin(), resultVector.end(), pair2) != resultVector.end());
+	CPPUNIT_ASSERT(find(resultVector.begin(), resultVector.end(), pair3) != resultVector.end());
 }
 
 void ParentClauseTest::testParentSynSynPassWithWhile() {
