@@ -46,7 +46,7 @@ void PatternAssgClause::setExpression(string expr) {
 }
 
 bool PatternAssgClause::isValid() {
-	string varType = this->getVarType();
+	string varType = this->getSecondArgType();
 	bool checkVar = (varType == stringconst::ARG_VARIABLE);
 	bool valid = checkVar;
 	return valid;

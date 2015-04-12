@@ -133,6 +133,11 @@ Clause* QueryParser::createCorrectClause(string type){
 	} else if (type == stringconst::TYPE_PARENT_STAR){
 		ParentStarClause* clause = new ParentStarClause();
 		c = clause;		
+	} else {
+		// think of what to return if none of the types are met
+		// the test case at line 153 fails here
+		cout << "die here" << endl;
+		c = new FollowsClause();
 	}
 	return c;
 }
