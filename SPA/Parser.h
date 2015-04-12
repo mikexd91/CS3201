@@ -28,10 +28,6 @@ private:
 	string getName();
 	//string getFactor();
 	queue<string> getExpression();
-	bool isValidName(string);
-	bool isValidConstant(string);
-	bool isValidFactor(string);
-	bool isValidSymbol(string);
 	void throwException(int);
 
 	void program();
@@ -41,13 +37,12 @@ private:
 	void assign();
 	void parseWhile();
 	void endParse();
-	void parseFactor(string, queue<string>&);
-	void parseSymbol(string, queue<string>&, stack<string>&);
+	//void parseFactor(string, queue<string>&);
+	//void parseSymbol(string, queue<string>&, stack<string>&);
 };
 
 namespace ParserConstants {
 	const string DELIM_STRING = " ;={}+*-";
 	const char DELIMITERS[] = { ';', '=', '{', '}', '+', '*', '-' };
-	const char SANITISED_CHARS[] = { '\t', '\n' };
 	const string ERROR_MESSAGE = "Error at line ";
 }

@@ -8,6 +8,8 @@
 #include "InvalidCodeException.h"
 #include "Parser.h"
 #include "ParsedData.h"
+#include "Utils.h"
+#include "InvalidExpressionException.h"
 
 using namespace std;
 
@@ -21,38 +23,11 @@ Parser::Parser() {
 
 //e.g. string content = "procedure test { a = 2; a = 5;} ";
 void Parser::parse(string content) {
-	content = sanitise(content);
-	tokens = explode(content);
+	content = Utils::sanitise(content);
+	tokens = Utils::explode(content, ParserConstants::DELIM_STRING, ParserConstants::DELIMITERS);
 	iter = tokens.begin();
 	program();
 	endParse();
-}
-
-string Parser::sanitise(string str) {
-	for (size_t i = 0; i < strlen(ParserConstants::SANITISED_CHARS); i++) {
-		char sanitisedChar = ParserConstants::SANITISED_CHARS[i];
-		str.erase(remove(str.begin(), str.end(), sanitisedChar), str.end());
-	}
-	return str;
-}
-
-//Split code into a vector of tokens
-vector<string> Parser::explode(const string &str) {
-	vector<string> elems;
-	int pos;
-	int prev = 0;
-	while ((pos = str.find_first_of(ParserConstants::DELIM_STRING, prev)) != string::npos) {
-		//if there are words in between (not consecutive delimiters)
-		if (pos > prev) {
-			elems.push_back(str.substr(prev, pos - prev));
-		}
-		//if it is a delimiter that should be included (aka all delimiters but spaces)
-		if (find(begin(ParserConstants::DELIMITERS), end(ParserConstants::DELIMITERS), str[pos]) != end(ParserConstants::DELIMITERS)) {
-			elems.push_back(string(1, str[pos]));
-		}
-		prev = pos + 1;
-	}
-	return elems;
 }
 
 //checks if the next token matches the expected token. if it matches, continue
@@ -83,7 +58,7 @@ string Parser::getWord() {
 
 string Parser::getName() {
 	string result = getWord();
-	if (isValidName(result)) {
+	if (Utils::isValidName(result)) {
 		return result;
 	} else {
 		throwException(stmtCount);
@@ -157,33 +132,21 @@ Sample parsing of expression
 **/
 
 queue<string> Parser::getExpression() {
-	stack<string> operationStack;
-	queue<string> expressionQueue;
-	//using Shunting-yard algorithm
+	queue<string> originalExpression;
 	string word;
-	int count = 0;
-	word = getWord();
-	parseFactor(word, expressionQueue);
-	
 	while ((word = getWord()) != ";") {
-		if(count > 9999) {
-			throw runtime_error("Infinite loop!");
-			break;
+		if (Utils::isValidFactor(word) || Utils::isValidSymbol(word)) {
+			originalExpression.push(word);
 		} else {
-			parseSymbol(word, expressionQueue, operationStack);
-			word = getWord();
-			parseFactor(word, expressionQueue);
+			throwException(stmtCount);
 		}
-		count++;
 	}
-
-	while (!operationStack.empty()) {
-		expressionQueue.push(operationStack.top());
-		operationStack.pop();
+	try {
+		return Utils::getRPN(originalExpression);
+	} catch (InvalidExpressionException) {
+		throwException(stmtCount);
 	}
-	return expressionQueue;
 }
-
 
 void Parser::parseWhile() {
 	match("while");
@@ -199,58 +162,6 @@ void Parser::parseWhile() {
 void Parser::endParse() {
 	ParsedData endData = ParsedData(ParsedData::END, nestingLevel);
 	parsedDataReceiver->processParsedData(endData);
-}
-
-void Parser::parseFactor(string word, queue<string> &expressionQueue) {
-	if (isValidFactor(word)) {
-		expressionQueue.push(word);
-	} else {
-		throwException(stmtCount);
-	}
-}
-
-void Parser::parseSymbol(string word, queue<string> &expressionQueue, stack<string> &operationStack) {
-	//if top of stack is *, all other operation (+-*) are lower or equal, so just add top to output queue
-	//if top of stack is + or -, only add top to output queue if word is + or -
-	if (isValidSymbol(word)) {
-		while (!operationStack.empty() && !(operationStack.top() != "*" && word == "*")) {
-			expressionQueue.push(operationStack.top());
-			operationStack.pop();
-		}
-		operationStack.push(word);
-	} else {
-		throwException(stmtCount);
-	}
-}
-
-bool Parser::isValidName(string name) {
-	if (!isalpha(name[0])) {
-		return false;
-	} else {
-		for (int i = 1; i < name.size(); i++) {
-			if(!isalnum(name[i])) {
-				return false;
-			}
-		}
-		return true;
-	}
-}
-
-bool Parser::isValidConstant(string number) {
-	for (int i = 0; i < number.size(); i++) {
-		if (!isdigit(number[i])) {
-			return false;
-		}
-	}
-	return true;
-}
-
-bool Parser::isValidFactor(string factor) {
-	return isValidConstant(factor) || isValidName(factor);
-}
-
-bool Parser::isValidSymbol(string symbol) {
-	return symbol == "+" || symbol == "-" || symbol == "*";
 }
 
 void Parser::throwException(int lineNumber) {

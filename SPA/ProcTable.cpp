@@ -28,6 +28,13 @@ ProcTable::ProcedureTable::iterator ProcTable::getIterator() {
 	return tableIter;
 }
 
+// gets iterator to end of proc table
+ProcTable::ProcedureTable::iterator ProcTable::getEnd() {
+	ProcTable::ProcedureTable::iterator tableIter = table.end();
+
+	return tableIter;
+}
+
 // MUTATORS
 // adds proc to table
 void ProcTable::addProc(Procedure *proc) {
