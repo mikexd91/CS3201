@@ -44,3 +44,9 @@ struct DebugHelpException : public exception{
 		return "Debug";
 	}
 };
+
+struct InvalidClauseException : public exception{
+	const char* what () const throw(){
+		return "Clause: Invalid parameters";
+	}
+};

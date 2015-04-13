@@ -37,6 +37,6 @@ public:
 	static void parsePattern(Query*, queue<string>);
 
 
-	static Query queryProcessor(string);
+	static Query parseQuery(string);
 };
 
