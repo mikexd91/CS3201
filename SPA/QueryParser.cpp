@@ -30,6 +30,13 @@ string QueryParser::removeSpace(string s){
 	return s;
 }
 
+string QueryParser::removeFrontSpaces(string s){
+	while (s.at(0) == ' '){
+		s.erase(0);
+	} 
+	return s;
+}
+
 vector<string> QueryParser::split(string s, char delim, vector<string>* elems) {
     stringstream ss(s);
     string item;
@@ -196,7 +203,9 @@ Clause* QueryParser::createCorrectClause(string type){
 
 void QueryParser::parseDeclarations(Query* query, vector<string> list){
 	for (size_t i=0; i<list.size(); i++){
-		string current = list.at(i);
+		string here = list.at(i);
+		string current = removeFrontSpaces(here);
+		cout << current;
 		vector<string> tokens = tokeniser(current, ',');
 		string first = tokens.at(0);
 		vector<string> split = tokeniser(first, ' ');
