@@ -2,6 +2,9 @@
 #include "QueryEvaluatorTest.h"
 #include "../SPA/FollowsClause.h"
 #include "../SPA/ParentStarClause.h"
+#include "../SPA/PatternAssgClause.h"
+#include "../SPA/FollowsStarClause.h"
+#include "../SPA/ModifiesClause.h"
 #include "../SPA/Results.h"
 #include "../SPA/QueryEvaluator.h"
 #include "../SPA/StmtTable.h"
@@ -128,6 +131,7 @@ void QueryEvaluatorTest::setUp() {
 	stmt4->setStmtNum(4);
 	stmt4->setType(WHILE_STMT_);
 	stmt4->setFollowsBefore(3);
+	stmt4->setFollowsAfter(7);
 	set<string> mods4 = set<string>();
 	mods4.emplace("i");
 	mods4.emplace("j");
@@ -240,17 +244,17 @@ void QueryEvaluatorTest::testEvaluator() {
 	q.addSelectSynonym(p);
 	q.addClause(fol);
 
-	//set<string> res = e.evaluateQuery(q);
+	set<string> res = e.evaluateQuery(q);
 	
-	//CPPUNIT_ASSERT(res.size() == 1);
+	CPPUNIT_ASSERT(res.size() == 1);
 
 	//test ParentStar FixedSyn With While
 	ParentStarClause* m1 = new ParentStarClause();
-	m1->setFirstArg("2");
-	m1->setFirstArgFixed(true);
+	m1->setFirstArg("w");
+	m1->setFirstArgFixed(false);
 	m1->setFirstArgType(ARG_STATEMENT);
-	m1->setSecondArg("w");
-	m1->setSecondArgFixed(false);
+	m1->setSecondArg("5");
+	m1->setSecondArgFixed(true);
 	m1->setSecondArgType(ARG_WHILE);
 	
 	StringPair p2 = *new StringPair();
@@ -264,21 +268,195 @@ void QueryEvaluatorTest::testEvaluator() {
 	Results r = m1->evaluate();
 
 	set<string> res2 = e.evaluateQuery(q2);
-	/*
-	for (set<string>::iterator it = res2.begin(); it != res2.end(); it++) {
-		cout << "result: " << *it << "!";
-	}
-	*/
-	CPPUNIT_ASSERT(res2.size() == 1);
+
+	CPPUNIT_ASSERT(res2.size() == 2);
+
+	//test ParentStar FixedSyn With While
+	ParentStarClause* m2 = new ParentStarClause();
+	m2->setFirstArg("w1");
+	m2->setFirstArgFixed(false);
+	m2->setFirstArgType(ARG_STATEMENT);
+	m2->setSecondArg("5");
+	m2->setSecondArgFixed(true);
+	m2->setSecondArgType(ARG_WHILE);
+	
+	StringPair p3 = *new StringPair();
+	p3.setFirst("w");
+	p3.setSecond(ARG_WHILE);
+
+	Query q3 = *new Query();
+	q3.addSelectSynonym(p3);
+	q3.addClause(m2);
+
+	set<string> res3 = e.evaluateQuery(q3);
+	
+	CPPUNIT_ASSERT(res3.size() == 2);
+
+	// Test FollowsStar
+	FollowsStarClause* f1 = new FollowsStarClause();
+	f1->setFirstArg("3");
+	f1->setFirstArgFixed(true);
+	f1->setFirstArgType(ARG_STATEMENT);
+	f1->setSecondArg("a");
+	f1->setSecondArgFixed(false);
+	f1->setSecondArgType(ARG_STATEMENT);
+
+	StringPair p4 = *new StringPair();
+	p4.setFirst("a");
+	p4.setSecond(ARG_STATEMENT);
+
+	Query q4 = *new Query();
+	q4.addSelectSynonym(p4);
+	q4.addClause(f1);
+
+	set<string> res4 = e.evaluateQuery(q4);
+
+	CPPUNIT_ASSERT(res4.size() == 2);
 
 }
 
 // Test 2 clauses
 void QueryEvaluatorTest::testEvaluator2() {
 	QueryEvaluator e = *new QueryEvaluator();
+	// Test all syn different 
+	ParentStarClause* m1 = new ParentStarClause();
+	m1->setFirstArg("w");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_WHILE);
+	m1->setSecondArg("5");
+	m1->setSecondArgFixed(true);
+	m1->setSecondArgType(ARG_STATEMENT);
 
+	PatternAssgClause* p1 = new PatternAssgClause("a");
+	p1->setVar("_");
+	p1->setVarFixed(true);
+	p1->setExpression("_");
+
+	StringPair pr1 = *new StringPair();
+	pr1.setFirst("s");
+	pr1.setSecond(ARG_ASSIGN);
+
+	Query q1 = *new Query();
+	q1.addSelectSynonym(pr1);
+	q1.addClause(m1);
+	q1.addClause(p1);
+
+	set<string> res = e.evaluateQuery(q1);
+	
+	CPPUNIT_ASSERT(res.size() == 5);
+
+	// Test 1 same fixed syn between 2 clauses
+	// Select a s.t. Modifies(5, "i") pattern a("i",_)
+	ModifiesClause* m2 = new ModifiesClause();
+	m2->setFirstArg("5");
+	m2->setFirstArgFixed(true);
+	m2->setFirstArgType(ARG_STATEMENT);
+	m2->setSecondArg("i");
+	m2->setSecondArgFixed(true);
+	m2->setSecondArgType(ARG_VARIABLE);
+
+	PatternAssgClause* p2 = new PatternAssgClause("a");
+	p2->setVar("i");
+	p2->setVarFixed(true);
+	p2->setExpression("_");
+
+	StringPair pr2 = *new StringPair();
+	pr2.setFirst("a");
+	pr2.setSecond(ARG_VARIABLE);
+
+	Query q2 = *new Query();
+	q2.addSelectSynonym(pr2);
+	q2.addClause(m2);
+	q2.addClause(p2);
+
+	set<string> res2 = e.evaluateQuery(q2);
+
+	CPPUNIT_ASSERT(res2.size() == 5);
+
+	// Test 1 same unfixed syn between 2 clauses
+	// Select a s.t. Modifies(a,v1) pattern a(v2,_)
+	ModifiesClause* m3 = new ModifiesClause();
+	m3->setFirstArg("a");
+	m3->setFirstArgFixed(false);
+	m3->setFirstArgType(ARG_STATEMENT);
+	m3->setSecondArg("v1");
+	m3->setSecondArgFixed(false);
+	m3->setSecondArgType(ARG_VARIABLE);
+
+	PatternAssgClause* p3 = new PatternAssgClause("a");
+	p3->setVar("v2");
+	p3->setVarFixed(false);
+	p3->setExpression("_");
+
+	StringPair pr3 = *new StringPair();
+	pr3.setFirst("a");
+	pr3.setSecond(ARG_VARIABLE);
+
+	Query q3 = *new Query();
+	q3.addSelectSynonym(pr3);
+	q3.addClause(m3);
+	q3.addClause(p3);
+
+	set<string> res3 = e.evaluateQuery(q3);
+	
+	CPPUNIT_ASSERT(res3.size() == 5);
+
+	// Test 2 same unfixed syn between 2 clauses
+	// Select a s.t. Modifies(a,v) pattern a(v,_)
+	ModifiesClause* m4 = new ModifiesClause();
+	m4->setFirstArg("a");
+	m4->setFirstArgFixed(false);
+	m4->setFirstArgType(ARG_STATEMENT);
+	m4->setSecondArg("v");
+	m4->setSecondArgFixed(false);
+	m4->setSecondArgType(ARG_VARIABLE);
+
+	PatternAssgClause* p4 = new PatternAssgClause("a");
+	p4->setVar("v");
+	p4->setVarFixed(false);
+	p4->setExpression("_");
+
+	StringPair pr4 = *new StringPair();
+	pr4.setFirst("a");
+	pr4.setSecond(ARG_STATEMENT);
+
+	Query q4 = *new Query();
+	q4.addSelectSynonym(pr4);
+	q4.addClause(m4);
+	q4.addClause(p4);
+
+	set<string> res4 = e.evaluateQuery(q4);
+	
+	CPPUNIT_ASSERT(res4.size() == 5);
+
+	// Test 2 same unfixed syn between 2 clauses
+	// Select v s.t. Follows*(a1,a2) pattern a2(v,_)
+	FollowsStarClause* f1 = new FollowsStarClause();
+	f1->setFirstArg("a1");
+	f1->setFirstArgFixed(false);
+	f1->setFirstArgType(ARG_STATEMENT);
+	f1->setSecondArg("a2");
+	f1->setSecondArgFixed(false);
+	f1->setSecondArgType(ARG_STATEMENT);
+	CPPUNIT_ASSERT(f1->isValid());
+
+	PatternAssgClause* p5 = new PatternAssgClause("a2");
+	p5->setVar("v");
+	p5->setVarFixed(false);
+	p5->setExpression("_");
+	CPPUNIT_ASSERT(p5->isValid());
+
+	StringPair pr5 = *new StringPair();
+	pr5.setFirst("v");
+	pr5.setSecond(ARG_VARIABLE);
+
+	Query q5 = *new Query();
+	q5.addSelectSynonym(pr5);
+	q5.addClause(f1);
+	q5.addClause(p5);
+
+	set<string> res5 = e.evaluateQuery(q5);
+	
+	CPPUNIT_ASSERT(res5.size() == 2);
 }
 
-void QueryEvaluatorTest::testEvaluator3() {
-
-}

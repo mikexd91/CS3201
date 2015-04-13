@@ -81,10 +81,6 @@ set<string> QueryEvaluator::getAllSynValues(vector<StringPair> selectList) {
 		//error
 		return set<string>();
 	}
-	// check the syn type
-	// get from the respective tables
-	// convert all to string (if required)
-	// return set of strings
 	
 }
 
@@ -153,31 +149,21 @@ int QueryEvaluator::getSameClause(Results obj1, Results obj2) {
 
 set<string> QueryEvaluator::evaluateOneClause(Results res, vector<StringPair> selectList) {
 	string syn = selectList.at(0).getFirst();
-	cout << "hey";
+
 	if (res.usesSyn(syn) && res.isClausePassed()) {
-		cout << "hey1";
+
 		set<string> result = res.getSelectSynResult(syn);
 		return result;
 	}
 
 	if (!res.usesSyn(syn) && res.isClausePassed()) {
-		cout << "hey2";
+
 		set<string> result = getAllSynValues(selectList);
 		return result;
 	}
 
 	return set<string>();
-	/*
-	3.if resultsList.size == 1 // there is only 1 query
-	if selectSynonym is used in resultObj // helper function to compare
-		return getSingleResults
-
-	else // if selectSynonym is not used in resultObj
-		if (resultObj.isClausePassed())
-			return all possible values of selectSyn
-		else
-			return none
-	*/
+	
 }
 
 set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vector<StringPair> selectList) {
@@ -239,18 +225,6 @@ set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vecto
 			// error
 			return set<string>();
 	}
-	/*
-	if both clauses use the same syn AND a clause uses select syn
-		reduce result set via elimination and return result
-	if both clauses use the same syn AND no clause uses select syn
-		check if both clauses are valid
-			if both are valid, return all possible select syn
-			if 1 clause is invalid, return none
-	if clauses do not use the same syn, 
-		check if both are valid
-			if both are valid, return all possible select syn
-			if 1 clause is invalid, return none
-	*/
 	
 }
 
@@ -281,35 +255,5 @@ set<string> QueryEvaluator::evaluateQuery(Query q) {
 			return result;
 		}
 	}
-	/*
-	1.check if clauseList is empty
-	if empty, 
-		getSelectSynonym(0)
-		populate all synonym with possible values
-		put them in set<string> and return
-2.if not empty
-	for all clauses in getClauseList
-		clause.evaluate()
-		all to resultsList
-3.if resultsList.size == 1 // there is only 1 query
-	if selectSynonym is used in resultObj // helper function to compare
-		return getSingleResults
-
-	else // if selectSynonym is not used in resultObj
-		if (resultObj.isClausePassed())
-			return all possible values of selectSyn
-		else
-			return none
-4.else // resultsList.size > 1
-	if both clauses use the same syn AND a clause uses select syn
-		reduce result set via elimination and return result
-	if both clauses use the same syn AND no clause uses select syn
-		check if both clauses are valid
-			if both are valid, return all possible select syn
-			if 1 clause is invalid, return none
-	if clauses do not use the same syn, 
-		check if both are valid
-			if both are valid, return all possible select syn
-			if 1 clause is invalid, return none
-	*/
+	
 }
