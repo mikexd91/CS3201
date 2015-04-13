@@ -124,7 +124,7 @@ Results UsesClause::evaluateStmtFixedVarWild() {
 	Results res = Results();
 	// set synonyms
 	res.setNumOfSyn(1);
-	res.setSecondClauseSyn(this->getSecondArg());
+	res.setFirstClauseSyn(this->getSecondArg());
 
 	// get relevant stmts
 	string firstArgType = this->getFirstArgType();
