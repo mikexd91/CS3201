@@ -332,8 +332,19 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 	}
 	size_t npos = next.find_first_of(",");
 	string var = next.substr(pos+1, npos-pos-1);
-	if (decList.find(var) == decList.end() || decList.at(var) != stringconst::ARG_VARIABLE){
-		throw InvalidDeclarationException();
+	bool varFixed = false;
+	if (decList.find(var) == decList.end()){
+		if (contains(var, "\"")){
+			size_t spos = var.find_first_of("\"");
+			size_t fpos = var.find_last_of("\"");
+			if (spos == fpos){
+				throw InvalidArgumentException();
+			} else {
+				string arg = var.substr(spos+1, fpos-spos-1);
+				var = arg;
+				varFixed == true;
+			}
+		}
 	}
 	std::stringstream ss = stringstream();
 	bool endToken = false;
@@ -390,6 +401,7 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 		if (bpos == fpos){
 			if (bpos == 0 && !contains(subsequent, "\"")){
 				PatternAssgClause* newClause = new PatternAssgClause(synonym, var, stringconst::STRING_EMPTY);
+				newClause->setVarFixed(varFixed);
 				query->addClause(newClause);
 			} else {
 				throw InvalidArgumentException();
@@ -405,6 +417,7 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 				queue<string> exprRPN = Utils::getRPN(expression);
 				string expr = queueToString(exprRPN);
 				PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expr);
+				newClause->setVarFixed(varFixed);
 				query->addClause(newClause);
 			}
 		}
@@ -423,6 +436,7 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 			queue<string> exprRPN = Utils::getRPN(expressionQ);
 			string expr = queueToString(exprRPN);
 			PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expr);
+			newClause->setVarFixed(varFixed);
 			query->addClause(newClause);
 		}
 	} else {
@@ -431,7 +445,7 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 	}
 } 
 
-Query QueryParser::queryProcessor(string input){
+Query QueryParser::parseQuery(string input){
 	Query* output = new Query();
 	vector<string> splitBySC = tokeniser(input, ';');
 	int numDeclarations = splitBySC.size() - 1;
@@ -449,6 +463,13 @@ Query QueryParser::queryProcessor(string input){
 			parsePattern(output, selectQueue);
 		} else if (containsKeyword(current)){
 			selectQueue.pop();
+		}
+	}
+	vector<Clause*> clauseList = output->getClauseList();
+	for (size_t i=0; i<clauseList.size(); i++){
+		Clause* current = clauseList.at(i);
+		if (!current->isValid()){
+			throw InvalidClauseException();
 		}
 	}
 	return *output;
