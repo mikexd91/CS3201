@@ -5,6 +5,7 @@
 class StmtTableTest : public CPPUNIT_NS::TestFixture { 
 	CPPUNIT_TEST_SUITE( StmtTableTest );
 	CPPUNIT_TEST( testInstance );
+	CPPUNIT_TEST( testInstanceCopies );
 	CPPUNIT_TEST( testGetStmtByNum );
 	CPPUNIT_TEST( testGetAssgStmts );
 	CPPUNIT_TEST( testGetCallStmts );
@@ -18,6 +19,7 @@ public:
 	void tearDown();
 
 	void testInstance();			// method to test singleton instance getter
+	void testInstanceCopies();		// method to test instance copies
 	void testGetStmtByNum();		// method to test retrieval of statement by statement number
 	void testGetAssgStmts();		// method to test retrieval of assignment statements
 	void testGetCallStmts();		// method to test retrieval of call statements

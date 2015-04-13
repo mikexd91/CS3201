@@ -21,14 +21,20 @@ struct InvalidSelectException : public exception{
 	}
 };
 
-struct UnexpectedEndException : public exception{
+struct InvalidArgumentException : public exception{
 	const char * what() const throw(){
-		return "Unexpected end of Query!";
+		return "Argument invalid";
 	}
 };
 
-struct MissingClauseException : public exception{
+struct UnexpectedEndException : public exception{
 	const char * what() const throw(){
-		return "Clause not found!";
+		return "Unexpected end of query!";
+	}
+};
+
+struct UnexpectedClauseException : public exception{
+	const char * what() const throw(){
+		return "Clause type mismatch";
 	}
 };

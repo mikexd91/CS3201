@@ -1,105 +1,315 @@
 #include "QueryEvaluator.h"
+#include "Clause.h"
+#include "StringPair.h"
+#include "Utils.h"
 #include "StmtTable.h"
 #include "VarTable.h"
-#include "Follows.h"
 #include <vector>
+#include <sstream>
+#include <iostream>
 
 using namespace std;
 
-map<string, string>::iterator dlIter;						// map iterator
-
 QueryEvaluator::QueryEvaluator(void)
 {
-
 }
 
 QueryEvaluator::~QueryEvaluator(void)
 {
 }
 
-void QueryEvaluator::setQueryObj(Query q) {
-	this->queryObj = q;
-}
+set<string> QueryEvaluator::getAllSynValues(vector<StringPair> selectList) {
+	StringPair syn = selectList.at(0);
+	string synType = syn.getSecond();
+	set<string>* results = new set<string>();
 
-void QueryEvaluator::setClauseObj(Clause c) {
-	this->clauseObj = c;
-}
+	if (synType == stringconst::ARG_WHILE) {
+		StmtTable* stmtTable = StmtTable::getInstance();
+		set<Statement*> whileList = stmtTable->getWhileStmts();
+		for (set<Statement*>::iterator iter = whileList.begin() ; iter != whileList.end(); iter++) {
+			Statement* stmtObj = *iter;
+			int stmtNum = stmtObj->getStmtNum();
+			
+			string s;
+			ostringstream convert; // stringstream int to string
+			convert << stmtNum;
+			s = convert.str();
+			results->insert(s);
+		}
+		return *results;
 
-void QueryEvaluator::setResultObj(Results r) {
-	this->resultsObj = r;
-}
+	} else if (synType == stringconst::ARG_STATEMENT) {
+		StmtTable* stmtTable = StmtTable::getInstance();
+		boost::unordered_map<int, Statement*>::iterator iter;
+		for (iter = stmtTable->getIterator(); iter != stmtTable->getEnd(); iter++) {
+			int stmtNum = iter->first;
+			
+			string s;
+			ostringstream convert; // stringstream int to string
+			convert << stmtNum;
+			s = convert.str();
+			results->insert(s); // might need to flush. currently not flushing
+		}
+		return *results;
 
-int QueryEvaluator::isFixed() {
-	bool isArg1Fixed = this->clauseObj.getFirstArgFixed();
-	bool isArg2Fixed = this->clauseObj.getSecondArgFixed();
-	
-	if (isArg1Fixed && isArg2Fixed) {
-		return 1;
-	} else if (isArg1Fixed && !isArg2Fixed) {
-		return 2;
-	} else if (!isArg1Fixed && isArg2Fixed) {
-		return 3;
-	} else if (!isArg1Fixed && !isArg2Fixed) {
-		return 4;
+	} else if (synType == stringconst::ARG_ASSIGN) {
+		StmtTable* stmtTable = StmtTable::getInstance();
+		set<Statement*> assignList = stmtTable->getAssgStmts();
+		for (set<Statement*>::iterator iter = assignList.begin() ; iter != assignList.end(); iter++) {
+			Statement* stmtObj = *iter;
+			int stmtNum = stmtObj->getStmtNum();
+			
+			string s;
+			ostringstream convert; // stringstream int to string
+			convert << stmtNum;
+			s = convert.str();
+			results->insert(s);
+		}
+		return *results;
+
+	} else if (synType == stringconst::ARG_VARIABLE) {
+		VarTable* varTable = VarTable::getInstance();
+		boost::unordered_map<string, Variable*>::iterator iter;
+		for (iter = varTable->getIterator(); iter != varTable->getEnd(); iter++) {
+			Variable v = *iter->second;
+			string varName = v.getName();
+			results->insert(varName); // might need to flush. currently not flushing
+		}
+		return *results;
+
 	} else {
-		// throw error
-		return 0;
+		//error
+		return set<string>();
 	}
-}
-
-bool QueryEvaluator::isSynInClause() {
-	string synonym = this->queryObj.getSelectSynonym(0);
-	string arg1 = this->clauseObj.getFirstArg();
-	string arg2 = this->clauseObj.getSecondArg();
-
-	if (synonym.compare(arg1) == 0 ||
-		synonym.compare(arg2) == 0) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-void QueryEvaluator::setResultSynNotInClause(bool isTrue) {
+	// check the syn type
+	// get from the respective tables
+	// convert all to string (if required)
+	// return set of strings
 	
 }
 
-Results QueryEvaluator::evaluateFollowsClause(void) {
-	string arg1 = this->clauseObj.getFirstArg();
-	string arg2 = this->clauseObj.getSecondArg();
-	Follows f = Follows();
+// return the NUMBER of times syn appear in both obj1 and obj2
+int QueryEvaluator::getSameClause(Results obj1, Results obj2) {
+	int numSynObj1 = obj1.getNumOfSyn();
+	int numSynObj2 = obj2.getNumOfSyn();
 
-	int isFixedCase = isFixed();
-	switch (isFixedCase) {
-		case 1 :  // Follows(1,2)
-			int stmt1 = stoi(arg1);
-			int stmt2 = stoi(arg2);
-			bool isFollows = f.isFollows(stmt1, stmt2);
-			setResultSynNotInClause(isFollows);
-			break;
+	if (numSynObj1 == 2 && numSynObj2 == 1) {
+		int countr = getSameClause(obj2, obj1);
+		return countr;
+	}
+	
+	string firstSyn;
+	string secondSyn;
+	string thirdSyn;
+	string forthSyn;
+	int count = 0;
 
-		case 2 : // Follows(1,a)
-			int stmt1 = stoi(arg1);
-			int stmt2 = f.getFollows(stmt1);
+	if (numSynObj1 == 1 && numSynObj2 == 1) {
+		firstSyn = obj1.getFirstClauseSyn();
+		secondSyn = obj2.getFirstClauseSyn();
+		if (firstSyn == secondSyn) {
+			count++;
+		} 
+		return count;
+	}
 
-			if (isSynInClause()) {
+	if (numSynObj1 == 1 && numSynObj2 == 2) {
+		firstSyn = obj1.getFirstClauseSyn();
+		secondSyn = obj2.getFirstClauseSyn();
+		thirdSyn = obj2.getSecondClauseSyn();
+
+		if (firstSyn == secondSyn) {
+			count++;
+		}
+
+		if (firstSyn == thirdSyn) {
+			count++;
+		}
+		return count;
+	}
+
+	if (numSynObj1 == 2 && numSynObj2 == 2) {
+		firstSyn = obj1.getFirstClauseSyn();
+		secondSyn = obj1.getSecondClauseSyn();
+		thirdSyn = obj2.getFirstClauseSyn();
+		forthSyn = obj2.getSecondClauseSyn();
+
+		if (firstSyn == thirdSyn) {
+			count++;
+		}
+
+		if (secondSyn == thirdSyn) {
+			count++;
+		}
+
+		if (secondSyn == forthSyn) {
+			count++;
+		}
+		return count;
+	}
+
+	return count;
+}
+
+set<string> QueryEvaluator::evaluateOneClause(Results res, vector<StringPair> selectList) {
+	string syn = selectList.at(0).getFirst();
+	cout << "hey";
+	if (res.usesSyn(syn) && res.isClausePassed()) {
+		cout << "hey1";
+		set<string> result = res.getSelectSynResult(syn);
+		return result;
+	}
+
+	if (!res.usesSyn(syn) && res.isClausePassed()) {
+		cout << "hey2";
+		set<string> result = getAllSynValues(selectList);
+		return result;
+	}
+
+	return set<string>();
+	/*
+	3.if resultsList.size == 1 // there is only 1 query
+	if selectSynonym is used in resultObj // helper function to compare
+		return getSingleResults
+
+	else // if selectSynonym is not used in resultObj
+		if (resultObj.isClausePassed())
+			return all possible values of selectSyn
+		else
+			return none
+	*/
+}
+
+set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vector<StringPair> selectList) {
+	Results obj1 = resultList.at(0);
+	Results obj2 = resultList.at(1);
+	int numRepeatingClause = getSameClause(obj1, obj2);
+	string syn = selectList.at(0).getFirst();
+	
+	switch (numRepeatingClause) {
+		case 0 : 
+			if (obj1.isClausePassed() && obj2.isClausePassed()) {
+				set<string> result = getAllSynValues(selectList);
+				return result;
 
 			} else {
+				return set<string>();
 
 			}
-			break;
-		case 3 : // Follows(a,1)
-			break;
-		case 4 : // Follows(s1,s2)
-			break;
-		default:
-			// throw error
-			break;
-	}
 
-	return this->resultsObj;
+		case 1 :
+			if (obj1.isClausePassed() && obj2.isClausePassed()) {
+				obj1.getIntersect(obj2);
+
+				if (obj1.usesSyn(syn)) {
+					set<string> result = obj1.getSelectSynResult(syn);
+					return result;
+				}
+
+				if (obj2.usesSyn(syn)) {
+					set<string> result = obj2.getSelectSynResult(syn);
+					return result;
+				}
+
+				if (!obj1.usesSyn(syn) && !obj2.usesSyn(syn)) {
+					set<string> result = getAllSynValues(selectList);
+					return result;
+				}
+
+				return set<string>();
+			}
+			
+		case 2 :
+			if (obj1.isClausePassed() && obj2.isClausePassed()) {
+				obj1.getIntersect(obj2);
+
+				if (obj1.usesSyn(syn)) {
+					set<string> result = obj1.getSelectSynResult(syn);
+					return result;
+				
+				} else {
+					set<string> result = getAllSynValues(selectList);
+					return result;
+				}
+				
+			}
+			return set<string>();
+
+		default :
+			// error
+			return set<string>();
+	}
+	/*
+	if both clauses use the same syn AND a clause uses select syn
+		reduce result set via elimination and return result
+	if both clauses use the same syn AND no clause uses select syn
+		check if both clauses are valid
+			if both are valid, return all possible select syn
+			if 1 clause is invalid, return none
+	if clauses do not use the same syn, 
+		check if both are valid
+			if both are valid, return all possible select syn
+			if 1 clause is invalid, return none
+	*/
+	
 }
 
-Results QueryEvaluator::evaluateQuery(Query q) {
-	return Results();
+set<string> QueryEvaluator::evaluateQuery(Query q) {
+	vector<Clause*> clauseList = q.getClauseList();
+	vector<StringPair> selectList = q.getSelectList();
+	
+	if (clauseList.empty()) {
+		set<string> result = getAllSynValues(selectList);
+		return result;
+
+	} else {
+		vector<Results> resultsList;
+
+		for (vector<Clause*>::iterator iter = clauseList.begin() ; iter != clauseList.end(); iter++) {
+			Clause* c = *iter;
+			Results res = c->evaluate();
+			resultsList.push_back(res);
+		}
+
+		if (resultsList.size() == 1) {
+			Results resultObj= resultsList.front();
+			set<string> result = evaluateOneClause(resultObj, selectList);
+			return result;
+
+		} else {
+			set<string> result = evaluateManyClause(resultsList, selectList);
+			return result;
+		}
+	}
+	/*
+	1.check if clauseList is empty
+	if empty, 
+		getSelectSynonym(0)
+		populate all synonym with possible values
+		put them in set<string> and return
+2.if not empty
+	for all clauses in getClauseList
+		clause.evaluate()
+		all to resultsList
+3.if resultsList.size == 1 // there is only 1 query
+	if selectSynonym is used in resultObj // helper function to compare
+		return getSingleResults
+
+	else // if selectSynonym is not used in resultObj
+		if (resultObj.isClausePassed())
+			return all possible values of selectSyn
+		else
+			return none
+4.else // resultsList.size > 1
+	if both clauses use the same syn AND a clause uses select syn
+		reduce result set via elimination and return result
+	if both clauses use the same syn AND no clause uses select syn
+		check if both clauses are valid
+			if both are valid, return all possible select syn
+			if 1 clause is invalid, return none
+	if clauses do not use the same syn, 
+		check if both are valid
+			if both are valid, return all possible select syn
+			if 1 clause is invalid, return none
+	*/
 }

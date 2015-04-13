@@ -24,13 +24,19 @@
     <ClInclude Include="CallNode.h" />
     <ClInclude Include="Clause.h" />
     <ClInclude Include="ConstNode.h" />
-    <ClInclude Include="Follows.h" />
+    <ClInclude Include="FollowsClause.h" />
+    <ClInclude Include="FollowsStarClause.h" />
     <ClInclude Include="IfNode.h" />
     <ClInclude Include="InvalidCodeException.h" />
     <ClInclude Include="InvalidExpressionException.h" />
+    <ClInclude Include="ModifiesClause.h" />
     <ClInclude Include="OpNode.h" />
+    <ClInclude Include="ParentClause.h" />
+    <ClInclude Include="ParentStarClause.h" />
     <ClInclude Include="ParsedData.h" />
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="PatternAssgClause.h" />
+    <ClInclude Include="PatternClause.h" />
     <ClInclude Include="PatternAssg.h" />
     <ClInclude Include="PDR.h" />
     <ClInclude Include="PQLController.h" />
@@ -39,12 +45,17 @@
     <ClInclude Include="ProcNode.h" />
     <ClInclude Include="ProcTable.h" />
     <ClInclude Include="ProgNode.h" />
+    <ClInclude Include="Query.h" />
+    <ClInclude Include="QueryEvaluator.h" />
+    <ClInclude Include="QueryParser.h" />
+    <ClInclude Include="Results.h" />
     <ClInclude Include="Statement.h" />
     <ClInclude Include="StmtLstNode.h" />
     <ClInclude Include="StmtNode.h" />
     <ClInclude Include="StmtTable.h" />
     <ClInclude Include="StringPair.h" />
     <ClInclude Include="TNode.h" />
+    <ClInclude Include="UsesClause.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Variable.h" />
     <ClInclude Include="VarNode.h" />
@@ -57,12 +68,18 @@
     <ClCompile Include="CallNode.cpp" />
     <ClCompile Include="Clause.cpp" />
     <ClCompile Include="ConstNode.cpp" />
-    <ClCompile Include="Follows.cpp" />
+    <ClCompile Include="FollowsClause.cpp" />
+    <ClCompile Include="FollowsStarClause.cpp" />
     <ClCompile Include="IfNode.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="OpNode.cpp" />
+    <ClCompile Include="ParentClause.cpp" />
+    <ClCompile Include="ParentStarClause.cpp" />
     <ClCompile Include="ParsedData.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="PatternAssgClause.cpp" />
+    <ClCompile Include="PatternClause.cpp" />
     <ClCompile Include="PatternAssg.cpp" />
     <ClCompile Include="PDR.cpp" />
     <ClCompile Include="PQLController.cpp" />
@@ -70,12 +87,17 @@
     <ClCompile Include="ProcNode.cpp" />
     <ClCompile Include="ProcTable.cpp" />
     <ClCompile Include="ProgNode.cpp" />
+    <ClCompile Include="Query.cpp" />
+    <ClCompile Include="QueryEvaluator.cpp" />
+    <ClCompile Include="QueryParser.cpp" />
+    <ClCompile Include="Results.cpp" />
     <ClCompile Include="Statement.cpp" />
     <ClCompile Include="StmtLstNode.cpp" />
     <ClCompile Include="StmtNode.cpp" />
     <ClCompile Include="StmtTable.cpp" />
     <ClCompile Include="StringPair.cpp" />
     <ClCompile Include="TNode.cpp" />
+    <ClCompile Include="UsesClause.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Variable.cpp" />
     <ClCompile Include="VarNode.cpp" />
@@ -114,7 +136,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)\SPA;$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)SPA;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

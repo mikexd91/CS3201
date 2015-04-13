@@ -20,15 +20,16 @@ class VarTable {
 
 	*/
 
-	typedef boost::unordered_map<string, Variable*> Table;
-	typedef Table::iterator VarIter;
-
 public:
+	~VarTable();
 	
 	// getters
 	static VarTable* getInstance();
 	Variable* getVariable(const string& varName);
-	VarIter getIterator();
+	boost::unordered_map<string, Variable*>::iterator getIterator();
+	boost::unordered_map<string, Variable*>::iterator getEnd();
+	vector<string>* getAllVarNames();
+	vector<Variable*>* getAllVariables();
 
 	// setters
 	void addVariable(Variable *var);
@@ -40,7 +41,7 @@ public:
 private:
 	static bool _hasInstance;
 	static VarTable* _instance;
-	Table _table;
+	boost::unordered_map<string, Variable*> _table;
 	
 	// constructor
 	VarTable();	

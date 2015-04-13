@@ -2,6 +2,7 @@
 #include "ParserTest.h"
 
 #include "../SPA/Parser.h"
+#include "../SPA/PDR.h"
 #include "../SPA/InvalidCodeException.h"
 
 #include <iostream>
@@ -14,10 +15,18 @@ Parser parser;
 void 
 ParserTest::setUp() {
 	parser = Parser();
+	AST::getInstance();
+	VarTable::getInstance();
+	ProcTable::getInstance();
+	StmtTable::getInstance();
 }
 
 void 
 ParserTest::tearDown() {
+	AST::reset();
+	VarTable::reset();
+	ProcTable::getInstance()->clearTable();
+	//StmtTable::getInstance()->clearTable();
 }
 
 // Registers the fixture into the 'registry'
@@ -56,23 +65,23 @@ void ParserTest::testExtraSemicolon() {
 }
 
 void ParserTest::testInvalidWhileKeyword() { 
-	string code = "procedure test { x= 12 +   2 *a; While a {   } }";
+	string code = "procedure test { While a {   } }";
 	CPPUNIT_ASSERT_THROW(parser.parse(code), InvalidCodeException);
 }
 
 void ParserTest::testInvalidWhileVar() { 
-	string code = "procedure test { x= 12 +   2 *a; while 1 {   } }";
+	string code = "procedure test {while 1 {   } }";
 	CPPUNIT_ASSERT_THROW(parser.parse(code), InvalidCodeException);
 }
 
 void ParserTest::testMissingOpenBrace() { 
-	string code = "procedure test { x= 12 +   2 *a; while a  }   }";
+	string code = "procedure test { while a  }   }";
 	CPPUNIT_ASSERT_THROW(parser.parse(code), InvalidCodeException);
 	code = "procedure test  x= 12 +   2 *a; while a  { }   }";
 	CPPUNIT_ASSERT_THROW(parser.parse(code), InvalidCodeException);
 }
 
 void ParserTest::testMissingCloseBrace() { 
-	string code = "procedure test { x= 12 +   2 *a; while a {    }";
+	string code = "procedure test { while a {    }";
 	CPPUNIT_ASSERT_THROW(parser.parse(code), InvalidCodeException);
 }
