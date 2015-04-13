@@ -171,7 +171,6 @@ string QueryParser::getClauseString(string s){
 }
 
 Clause* QueryParser::createCorrectClause(string type){
-	Clause* c;
 	if (type == stringconst::TYPE_FOLLOWS_STAR){
 		FollowsStarClause* clause = new FollowsStarClause();
 		return clause;		
@@ -342,7 +341,7 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 			} else {
 				string arg = var.substr(spos+1, fpos-spos-1);
 				var = arg;
-				varFixed == true;
+				varFixed = true;
 			}
 		}
 	}
@@ -462,8 +461,9 @@ Query QueryParser::parseQuery(string input){
 		} else if (contains(current, stringconst::TYPE_PATTERN)){
 			parsePattern(output, selectQueue);
 		} else if (containsKeyword(current)){
-			selectQueue.pop();
+			//selectQueue.pop();
 		}
+		selectQueue.pop();
 	}
 	vector<Clause*> clauseList = output->getClauseList();
 	for (size_t i=0; i<clauseList.size(); i++){
