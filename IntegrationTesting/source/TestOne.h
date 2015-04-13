@@ -12,6 +12,9 @@ class TestOne : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testSiblingsAST );
 	CPPUNIT_TEST( testMultipleProcAST );
 	CPPUNIT_TEST( testFollows );
+	CPPUNIT_TEST( testWhileUses );
+	CPPUNIT_TEST( testWhileModifies );
+	CPPUNIT_TEST( testStmtTableAllWhile );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -29,4 +32,8 @@ public:
 	void testMultipleProcAST();
 
 	void testFollows();
+	void testWhileUses();
+	void testWhileModifies();
+
+	void testStmtTableAllWhile();
 };
