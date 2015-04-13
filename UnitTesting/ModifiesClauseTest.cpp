@@ -325,7 +325,7 @@ void ModifiesClauseTest::testModifiesSynFixed() {
 	m2->setFirstArgFixed(false);
 	m2->setFirstArgType(ARG_WHILE);
 	m2->setSecondArg("i");
-	m2->setSecondArgFixed(fixed);
+	m2->setSecondArgFixed(true);
 	m2->setSecondArgType(ARG_VARIABLE);
 	CPPUNIT_ASSERT(m2->isValid());
 
