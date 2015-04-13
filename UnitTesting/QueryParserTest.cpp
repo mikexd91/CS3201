@@ -137,9 +137,9 @@ void QueryParserTest::testClause(){
 }
 
 void QueryParserTest::testPattern(){
-	string const DECLARATION = "Assign a;Variable v;";
+	string const DECLARATION = "Assign a;Variable \"v\";";
 	string const SELECT = "Select a such that";
-	string const PATTERN = "Pattern a(v, _)";
+	string const PATTERN = "Pattern a(\"v\", _\"x\"_)";
 
 	Query* ASSERTION = new Query();
 
@@ -151,9 +151,17 @@ void QueryParserTest::testPattern(){
 
 	queue<string> PAT_Q = QueryParser::queueBuilder(PATTERN, ' ');
 	QueryParser::parsePattern(ASSERTION, PAT_Q);
-
-	Clause* PATTERN_ASS = ASSERTION->getClauseList().at(0);
+	/*
+	Clause* c = ASSERTION->getClauseList().at(0);
+	PatternAssgClause* PATTERN_ASS = dynamic_cast<PatternAssgClause*>(c);
+	string EXPR = PATTERN_ASS->getExpression();
+	CPPUNIT_ASSERT(EXPR == stringconst::STRING_EMPTY);*/
 	//fix pattern parsing other expressions.
+	string token = "a(v, _\"";
+	queue<string> q = QueryParser::queueBuilder(token, ' ');
+	string one = Utils::getWordAndPop(q);
+	string two = Utils::getWordAndPop(q);
+	//CPPUNIT_ASSERT(! (!contains(two, "_") || !contains(two, "\"")));
 }
 
 void QueryParserTest::testParser(){

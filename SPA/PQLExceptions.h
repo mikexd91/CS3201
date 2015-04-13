@@ -38,3 +38,9 @@ struct UnexpectedClauseException : public exception{
 		return "Clause type mismatch";
 	}
 };
+
+struct DebugHelpException : public exception{
+	const char * what() const throw(){
+		return "Debug";
+	}
+};

@@ -66,6 +66,63 @@ vector<string> QueryParser::tokeniser(string input, char delim){
     return *elems;
 }
 
+bool QueryParser::containsOperator(string s){
+	vector<string> opVector;
+	opVector.push_back("+");
+	opVector.push_back("/");
+	opVector.push_back("-");
+	opVector.push_back("*");
+	return containsAny(s, opVector);
+}
+
+string QueryParser::getFirstOperator(string s){
+	for (size_t i=0; i<s.size(); i++){
+		char current = s.at(i);
+		if (current == '+'){
+			return "+";
+		} else if (current == '-'){
+			return "-";
+		} else if (current == '/'){
+			return "/";
+		} else if (current == '*'){
+			return "*";
+		}
+	}
+	return stringconst::STRING_EMPTY;
+}
+
+int QueryParser::getOperatorIndex(string s){
+	for (size_t i=0; i<s.size(); i++){
+		char current = s.at(i);
+		if ((current == '+') || (current == '-') || (current == '*') || (current == '/')){
+			return i;
+		}
+	}
+	return -1;
+}
+
+queue<string> QueryParser::exprBuilder(string input){
+	vector<string> elems;
+	string duplicate = input;
+	while (containsOperator(duplicate)){
+		int index = getOperatorIndex(duplicate);
+		string op = getFirstOperator(duplicate);
+		string left = duplicate.substr(0, index);
+		string right = duplicate.substr(index+1, duplicate.size() - index);
+		elems.push_back(left);
+		elems.push_back(op);
+		duplicate = right;
+	}
+	elems.push_back(duplicate);
+	queue<string> toReturn;
+	for (size_t i = 0; i<elems.size(); i++){
+		string current = elems.at(i);
+		string toReplace = removeSpace(current);
+		toReturn.push(toReplace);
+	}
+	return toReturn;
+}
+
 bool QueryParser::containsAny(string s, vector<string> list){
 	for (size_t i=0; i<list.size(); i++){
 		string current = list.at(i);
@@ -279,62 +336,98 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 		throw InvalidDeclarationException();
 	}
 	std::stringstream ss = stringstream();
+	bool endToken = false;
+	bool readBegin = false;
+	bool readEnd = false;
+	Utils::getWordAndPop(line);
 	string subsequent = line.front();
-	bool begin = false;
-	bool exprStart = false;
-	while(!contains(subsequent, ")")){
-		if (exprStart){
-			ss << subsequent << " ";
-		} else if (begin && !exprStart){
-			if (!contains(subsequent, "\"")){
+	endToken = contains(subsequent, ")");
+	while (!endToken){
+		if (!readBegin){
+			//TO READ : _"
+			if (!(contains(subsequent, "_") || contains(subsequent, "\""))){
 				throw InvalidArgumentException();
-			} else {
-				size_t len = subsequent.size();
-				exprStart = true;
-				if (len > 1){
-					string s = subsequent.substr(1, len);
-					ss << s << " ";
-				}
 			}
-		} else if (!begin){
-			if (contains(subsequent, "_")){
-				begin = true;
-				size_t len = subsequent.size();
-				if (len == 2){
-					if (!contains(subsequent, "\"")){
+			readBegin = true;
+			size_t bpos = subsequent.find_first_of("_");
+			size_t epos = subsequent.find_first_of("\"");
+			if (bpos != epos - 1 || bpos != 0){
+				throw InvalidArgumentException();
+			}
+			size_t len = subsequent.size();
+			if (len > 2){
+				string exprPart = subsequent.substr(2);
+				ss << exprPart;
+			}
+		} else {
+			//TO READ (EXPR || EXPR"_)
+			if (!contains(subsequent, "_") && !contains(subsequent, "\"")){
+				ss << " " << subsequent;
+			} else {
+				if (contains(subsequent, "_") && contains(subsequent, "\"")){
+					size_t epos = subsequent.find_first_of("\"");
+					size_t fpos = subsequent.find_first_of("_");
+					size_t len = subsequent.size();
+					if ((epos != fpos -1) && fpos != len - 1){
 						throw InvalidArgumentException();
-					} else {
-						exprStart = true;
 					}
-				} else if (len > 2){
-					if (!contains(subsequent, "\"")){
-						throw InvalidArgumentException();
-					} else {
-						exprStart = true;
-						string toAdd = subsequent.substr(2, len);
-						ss << toAdd << " ";
-					}
+					string exprPart = subsequent.substr(0, epos);
+					ss << " " << exprPart;
+					readEnd = true;
+				} else {
+					throw InvalidArgumentException();
 				}
 			}
 		}
 		Utils::getWordAndPop(line);
 		subsequent = line.front();
+		endToken = contains(subsequent, ")");
 	}
-	if (contains(subsequent, ")")){
-		size_t pos = subsequent.find_first_of(")");
-		string s = subsequent.substr(0, pos - 1);
-		ss << s;
-	}
-	string expression = ss.str();
-	if (expression != ""){
-		queue<string> exprQ = queueBuilder(expression, ' ');
-		queue<string> exprRPN = Utils::getRPN(exprQ);
-		string expr = queueToString(exprRPN);
-		PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expr);
-		query->addClause(newClause);
+	if (!readBegin){
+		//ONLY ONE TOKEN FOR WHOLE EXPRESSION
+		size_t bpos = subsequent.find_first_of("_");
+		size_t fpos = subsequent.find_last_of("_");
+		if (bpos == fpos){
+			if (bpos == 0 && !contains(subsequent, "\"")){
+				PatternAssgClause* newClause = new PatternAssgClause(synonym, var, stringconst::STRING_EMPTY);
+				query->addClause(newClause);
+			} else {
+				throw InvalidArgumentException();
+			}
+		} else {
+			size_t spos = subsequent.find_first_of("\"");
+			size_t epos = subsequent.find_last_of("\"");
+			if (spos == epos){
+				throw InvalidArgumentException();
+			} else {
+				string exprPart = subsequent.substr(spos + 1, epos - spos - 1);
+				queue<string> expression = exprBuilder(exprPart);
+				queue<string> exprRPN = Utils::getRPN(expression);
+				string expr = queueToString(exprRPN);
+				PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expr);
+				query->addClause(newClause);
+			}
+		}
+	} else if (!readEnd){
+		//TOKEN CONTAINS END OF EXPRESSION
+		size_t epos = subsequent.find_first_of("\"");
+		size_t fpos = subsequent.find_first_of("_");
+		if (fpos != epos +1){
+			throw InvalidArgumentException();
+		} else {
+			string exprPart = subsequent.substr(0, epos);
+			ss << " " << exprPart;
+			string expressionS = ss.str();
+			cout << expressionS;
+			queue<string> expressionQ = exprBuilder(expressionS);
+			queue<string> exprRPN = Utils::getRPN(expressionQ);
+			string expr = queueToString(exprRPN);
+			PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expr);
+			query->addClause(newClause);
+		}
 	} else {
-		PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expression);
-		query->addClause(newClause);
+		//TOKEN CONTAINS ONLY )
+		Utils::getWordAndPop(line);
 	}
 } 
 
