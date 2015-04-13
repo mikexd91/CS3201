@@ -114,7 +114,6 @@ string QueryParser::getClauseString(string s){
 }
 
 Clause* QueryParser::createCorrectClause(string type){
-	Clause* c;
 	if (contains(type, stringconst::TYPE_FOLLOWS)){
 		FollowsClause* clause = new FollowsClause();
 		return clause;		

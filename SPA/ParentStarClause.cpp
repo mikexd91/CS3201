@@ -188,7 +188,7 @@ Results ParentStarClause::evaluateS1FixedS2Wild() {
 	Results res = Results();
 	// set synonyms
 	res.setNumOfSyn(1);
-	res.setSecondClauseSyn(this->getSecondArg());
+	res.setFirstClauseSyn(this->getSecondArg());
 
 	string firstArg = this->getFirstArg();
 
