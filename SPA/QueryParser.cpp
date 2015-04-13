@@ -203,9 +203,10 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 		throw InvalidArgumentException();
 	}
 	Clause* newClause;
-	newClause = createCorrectClause(clauseType);
 	size_t startIndex = current.find_first_of("(");
 	size_t endIndex = current.find_first_of(",");
+	string clauseType = current.substr(0, startIndex);
+	newClause = createCorrectClause(clauseType);
 	string firstArg = current.substr(startIndex+1, endIndex-startIndex-1);
 	size_t last_index = next.find_first_of(")");
 	string secondArg = next.substr(0,  last_index);
