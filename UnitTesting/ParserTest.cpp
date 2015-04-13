@@ -26,6 +26,7 @@ ParserTest::tearDown() {
 	AST::reset();
 	VarTable::reset();
 	ProcTable::getInstance()->clearTable();
+	PDR::resetInstanceFlag();
 	//StmtTable::getInstance()->clearTable();
 }
 
