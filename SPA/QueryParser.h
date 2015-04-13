@@ -16,6 +16,10 @@ class QueryParser
 {
 	
 public:
+	static bool containsOperator(string);
+	static string getFirstOperator(string);
+	static int getOperatorIndex(string);
+	static queue<string> exprBuilder(string);
 	static string removeSpace(string);
 	static vector<string> split(string, char, vector<string>*);
 	static queue<string> queueBuilder(string, char);
@@ -33,6 +37,6 @@ public:
 	static void parsePattern(Query*, queue<string>);
 
 
-	static Query queryProcessor(string);
+	static Query parseQuery(string);
 };
 
