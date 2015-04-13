@@ -205,7 +205,6 @@ void QueryParser::parseDeclarations(Query* query, vector<string> list){
 	for (size_t i=0; i<list.size(); i++){
 		string here = list.at(i);
 		string current = removeFrontSpaces(here);
-		cout << current;
 		vector<string> tokens = tokeniser(current, ',');
 		string first = tokens.at(0);
 		vector<string> split = tokeniser(first, ' ');
@@ -282,8 +281,8 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 			} else {
 				size_t start = current.find_first_of("\"");
 				size_t end = current.find_last_of("\"");
-				string firstArg = firstArg.substr(start+1, end-start-1);
-				newClause->setFirstArg(firstArg);
+				string first = firstArg.substr(start+1, end-start-1);
+				newClause->setFirstArg(first);
 				newClause->setFirstArgFixed(true);
 				newClause->setFirstArgType(stringconst::ARG_VARIABLE);
 			}
@@ -306,8 +305,8 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 			} else {
 				size_t start = current.find_first_of("\"");
 				size_t end = current.find_last_of("\"");
-				string firstArg = secondArg.substr(start+1, end-start-1);
-				newClause->setSecondArg(secondArg);
+				string second = secondArg.substr(start+1, end-start-1);
+				newClause->setSecondArg(second);
 				newClause->setSecondArgFixed(true);
 				newClause->setSecondArgType(stringconst::ARG_VARIABLE);
 			}
