@@ -100,7 +100,7 @@ Results UsesClause::evaluateStmtWildVarFixed() {
 	res.setFirstClauseSyn(this->getFirstArg());
 
 	// get the fixed var and usedby
-	Variable* fixedVar = varTable->getVariable(this->getSecondArgType());
+	Variable* fixedVar = varTable->getVariable(this->getSecondArg());
 	set<int>::iterator stmtIter;
 	set<int> stmtSet = fixedVar->getUsedByStmts();
 
@@ -179,10 +179,10 @@ Results UsesClause::evaluateStmtFixedVarFixed() {
 	} else if(firstArgType == stringconst::ARG_ASSIGN) {		// only assign stmts
 		stmtSet = stmtTable->getAssgStmts();
 	} else {													// all types of stmts
-		// TODO for all stmts
+		stmtSet = stmtTable->getAllStmts();
 	}
 
-	int stmtNum = stoi(this->getFirstArg(), nullptr);
+	int stmtNum = lexical_cast<int>(this->getFirstArg());
 
 	// check stmts
 	for(stmtIter=stmtSet.begin(); stmtIter!=stmtSet.end(); stmtIter++) {

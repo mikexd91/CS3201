@@ -150,6 +150,7 @@
     <ClCompile Include="source\StmtTableTest.cpp" />
     <ClCompile Include="source\TNodeTest.cpp" />
     <ClCompile Include="StmtLstNodeTest.cpp" />
+    <ClCompile Include="UsesClauseTest.cpp" />
     <ClCompile Include="VarNodeTest.cpp" />
     <ClCompile Include="VarTableTest.cpp" />
     <ClCompile Include="WhileNodeTest.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="source\StmtTableTest.h" />
     <ClInclude Include="source\TNodeTest.h" />
     <ClInclude Include="StmtLstNodeTest.h" />
+    <ClInclude Include="UsesClauseTest.h" />
     <ClInclude Include="VarNodeTest.h" />
     <ClInclude Include="VarTableTest.h" />
     <ClInclude Include="WhileNodeTest.h" />
