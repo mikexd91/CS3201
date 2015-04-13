@@ -32,3 +32,9 @@ struct UnexpectedEndException : public exception{
 		return "Unexpected end of query!";
 	}
 };
+
+struct UnexpectedClauseException : public exception{
+	const char * what() const throw(){
+		return "Clause type mismatch";
+	}
+};

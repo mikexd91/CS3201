@@ -10,6 +10,8 @@ using boost::unordered_map;
 using namespace stringconst;
 
 Query::Query(void){
+	this->clauseList = vector<Clause*>();
+	this->declarationList = boost::unordered_map<string, string>();
 }
 
 Query::~Query(void){

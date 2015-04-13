@@ -9,16 +9,12 @@ public:
 
 	string getSynonym();
 	string getVar();
-	string getVarType();
 	bool getVarFixed();
-	string getExpression();
 
 	void setVar(string var);
 	void setVarFixed(bool fixed);
-	void setExpression(string expr);
 
 protected:
-	string _expr;
 
 };
 

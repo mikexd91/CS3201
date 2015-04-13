@@ -30,13 +30,13 @@ string QueryParser::removeSpace(string s){
 	return s;
 }
 
-vector<string> QueryParser::split(string s, char delim, vector<string> elems) {
+vector<string> QueryParser::split(string s, char delim, vector<string>* elems) {
     stringstream ss(s);
     string item;
     while (getline(ss, item, delim)) {
-        elems.push_back(item);
+        elems->push_back(item);
     }
-    return elems;
+    return *elems;
 }
 
 queue<string> QueryParser::queueBuilder(string input, char delim){
@@ -61,9 +61,9 @@ string QueryParser::queueToString(queue<string> input){
 }
 
 vector<string> QueryParser::tokeniser(string input, char delim){
-	vector<string> elems;
+	vector<string>* elems = new vector<string>();
     split(input, delim, elems);
-    return elems;
+    return *elems;
 }
 
 bool QueryParser::containsAny(string s, vector<string> list){
@@ -115,26 +115,27 @@ string QueryParser::getClauseString(string s){
 
 Clause* QueryParser::createCorrectClause(string type){
 	Clause* c;
-	if (type == stringconst::TYPE_FOLLOWS){
+	if (contains(type, stringconst::TYPE_FOLLOWS)){
 		FollowsClause* clause = new FollowsClause();
-		c = clause;		
-	} else if (type == stringconst::TYPE_PARENT){
+		return clause;		
+	} else if (contains(type, stringconst::TYPE_PARENT)){
 		ParentClause* clause = new ParentClause();
-		c = clause;		
-	} else if (type == stringconst::TYPE_MODIFIES){
+		return clause;		
+	} else if (contains(type, stringconst::TYPE_MODIFIES)){
 		ModifiesClause* clause = new ModifiesClause();
-		c = clause;		
-	} else if (type == stringconst::TYPE_USES){
+		return clause;		
+	} else if (contains(type, stringconst::TYPE_USES)){
 		UsesClause* clause = new UsesClause();
-		c = clause;		
-	} else if (type == stringconst::TYPE_FOLLOWS_STAR){
+		return clause;		
+	} else if (contains(type, stringconst::TYPE_FOLLOWS_STAR)){
 		FollowsStarClause* clause = new FollowsStarClause();
-		c = clause;		
-	} else if (type == stringconst::TYPE_PARENT_STAR){
+		return clause;		
+	} else if (contains(type, stringconst::TYPE_PARENT_STAR)){
 		ParentStarClause* clause = new ParentStarClause();
-		c = clause;		
+		return clause;			
+	} else {
+		throw UnexpectedClauseException();
 	}
-	return c;
 }
 
 void QueryParser::parseDeclarations(Query* query, vector<string> list){
@@ -179,9 +180,13 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 				newPair->setSecond(type);
 				query->addSelectSynonym(*newPair);
 			}
-			string next = line.front();
-			if (containsKeyword(next)){
+			if (line.empty()){
 				expectSelect = false;
+			} else {
+				string next = line.front();
+				if (containsKeyword(next)){
+					expectSelect = false;
+				}
 			}
 		}
 	}
@@ -320,11 +325,16 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 		ss << s;
 	}
 	string expression = ss.str();
-	queue<string> exprQ = queueBuilder(expression, ' ');
-	queue<string> exprRPN = Utils::getRPN(exprQ);
-	string expr = queueToString(exprRPN);
-	PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expr);
-	query->addClause(newClause);
+	if (expression != ""){
+		queue<string> exprQ = queueBuilder(expression, ' ');
+		queue<string> exprRPN = Utils::getRPN(exprQ);
+		string expr = queueToString(exprRPN);
+		PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expr);
+		query->addClause(newClause);
+	} else {
+		PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expression);
+		query->addClause(newClause);
+	}
 } 
 
 Query QueryParser::queryProcessor(string input){
