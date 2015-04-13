@@ -153,12 +153,15 @@ int QueryEvaluator::getSameClause(Results obj1, Results obj2) {
 
 set<string> QueryEvaluator::evaluateOneClause(Results res, vector<StringPair> selectList) {
 	string syn = selectList.at(0).getFirst();
-	if (res.usesSyn(syn)) {
+	cout << "hey";
+	if (res.usesSyn(syn) && res.isClausePassed()) {
+		cout << "hey1";
 		set<string> result = res.getSelectSynResult(syn);
 		return result;
 	}
 
-	if (res.isClausePassed()) {
+	if (!res.usesSyn(syn) && res.isClausePassed()) {
+		cout << "hey2";
 		set<string> result = getAllSynValues(selectList);
 		return result;
 	}

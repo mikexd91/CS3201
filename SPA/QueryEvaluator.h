@@ -14,11 +14,9 @@ public:
 
 	set<string> evaluateQuery(Query q);
 
+private:
 	int getSameClause(Results obj1, Results obj2);
 	set<string> getAllSynValues(vector<StringPair> selectList);
 	set<string> evaluateOneClause(Results res, vector<StringPair> selectList);
 	set<string> evaluateManyClause(vector<Results> resultList, vector<StringPair> selectList);
-
-private:
-
 };

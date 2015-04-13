@@ -1,5 +1,7 @@
 #include <cppunit/config/SourcePrefix.h>
 #include "QueryEvaluatorTest.h"
+#include "../SPA/FollowsClause.h"
+#include "../SPA/ParentStarClause.h"
 #include "../SPA/Results.h"
 #include "../SPA/QueryEvaluator.h"
 #include "../SPA/StmtTable.h"
@@ -9,86 +11,77 @@
 #include "../SPA/AssgNode.h"
 #include "../SPA/ConstNode.h"
 #include "../SPA/OpNode.h"
+#include "../SPA/WhileNode.h"
 
 using namespace stringconst;
 using namespace std;
 
 void QueryEvaluatorTest::setUp() {
 	/* testing this source
-	procedure zumba {
-		i = 1+2;	//1
-		j = 2+3+4;	//2
-		k = 3;		//3
-		w = i;		//4
-		x = w+k;	//5
-		i = i;		//6
+
+	procedure chocs {
+		a=4;
+		while i {
+			k = 3;
+			while j {
+				i=1;
+				j=2;
+			}
+			b=5;
+		}	
 	}
 	*/
 
 	// to set up the ast manually
 	AST* ast = AST::getInstance();
 
-	ProcNode* proc = new ProcNode("zumba");
+	ProcNode* proc = new ProcNode("chocs");
 	StmtLstNode* procsl = new StmtLstNode();
 	proc->linkStmtLstNode(procsl);
 
 	AssgNode* assg1 = new AssgNode(1);
-	VarNode* i1 = new VarNode("i");
-	assg1->linkVarNode(i1);
-	OpNode* plus1 = new OpNode("+");
-	ConstNode* one1 = new ConstNode("1");
-	ConstNode* two1 = new ConstNode("2");
-	plus1->linkLeftNode(one1);
-	plus1->linkRightNode(two1);
-	assg1->linkExprNode(plus1);
+	VarNode* a1 = new VarNode("a");
+	assg1->linkVarNode(a1);
+	assg1->linkExprNode(new ConstNode("4"));
 	procsl->linkStmtNode(assg1);
 
-	AssgNode* assg2 = new AssgNode(2);
+	WhileNode* while1 = new WhileNode(2);
+	VarNode* i1 = new VarNode("i");
+	while1->linkVarNode(i1);
+	StmtLstNode* whilesl1 = new StmtLstNode();
+	while1->linkStmtLstNode(whilesl1);
+	procsl->linkStmtNode(while1);
+
+	AssgNode* assg2 = new AssgNode(3);
+	VarNode* k1 = new VarNode("k");
+	assg2->linkVarNode(k1);
+	assg2->linkExprNode(new ConstNode("3"));
+	whilesl1->linkStmtNode(assg2);
+
+	WhileNode* while2 = new WhileNode(4);
+	VarNode* j1 = new VarNode("j");
+	while2->linkVarNode(j1);
+	StmtLstNode* whilesl2 = new StmtLstNode();
+	while2->linkStmtLstNode(whilesl2);
+	whilesl1->linkStmtNode(while2);
+
+	AssgNode* assg3 = new AssgNode(5);
+	VarNode* i2 = new VarNode("i");
+	assg3->linkVarNode(i2);
+	assg3->linkExprNode(new ConstNode("1"));
+	whilesl2->linkStmtNode(assg3);
+
+	AssgNode* assg4 = new AssgNode(6);
 	VarNode* j2 = new VarNode("j");
-	OpNode* plus2_1 = new OpNode("+");
-	ConstNode* four2 = new ConstNode("4");
-	OpNode* plus2_2 = new OpNode("+");
-	ConstNode* three2 = new ConstNode("3");
-	ConstNode* two2 = new ConstNode("2");
-	plus2_2->linkRightNode(three2);
-	plus2_2->linkLeftNode(two2);
-	plus2_1->linkRightNode(four2);
-	plus2_1->linkLeftNode(plus2_2);
-	assg2->linkVarNode(j2);
-	assg2->linkExprNode(plus2_1);
-	procsl->linkStmtNode(assg2);
+	assg4->linkVarNode(j2);
+	assg4->linkExprNode(new ConstNode("4"));
+	whilesl2->linkStmtNode(assg4);
 
-	AssgNode* assg3 = new AssgNode(3);
-	VarNode* k3 = new VarNode("k");
-	ConstNode* three3 = new ConstNode("3");
-	assg3->linkVarNode(k3);
-	assg3->linkExprNode(three3);
-	procsl->linkStmtNode(assg3);
-
-	AssgNode* assg4 = new AssgNode(4);
-	VarNode* w4 = new VarNode("w");
-	assg4->linkVarNode(w4);
-	VarNode* i4 = new VarNode("i");
-	assg4->linkExprNode(i4);
-	procsl->linkStmtNode(assg4);
-
-	AssgNode* assg5 = new AssgNode(5);
-	VarNode* x5 = new VarNode("x");
-	assg5->linkVarNode(x5);
-	OpNode* plus5 = new OpNode("+");
-	VarNode* w5 = new VarNode("w");
-	VarNode* k5 = new VarNode("k");
-	plus5->linkLeftNode(w5);
-	plus5->linkRightNode(k5);
-	assg5->linkExprNode(plus5);
-	procsl->linkStmtNode(assg5);
-
-	AssgNode* assg6 = new AssgNode(6);
-	VarNode* i6 = new VarNode("i");
-	assg6->linkVarNode(i6);
-	VarNode* i6_2 = new VarNode("i");
-	assg6->linkExprNode(i6_2);
-	procsl->linkStmtNode(assg6);
+	AssgNode* assg5 = new AssgNode(7);
+	VarNode* b1 = new VarNode("b");
+	assg5->linkVarNode(b1);
+	assg5->linkExprNode(new ConstNode("5"));
+	whilesl1->linkStmtNode(assg5);
 
 	ast->addProcNode(proc);
 
@@ -99,113 +92,122 @@ void QueryEvaluatorTest::setUp() {
 	stmt1->setStmtNum(1);
 	stmt1->setType(ASSIGN_STMT_);
 	stmt1->setFollowsAfter(2);
-	string ivar = "i";
-	set<string> mods1 = set<string>();
-	mods1.emplace(ivar);
+	string modifiesArray1[] = {"a"};
+	set<string> mods1(modifiesArray1, modifiesArray1 + 1);
 	stmt1->setModifies(mods1);
 	stmt1->setTNodeRef(assg1);
 	stable->addStmt(stmt1);
 
 	Statement* stmt2 = new Statement();
 	stmt2->setStmtNum(2);
-	stmt2->setType(ASSIGN_STMT_);
+	stmt2->setType(WHILE_STMT_);
 	stmt2->setFollowsBefore(1);
-	stmt2->setFollowsAfter(3);
-	string jvar = "j";
-	set<string> mods2 = set<string>();
-	mods2.emplace(jvar);
+	string modifiesArray2[] = {"k", "i", "j", "b"};
+	set<string> mods2(modifiesArray2, modifiesArray2 + 4);
+	string usesArray2[] = {"i", "j"};
+	set<string> uses2(usesArray2, usesArray2 + 2);
 	stmt2->setModifies(mods2);
-	stmt2->setTNodeRef(assg2);
+	stmt2->setUses(uses2);
+	stmt2->setTNodeRef(while1);
+	int children2[] = {3, 4, 7};
+	stmt2->setChildren(set<int>(children2, children2+3));
 	stable->addStmt(stmt2);
-	
+
 	Statement* stmt3 = new Statement();
 	stmt3->setStmtNum(3);
 	stmt3->setType(ASSIGN_STMT_);
-	stmt3->setFollowsBefore(2);
-	string kvar = "k";
+	stmt3->setFollowsAfter(4);
 	set<string> mods3 = set<string>();
-	mods3.emplace(kvar);
+	mods3.emplace("k");
 	stmt3->setModifies(mods3);
-	stmt3->setTNodeRef(assg3);
+	stmt3->setTNodeRef(assg2);
+	stmt3->setParent(2);
 	stable->addStmt(stmt3);
 
 	Statement* stmt4 = new Statement();
 	stmt4->setStmtNum(4);
-	stmt4->setType(ASSIGN_STMT_);
+	stmt4->setType(WHILE_STMT_);
 	stmt4->setFollowsBefore(3);
-	stmt4->setFollowsAfter(5);
-	string wvar = "w";
 	set<string> mods4 = set<string>();
-	mods4.emplace(wvar);
-	stmt4->setModifies(mods4);
+	mods4.emplace("i");
+	mods4.emplace("j");
 	set<string> uses4 = set<string>();
-	uses4.emplace(ivar);
+	uses4.emplace("j");
+	stmt4->setModifies(mods4);
 	stmt4->setUses(uses4);
-	stmt4->setTNodeRef(assg4);
+	stmt4->setTNodeRef(while2);
+	stmt4->setParent(2);
 	stable->addStmt(stmt4);
 
 	Statement* stmt5 = new Statement();
 	stmt5->setStmtNum(5);
 	stmt5->setType(ASSIGN_STMT_);
-	stmt5->setFollowsBefore(4);
 	stmt5->setFollowsAfter(6);
-	string xvar = "x";
-	set<string> mods5 = set<string>();
-	mods5.emplace(xvar);
+	set<string> mods5= set<string>();
+	mods5.emplace("i");
 	stmt5->setModifies(mods5);
-	set<string> uses5 = set<string>();
-	uses5.emplace(wvar);
-	uses5.emplace(kvar);
-	stmt5->setUses(uses5);
-	stmt5->setTNodeRef(assg5);
+	stmt5->setTNodeRef(assg3);
+	stmt5->setParent(4);
 	stable->addStmt(stmt5);
 
 	Statement* stmt6 = new Statement();
 	stmt6->setStmtNum(6);
 	stmt6->setType(ASSIGN_STMT_);
 	stmt6->setFollowsBefore(5);
-	set<string> mods6 = set<string>();
-	mods6.emplace(ivar);
+	set<string> mods6= set<string>();
+	mods6.emplace("j");
 	stmt6->setModifies(mods6);
-	set<string> uses6 = set<string>();
-	uses6.emplace(ivar);
-	stmt6->setUses(uses6);
-	stmt6->setTNodeRef(assg6);
+	stmt6->setTNodeRef(assg4);
+	stmt6->setParent(4);
 	stable->addStmt(stmt6);
+
+	Statement* stmt7 = new Statement();
+	stmt7->setStmtNum(7);
+	stmt7->setType(ASSIGN_STMT_);
+	stmt7->setFollowsBefore(4);
+	set<string> mods7= set<string>();
+	mods7.emplace("b");
+	stmt7->setModifies(mods7);
+	stmt7->setTNodeRef(assg5);
+	stmt7->setParent(2);
+	stable->addStmt(stmt7);
 
 	// to set up the vartable manually
 	VarTable* vtable = VarTable::getInstance();
 
+	Variable* va = new Variable("a");
+	va->addModifyingStmt(1);
+	va->addTNode(a1);
+	vtable->addVariable(va);
+
 	Variable* vi = new Variable("i");
-	vi->addModifyingStmt(1);
-	vi->addModifyingStmt(6);
-	vi->addUsingStmt(4);
-	vi->addUsingStmt(6);
+	vi->addModifyingStmt(2);
+	vi->addModifyingStmt(5);
+	vi->addUsingStmt(2);
 	vi->addTNode(i1);
-	vi->addTNode(i4);
+	vi->addTNode(i2);
 	vtable->addVariable(vi);
 
 	Variable* vj = new Variable("j");
 	vj->addModifyingStmt(2);
+	vj->addModifyingStmt(4);
+	vj->addModifyingStmt(6);
+	vj->addUsingStmt(4);
+	vj->addTNode(j1);
 	vj->addTNode(j2);
 	vtable->addVariable(vj);
 
 	Variable* vk = new Variable("k");
+	vk->addModifyingStmt(2);
 	vk->addModifyingStmt(3);
-	vk->addUsingStmt(5);
-	vk->addTNode(k3);
+	vk->addTNode(k1);
 	vtable->addVariable(vk);
 
-	Variable* vw = new Variable("w");
-	vw->addModifyingStmt(4);
-	vw->addUsingStmt(5);
-	vw->addTNode(w4);
-	vtable->addVariable(vw);
-
-	Variable* vx = new Variable("x");
-	vx->addModifyingStmt(5);
-	vx->addTNode(x5);
-	vtable->addVariable(vx);
+	Variable* vb = new Variable("b");
+	vb->addModifyingStmt(2);
+	vb->addModifyingStmt(7);
+	vb->addTNode(b1);
+	vtable->addVariable(vb);
 }
 
 void QueryEvaluatorTest::tearDown() {
@@ -218,158 +220,63 @@ void QueryEvaluatorTest::tearDown() {
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( QueryEvaluatorTest );
 
-// Test getSameClause of QueryEvaluator
+// Test single clauses
 void QueryEvaluatorTest::testEvaluator() {
-	// Test when both results contain 0 unfixed arguments
 	QueryEvaluator e = *new QueryEvaluator();
 
-	Results r1 = *new Results();
-	Results r2 = *new Results();
-
-	r1.setNumOfSyn(0);
-	r2.setNumOfSyn(0);
-
-	//int num = e.getSameClause(r1, r2);
+	FollowsClause* fol = new FollowsClause();
+	fol->setFirstArg("a1");
+	fol->setSecondArg("a2");
+	fol->setFirstArgFixed(false);
+	fol->setSecondArgFixed(false);
+	fol->setFirstArgType(ARG_ASSIGN);
+	fol->setSecondArgType(ARG_ASSIGN);
 	
-	CPPUNIT_ASSERT(e.getSameClause(r1, r2) == 0);
+	StringPair p = *new StringPair();
+	p.setFirst("a2");
+	p.setSecond(ARG_STATEMENT);
+
+	Query q = *new Query();
+	q.addSelectSynonym(p);
+	q.addClause(fol);
+
+	//set<string> res = e.evaluateQuery(q);
 	
-	// Test when both results contains 1 unfixed argument
-	// results contain 1 same clause, <a> and <a>
+	//CPPUNIT_ASSERT(res.size() == 1);
 
-	Results r3 = *new Results();
-	Results r4 = *new Results();
-
-	r3.setNumOfSyn(1);
-	r4.setNumOfSyn(1);
-
-	r3.setFirstClauseSyn("a");
-	r4.setFirstClauseSyn("a");
-
-	//int num2 = e.getSameClause(r3, r4);
-
-	CPPUNIT_ASSERT(e.getSameClause(r3, r4) == 1);
-
-	// Test when both results contain 1 unfixed argument
-	// results contain no same clause, <a> and <v>
-
-	r3.setFirstClauseSyn("a");
-	r4.setFirstClauseSyn("v");
-
-	CPPUNIT_ASSERT(e.getSameClause(r3, r4) == 0);
-
-	// Test when both results contains unfixed argument
-	// results contain 2 same clause, <a,v> and <a,v>
-
-	Results r5 = *new Results();
-	Results r6 = *new Results();
-
-	r5.setNumOfSyn(2);
-	r6.setNumOfSyn(2);
-
-	r5.setFirstClauseSyn("a");
-	r5.setSecondClauseSyn("v");
-
-	r6.setFirstClauseSyn("a");
-	r6.setSecondClauseSyn("v");
+	//test ParentStar FixedSyn With While
+	ParentStarClause* m1 = new ParentStarClause();
+	m1->setFirstArg("2");
+	m1->setFirstArgFixed(true);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("w");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_WHILE);
 	
-	//int num3 = e.getSameClause(r5, r6);
+	StringPair p2 = *new StringPair();
+	p2.setFirst("w");
+	p2.setSecond(ARG_WHILE);
 
-	CPPUNIT_ASSERT(e.getSameClause(r5, r6) == 2);
+	Query q2 = *new Query();
+	q2.addSelectSynonym(p2);
+	q2.addClause(m1);
 
-	// Test when both results contains unfixed argument
-	// results contain 1 same clause, <a1,v> and <a2,v>
+	Results r = m1->evaluate();
 
-	r5.setFirstClauseSyn("a1");
-	r5.setSecondClauseSyn("v");
+	set<string> res2 = e.evaluateQuery(q2);
+	/*
+	for (set<string>::iterator it = res2.begin(); it != res2.end(); it++) {
+		cout << "result: " << *it << "!";
+	}
+	*/
+	CPPUNIT_ASSERT(res2.size() == 1);
 
-	r6.setFirstClauseSyn("a2");
-	r6.setSecondClauseSyn("v");
-
-	CPPUNIT_ASSERT(e.getSameClause(r5, r6) == 1);
-	
-	// Test when both result contains unfixed argument
-	// results contain no same clause <a1, v1> <a2, v2>
-
-	r5.setFirstClauseSyn("a1");
-	r5.setSecondClauseSyn("v1");
-
-	r6.setFirstClauseSyn("a2");
-	r6.setSecondClauseSyn("v2");
-
-	CPPUNIT_ASSERT(e.getSameClause(r5, r6) == 0);
-
-	// Test when a result contains an unfixed argument
-	// results contain 1 same clause <a,v> <a>
-
-	Results r7 = *new Results();
-	Results r8 = *new Results();
-
-	r7.setNumOfSyn(2);
-	r8.setNumOfSyn(1);
-
-	r7.setFirstClauseSyn("a");
-	r7.setSecondClauseSyn("v");
-
-	r8.setFirstClauseSyn("a");
-	
-	//int num4 = e.getSameClause(r7, r8);
-	
-	CPPUNIT_ASSERT(e.getSameClause(r7, r8) == 1);
 }
 
-// Test getAllSynValues
+// Test 2 clauses
 void QueryEvaluatorTest::testEvaluator2() {
 	QueryEvaluator e = *new QueryEvaluator();
 
-	vector<StringPair> selectList = *new vector<StringPair>();
-	
-	StringPair pair1 = *new StringPair();
-	pair1.setFirst("a");
-	pair1.setSecond(stringconst::ARG_ASSIGN);
-
-	StringPair pair2 = *new StringPair();
-	pair2.setFirst("s");
-	pair2.setSecond(stringconst::ARG_STATEMENT);
-
-	StringPair pair3 = *new StringPair();
-	pair3.setFirst("w");
-	pair3.setSecond(stringconst::ARG_WHILE);
-
-	StringPair pair4 = *new StringPair();
-	pair4.setFirst("v");
-	pair4.setSecond(stringconst::ARG_VARIABLE);
-
-	selectList.push_back(pair1);
-
-	Results r1 = *new Results();
-	r1.setClausePassed(true);
-	r1.setNumOfSyn(2);
-	r1.setFirstClauseSyn("a1");
-	r1.setSecondClauseSyn("a2");
-	r1.addPairResult("1","2");
-	r1.addPairResult("2","3");
-
-	Results r2 = *new Results();
-	r2.setClausePassed(true);
-	r2.setNumOfSyn(2);
-	r1.setFirstClauseSyn("a");
-	r1.setSecondClauseSyn("v");
-	r1.addPairResult("1","2");
-	r1.addPairResult("2","3");
-	
-	vector<Results> resultsList = *new vector<Results>();
-
-	resultsList.push_back(r1);
-	resultsList.push_back(r2);
-
-	set<string> res1 = e.evaluateManyClause(resultsList, selectList);
-
-
-	/*
-	for (set<string>::iterator iter = res1.begin() ; iter != res1.end(); iter++) {
-		cout << "result: " << *iter << "! ";
-	}
-	*/
 }
 
 void QueryEvaluatorTest::testEvaluator3() {
