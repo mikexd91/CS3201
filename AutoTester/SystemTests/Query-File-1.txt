@@ -1,7 +1,7 @@
 1 - testing uses for a variable
 assign a;
-Select a such that Uses(a, "d")
-10, 11
+Select a such that Uses(a, "d") pattern a(_, "d-1")
+10
 5000
 2 - testing uses for a variable
 stmt s;
@@ -75,8 +75,8 @@ Select s such that Follows(s, 17)
 5000
 16 - testing for follows*
 assign a;
-Select a such that Follows*(a, 5)
-1, 2, 3, 4
+Select a such that Follows*(a, 5) pattern a(_, _"b"_)
+3, 4
 5000
 17 - testing for follows*
 while w;
@@ -105,8 +105,8 @@ Select s such that Parent(w, s)
 5000
 22 - testing for parent
 assign a; stmt s;
-Select s such that Parent(s, a)
-5, 7, 12, 14, 16, 18
+Select s such that Parent(s, a) pattern a(_, _"1"_)
+5, 7, 12
 5000
 23 - testing for parent
 while w;
@@ -120,7 +120,7 @@ none
 5000
 25 - testing for parent*
 assign a;
-Select a such that Parent*(12, a)
+Select a such that Parent*(12, a) pattern a("summation", _)
 13, 15, 17, 19
 5000
 26 - testing for parent*
