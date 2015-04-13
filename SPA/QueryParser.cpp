@@ -267,20 +267,20 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 		throw InvalidArgumentException();
 	}
 	Clause* newClause;
-	size_t startIndex = current.find_first_of("(");
-	size_t endIndex = current.find_first_of(",");
+	int startIndex = current.find_first_of("(");
+	int endIndex = current.find_first_of(",");
 	string clauseType = current.substr(0, startIndex);
 	newClause = createCorrectClause(clauseType);
 	string firstArg = current.substr(startIndex+1, endIndex-startIndex-1);
-	size_t last_index = next.find_first_of(")");
+	int last_index = next.find_first_of(")");
 	string secondArg = next.substr(0,  last_index);
 	if (decList.find(firstArg) == decList.end()){
 		if (!Utils::isValidConstant(firstArg)){
 			if (!contains(firstArg, "\"")){
 				throw MissingDeclarationException();
 			} else {
-				size_t start = current.find_first_of("\"");
-				size_t end = current.find_last_of("\"");
+				int start = firstArg.find_first_of("\"");
+				int end = firstArg.find_last_of("\"");
 				string first = firstArg.substr(start+1, end-start-1);
 				newClause->setFirstArg(first);
 				newClause->setFirstArgFixed(true);
@@ -303,8 +303,8 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 			if (!contains(secondArg, "\"")){
 				throw MissingDeclarationException();
 			} else {
-				size_t start = current.find_first_of("\"");
-				size_t end = current.find_last_of("\"");
+				int start = secondArg.find_first_of("\"");
+				int end = secondArg.find_last_of("\"");
 				string second = secondArg.substr(start+1, end-start-1);
 				newClause->setSecondArg(second);
 				newClause->setSecondArgFixed(true);
@@ -422,7 +422,7 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 				string exprPart = subsequent.substr(spos + 1, epos - spos - 1);
 				queue<string> expression = exprBuilder(exprPart);
 				queue<string> exprRPN = Utils::getRPN(expression);
-				string expr = queueToString(exprRPN);
+				string expr = "_\"" + queueToString(exprRPN) + "\"_";
 				PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expr);
 				newClause->setVarFixed(varFixed);
 				query->addClause(newClause);
@@ -438,10 +438,9 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 			string exprPart = subsequent.substr(0, epos);
 			ss << " " << exprPart;
 			string expressionS = ss.str();
-			cout << expressionS;
 			queue<string> expressionQ = exprBuilder(expressionS);
 			queue<string> exprRPN = Utils::getRPN(expressionQ);
-			string expr = queueToString(exprRPN);
+			string expr = "_\"" + queueToString(exprRPN) + "\"_";
 			PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expr);
 			newClause->setVarFixed(varFixed);
 			query->addClause(newClause);
