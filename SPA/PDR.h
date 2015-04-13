@@ -32,11 +32,15 @@ class PDR {
 	
 public:
     
-    PDR();
+
     static PDR* getInstance();
 	static void resetInstanceFlag();
 
 	void processParsedData(ParsedData);
+
+	int getCurrNestingLevel();
+	int getCurrStmtNumber();
+	stack<TNode*> getNodeStack();
 
 private:
 	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHILE};
@@ -64,6 +68,9 @@ private:
     TNode* breakDownAssignExpression(ParsedData, set<string>&);
     
     bool isInteger(string);
+
+	// constructor
+	PDR();
 
 };
 #endif
