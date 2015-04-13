@@ -114,24 +114,25 @@ string QueryParser::getClauseString(string s){
 }
 
 Clause* QueryParser::createCorrectClause(string type){
-	if (contains(type, stringconst::TYPE_FOLLOWS)){
-		FollowsClause* clause = new FollowsClause();
-		return clause;		
-	} else if (contains(type, stringconst::TYPE_PARENT)){
-		ParentClause* clause = new ParentClause();
-		return clause;		
-	} else if (contains(type, stringconst::TYPE_MODIFIES)){
-		ModifiesClause* clause = new ModifiesClause();
-		return clause;		
-	} else if (contains(type, stringconst::TYPE_USES)){
-		UsesClause* clause = new UsesClause();
-		return clause;		
-	} else if (contains(type, stringconst::TYPE_FOLLOWS_STAR)){
+	Clause* c;
+	if (type == stringconst::TYPE_FOLLOWS_STAR){
 		FollowsStarClause* clause = new FollowsStarClause();
 		return clause;		
-	} else if (contains(type, stringconst::TYPE_PARENT_STAR)){
+	} else if (type == stringconst::TYPE_PARENT_STAR){
 		ParentStarClause* clause = new ParentStarClause();
 		return clause;			
+	} else if (type == stringconst::TYPE_FOLLOWS){
+		FollowsClause* clause = new FollowsClause();
+		return clause;		
+	} else if (type == stringconst::TYPE_PARENT){
+		ParentClause* clause = new ParentClause();
+		return clause;		
+	} else if (type == stringconst::TYPE_MODIFIES){
+		ModifiesClause* clause = new ModifiesClause();
+		return clause;		
+	} else if (type == stringconst::TYPE_USES){
+		UsesClause* clause = new UsesClause();
+		return clause;		
 	} else {
 		throw UnexpectedClauseException();
 	}
@@ -202,7 +203,7 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 		throw InvalidArgumentException();
 	}
 	Clause* newClause;
-	newClause = createCorrectClause(current);
+	newClause = createCorrectClause(clauseType);
 	size_t startIndex = current.find_first_of("(");
 	size_t endIndex = current.find_first_of(",");
 	string firstArg = current.substr(startIndex+1, endIndex-startIndex-1);
