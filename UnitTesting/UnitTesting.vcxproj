@@ -140,6 +140,7 @@
     <ClCompile Include="ParentStarClauseTest.cpp" />
     <ClCompile Include="PatternAssgClauseTest.cpp" />
     <ClCompile Include="PatternAssgTest.cpp" />
+    <ClCompile Include="PDRTest.cpp" />
     <ClCompile Include="ProcNodeTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
     <ClCompile Include="QueryEvaluatorTest.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="ParentStarClauseTest.h" />
     <ClInclude Include="PatternAssgClauseTest.h" />
     <ClInclude Include="PatternAssgTest.h" />
+    <ClInclude Include="PDRTest.h" />
     <ClInclude Include="ProcNodeTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
     <ClInclude Include="QueryEvaluatorTest.h" />

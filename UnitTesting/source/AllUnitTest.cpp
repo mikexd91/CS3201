@@ -10,6 +10,9 @@ int main(int argc, char* argv[])
 
 CppUnit::TestSuite *unitSuite = new CppUnit::TestSuite( "PKB Unit Tests" );
 
+//Front End
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("PDRTest").makeTest());
+
 //AST Components
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ASTTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("TNodeTest").makeTest());
