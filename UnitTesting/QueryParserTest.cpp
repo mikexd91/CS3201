@@ -165,7 +165,7 @@ void QueryParserTest::testPattern(){
 }
 
 void QueryParserTest::testParser(){
-	string const USER_INPUT1 = "Assign a;Variable v;Select a such that Uses(a, v)";
+	string const USER_INPUT1 = "assign a;variable v;Select a such that Uses(a, v)";
 	string const USER_INPUT2 = "Assign a, a1; Select a such that Follows(a, a1)";
 	string const USER_INPUT3 = "Assign a; Variable v; Select a such that Pattern a(v, _)";
 	string const USER_INPUT4 = "Assign a; Variable v; Select a such that Pattern a(v, _\" x + y \"_)";
