@@ -1,3 +1,6 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
 #include "TestWrapper.h"
 
 // implementation code of WrapperFactory - do NOT modify the next 5 lines
@@ -22,9 +25,13 @@ void TestWrapper::parse(std::string filename) {
 	// call your parser to do the parsing
 	// ...rest of your code...
 
-	// TODO
 	// read the file as given by filename
+	ifstream in(filename);
+	stringstream buffer;
+    buffer << in.rdbuf();
+    string programSource = buffer.str();
 	// call parser.parse on the string
+	parser->parse(programSource);
 
 }
 
