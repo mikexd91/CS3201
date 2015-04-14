@@ -51,14 +51,14 @@ namespace stringconst{
 	string const TYPE_PARENT = "Parent";
 	string const TYPE_MODIFIES = "Modifies";
 	string const TYPE_USES = "Uses";
-	string const TYPE_PATTERN = "Pattern";
+	string const TYPE_PATTERN = "pattern";
 	string const TYPE_FOLLOWS_STAR = "Follows*";
 	string const TYPE_PARENT_STAR = "Parent*";
 
-	string const ARG_WHILE = "While";
-	string const ARG_STATEMENT = "Statement";
-	string const ARG_ASSIGN = "Assign";
-	string const ARG_VARIABLE = "Variable";
+	string const ARG_WHILE = "while";
+	string const ARG_STATEMENT = "stmt";
+	string const ARG_ASSIGN = "assign";
+	string const ARG_VARIABLE = "variable";
 	string const ARG_BOOLEAN = "boolean";
 
 	const string DELIM_STRING = " ;={}";

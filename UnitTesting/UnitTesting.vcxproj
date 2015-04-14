@@ -136,6 +136,7 @@
     <ClCompile Include="IfNodeTest.cpp" />
     <ClCompile Include="ModifiesClauseTest.cpp" />
     <ClCompile Include="OpNodeTest.cpp" />
+    <ClCompile Include="ParserTest.cpp" />
     <ClCompile Include="ParentClauseTest.cpp" />
     <ClCompile Include="ParentStarClauseTest.cpp" />
     <ClCompile Include="PatternAssgClauseTest.cpp" />
@@ -151,6 +152,7 @@
     <ClCompile Include="source\StmtTableTest.cpp" />
     <ClCompile Include="source\TNodeTest.cpp" />
     <ClCompile Include="StmtLstNodeTest.cpp" />
+    <ClCompile Include="UsesClauseTest.cpp" />
     <ClCompile Include="VarNodeTest.cpp" />
     <ClCompile Include="VarTableTest.cpp" />
     <ClCompile Include="WhileNodeTest.cpp" />
@@ -165,6 +167,7 @@
     <ClInclude Include="IfNodeTest.h" />
     <ClInclude Include="ModifiesClauseTest.h" />
     <ClInclude Include="OpNodeTest.h" />
+    <ClInclude Include="ParserTest.h" />
     <ClInclude Include="ParentClauseTest.h" />
     <ClInclude Include="ParentStarClauseTest.h" />
     <ClInclude Include="PatternAssgClauseTest.h" />
@@ -179,6 +182,7 @@
     <ClInclude Include="source\StmtTableTest.h" />
     <ClInclude Include="source\TNodeTest.h" />
     <ClInclude Include="StmtLstNodeTest.h" />
+    <ClInclude Include="UsesClauseTest.h" />
     <ClInclude Include="VarNodeTest.h" />
     <ClInclude Include="VarTableTest.h" />
     <ClInclude Include="WhileNodeTest.h" />
