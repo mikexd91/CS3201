@@ -102,6 +102,10 @@ Results UsesClause::evaluateStmtWildVarFixed() {
 	// get the fixed var and usedby
 	Variable* fixedVar = varTable->getVariable(this->getSecondArg());
 	set<int>::iterator stmtIter;
+	if(fixedVar == NULL) {
+		res.setClausePassed(false);
+		return res;
+	}
 	set<int> stmtSet = fixedVar->getUsedByStmts();
 
 	// check set for results
