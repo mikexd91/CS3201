@@ -165,7 +165,7 @@ void QueryParserTest::testPattern(){
 }
 
 void QueryParserTest::testParser(){
-	string const USER_INPUT1 = "assign a; variable v; Select a pattern a(v, _)";
+	string const USER_INPUT1 = "assign a; variable v; Select a pattern a(\"v\", _\"x + y\"_) and Modifies(a, v) and pattern a(v, _)";
 	/*string const USER_INPUT2 = "Assign a, a1; Select a such that Follows(a, a1)";
 	string const USER_INPUT3 = "Assign a; Variable v; Select a such that Pattern a(v, _)";
 	string const USER_INPUT4 = "Assign a; Variable v; Select a such that Pattern a(v, _\" x + y \"_)";
@@ -178,8 +178,6 @@ void QueryParserTest::testParser(){
 	//Query q2 = QueryParser::queryProcessor(USER_INPUT2);
 	//Query q3 = QueryParser::queryProcessor(USER_INPUT3);
 	//Query q4 = QueryParser::queryProcessor(USER_INPUT4);
-
-	cout<< "parse ok";
 
 	Query* Q1 = new Query();
 	StringPair dec1a = StringPair();
@@ -207,8 +205,6 @@ void QueryParserTest::testParser(){
 	string Q1_dec_b = dec_Q1.at("v");
 	StringPair q1_sel_a = sel_q1.at(0);
 	StringPair Q1_sel_a = sel_Q1.at(0); 
-	
-	cout << "before assert";
 
 	CPPUNIT_ASSERT(q1_dec_a == Q1_dec_a);
 	CPPUNIT_ASSERT(q1_dec_b == Q1_dec_b);
@@ -216,8 +212,15 @@ void QueryParserTest::testParser(){
 	CPPUNIT_ASSERT(q1_sel_a.getSecond() == Q1_sel_a.getSecond());
 	
 	vector<Clause*> cls_q1 = q1.getClauseList();
-	PatternAssgClause* pac_q1 = dynamic_cast<PatternAssgClause*>(cls_q1.at(0));
+	PatternAssgClause* pac1_q1 = dynamic_cast<PatternAssgClause*>(cls_q1.at(0));
+	CPPUNIT_ASSERT(pac1_q1->getExpression() == "_\"x y +\"_");
+	CPPUNIT_ASSERT(pac1_q1->getSynonym() == "a");
 
-	CPPUNIT_ASSERT(pac_q1->getExpression() == stringconst::STRING_EMPTY);
-	CPPUNIT_ASSERT(pac_q1->getSynonym() == "a");
+	ModifiesClause* mod1_q1 = dynamic_cast<ModifiesClause*>(cls_q1.at(1));
+	CPPUNIT_ASSERT(mod1_q1->getSecondArg() == "v");
+	CPPUNIT_ASSERT(mod1_q1->getFirstArg() == "a");
+
+	PatternAssgClause* pac2_q1 = dynamic_cast<PatternAssgClause*>(cls_q1.at(2));
+	CPPUNIT_ASSERT(pac2_q1->getExpression() == stringconst::STRING_EMPTY);
+	CPPUNIT_ASSERT(pac2_q1->getSynonym() == "a");
 }
