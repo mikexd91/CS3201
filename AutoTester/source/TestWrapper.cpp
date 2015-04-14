@@ -42,9 +42,12 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
 	// store the answers to the query in the results list (it is initially empty)
 	// each result must be a string.
 
-	// TODO
 	// eval the query
+	set<string> resultSet = pqlController->parse(query);
 	// get results
 	// iterate through the results and stuff them into the results list
-
+	set<string>::iterator iter;
+	for (iter = resultSet.begin(); iter != resultSet.end(); ++iter) {
+		results.push_back(*iter);
+	}
 }
