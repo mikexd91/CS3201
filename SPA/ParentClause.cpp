@@ -3,6 +3,7 @@
 #include "Statement.h"
 #include <boost/lexical_cast.hpp>
 #include <assert.h>
+#include <iostream>
 
 ParentClause::ParentClause(void):Clause(PARENT_){
 	stmtTable = StmtTable::getInstance();
@@ -117,7 +118,7 @@ Results* ParentClause::evaluateS1WildS2Wild(string firstArgSyn, string secondArg
 		//first arg type can only be while
 		//get all while statements
 		set<Statement*> whileStmts = stmtTable->getWhileStmts();
-		if(secondArgType == stringconst::ARG_ASSIGN) {
+		if (secondArgType == stringconst::ARG_ASSIGN) {
 			//for each while statement, get the children, add
 			resultsObj = addParentPairToResult(whileStmts, ASSIGN_STMT_);
 		} else if (secondArgType == stringconst::ARG_WHILE) {
