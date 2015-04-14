@@ -1,7 +1,8 @@
 #include <cppunit/config/SourcePrefix.h>
-#include "ModifiesClauseTest.h"
-#include "../SPA/ModifiesClause.h"
+#include "UsesClauseTest.h"
+#include "../SPA/UsesClause.h"
 #include "../SPA/AST.h"
+#include "../SPA/WhileNode.h"
 #include "../SPA/AssgNode.h"
 #include "../SPA/ConstNode.h"
 #include "../SPA/OpNode.h"
@@ -9,15 +10,10 @@
 #include "../SPA/VarTable.h"
 #include "../SPA/Utils.h"
 
-#include <iostream>
-#include <string>
-
 using namespace stringconst;
 using namespace std;
 
-// note: while stmt not tested yet
-
-void ModifiesClauseTest::setUp() {
+void UsesClauseTest::setUp() {
 	/* testing this source
 	procedure zumba {
 		i = 1+2;	//1
@@ -210,11 +206,9 @@ void ModifiesClauseTest::setUp() {
 	vx->addModifyingStmt(5);
 	vx->addTNode(x5);
 	vtable->addVariable(vx);
-
-
 }
 
-void ModifiesClauseTest::tearDown() {
+void UsesClauseTest::tearDown() {
 	// to clear the pkb
 	AST::reset();
 	StmtTable::getInstance()->clearTable();
@@ -222,156 +216,142 @@ void ModifiesClauseTest::tearDown() {
 }
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ModifiesClauseTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( UsesClauseTest );
 
-void ModifiesClauseTest::testModifiesFixedFixed() {
-	// pass
-	ModifiesClause* m1 = new ModifiesClause();
-	m1->setFirstArg("1");
-	m1->setFirstArgFixed(true);
-	m1->setFirstArgType(ARG_STATEMENT);
-	m1->setSecondArg("i");
-	m1->setSecondArgFixed(true);
-	m1->setSecondArgType(ARG_VARIABLE);
-	CPPUNIT_ASSERT(m1->isValid());
+void UsesClauseTest::testUsesAssignFixedFixedPass() {
+	UsesClause* c = new UsesClause();
+	c->setFirstArg("4");
+	c->setFirstArgFixed(true);
+	c->setFirstArgType(ARG_STATEMENT);
+	c->setSecondArg("i");
+	c->setSecondArgFixed(true);
+	c->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(c->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 0);
-
-	// fail targeting wrong var
-	ModifiesClause* m2 = new ModifiesClause();
-	m2->setFirstArg("1");
-	m2->setFirstArgFixed(true);
-	m2->setFirstArgType(ARG_WHILE);
-	m2->setSecondArg("v");
-	m2->setSecondArgFixed(true);
-	m2->setSecondArgType(ARG_VARIABLE);
-	CPPUNIT_ASSERT(m2->isValid());
-
-	Results r2 = m2->evaluate();
-	CPPUNIT_ASSERT(!r2.isClausePassed());
-
-	// fail targeting exceed stmt num
-	ModifiesClause* m3 = new ModifiesClause();
-	m3->setFirstArg("7");
-	m3->setFirstArgFixed(true);
-	m3->setFirstArgType(ARG_WHILE);
-	m3->setSecondArg("i");
-	m3->setSecondArgFixed(true);
-	m3->setSecondArgType(ARG_VARIABLE);
-	CPPUNIT_ASSERT(m3->isValid());
-
-	Results r3 = m3->evaluate();
-	CPPUNIT_ASSERT(!r3.isClausePassed());
+	Results r = c->evaluate();
+	CPPUNIT_ASSERT(r.isClausePassed());
 }
 
-void ModifiesClauseTest::testModifiesFixedSyn() {
-	// pass
-	ModifiesClause* m1 = new ModifiesClause();
-	m1->setFirstArg("1");
-	m1->setFirstArgFixed(true);
-	m1->setFirstArgType(ARG_STATEMENT);
-	m1->setSecondArg("f");
-	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_VARIABLE);
-	CPPUNIT_ASSERT(m1->isValid());
+void UsesClauseTest::testUsesAssignFixedFixedFail() {
+	UsesClause* c = new UsesClause();
+	c->setFirstArg("4");
+	c->setFirstArgFixed(true);
+	c->setFirstArgType(ARG_STATEMENT);
+	c->setSecondArg("k");
+	c->setSecondArgFixed(true);
+	c->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(c->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "i");
-
-	// fail targeting stmt num exceed
-	ModifiesClause* m2 = new ModifiesClause();
-	m2->setFirstArg("7");
-	m2->setFirstArgFixed(true);
-	m2->setFirstArgType(ARG_WHILE);
-	m2->setSecondArg("v");
-	m2->setSecondArgFixed(false);
-	m2->setSecondArgType(ARG_VARIABLE);
-	CPPUNIT_ASSERT(m2->isValid());
-
-	Results r2 = m2->evaluate();
-	CPPUNIT_ASSERT(!r2.isClausePassed());
+	Results r = c->evaluate();
+	CPPUNIT_ASSERT(!r.isClausePassed());
 }
 
-void ModifiesClauseTest::testModifiesSynFixed() {
-	// pass
-	ModifiesClause* m1 = new ModifiesClause();
-	m1->setFirstArg("a");
-	m1->setFirstArgFixed(false);
-	m1->setFirstArgType(ARG_ASSIGN);
-	m1->setSecondArg("i");
-	m1->setSecondArgFixed(true);
-	m1->setSecondArgType(ARG_VARIABLE);
-	CPPUNIT_ASSERT(m1->isValid());
+void UsesClauseTest::testUsesAssignSynFixedPass() {
+	UsesClause* c = new UsesClause();
+	c->setFirstArg("a");
+	c->setFirstArgFixed(false);
+	c->setFirstArgType(ARG_ASSIGN);
+	c->setSecondArg("i");
+	c->setSecondArgFixed(true);
+	c->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(c->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 2); // 1 and 6 mods i
-	for (int i = 0; i < r1.getSinglesResults().size(); i++) {
-		if (r1.getSinglesResults().at(i) == "1" 
-			|| r1.getSinglesResults().at(i) == "6") {
-			CPPUNIT_ASSERT(true);
-		} else {
-			CPPUNIT_ASSERT(false);
-		}
-	}
+	Results r = c->evaluate();
+	vector<string> singleResults = r.getSinglesResults();
 	
-	// fail targeting wrong statement type
-	ModifiesClause* m2 = new ModifiesClause();
-	m2->setFirstArg("a");
-	m2->setFirstArgFixed(false);
-	m2->setFirstArgType(ARG_WHILE);
-	m2->setSecondArg("i");
-	m2->setSecondArgFixed(true);
-	m2->setSecondArgType(ARG_VARIABLE);
-	CPPUNIT_ASSERT(m2->isValid());
-
-	Results r2 = m2->evaluate();
-	CPPUNIT_ASSERT(!r2.isClausePassed());
-
-	// fail targeting var not exist
-	ModifiesClause* m3 = new ModifiesClause();
-	m3->setFirstArg("a");
-	m3->setFirstArgFixed(false);
-	m3->setFirstArgType(ARG_STATEMENT);
-	m3->setSecondArg("q");
-	m3->setSecondArgFixed(true);
-	m3->setSecondArgType(ARG_VARIABLE);
-	CPPUNIT_ASSERT(m3->isValid());
-
-	Results r3 = m3->evaluate();
-	CPPUNIT_ASSERT(!r3.isClausePassed());
+	CPPUNIT_ASSERT(r.isClausePassed());
+	CPPUNIT_ASSERT(singleResults.size() == 2);
+	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "4") != singleResults.end());
+	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "6") != singleResults.end());
 }
 
-void ModifiesClauseTest::testModifiesSynSyn() {
-	// pass 
-	ModifiesClause* m1 = new ModifiesClause();
-	m1->setFirstArg("a");
-	m1->setFirstArgFixed(false);
-	m1->setFirstArgType(ARG_ASSIGN);
-	m1->setSecondArg("i");
-	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_VARIABLE);
-	CPPUNIT_ASSERT(m1->isValid());
+void UsesClauseTest::testUsesAssignSynFixedFail() {
+	UsesClause* c = new UsesClause();
+	c->setFirstArg("a");
+	c->setFirstArgFixed(false);
+	c->setFirstArgType(ARG_ASSIGN);
+	c->setSecondArg("j");
+	c->setSecondArgFixed(true);
+	c->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(c->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getPairResults().size() == 6);
+	Results r = c->evaluate();
+	vector<string> singleResults = r.getSinglesResults();
+	
+	CPPUNIT_ASSERT(!r.isClausePassed());
+	CPPUNIT_ASSERT(singleResults.size() == 0);
+}
 
-	// fail targeting wrong stmt type
-	ModifiesClause* m2 = new ModifiesClause();
-	m2->setFirstArg("a");
-	m2->setFirstArgFixed(false);
-	m2->setFirstArgType(ARG_WHILE);
-	m2->setSecondArg("i");
-	m2->setSecondArgFixed(false);
-	m2->setSecondArgType(ARG_VARIABLE);
-	CPPUNIT_ASSERT(m2->isValid());
+void UsesClauseTest::testUsesAssignFixedSynPass() {
+	UsesClause* c = new UsesClause();
+	c->setFirstArg("5");
+	c->setFirstArgFixed(true);
+	c->setFirstArgType(ARG_ASSIGN);
+	c->setSecondArg("v");
+	c->setSecondArgFixed(false);
+	c->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(c->isValid());
 
-	Results r2 = m2->evaluate();
-	CPPUNIT_ASSERT(!r2.isClausePassed());
-	//CPPUNIT_ASSERT(r1.getPairResults().size() == 6);
+	Results r = c->evaluate();
+	vector<string> singleResults = r.getSinglesResults();
+	
+	CPPUNIT_ASSERT(r.isClausePassed());
+	CPPUNIT_ASSERT(singleResults.size() == 2);
+	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "w") != singleResults.end());
+	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "k") != singleResults.end());
+}
+
+void UsesClauseTest::testUsesAssignFixedSynFail() {
+	UsesClause* c = new UsesClause();
+	c->setFirstArg("1");
+	c->setFirstArgFixed(true);
+	c->setFirstArgType(ARG_ASSIGN);
+	c->setSecondArg("v");
+	c->setSecondArgFixed(false);
+	c->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(c->isValid());
+
+	Results r = c->evaluate();
+	vector<string> singleResults = r.getSinglesResults();
+	
+	CPPUNIT_ASSERT(!r.isClausePassed());
+	CPPUNIT_ASSERT(singleResults.size() == 0);
+}
+
+void UsesClauseTest::testUsesAssignSynSynPass() {
+	UsesClause* c = new UsesClause();
+	c->setFirstArg("a");
+	c->setFirstArgFixed(false);
+	c->setFirstArgType(ARG_ASSIGN);
+	c->setSecondArg("v");
+	c->setSecondArgFixed(false);
+	c->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(c->isValid());
+
+	Results r = c->evaluate();
+	vector<pair<string,string>> pairResults = r.getPairResults();
+	
+	CPPUNIT_ASSERT(r.isClausePassed());
+	CPPUNIT_ASSERT(pairResults.size() == 4);
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair<string,string>("4", "i")) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair<string,string>("5", "w")) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair<string,string>("5", "k")) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair<string,string>("6", "i")) != pairResults.end());
+}
+
+void UsesClauseTest::testUsesAssignSynSynFail() {
+	UsesClause* c = new UsesClause();
+	c->setFirstArg("w");
+	c->setFirstArgFixed(false);
+	c->setFirstArgType(ARG_WHILE);
+	c->setSecondArg("v");
+	c->setSecondArgFixed(false);
+	c->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(c->isValid());
+
+	Results r = c->evaluate();
+	vector<pair<string,string>> pairResults = r.getPairResults();
+	
+	CPPUNIT_ASSERT(!r.isClausePassed());
+	CPPUNIT_ASSERT(pairResults.size() == 0);
 }
