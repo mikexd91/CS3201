@@ -33,7 +33,7 @@ set<string> PQLController::parse(string query) {
 }
 
 void PQLController::postProcess(set<string>& results) {
-	if (results.size() == 0) {
+	/*if (results.size() == 0) {
 		results.emplace("none");
-	}
+	}*/
 }

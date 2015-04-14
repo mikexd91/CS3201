@@ -37,6 +37,8 @@ private:
 	void assign();
 	void parseWhile();
 	void endParse();
+	string generateErrorMessage(int lineNumber);
+	
 	//void parseFactor(string, queue<string>&);
 	//void parseSymbol(string, queue<string>&, stack<string>&);
 };
@@ -45,4 +47,5 @@ namespace ParserConstants {
 	const string DELIM_STRING = " ;={}+*-";
 	const char DELIMITERS[] = { ';', '=', '{', '}', '+', '*', '-' };
 	const string ERROR_MESSAGE = "Error at line ";
+	
 }
