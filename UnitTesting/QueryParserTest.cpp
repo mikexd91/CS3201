@@ -165,19 +165,9 @@ void QueryParserTest::testPattern(){
 }
 
 void QueryParserTest::testParser(){
-	string const USER_INPUT1 = "assign a; variable v; Select a pattern a(\"v\", _\"x + y\"_) and Modifies(a, v) and pattern a(v, _)";
-	/*string const USER_INPUT2 = "Assign a, a1; Select a such that Follows(a, a1)";
-	string const USER_INPUT3 = "Assign a; Variable v; Select a such that Pattern a(v, _)";
-	string const USER_INPUT4 = "Assign a; Variable v; Select a such that Pattern a(v, _\" x + y \"_)";
-	string const USER_INPUT5 = "Assign a, a1; Select a such that Follows*(a, a1)";
-	string const USER_INPUT6 = "Assign a, a1; Select a such that Parent(a, a1)";
-	string const USER_INPUT7 = "Assign a, a1; Select a such that Parent*(a, a1)";
-	string const USER_INPUT8 = "Assign a, a1; Select a such that Modifies(a, a1)";*/
+	string const USER_INPUT1 = "assign a; variable v; Select a pattern a(\"v\", _\"x+y\"_) and Modifies(a, v) and pattern a(v, _)";
 	
 	Query q1 = QueryParser::parseQuery(USER_INPUT1);
-	//Query q2 = QueryParser::queryProcessor(USER_INPUT2);
-	//Query q3 = QueryParser::queryProcessor(USER_INPUT3);
-	//Query q4 = QueryParser::queryProcessor(USER_INPUT4);
 
 	Query* Q1 = new Query();
 	StringPair dec1a = StringPair();
@@ -186,13 +176,10 @@ void QueryParserTest::testParser(){
 	syn1a.setFirst("a"); syn1a.setSecond(stringconst::ARG_ASSIGN);
 	dec1a.setFirst("a"); dec1a.setSecond(stringconst::ARG_ASSIGN);
 	dec1b.setFirst("v"); dec1b.setSecond(stringconst::ARG_VARIABLE);
-	/*UsesClause* clause1a = new UsesClause();
-	clause1a->setFirstArg("a"); clause1a->setFirstArgFixed(false); clause1a->setFirstArgType(stringconst::ARG_ASSIGN);
-	clause1a->setFirstArg("v"); clause1a->setFirstArgFixed(false); clause1a->setFirstArgType(stringconst::ARG_VARIABLE);*/
+	
 	Q1->addSelectSynonym(syn1a);
 	Q1->addDeclaration(dec1a);
 	Q1->addDeclaration(dec1b);
-	//Q1->addClause(clause1a);
 
 	unordered_map<string, string> dec_Q1 = Q1->getDeclarationList();
 	unordered_map<string, string> dec_q1 = q1.getDeclarationList();
