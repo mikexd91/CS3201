@@ -100,6 +100,9 @@ void ParentStarClause::recurParentCheckS1WildS2Wild(Results& res, string s1, str
 	if(isParent(s1, s2)) {
 		res.setClausePassed(true);
 		res.addPairResult(originS1, originS2);
+	// base case 2 - checking same stmt
+	} else if(s1 == s2) {
+		return;
 	} else {
 		// get all children of first arg
 		set<int> argChildren = stmtTable->getStmtObj(lexical_cast<int>(s1))->getChildren();
@@ -162,6 +165,9 @@ void ParentStarClause::recurParentCheckS1WildS2Fixed(Results &res, string s1, st
 	if(isParent(s1, secondArg)) {
 		res.setClausePassed(true);
 		res.addSingleResult(originS1);
+	// base case 2 - checking same stmt
+	} else if(s1 == secondArg) {
+		return;
 	} else {
 		// get all children of first arg (type does not matter)
 		set<int> argChildren = stmtTable->getStmtObj(lexical_cast<int>(s1))->getChildren();
@@ -232,6 +238,9 @@ void ParentStarClause::recurParentCheckS1FixedS2Wild(Results &res, string s1, st
 	if(isParent(s1, s2)) {
 		res.setClausePassed(true);
 		res.addSingleResult(originS2);
+	// base case 2 - checking same stmt
+	} else if(s1 == s2) {
+		return;
 	} else {
 		// get all children of first arg
 		set<int> argChildren = stmtTable->getStmtObj(lexical_cast<int>(s1))->getChildren();
@@ -272,7 +281,9 @@ void ParentStarClause::recurParentCheckS1FixedS2Fixed(Results &res, string s1, s
 	// base case 1 - stmts are direct parent/child
 	if(isParent(s1, s2)) {
 		res.setClausePassed(true);
-
+	// base case 2 - checking same stmt
+	} else if(s1 == s2) {
+		return;
 	} else {
 		// get all children of first arg
 		set<int> argChildren = stmtTable->getStmtObj(lexical_cast<int>(s1))->getChildren();
