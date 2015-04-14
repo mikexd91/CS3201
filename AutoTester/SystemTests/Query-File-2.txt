@@ -6,7 +6,7 @@ Select a such that Uses(a, "temp")
 2 - testing uses 
 stmt s;
 Select s such that Uses(s, "iter")
-8, 16, 19, 23
+8, 16, 19, 23, 36
 5000
 3 - testing for uses
 assign a; while w; variable v;
@@ -25,7 +25,7 @@ Select s such that Modifies(s, "quota")
 5000
 6 - testing for modifies
 assign a;
-Select a such that Modifies(a, "temp") pattern a(_, "temp + 6")
+Select a such that Modifies(a, "temp") pattern a(_, _"temp + 6"_)
 17
 5000
 7 - testing for modifies
@@ -85,7 +85,7 @@ Select a1 such that Follows*(a1, a2) pattern a2(_, _"x + left"_)
 5000
 18 - testing for follows*
 stmt s; assign a;
-Select s such that Follows*(s, a) pattern a(_, "5")
+Select s such that Follows*(s, a) pattern a(_, _"5"_)
 none
 5000
 19 - testing for follows*
@@ -150,8 +150,8 @@ Select a such that Parent*(s, a) pattern a(_, _"center"_)
 5000
 31 - testing for pattern
 assign a;
-Select a pattern a(_. "center")
-none
+Select a pattern a(_, _"center"_)
+37
 5000
 32 - testing for pattern
 assign a;

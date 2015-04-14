@@ -15,7 +15,7 @@ procedure Main {
 		temp = temp + 4;
 		temp = temp + 5;
 		iter = iter + 1;
-		temp = temp + 6;
+		temp = temp + 6; 
 	}
 	x = left + x + right + radius +5;
 	while iter {
