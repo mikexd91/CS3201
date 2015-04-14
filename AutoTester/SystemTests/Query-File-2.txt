@@ -148,3 +148,18 @@ assign a; stmt s; variable v
 Select a such that Parent*(s, a) pattern a(_, _"center"_)
 35
 5000
+31 - testing for pattern
+assign a;
+Select a pattern a(_. "center")
+none
+5000
+32 - testing for pattern
+assign a;
+Select a pattern a(_, _"right + 3"_)
+20, 22, 24, 26, 27, 29, 35
+5000
+33 - testing for pattern
+variable v; assign a;
+Select v pattern a(v, _"quota"_)
+9, 30, 34
+5000

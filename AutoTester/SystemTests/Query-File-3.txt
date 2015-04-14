@@ -148,3 +148,18 @@ variable v; assign a; while w;
 Select v such that Parent*(w, a) pattern a(v, _)
 charmeleon, ivysaur, lastPokemon
 5000
+31 - testing for pattern
+assign a, a1;
+Select a pattern a1("battle1", _)
+1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 19, 20
+5000
+32 - testing for pattern
+variable v; assign a;
+Select v pattern a(v, "5")
+bulbasaur, charmander, squirtle
+5000
+33 - testing for pattern
+assign a;
+Select a pattern ("charmander", "1")
+6
+5000
