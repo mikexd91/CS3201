@@ -248,7 +248,7 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 				expectSelect = false;
 			} else {
 				string next = line.front();
-				if (containsKeyword(next)){
+				if (containsKeyword(next) || contains(next, stringconst::TYPE_PATTERN)){
 					expectSelect = false;
 				}
 			}
