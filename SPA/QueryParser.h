@@ -16,6 +16,7 @@ class QueryParser
 {
 	
 public:
+	static string removeFrontSpaces(string);
 	static bool containsOperator(string);
 	static string getFirstOperator(string);
 	static int getOperatorIndex(string);
