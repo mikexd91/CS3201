@@ -21,7 +21,7 @@ PatternAssgClause::PatternAssgClause(const string& syn)
 	firstArgFixed = false;
 	secondArgType = ARG_VARIABLE;
 	secondArgFixed = false;
-}
+} 
 
 PatternAssgClause::PatternAssgClause(const string& syn, const string& var, const string& expr) 
 	: PatternClause() {

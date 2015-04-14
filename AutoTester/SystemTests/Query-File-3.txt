@@ -19,7 +19,7 @@ Select v such that Uses(w, v) pattern a(v, _)
 battle1, battle2, battle3, charmeleon, ivysaur, wartortle
 5000
 5 - testing for uses
-assign a; variable v
+assign a; variable v;
 Select a such that Uses(a, v) pattern a(v, _"1"_)
 6, 7, 8
 5000
@@ -40,12 +40,12 @@ Select s such that Modifies(s, "ivysaur")
 5000
 9 - testing for modifies
 assign a; 
-Select a such that Modifies(a, "charmeleon") pattern a(_. _"ivysaur"_)
+Select a such that Modifies(a, "charmeleon") pattern a(_, _"ivysaur"_)
 16
 5000
 10 - testing for modifies
 assign a;
-Select a such that Modififes(a, "battle1") pattern a(_, _"battle1"_)
+Select a such that Modifies(a, "battle1") pattern a(_, _"battle1"_)
 none
 5000
 11 - testing for follows
@@ -90,12 +90,12 @@ Select w such that Follows*(w, a)
 5000
 19 - testing for follows*
 assign a1, a2;
-Select a1 such that Follows*(a1, a2) pattern a2(_, "5")
+Select a1 such that Follows*(a1, a2) pattern a2(_, _"5"_)
 1, 2
 5000
 20 - testing for follows*
 stmt s; assign a;
-Select s such that Follows(s, a) pattern a(_, "3")
+Select s such that Follows(s, a) pattern a(_, _"3"_)
 16, 17
 5000
 21 - testing for parent
@@ -155,11 +155,11 @@ Select a pattern a1("battle1", _)
 5000
 32 - testing for pattern
 variable v; assign a;
-Select v pattern a(v, "5")
+Select v pattern a(v, _"5"_)
 bulbasaur, charmander, squirtle
 5000
 33 - testing for pattern
 assign a;
-Select a pattern ("charmander", "1")
+Select a pattern a("charmander", _"1"_)
 6
 5000
