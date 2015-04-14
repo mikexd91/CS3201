@@ -203,8 +203,8 @@ Clause* QueryParser::createCorrectClause(string type){
 
 void QueryParser::parseDeclarations(Query* query, vector<string> list){
 	for (size_t i=0; i<list.size(); i++){
-		string here = list.at(i);
-		string current = removeFrontSpaces(here);
+		string current = list.at(i);
+		boost::algorithm::trim(current);
 		vector<string> tokens = tokeniser(current, ',');
 		string first = tokens.at(0);
 		vector<string> split = tokeniser(first, ' ');

@@ -103,7 +103,7 @@ void QueryParserTest::testSelect(){
 
 void QueryParserTest::testClause(){
 	Query* ASSERTION = new Query();
-	string const DEC_LINE = "assign a;variable v;";
+	string const DEC_LINE = "assign a; variable v;";
 	string const SEL_LINE = "Select a";
 	string const CLS_LINE = "Follows(a, \"v\")";
 
