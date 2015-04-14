@@ -139,7 +139,6 @@ Results UsesClause::evaluateStmtFixedVarWild() {
 	} else if(firstArgType == stringconst::ARG_ASSIGN) {		// only assign stmts
 		stmtSet = stmtTable->getAssgStmts();
 	} else {													// all types of stmts
-		// TODO for all stmts
 		stmtSet = stmtTable->getAllStmts();
 	}
 
