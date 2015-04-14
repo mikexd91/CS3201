@@ -116,12 +116,12 @@ none
 24 - testing for parent
 assign a; stmt s;
 Select a such that Parent(s, a)
-9, 10, 11, 12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
+9, 10, 11, 12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37
 5000
 25 - testing for parent
 assign a; stmt s;
 Select a such that Parent(s, a) pattern a("iter", _)
-12, 16, 23, 34
+12, 16, 23, 36
 5000
 26 - testing for parent
 while w; assign a;
@@ -146,7 +146,7 @@ none
 30 - testing for parent*
 assign a; stmt s; variable v
 Select a such that Parent*(s, a) pattern a(_, _"center"_)
-35
+37
 5000
 31 - testing for pattern
 assign a;
@@ -161,5 +161,5 @@ Select a pattern a(_, _"right + 3"_)
 33 - testing for pattern
 variable v; assign a;
 Select v pattern a(v, _"quota"_)
-9, 30, 34
+x
 5000
