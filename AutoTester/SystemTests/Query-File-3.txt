@@ -1,0 +1,150 @@
+1 - testing for uses
+stmt s;
+Select s such that Uses(s, "battle2")
+15, 17
+5000
+2 - testing for uses
+assign a;
+Select a such that Uses(a, "battle3")
+none
+5000
+3 - testing for uses
+variable v; 
+Select v such that Uses(13, v)
+charmeleon, ivysaur
+5000
+4 - testing for uses
+while w; assign a; variable v;
+Select v such that Uses(w, v) pattern a(v, _)
+battle1, battle2, battle3, charmeleon, ivysaur, wartortle
+5000
+5 - testing for uses
+assign a; variable v
+Select a such that Uses(a, v) pattern a(v, _"1"_)
+6, 7, 8
+5000
+6 - testing for modifies
+assign a;
+Select a such that Modifies(a, "mew")
+none
+5000
+7 - testing for modifies
+variable v;
+Select v such that Modifies(15, v)
+charmeleon, ivysaur
+5000
+8 - testing for modifies
+stmt s;
+Select s such that Modifies(s, "ivysaur")
+11, 15, 17, 18, 19
+5000
+9 - testing for modifies
+assign a; 
+Select a such that Modifies(a, "charmeleon") pattern a(_. _"ivysaur"_)
+16
+5000
+10 - testing for modifies
+assign a;
+Select a such that Modififes(a, "battle1") pattern a(_, _"battle1"_)
+none
+5000
+11 - testing for follows
+stmt s;
+Select s such that Follows(s, 20)
+17
+5000
+12 - testing for follows
+assign a; stmt s;
+Select a such that Follows(s, a)
+2, 3, 4, 7, 8, 10, 11, 12, 13, 14
+5000
+13 - testing for follows
+while w;
+Select w such that Follows(16, w)
+17
+5000
+14 - testing for follows
+while w; assign a;
+Select w such that Follows(a, w) pattern a(_, _"charmeleon"_)
+none
+5000
+15 - testing for follows
+variable v; while w; assign a;
+Select s such that Follows(w, a) pattern a(_, v)
+9, 10, 11
+5000
+16 - testing for follows*
+assign a;
+Select a such that Follows*(a, 17)
+16
+5000
+17 - testing for follows*
+stmt s;
+Select s such that Follows*(12, s)
+13, 14, 15
+5000
+18 - testing for follows*
+assign a; while w;
+Select w such that Follows*(w, a)
+5, 17
+5000
+19 - testing for follows*
+assign a1, a2;
+Select a1 such that Follows*(a1, a2) pattern a2(_, "5")
+1, 2
+5000
+20 - testing for follows*
+stmt s; assign a;
+Select s such that Follows(s, a) pattern a(_, "3")
+16, 17
+5000
+21 - testing for parent
+stmt s;
+Select s such that Parent(15, s)
+16, 17, 20
+5000
+22 - testing for parent
+assign a; while w;
+Select a such that Parent(w, a)
+6, 7, 8, 16, 19, 20
+5000
+23 - testing for parent
+stmt s;
+Select s such that Parent(s, 13)
+none
+5000
+24 - testing for parent
+stmt s; assign a;
+Select s such that Parent(s, a) pattern a(_, _"wartortle"_)
+15, 18
+5000
+25 - testing for parent*
+assign a; while w;
+Select a such that Parent*(w, a)
+6, 7, 8, 16, 19, 20
+5000
+26 - testing for parent*
+while w1, w2;
+Select w2 such that Parent*(w1, w2)
+17, 18
+5000
+27 - testing for parent*
+stmt s;
+Select s such that Parent*(s, 4)
+none
+5000
+28 - testing for parent*
+stmt s;
+Select s such that Parent*(15, s)
+16, 17, 18, 19, 20
+5000
+29 - testing for parent*
+assign a; stmt s
+Select a such that Parent*(s, a) pattern a("charmeleon", _)
+16
+5000
+30 - testing for parent*
+variable v; assign a; while w;
+Select v such that Parent*(w, a) pattern a(v, _)
+charmeleon, ivysaur, lastPokemon
+5000
