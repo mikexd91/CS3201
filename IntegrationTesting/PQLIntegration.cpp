@@ -21,14 +21,14 @@ void PQLIntegration::setUp() {
 	/* testing this source
 
 	procedure chocs {
-		a=4;
-		while i {
-			k = 3;
-			while j {
-				i=1;
-				j=2;
+		a=4;			//1
+		while i {		//2
+			k = 3;		//3
+			while j {	//4
+				i=1;	//5
+				j=2;	//6
 			}
-			b=5;
+			b=5;		//7
 		}	
 	}
 	*/
@@ -129,6 +129,7 @@ void PQLIntegration::setUp() {
 	stmt4->setStmtNum(4);
 	stmt4->setType(WHILE_STMT_);
 	stmt4->setFollowsBefore(3);
+	stmt4->setFollowsAfter(7);
 	set<string> mods4 = set<string>();
 	mods4.emplace("i");
 	mods4.emplace("j");
@@ -136,6 +137,12 @@ void PQLIntegration::setUp() {
 	uses4.emplace("j");
 	stmt4->setModifies(mods4);
 	stmt4->setUses(uses4);
+	set<int> children3 = *new set<int>();
+	children3.emplace(5);
+	children3.emplace(6);
+	stmt4->setChildren(children3);
+	//int children3[] = {5, 6};
+	//stmt2->setChildren(set<int>(children3, children3+2));
 	stmt4->setTNodeRef(while2);
 	stmt4->setParent(2);
 	stable->addStmt(stmt4);
@@ -240,12 +247,56 @@ void PQLIntegration::testSelectModifies() {
 	CPPUNIT_ASSERT("1" == *r.begin());
 }
 
-void PQLIntegration::testSelectPattern() {
-	string QUERY_STRING = "assign a; Select a pattern a(\"a\", \"_\")";
+void PQLIntegration::testSelectUses() {
+	string QUERY_STRING = "while w; variable v; Select v such that Uses(w, v)";
+	PQLController* pcc = new PQLController();
+	set<string> r;
+	r = pcc->parse(QUERY_STRING);
+	CPPUNIT_ASSERT(2 == r.size());
+}
+
+void PQLIntegration::testSelectFollows() {
+	string QUERY_STRING = "assign a, a1; Select a such that Follows(a, a1)";
+	PQLController* pcc = new PQLController();
+	set<string> r;
+	r = pcc->parse(QUERY_STRING);
+	
+	CPPUNIT_ASSERT(1 == r.size());
+	CPPUNIT_ASSERT("5" == *r.begin());
+}
+
+void PQLIntegration::testSelectFollowsStar() {
+	string QUERY_STRING = "assign a, a1; Select a1 such that Follows*(a, a1)";
 	PQLController* pcc = new PQLController();
 	set<string> r;
 	r = pcc->parse(QUERY_STRING);
 
+	CPPUNIT_ASSERT(2 == r.size());
+	CPPUNIT_ASSERT("6" == *r.begin());
+}
+
+void PQLIntegration::testSelectParent() {
+	string QUERY_STRING = "while w; assign a; Select a such that Parent(w, a)";
+	PQLController* pcc = new PQLController();
+	set<string> r;
+	r = pcc->parse(QUERY_STRING);
+	CPPUNIT_ASSERT(4 == r.size());
+
+}
+
+void PQLIntegration::testSelectParentStar() {
+	string QUERY_STRING = "while w; Select w such that Parent*(w, 6)";
+	PQLController* pcc = new PQLController();
+	set<string> r;
+	r = pcc->parse(QUERY_STRING);
+	CPPUNIT_ASSERT(2 == r.size());
+}
+
+void PQLIntegration::testSelectPattern() {
+	string QUERY_STRING = "assign a; Select a pattern a(\"a\", _)";
+	PQLController* pcc = new PQLController();
+	set<string> r;
+	r = pcc->parse(QUERY_STRING);
 	CPPUNIT_ASSERT(1 == r.size());
 }
 
