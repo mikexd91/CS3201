@@ -63,19 +63,22 @@ Results UsesClause::evaluateStmtWildVarWild() {
 	res.setSecondClauseSyn(this->getSecondArg());
 
 	// generate all possible combinations using stmtTable as reference
-	StmtTable::StmtTableIterator stmtTIter;
+	set<Statement*> allStmts = stmtTable->getAllStmts();
+	set<Statement*>::iterator stmtIter;
+	
 	// iterate through stmt table
-	for(stmtTIter=stmtTable->getIterator(); stmtTIter!=stmtTable->getEnd(); stmtTIter++) {
-		Statement* currentStmt = stmtTIter->second;
+	for(stmtIter=allStmts.begin(); stmtIter!=allStmts.end(); stmtIter++) {
+		Statement* currentStmt = *stmtIter;
 
 		// check if current stmt conforms to specific stmt type, if not, skip to next statement
 		if(!Utils::isSameType(this->firstArgType, currentStmt->getType())) {
 			continue;
 		}
-
+		
 		// for each stmt generate result pair for vars that it uses
 		Statement::UsesSet currentUseSet = currentStmt->getUses();
 		Statement::UsesSet::iterator useIter;
+
 		for(useIter=currentUseSet.begin(); useIter!=currentUseSet.end(); useIter++) {
 			string stmtNum = lexical_cast<string>(currentStmt->getStmtNum());
 			string var = *useIter;
