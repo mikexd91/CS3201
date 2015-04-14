@@ -269,7 +269,7 @@ Results PatternAssgClause::evaluateVarExpr(vector<int>& assgNums, vector<string>
 			if (matchVar(assgNode, var) && matchExpr(assgNode, getExpression())) {
 				string stmtNumStr = lexical_cast<string>(stmtNum);
 				res->addPairResult(stmtNumStr, var);
-			}
+			} 
 		}
 	}
 
