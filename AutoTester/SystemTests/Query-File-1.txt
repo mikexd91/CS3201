@@ -36,7 +36,7 @@ none
 8 - testing modifies for a variable
 while w;
 Select w such that Modifies(w, "summation")
-12, 14, 16, 17
+12, 14, 16, 18
 5000
 9 - testing modifies for a variable
 stmt s;
