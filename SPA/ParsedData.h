@@ -1,25 +1,28 @@
 #pragma once
 #include <string>
+#include <queue>
 using namespace std;
 class ParsedData	
 {
 public:
-	enum Type {ASSIGNMENT, PROCEDURE};
+	enum Type {ASSIGNMENT, PROCEDURE, WHILE, IF, CALL, END};
 
 	//Constructor
 	ParsedData(enum Type, int);
 	
 	//Setter
 	void setAssignVar(string);
-	void setAssignExpression(int);
+	void setAssignExpression(queue<string>);
 	void setProcName(string);
+	void setWhileVar(string name);
 
 	//Getter
 	int getNestingLevel();
 	string getAssignVar();
-	int getAssignExpression();
+	queue<string> getAssignExpression();
 	string getProcName();
 	Type getType();
+	string getWhileVar();
 
 
 private:
@@ -27,11 +30,9 @@ private:
 	int nestingLevel;
 	//Assignment
 	string assignVar;
-	int assignExpression; //an integer for now
+	queue<string> assignExpression; //in Reverse Polish notation
 	//Procedure
 	string procName;
-	
-	
-
+	//While
+	string whileVar;
 };
-

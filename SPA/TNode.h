@@ -1,8 +1,14 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 using namespace std;
+
+enum NodeType {
+    PROGRAM_, PROCEDURE_, STMTLST_, CALL_STMT_, WHILE_STMT_, 
+    IF_STMT_, ASSIGN_STMT_, OPERATOR_, VARIABLE_, CONSTANT_, NULL_
+};
 
 class TNode {
 
@@ -25,30 +31,43 @@ class TNode {
 
 public:
 	
-	//TNode(string nodeType); // constructor
+	// constructors
+	TNode(NodeType type); // properties
+	TNode(NodeType type, const string& name); // properties
 
-	//void setStmtNumber(int num); // for nodes that have stmt numbers
-	//void setValue(string value); // the value for the node, example procnode should have the value = procname
-	//void setParent(TNode *parent); // direct parent, not the relationship Parent
-	//void setChild(TNode *child);
-	//void setLeftSibling(TNode *left);
-	//void setRightSibling(TNode *right);
+	// destructor
+	~TNode();
 
-	//string getNodeType();
-	//int getStmtNumber();
-	//TNode * getParent();
-	//TNode * getChild();
-	//TNode * getLeftSibling();
-	//TNode * getRightSibling();
+	// getters
+	NodeType getNodeType(); // properties
+	string getName(); // properties
+	vector<TNode*>& getChildren(); // links
+	TNode* getParent(); // links
+	TNode* getRightSibling(); // links
+	TNode* getLeftSibling(); // links
 
-private:
+	// setters
+	void setName(const string& name); // properties
+	void addChild(TNode *child); // links (from linkchild)
+	void setParent(TNode *parent); // links (from linkparent)
+	void linkChild(TNode *child); // links
+	void linkParent(TNode *parent); // links
+	void linkRightSibling(TNode *right); // links
+	void linkLeftSibling(TNode *left); // links
 
-	/*string _nodeType;
-	int _stmtNumber;
-	string _value;
-	TNode * _parent;
-	TNode * _child;
-	TNode * _left;
-	TNode * _right;*/
+	// checks
+	bool isNodeType(NodeType type); // properties
+	bool hasChildren(); // links
+	bool hasParent(); // links
+	bool hasRightSibling(); // links
+	bool hasLeftSibling(); // links
+
+protected:
+	NodeType _nodeType;
+	string _nodeName;
+	vector<TNode*> _children;
+	TNode *_parent;
+	TNode *_rightSibling;
+	TNode *_leftSibling;
 
 };
