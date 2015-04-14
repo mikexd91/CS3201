@@ -235,6 +235,7 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 		bool expectSelect = true;
 		while (expectSelect){
 			string current = Utils::getWordAndPop(line);
+			cout << current;
 			if (decList.find(current) == decList.end()){
 				throw MissingDeclarationException();
 			} else {
@@ -248,7 +249,7 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 				expectSelect = false;
 			} else {
 				string next = line.front();
-				if (containsKeyword(next)){
+				if (containsKeyword(next) || contains(next, stringconst::TYPE_PATTERN)){
 					expectSelect = false;
 				}
 			}
