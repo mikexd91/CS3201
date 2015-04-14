@@ -16,6 +16,7 @@ volatile bool TestWrapper::GlobalStop = false;
 TestWrapper::TestWrapper() {
 	// create any objects here as instance variables of this class
 	// as well as any initialization required for your spa program
+	counter = 1;
 	parser = new Parser();
 	pqlController = new PQLController();
 }
@@ -41,7 +42,7 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
 	// ...code to evaluate query...
 	// store the answers to the query in the results list (it is initially empty)
 	// each result must be a string.
-
+	counter;
 	// eval the query
 	set<string> resultSet = pqlController->parse(query);
 	// get results
@@ -50,4 +51,5 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
 	for (iter = resultSet.begin(); iter != resultSet.end(); ++iter) {
 		results.push_back(*iter);
 	}
+	counter++;
 }

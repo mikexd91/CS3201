@@ -27,6 +27,7 @@ class TestWrapper : public AbstractWrapper {
 
   Parser* parser;
   PQLController* pqlController;
+  int counter;
 };
 
 #endif

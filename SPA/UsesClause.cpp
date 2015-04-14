@@ -102,6 +102,10 @@ Results UsesClause::evaluateStmtWildVarFixed() {
 	// get the fixed var and usedby
 	Variable* fixedVar = varTable->getVariable(this->getSecondArg());
 	set<int>::iterator stmtIter;
+	if(fixedVar == NULL) {
+		res.setClausePassed(false);
+		return res;
+	}
 	set<int> stmtSet = fixedVar->getUsedByStmts();
 
 	// check set for results
@@ -136,6 +140,7 @@ Results UsesClause::evaluateStmtFixedVarWild() {
 		stmtSet = stmtTable->getAssgStmts();
 	} else {													// all types of stmts
 		// TODO for all stmts
+		stmtSet = stmtTable->getAllStmts();
 	}
 
 	int stmtNum = lexical_cast<int>(this->getFirstArg());

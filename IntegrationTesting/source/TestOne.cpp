@@ -271,16 +271,16 @@ void TestOne::testFollows() {
 	Statement* whileStmt = stmtTable1->getStmtObj(3);
 	Statement* thirdAssg = stmtTable1->getStmtObj(4);
 	Statement* fourthAssg = stmtTable1->getStmtObj(5);
-	CPPUNIT_ASSERT(firstAssg->getFollowsAfter() == -1);
-	CPPUNIT_ASSERT(firstAssg->getFollowsBefore() == 2);
-	CPPUNIT_ASSERT(secAssg->getFollowsAfter() == 1);
-	CPPUNIT_ASSERT(secAssg->getFollowsBefore() == 3);
-	CPPUNIT_ASSERT(whileStmt->getFollowsAfter() == 2);
-	CPPUNIT_ASSERT(whileStmt->getFollowsBefore() == 5);
-	CPPUNIT_ASSERT(thirdAssg->getFollowsAfter() == -1);
+	CPPUNIT_ASSERT(firstAssg->getFollowsBefore() == -1);
+	CPPUNIT_ASSERT(firstAssg->getFollowsAfter() == 2);
+	CPPUNIT_ASSERT(secAssg->getFollowsBefore() == 1);
+	CPPUNIT_ASSERT(secAssg->getFollowsAfter() == 3);
+	CPPUNIT_ASSERT(whileStmt->getFollowsBefore() == 2);
+	CPPUNIT_ASSERT(whileStmt->getFollowsAfter() == 5);
 	CPPUNIT_ASSERT(thirdAssg->getFollowsBefore() == -1);
-	CPPUNIT_ASSERT(fourthAssg->getFollowsAfter() == 3);
-	CPPUNIT_ASSERT(fourthAssg->getFollowsBefore() == -1);
+	CPPUNIT_ASSERT(thirdAssg->getFollowsAfter() == -1);
+	CPPUNIT_ASSERT(fourthAssg->getFollowsBefore() == 3);
+	CPPUNIT_ASSERT(fourthAssg->getFollowsAfter() == -1);
 }
 
 void TestOne::testWhileUses() {
