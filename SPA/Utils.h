@@ -51,7 +51,7 @@ namespace stringconst{
 	string const TYPE_PARENT = "Parent";
 	string const TYPE_MODIFIES = "Modifies";
 	string const TYPE_USES = "Uses";
-	string const TYPE_PATTERN = "Pattern";
+	string const TYPE_PATTERN = "pattern";
 	string const TYPE_FOLLOWS_STAR = "Follows*";
 	string const TYPE_PARENT_STAR = "Parent*";
 
