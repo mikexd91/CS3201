@@ -70,8 +70,8 @@ none
 5000
 15 - testing for follows*
 assign a;
-Select a such that Follows*(a, 17) pattern a(_, _"right"_)
-9, 11, 12, 13
+Select a such that Follows*(a, 12) pattern a(_, _"right"_)
+9, 11
 5000
 16 - testing for follows*
 while w; assign a; variable v;
@@ -81,12 +81,12 @@ left, radius, radius1, x
 17 - testing for follows*
 assign a1, a2; 
 Select a1 such that Follows*(a1, a2) pattern a2(_, _"x + left"_)
-1, 2, 3, 4, 5, 6, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
+1, 2, 3, 4, 5, 6, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33
 5000
 18 - testing for follows*
 stmt s; assign a;
 Select s such that Follows*(s, a) pattern a(_, _"5"_)
-none
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30
 5000
 19 - testing for follows*
 stmt s1, s2;
