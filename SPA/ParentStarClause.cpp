@@ -54,6 +54,10 @@ Results ParentStarClause::evaluateS1WildS2Wild() {
 	res.setFirstClauseSyn(this->getFirstArg());
 	res.setSecondClauseSyn(this->getSecondArg());
 
+	if(res.getFirstClauseSyn() == res.getSecondClauseSyn()) {
+		return res;
+	}
+
 	// recursively determine result for each possible s1, s2 pairs of statements
 	string firstArgType = this->getFirstArgType();
 	string secondArgType = this->getSecondArgType();
