@@ -3,6 +3,8 @@
 
 Variable::Variable(const string& varName) {
 	this->_name = varName;
+	_usedBy = *new set<int>();
+	_modifiedBy = *new set<int>();
 }
 
 string Variable::getName() {

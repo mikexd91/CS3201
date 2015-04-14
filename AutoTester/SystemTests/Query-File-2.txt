@@ -11,7 +11,7 @@ Select s such that Uses(s, "iter")
 3 - testing for uses
 assign a; while w; variable v;
 Select v such that Uses(w, v) pattern a(v, _"left + right"_)
-x
+quota
 5000
 4 - testing for uses
 variable v;

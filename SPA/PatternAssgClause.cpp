@@ -8,6 +8,7 @@
 #include <stack>
 #include <iostream>
 #include "boost\lexical_cast.hpp"
+#include "boost\algorithm\string.hpp"
 
 using namespace std;
 using namespace stringconst;
@@ -300,13 +301,18 @@ bool PatternAssgClause::matchExpr(AssgNode* assg, string expr) {
 	//std::stack<string> tempstack = stack<string>();
 	//std::stack<string> rpnstack = stack<string>();
 	std::vector<string> rpnarr = vector<string>();
-	for (size_t i = 0; i < rpn.length(); i++) {
-		string token = rpn.substr(i, 1);
-		if (token != " ") {
-			//tempstack.push(token);
-			rpnarr.push_back(token);
-		}
-	}
+	boost::split(rpnarr, rpn, boost::is_any_of(" "));
+
+
+	// this is buggy. it breaks a many-letter var into all its letters.
+	// use string split instead
+	//for (size_t i = 0; i < rpn.length(); i++) {
+	//	string token = rpn.substr(i, 1);
+	//	if (token != " ") {
+	//		//tempstack.push(token);
+	//		rpnarr.push_back(token);
+	//	}
+	//}
 
 	// do dfs
 	set<TNode*> visited;
