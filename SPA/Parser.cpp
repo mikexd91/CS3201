@@ -98,7 +98,11 @@ void Parser::procedure() {
 void Parser::stmtLst() {
 	nestingLevel++;
 	while (nextToken != "}") {
-		stmt();		
+		if (nextToken.empty()) {
+			throwException(stmtCount);
+		} else {
+			stmt();
+		}
 	}
 	nestingLevel--;
 }
@@ -165,9 +169,13 @@ void Parser::endParse() {
 }
 
 void Parser::throwException(int lineNumber) {
+	throw InvalidCodeException(generateErrorMessage(lineNumber));
+
+}
+
+string Parser::generateErrorMessage(int lineNumber) {
 	ostringstream output;
 	output.str("");
-	output << "Error at line " << lineNumber;
-	throw InvalidCodeException(output.str());
-
+	output << ParserConstants::ERROR_MESSAGE << lineNumber;
+	return output.str();
 }
