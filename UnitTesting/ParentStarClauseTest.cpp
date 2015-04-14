@@ -250,6 +250,21 @@ void ParentStarClauseTest::testParentStarFixedFixedFail() {
 
 }
 
+void ParentStarClauseTest::testParentStarFixedFixedFailSameStmt() {
+	ParentStarClause* m1 = new ParentStarClause();
+	m1->setFirstArg("4");
+	m1->setFirstArgFixed(true);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("4");
+	m1->setSecondArgFixed(true);
+	m1->setSecondArgType(ARG_STATEMENT);
+	CPPUNIT_ASSERT(m1->isValid());
+
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(!r1.isClausePassed());
+
+}
+
 void ParentStarClauseTest::testParentStarSynFixedPass() {
 	ParentStarClause* m1 = new ParentStarClause();
 	m1->setFirstArg("s");
@@ -371,6 +386,8 @@ void ParentStarClauseTest::testParentStarSynSynPass() {
 	pair<string, string> pair4("2","7");
 	pair<string, string> pair5("4","5");
 	pair<string, string> pair6("4","6");
+	pair<string, string> pair7("2","2");
+	pair<string, string> pair8("4","4");
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair0) != pairResults.end());
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair1) != pairResults.end());
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair2) != pairResults.end());
@@ -378,6 +395,8 @@ void ParentStarClauseTest::testParentStarSynSynPass() {
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair4) != pairResults.end());
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair5) != pairResults.end());
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair6) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair7) == pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair8) == pairResults.end());
 
 }
 
