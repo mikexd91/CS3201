@@ -6,20 +6,20 @@
 // TEST VARIABLES
 
 //ProcTable* procTable = ProcTable::getInstance();// test proctable instance
-	Parser parser;
-	PDR* pdr;
-	AST* ast;
-	VarTable* varTable;
-	ProcTable* procTable;
-	StmtTable* stmtTable;
+Parser parser;
+PDR* pdr;
+AST* ast;
+VarTable* varTable1;
+ProcTable* procTable;
+StmtTable* stmtTable1;
 
 void TestOne::setUp() {
 	pdr = PDR::getInstance();
 	ast = AST::getInstance();
 	parser = Parser();
-	varTable = VarTable::getInstance();
+	varTable1 = VarTable::getInstance();
 	procTable = ProcTable::getInstance();
-	stmtTable = StmtTable::getInstance();
+	stmtTable1 = StmtTable::getInstance();
 
 }
 
@@ -28,7 +28,7 @@ void TestOne::tearDown() {
 	AST::reset();
 	VarTable::reset();
 	procTable->clearTable();
-	stmtTable->clearTable();
+	stmtTable1->clearTable();
 }
 
 CPPUNIT_TEST_SUITE_REGISTRATION( TestOne );
@@ -37,17 +37,17 @@ CPPUNIT_TEST_SUITE_REGISTRATION( TestOne );
 void TestOne::testAddProc() {
 	parser.parse("procedure test {x = 2; y=x+z; z=x+y+z; while i {y=x+1; a=a+b;} }");
 	//ProcTable* procTable = ProcTable::getInstance();
-	//StmtTable* stmtTable = StmtTable::getInstance();
-	//VarTable* varTable = VarTable::getInstance();
+	//StmtTable* stmtTable1 = StmtTable::getInstance();
+	//VarTable* varTable1 = VarTable::getInstance();
 	CPPUNIT_ASSERT(procTable->contains("test"));
 	
 	
-	Statement* stmt1 = stmtTable->getStmtObj(1);
+	Statement* stmt1 = stmtTable1->getStmtObj(1);
 	string initUses1[] = { "x" };
 	set<string> str1(initUses1, initUses1 + 1);
 	CPPUNIT_ASSERT(stmt1->getModifies() == str1);
 	
-	Statement* stmt2 = stmtTable->getStmtObj(2);
+	Statement* stmt2 = stmtTable1->getStmtObj(2);
 	string initModifies2[] = { "y" };
 	set<string> strModifies2(initModifies2, initModifies2 + 1);
 	CPPUNIT_ASSERT(stmt2->getModifies() == strModifies2);
@@ -55,7 +55,7 @@ void TestOne::testAddProc() {
 	set<string> strUses2(initUses2, initUses2 + 2);
 	CPPUNIT_ASSERT(stmt2->getUses() == strUses2);
 
-	Statement* stmt3 = stmtTable->getStmtObj(3);
+	Statement* stmt3 = stmtTable1->getStmtObj(3);
 	string initModifies3[] = { "z" };
 	set<string> strModifies3(initModifies3, initModifies3 + 1);
 	CPPUNIT_ASSERT(stmt3->getModifies() == strModifies3);
@@ -63,7 +63,7 @@ void TestOne::testAddProc() {
 	set<string> strUses3(initUses3, initUses3 + 3);
 	CPPUNIT_ASSERT(stmt3->getUses() == strUses3);
 
-	Statement* stmt4 = stmtTable->getStmtObj(4);
+	Statement* stmt4 = stmtTable1->getStmtObj(4);
 	string initModifies4[] = { "y" };
 	set<string> strModifies4(initModifies4, initModifies4 + 1);
 	//CPPUNIT_ASSERT(stmt4->getModifies() == strModifies4);
@@ -74,7 +74,7 @@ void TestOne::testAddProc() {
 	set<int> setChildren4(initChildren4, initChildren4 + 2);
 	CPPUNIT_ASSERT(stmt4->getChildren() == setChildren4);
 
-	Statement* stmt5 = stmtTable->getStmtObj(5);
+	Statement* stmt5 = stmtTable1->getStmtObj(5);
 	string initModifies5[] = { "y" };
 	set<string> strModifies5(initModifies5, initModifies5 + 1);
 	CPPUNIT_ASSERT(stmt5->getModifies() == strModifies5);
@@ -84,7 +84,7 @@ void TestOne::testAddProc() {
 	CPPUNIT_ASSERT(stmt5->getParent() == 4);
 	
 	
-	Statement* stmt6 = stmtTable->getStmtObj(6);
+	Statement* stmt6 = stmtTable1->getStmtObj(6);
 	string initModifies6[] = { "a" };
 	set<string> strModifies6(initModifies6, initModifies6 + 1);
 	CPPUNIT_ASSERT(stmt6->getModifies() == strModifies6);
@@ -94,7 +94,7 @@ void TestOne::testAddProc() {
 	CPPUNIT_ASSERT(stmt6->getUses() == strUses6);
 	CPPUNIT_ASSERT(stmt6->getParent() == 4);
 
-	Variable* varX = varTable->getVariable("x");
+	Variable* varX = varTable1->getVariable("x");
 	int initXUsedBy[] = {2, 3, 4, 5};
 	int initXModifiedBy[] = {1};
 	set<int> setXUsedBy(initXUsedBy, initXUsedBy + 4);
@@ -102,7 +102,7 @@ void TestOne::testAddProc() {
 	CPPUNIT_ASSERT(varX->getUsedByStmts() == setXUsedBy);
 	CPPUNIT_ASSERT(varX->getModifiedByStmts() == setXModifiedBy);
 
-	Variable* varY = varTable->getVariable("y");
+	Variable* varY = varTable1->getVariable("y");
 	int initYUsedBy[] = {3};
 	int initYModifiedBy[] = {2, 4, 5};
 	set<int> setYUsedBy(initYUsedBy, initYUsedBy + 1);
@@ -110,7 +110,7 @@ void TestOne::testAddProc() {
 	CPPUNIT_ASSERT(varY->getUsedByStmts() == setYUsedBy);
 	CPPUNIT_ASSERT(varY->getModifiedByStmts() == setYModifiedBy);
 
-	Variable* varZ = varTable->getVariable("z");
+	Variable* varZ = varTable1->getVariable("z");
 	int initZUsedBy[] = {2, 3};
 	int initZModifiedBy[] = {3};
 	set<int> setZUsedBy(initZUsedBy, initZUsedBy + 2);
@@ -125,9 +125,9 @@ void TestOne::testAssign() {
 	
 	parser.parse("procedure test {x = 2; y=x;}");
 	
-	//StmtTable* stmtTable = StmtTable::getInstance();
+	//StmtTable* stmtTable1 = StmtTable::getInstance();
 	
-	Statement* stmt = stmtTable->getStmtObj(2);
+	Statement* stmt = stmtTable1->getStmtObj(2);
 	
 	string init[] = { "y" };
 	set<string> str(init, init + 1);
@@ -261,16 +261,16 @@ void TestOne::testMultipleProcAST() {
 }
 
 void TestOne::testFollows() {
-	//StmtTable* stmtTable = StmtTable::getInstance();
+	//StmtTable* stmtTable1 = StmtTable::getInstance();
 	
 	parser.parse("procedure proc{x = 2; y = x + 3; while y{z = y + x;} w = z + 2;}");
 	CPPUNIT_ASSERT(ast->contains("proc"));
 	
-	Statement* firstAssg = stmtTable->getStmtObj(1);
-	Statement* secAssg = stmtTable->getStmtObj(2);
-	Statement* whileStmt = stmtTable->getStmtObj(3);
-	Statement* thirdAssg = stmtTable->getStmtObj(4);
-	Statement* fourthAssg = stmtTable->getStmtObj(5);
+	Statement* firstAssg = stmtTable1->getStmtObj(1);
+	Statement* secAssg = stmtTable1->getStmtObj(2);
+	Statement* whileStmt = stmtTable1->getStmtObj(3);
+	Statement* thirdAssg = stmtTable1->getStmtObj(4);
+	Statement* fourthAssg = stmtTable1->getStmtObj(5);
 	CPPUNIT_ASSERT(firstAssg->getFollowsAfter() == -1);
 	CPPUNIT_ASSERT(firstAssg->getFollowsBefore() == 2);
 	CPPUNIT_ASSERT(secAssg->getFollowsAfter() == 1);
@@ -286,8 +286,8 @@ void TestOne::testFollows() {
 void TestOne::testWhileUses() {
 	parser.parse("procedure proc { while w { while y { z = a + b; }} }");
 	
-	Statement* firstWhile = stmtTable->getStmtObj(1);
-	Statement* secWhile = stmtTable->getStmtObj(2);
+	Statement* firstWhile = stmtTable1->getStmtObj(1);
+	Statement* secWhile = stmtTable1->getStmtObj(2);
 	
 	string firstInit[] = {"a", "b", "w", "y"};
 	set<string> firstUses(firstInit, firstInit + 4);
@@ -302,11 +302,11 @@ void TestOne::testWhileUses() {
 void TestOne::testWhileModifies() {
 	parser.parse("procedure proc { while x { while y {x = 2; y = 2; z = x + y;}}} ");
 	
-	Statement* firstWhile = stmtTable->getStmtObj(1);
-	Statement* secWhile = stmtTable->getStmtObj(2);
-	Statement* firstAssg = stmtTable->getStmtObj(3);
-	Statement* secAssg = stmtTable->getStmtObj(4);
-	Statement* thirdAssg = stmtTable->getStmtObj(5);
+	Statement* firstWhile = stmtTable1->getStmtObj(1);
+	Statement* secWhile = stmtTable1->getStmtObj(2);
+	Statement* firstAssg = stmtTable1->getStmtObj(3);
+	Statement* secAssg = stmtTable1->getStmtObj(4);
+	Statement* thirdAssg = stmtTable1->getStmtObj(5);
 	
 	string modi[] = {"x", "y", "z"};
 	set<string> modifiesSet(modi, modi + 3);
@@ -330,7 +330,7 @@ void TestOne::testWhileModifies() {
 void TestOne::testStmtTableAllWhile() {
 	parser.parse("procedure proc3 { while x {} while y{} while z{x = 2; while w {}} }");
 
-	set<Statement*> whileStmts = stmtTable->getWhileStmts();
+	set<Statement*> whileStmts = stmtTable1->getWhileStmts();
 	CPPUNIT_ASSERT(whileStmts.size() == 4);
 
 	set<Statement*>::iterator iter;

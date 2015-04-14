@@ -139,7 +139,7 @@ void QueryParserTest::testClause(){
 void QueryParserTest::testPattern(){
 	string const DECLARATION = "assign a;";
 	string const SELECT = "Select a such that";
-	string const PATTERN = "Pattern a(\"v\", _\"x\"_)";
+	string const PATTERN = "pattern a(\"v\", _)";
 
 	Query* ASSERTION = new Query();
 
@@ -151,33 +151,23 @@ void QueryParserTest::testPattern(){
 
 	queue<string> PAT_Q = QueryParser::queueBuilder(PATTERN, ' ');
 	QueryParser::parsePattern(ASSERTION, PAT_Q);
-	/*
+	
 	Clause* c = ASSERTION->getClauseList().at(0);
 	PatternAssgClause* PATTERN_ASS = dynamic_cast<PatternAssgClause*>(c);
 	string EXPR = PATTERN_ASS->getExpression();
-	CPPUNIT_ASSERT(EXPR == stringconst::STRING_EMPTY);*/
+	CPPUNIT_ASSERT(EXPR == stringconst::STRING_EMPTY);
 	//fix pattern parsing other expressions.
 	string token = "a(v, _\"";
 	queue<string> q = QueryParser::queueBuilder(token, ' ');
 	string one = Utils::getWordAndPop(q);
 	string two = Utils::getWordAndPop(q);
-	//CPPUNIT_ASSERT(! (!contains(two, "_") || !contains(two, "\"")));
+	CPPUNIT_ASSERT(! (!contains(two, "_") || !contains(two, "\"")));
 }
 
 void QueryParserTest::testParser(){
-	string const USER_INPUT1 = "assign a;variable v;Select a such that Uses(a, v)";
-	string const USER_INPUT2 = "Assign a, a1; Select a such that Follows(a, a1)";
-	string const USER_INPUT3 = "Assign a; Variable v; Select a such that Pattern a(v, _)";
-	string const USER_INPUT4 = "Assign a; Variable v; Select a such that Pattern a(v, _\" x + y \"_)";
-	string const USER_INPUT5 = "Assign a, a1; Select a such that Follows*(a, a1)";
-	string const USER_INPUT6 = "Assign a, a1; Select a such that Parent(a, a1)";
-	string const USER_INPUT7 = "Assign a, a1; Select a such that Parent*(a, a1)";
-	string const USER_INPUT8 = "Assign a, a1; Select a such that Modifies(a, a1)";
-
+	string const USER_INPUT1 = "assign a; variable v; Select a pattern a(\"v\", _\"x+y\"_) and Modifies(a, v) and pattern a(v, _)";
+	
 	Query q1 = QueryParser::parseQuery(USER_INPUT1);
-	//Query q2 = QueryParser::queryProcessor(USER_INPUT2);
-	//Query q3 = QueryParser::queryProcessor(USER_INPUT3);
-	//Query q4 = QueryParser::queryProcessor(USER_INPUT4);
 
 	Query* Q1 = new Query();
 	StringPair dec1a = StringPair();
@@ -186,27 +176,38 @@ void QueryParserTest::testParser(){
 	syn1a.setFirst("a"); syn1a.setSecond(stringconst::ARG_ASSIGN);
 	dec1a.setFirst("a"); dec1a.setSecond(stringconst::ARG_ASSIGN);
 	dec1b.setFirst("v"); dec1b.setSecond(stringconst::ARG_VARIABLE);
-	UsesClause* clause1a = new UsesClause();
-	clause1a->setFirstArg("a"); clause1a->setFirstArgFixed(false); clause1a->setFirstArgType(stringconst::ARG_ASSIGN);
-	clause1a->setFirstArg("v"); clause1a->setFirstArgFixed(false); clause1a->setFirstArgType(stringconst::ARG_VARIABLE);
+	
 	Q1->addSelectSynonym(syn1a);
 	Q1->addDeclaration(dec1a);
 	Q1->addDeclaration(dec1b);
-	Q1->addClause(clause1a);
 
 	unordered_map<string, string> dec_Q1 = Q1->getDeclarationList();
 	unordered_map<string, string> dec_q1 = q1.getDeclarationList();
-	//vector<StringPair> sel_Q1 = Q1->getSelectList();
-	//vector<StringPair> sel_q1 = q1.getSelectList();
+	vector<StringPair> sel_Q1 = Q1->getSelectList();
+	vector<StringPair> sel_q1 = q1.getSelectList();
 
 	string q1_dec_a = dec_q1.at("a");
 	string Q1_dec_a = dec_Q1.at("a");
-	//string q1_dec_b = dec_q1.at("v");
-	//string Q1_dec_b = dec_Q1.at("v");
-	//StringPair q1_sel_a = sel_q1.at(0);
-	//StringPair Q1_sel_a = sel_Q1.at(0); 
+	string q1_dec_b = dec_q1.at("v");
+	string Q1_dec_b = dec_Q1.at("v");
+	StringPair q1_sel_a = sel_q1.at(0);
+	StringPair Q1_sel_a = sel_Q1.at(0); 
+
 	CPPUNIT_ASSERT(q1_dec_a == Q1_dec_a);
-	//CPPUNIT_ASSERT(q1_dec_b == Q1_dec_b);
-	//CPPUNIT_ASSERT(q1_sel_a.getFirst() == Q1_sel_a.getFirst());
-	//CPPUNIT_ASSERT(q1_sel_a.getSecond() == Q1_sel_a.getSecond());
+	CPPUNIT_ASSERT(q1_dec_b == Q1_dec_b);
+	CPPUNIT_ASSERT(q1_sel_a.getFirst() == Q1_sel_a.getFirst());
+	CPPUNIT_ASSERT(q1_sel_a.getSecond() == Q1_sel_a.getSecond());
+	
+	vector<Clause*> cls_q1 = q1.getClauseList();
+	PatternAssgClause* pac1_q1 = dynamic_cast<PatternAssgClause*>(cls_q1.at(0));
+	CPPUNIT_ASSERT(pac1_q1->getExpression() == "_\"x y +\"_");
+	CPPUNIT_ASSERT(pac1_q1->getSynonym() == "a");
+
+	ModifiesClause* mod1_q1 = dynamic_cast<ModifiesClause*>(cls_q1.at(1));
+	CPPUNIT_ASSERT(mod1_q1->getSecondArg() == "v");
+	CPPUNIT_ASSERT(mod1_q1->getFirstArg() == "a");
+
+	PatternAssgClause* pac2_q1 = dynamic_cast<PatternAssgClause*>(cls_q1.at(2));
+	CPPUNIT_ASSERT(pac2_q1->getExpression() == stringconst::STRING_EMPTY);
+	CPPUNIT_ASSERT(pac2_q1->getSynonym() == "a");
 }
