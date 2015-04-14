@@ -27,6 +27,7 @@ public:
 	static string queueToString(queue<string>);
 	static vector<string> tokeniser(string, char);
 	static bool containsAny(string, vector<string>);
+	static bool containsDeclarationType(string);
 	static bool containsClauseType(string);
 	static bool containsKeyword(string);
 	static string getClauseString(string);

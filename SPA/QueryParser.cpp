@@ -140,6 +140,15 @@ bool QueryParser::containsAny(string s, vector<string> list){
 	return false;
 }
 
+bool QueryParser::containsDeclarationType(string s){
+	vector<string> decVector;
+	decVector.push_back(stringconst::ARG_ASSIGN);
+	decVector.push_back(stringconst::ARG_STATEMENT);
+	decVector.push_back(stringconst::ARG_WHILE);
+	decVector.push_back(stringconst::ARG_VARIABLE);
+	return containsAny(s, decVector);
+}
+
 bool QueryParser::containsClauseType(string s){
 	vector<string> clauseVector;
 	clauseVector.push_back(stringconst::TYPE_FOLLOWS);
@@ -209,6 +218,10 @@ void QueryParser::parseDeclarations(Query* query, vector<string> list){
 		string first = tokens.at(0);
 		vector<string> split = tokeniser(first, ' ');
 		string decType = split.at(0);
+		boost::trim(decType);
+		if (!containsDeclarationType(decType)){
+			throw InvalidDeclarationException();
+		}
 		StringPair* newPair = new StringPair();
 		newPair->setFirst(split.at(1));
 		newPair->setSecond(decType);
@@ -248,7 +261,7 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 				expectSelect = false;
 			} else {
 				string next = line.front();
-				if (containsKeyword(next)){
+				if (containsKeyword(next) || contains(next, stringconst::TYPE_PATTERN)){
 					expectSelect = false;
 				}
 			}

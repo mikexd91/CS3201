@@ -21,10 +21,16 @@
     <ClCompile Include="source\TestOne.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PQLIntegration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="PQLIntegration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="source\TestOne.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
