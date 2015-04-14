@@ -297,7 +297,7 @@ void ParentStarClauseTest::testParentStarFixedSynPass() {
 	vector<string> singleResults = r1.getSinglesResults();
 
 	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 5);
+	CPPUNIT_ASSERT(singleResults.size() == 5);
 	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "3") != singleResults.end());
 	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "4") != singleResults.end());
 	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "5") != singleResults.end());
