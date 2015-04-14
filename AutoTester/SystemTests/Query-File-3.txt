@@ -16,7 +16,7 @@ charmeleon, ivysaur
 4 - testing for uses
 while w; assign a; variable v;
 Select v such that Uses(w, v) pattern a(v, _)
-battle1, battle2, battle3, charmeleon, ivysaur, wartortle
+battle1, battle2, battle3, charmeleon, ivysaur, wartortle, bulbasaur, firstStageEvolution, charmander, squirtle
 5000
 5 - testing for uses
 assign a; variable v;
@@ -31,7 +31,7 @@ none
 7 - testing for modifies
 variable v;
 Select v such that Modifies(15, v)
-charmeleon, ivysaur
+charmeleon, ivysaur, lastPokemon
 5000
 8 - testing for modifies
 stmt s;
@@ -56,7 +56,7 @@ Select s such that Follows(s, 20)
 12 - testing for follows
 assign a; stmt s;
 Select a such that Follows(s, a)
-2, 3, 4, 7, 8, 10, 11, 12, 13, 14
+2, 3, 4, 7, 8, 9, 10, 11, 12, 13, 14, 20
 5000
 13 - testing for follows
 while w;
@@ -69,9 +69,9 @@ Select w such that Follows(a, w) pattern a(_, _"charmeleon"_)
 none
 5000
 15 - testing for follows
-variable v; while w; assign a;
-Select s such that Follows(w, a) pattern a(_, v)
-9, 10, 11
+while w; assign a;
+Select a such that Follows(a, w) pattern a(_, _"ivysaur"_)
+14, 16
 5000
 16 - testing for follows*
 assign a;
@@ -96,7 +96,7 @@ Select a1 such that Follows*(a1, a2) pattern a2(_, _"5"_)
 20 - testing for follows*
 stmt s; assign a;
 Select s such that Follows(s, a) pattern a(_, _"3"_)
-16, 17
+17
 5000
 21 - testing for parent
 stmt s;
@@ -139,14 +139,14 @@ Select s such that Parent*(15, s)
 16, 17, 18, 19, 20
 5000
 29 - testing for parent*
-assign a; stmt s
+assign a; stmt s;
 Select a such that Parent*(s, a) pattern a("charmeleon", _)
 16
 5000
 30 - testing for parent*
 variable v; assign a; while w;
 Select v such that Parent*(w, a) pattern a(v, _)
-charmeleon, ivysaur, lastPokemon
+charmeleon, ivysaur, lastPokemon, charmander, bulbasaur, squirtle
 5000
 31 - testing for pattern
 assign a, a1;
