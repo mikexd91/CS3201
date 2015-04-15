@@ -71,6 +71,7 @@
     <ClCompile Include="Clause.cpp" />
     <ClCompile Include="Constant.cpp" />
     <ClCompile Include="ConstNode.cpp" />
+    <ClCompile Include="ConstTable.cpp" />
     <ClCompile Include="FollowsClause.cpp" />
     <ClCompile Include="FollowsStarClause.cpp" />
     <ClCompile Include="IfNode.cpp" />
