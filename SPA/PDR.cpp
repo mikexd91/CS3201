@@ -209,9 +209,11 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
         
         if(isInteger(exp)) {
             ConstNode* constNode = new ConstNode(exp);
+			addToConstTable(constNode);
             return constNode;
         } else {
             VarNode* var = new VarNode(exp);
+			addToVarTable(var, USES);
             usesSet.insert(exp);
             return var;
         }
