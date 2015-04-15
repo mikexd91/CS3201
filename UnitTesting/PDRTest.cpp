@@ -32,18 +32,17 @@ void PDRTest::testProcessProc() {
 	procedure.setProcName("proc");
 
 	pdr->processParsedData(procedure);
-	pdr->getCurrStmtNumber() == 0;
 	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 1);
 	//CPPUNIT_ASSERT(pdr->getCurrStmtNumber() == 0);
 
 	stack<TNode*> nodeStack = pdr->getNodeStack();
 
 	CPPUNIT_ASSERT(nodeStack.size() == 2);
-	CPPUNIT_ASSERT(nodeStack.top()->getNodeType() == NodeType::STMTLST_);
+	CPPUNIT_ASSERT(nodeStack.top()->getNodeType() == STMTLST_);
 	
 	TNode* procStmtLst = nodeStack.top();
 	nodeStack.pop();
-	CPPUNIT_ASSERT(nodeStack.top()->getNodeType() == NodeType::PROCEDURE_);
+	CPPUNIT_ASSERT(nodeStack.top()->getNodeType() == PROCEDURE_);
 	CPPUNIT_ASSERT(nodeStack.top()->getName() == "proc");
 	CPPUNIT_ASSERT(procStmtLst->getParent() == nodeStack.top());
 }
