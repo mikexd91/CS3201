@@ -16,6 +16,7 @@
 #include "../SPA/OpNode.h"
 #include "../SPA/WhileNode.h"
 #include "../SPA/ConstTable.h"
+#include <boost\foreach.hpp>
 
 using namespace stringconst;
 using namespace std;
@@ -561,6 +562,9 @@ void QueryEvaluatorTest::testEvaluator2() {
 
 	set<string> res6 = e.evaluateQuery(q6);
 	// To be checked
+	//BOOST_FOREACH(auto p, res6) {
+	//	cout << p << endl;
+	//}
 	CPPUNIT_ASSERT(res6.size() == 5);
 }
 
