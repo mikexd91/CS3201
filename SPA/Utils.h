@@ -61,6 +61,7 @@ namespace stringconst{
 	string const ARG_VARIABLE = "variable";
 	string const ARG_PROGLINE = "prog_line";
 	string const ARG_BOOLEAN = "boolean";
+	string const ARG_CONSTANT = "constant";
 
 	const string DELIM_STRING = " ;={}";
 	const char DELIMITERS[] = { ';', '=', '{', '}' };
