@@ -5,6 +5,7 @@
 #include <iostream>
 #include <list>
 #include "../../SPA/Parser.h"
+#include "../../SPA/InvalidCodeException.h"
 #include "../../SPA/PQLController.h"
 
 
@@ -27,6 +28,7 @@ class TestWrapper : public AbstractWrapper {
 
   Parser* parser;
   PQLController* pqlController;
+  int counter;
 };
 
 #endif

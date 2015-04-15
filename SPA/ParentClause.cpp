@@ -114,6 +114,11 @@ Results* ParentClause::evaluateS1WildS2Fixed(string firstArgSyn, string secondAr
 
 Results* ParentClause::evaluateS1WildS2Wild(string firstArgSyn, string secondArgSyn) {
 	Results* resultsObj = new Results();
+
+	if(firstArgSyn == secondArgSyn) {
+		return resultsObj;
+	}
+
 	if (firstArgType != stringconst::ARG_ASSIGN) {
 		//first arg type can only be while
 		//get all while statements

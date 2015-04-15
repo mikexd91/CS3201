@@ -1,17 +1,17 @@
-1 - testing uses for variable
+1 - testing uses
 assign a;
 Select a such that Uses(a, "temp")
 6, 10, 14, 15, 17, 21
 5000
-2 - testing uses for variable
+2 - testing uses 
 stmt s;
 Select s such that Uses(s, "iter")
-8, 16, 19, 23
+8, 16, 19, 23, 36
 5000
 3 - testing for uses
 assign a; while w; variable v;
 Select v such that Uses(w, v) pattern a(v, _"left + right"_)
-x
+quota
 5000
 4 - testing for uses
 variable v;
@@ -25,7 +25,7 @@ Select s such that Modifies(s, "quota")
 5000
 6 - testing for modifies
 assign a;
-Select a such that Modifies(a, "temp") pattern a(_, "temp + 6")
+Select a such that Modifies(a, "temp") pattern a(_, _"temp + 6"_)
 17
 5000
 7 - testing for modifies
@@ -70,8 +70,8 @@ none
 5000
 15 - testing for follows*
 assign a;
-Select a such that Follows*(a, 17) pattern a(_, _"right"_)
-9, 11, 12, 13
+Select a such that Follows*(a, 12) pattern a(_, _"right"_)
+9, 11
 5000
 16 - testing for follows*
 while w; assign a; variable v;
@@ -81,45 +81,85 @@ left, radius, radius1, x
 17 - testing for follows*
 assign a1, a2; 
 Select a1 such that Follows*(a1, a2) pattern a2(_, _"x + left"_)
-1, 2, 3, 4, 5, 6, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
+1, 2, 3, 4, 5, 6, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33
 5000
 18 - testing for follows*
 stmt s; assign a;
-Select s such that Follows*(s, a) pattern a(_, "5")
+Select s such that Follows*(s, a) pattern a(_, _"5"_)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30
+5000
+19 - testing for follows*
+stmt s1, s2;
+Select s1 such that Follows*(s1, s2)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+20 - testing for follows*
+stmt s;
+Select s such that Follows*(18, s)
+19
+5000
+21 - testing for follows*
+assign a;
+Select a such that Follows*(19, a)
 none
 5000
-19 - testing for parent
+22 - testing for parent
 stmt s;
 Select s such that Parent(s, 7)
 none
 5000
-20 - testing for parent
+23 - testing for parent
+while w1, w2;
+Select w2 such that Parent(w1, w2)
+none
+5000
+24 - testing for parent
 assign a; stmt s;
 Select a such that Parent(s, a)
-9, 10, 11, 12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
+9, 10, 11, 12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37
 5000
-21 - testing for parent
+25 - testing for parent
 assign a; stmt s;
 Select a such that Parent(s, a) pattern a("iter", _)
-12, 16, 23, 34
+12, 16, 23, 36
 5000
-22 - testing for parent
+26 - testing for parent
 while w; assign a;
 Select w such that Parent(w, a) pattern a(_, _"6"_)
 8
 5000
-23 - testing for parent*
+27 - testing for parent*
 stmt s1, s2;
 Select s1 such that Parent*(s1, s2)
 8, 19
 5000
-24 - testing for parents
+28 - testing for parent*
 stmt s; while w;
 Select s such that Parent*(s, w)
 none
 5000
-25 - testing for parents
+29 - testing for parent*
+stmt s;
+Select s such that Parent*(s, s)
+none
+5000
+30 - testing for parent*
 assign a; stmt s; variable v
 Select a such that Parent*(s, a) pattern a(_, _"center"_)
-35
+37
+5000
+31 - testing for pattern
+assign a;
+Select a pattern a(_, _"center"_)
+37
+5000
+32 - testing for pattern
+assign a;
+Select a pattern a(_, _"right + 3"_)
+20, 22, 24, 26, 27, 29, 35
+5000
+33 - testing for pattern
+variable v; assign a;
+Select v pattern a(v, _"quota"_)
+x
 5000

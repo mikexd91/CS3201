@@ -1,7 +1,7 @@
 1 - testing uses for a variable
 assign a;
-Select a such that Uses(a, "d")
-10, 11
+Select a such that Uses(a, "d") pattern a(_, _"d-1"_)
+10
 5000
 2 - testing uses for a variable
 stmt s;
@@ -16,7 +16,7 @@ Select w such that Uses(w, "d")
 4 - testing uses for a variable
 variable v;
 Select v such that Uses(14, v)
-a, b, c, d
+b, c, d, summation
 5000
 5 - testing uses for a variable
 assign a;
@@ -36,7 +36,7 @@ none
 8 - testing modifies for a variable
 while w;
 Select w such that Modifies(w, "summation")
-12, 14, 16, 17
+12, 14, 16, 18
 5000
 9 - testing modifies for a variable
 stmt s;
@@ -45,7 +45,7 @@ Select s such that Modifies(s, "a")
 5000
 10 - testing modifies for a variable
 assign a;
-Select a such that Modifies(a, d) pattern a(_, "d + a")
+Select a such that Modifies(a, "d") pattern a(_, _"d + a"_)
 none
 5000
 11 - testing for follows
@@ -55,8 +55,8 @@ Select a such that Follows(a, w)
 5000
 12 - testing for follows
 assign a; while w;
-Select a such that Follows(w, a) pattern a(_ , _)
-none
+Select a such that Follows(w, a) pattern a(_, _)
+10, 11
 5000
 13 - testing for follows
 assign a; while w;
@@ -71,12 +71,12 @@ Select a such that Follows(a, 3)
 15 - testing for follows
 stmt s;
 Select s such that Follows(s, 17)
-16
+none
 5000
 16 - testing for follows*
 assign a;
-Select a such that Follows*(a, 5)
-1, 2, 3, 4
+Select a such that Follows*(a, 5) pattern a(_, _"b"_)
+3, 4
 5000
 17 - testing for follows*
 while w;
@@ -101,12 +101,12 @@ Select a such that Follows*(a, 12) pattern a(_, _"a + b"_)
 21 - testing for parent
 stmt s; while w;
 Select s such that Parent(w, s)
-6, 8, 13, 15, 17, 19
+6, 7, 8, 9, 10, 13, 14, 15, 16, 17, 18, 19
 5000
 22 - testing for parent
 assign a; stmt s;
-Select s such that Parent(s, a)
-5, 7, 12, 14, 16, 18
+Select s such that Parent(s, a) pattern a(_, _"1"_)
+5, 7, 12
 5000
 23 - testing for parent
 while w;
@@ -120,12 +120,12 @@ none
 5000
 25 - testing for parent*
 assign a;
-Select a such that Parent*(12, a)
+Select a such that Parent*(12, a) pattern a("summation", _)
 13, 15, 17, 19
 5000
 26 - testing for parent*
 assign a;
-Select a such that Parent*(14, a) pattern a(_, "summation - 3")
+Select a such that Parent*(14, a) pattern a(_, _"summation - 3"_)
 19
 5000
 27 - testing for parent*
@@ -137,4 +137,19 @@ Select s such that Parent*(s, 6)
 while w;
 Select w such that Parent*(16, w)
 none
+5000
+29 - testing for pattern
+assign a;
+Select a pattern a(_, _"a + b"_)
+3, 11
+5000
+30 - testing for pattern
+variable v; assign a;
+Select v pattern a(v, _"e"_)
+none
+5000
+31 - testing for pattern
+assign a;
+Select a pattern a("summation", _)
+11, 13, 15, 17, 19
 5000

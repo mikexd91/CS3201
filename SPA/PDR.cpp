@@ -116,9 +116,9 @@ void PDR::processAssignStmt(ParsedData data) {
     
     if(assignNode->hasLeftSibling()) {
         StmtNode* leftSib = (StmtNode*)assignNode->getLeftSibling();
-        stmt->setFollowsAfter(leftSib->getStmtNum());
+        stmt->setFollowsBefore(leftSib->getStmtNum());
         Statement* leftStmt = stmtTable->getStmtObj(leftSib->getStmtNum());
-        leftStmt->setFollowsBefore(assignNode->getStmtNum());
+        leftStmt->setFollowsAfter(assignNode->getStmtNum());
     }
     
     if(!stmtParentNumStack.empty()) {
@@ -181,9 +181,9 @@ void PDR::processWhileStmt(ParsedData data) {
 
     if(whileNode->hasLeftSibling()) {
         StmtNode* leftSib = (StmtNode*)whileNode->getLeftSibling();
-        whileStmt->setFollowsAfter(leftSib->getStmtNum());
+        whileStmt->setFollowsBefore(leftSib->getStmtNum());
         Statement* leftStmt = stmtTable->getStmtObj(leftSib->getStmtNum());
-        leftStmt->setFollowsBefore(whileNode->getStmtNum());
+        leftStmt->setFollowsAfter(whileNode->getStmtNum());
     }
     
     if(!stmtParentNumStack.empty()) {

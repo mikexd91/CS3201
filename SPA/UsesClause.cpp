@@ -63,19 +63,22 @@ Results UsesClause::evaluateStmtWildVarWild() {
 	res.setSecondClauseSyn(this->getSecondArg());
 
 	// generate all possible combinations using stmtTable as reference
-	StmtTable::StmtTableIterator stmtTIter;
+	set<Statement*> allStmts = stmtTable->getAllStmts();
+	set<Statement*>::iterator stmtIter;
+	
 	// iterate through stmt table
-	for(stmtTIter=stmtTable->getIterator(); stmtTIter!=stmtTable->getEnd(); stmtTIter++) {
-		Statement* currentStmt = stmtTIter->second;
+	for(stmtIter=allStmts.begin(); stmtIter!=allStmts.end(); stmtIter++) {
+		Statement* currentStmt = *stmtIter;
 
 		// check if current stmt conforms to specific stmt type, if not, skip to next statement
 		if(!Utils::isSameType(this->firstArgType, currentStmt->getType())) {
 			continue;
 		}
-
+		
 		// for each stmt generate result pair for vars that it uses
 		Statement::UsesSet currentUseSet = currentStmt->getUses();
 		Statement::UsesSet::iterator useIter;
+
 		for(useIter=currentUseSet.begin(); useIter!=currentUseSet.end(); useIter++) {
 			string stmtNum = lexical_cast<string>(currentStmt->getStmtNum());
 			string var = *useIter;
@@ -102,6 +105,10 @@ Results UsesClause::evaluateStmtWildVarFixed() {
 	// get the fixed var and usedby
 	Variable* fixedVar = varTable->getVariable(this->getSecondArg());
 	set<int>::iterator stmtIter;
+	if(fixedVar == NULL) {
+		res.setClausePassed(false);
+		return res;
+	}
 	set<int> stmtSet = fixedVar->getUsedByStmts();
 
 	// check set for results
@@ -135,7 +142,7 @@ Results UsesClause::evaluateStmtFixedVarWild() {
 	} else if(firstArgType == stringconst::ARG_ASSIGN) {		// only assign stmts
 		stmtSet = stmtTable->getAssgStmts();
 	} else {													// all types of stmts
-		// TODO for all stmts
+		stmtSet = stmtTable->getAllStmts();
 	}
 
 	int stmtNum = lexical_cast<int>(this->getFirstArg());

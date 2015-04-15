@@ -11,7 +11,7 @@ class UsesClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testUsesAssignFixedSynPass );
 	CPPUNIT_TEST( testUsesAssignFixedSynFail );
 	CPPUNIT_TEST( testUsesAssignSynSynPass );
-	CPPUNIT_TEST( testUsesAssignSynSynFail );
+	CPPUNIT_TEST( testUsesWhileSynSynPass );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -25,5 +25,5 @@ public:
 	void testUsesAssignFixedSynPass();
 	void testUsesAssignFixedSynFail();
 	void testUsesAssignSynSynPass();
-	void testUsesAssignSynSynFail();
+	void testUsesWhileSynSynPass();
 };

@@ -109,9 +109,9 @@ Results FollowsStarClause::evaluateFollowsStarSynFixed(string firstStmtSyn, int 
 	StmtTable* stable = StmtTable::getInstance();
 	set<Statement*> allStmt1;	
 	
-	if (getSecondStmtType() == stringconst::ARG_ASSIGN) {
+	if (getFirstStmtType() == stringconst::ARG_ASSIGN) {
 		allStmt1 = stable->getAssgStmts();
-	} else if (getSecondStmtType() == stringconst::ARG_WHILE) {
+	} else if (getFirstStmtType() == stringconst::ARG_WHILE) {
 		allStmt1 = stable->getWhileStmts();
 	} else {
 		allStmt1 = stable->getAllStmts();
@@ -120,7 +120,7 @@ Results FollowsStarClause::evaluateFollowsStarSynFixed(string firstStmtSyn, int 
 	BOOST_FOREACH(auto p, allStmt1) {
 		int firstStmtNum = p->getStmtNum();
 		if (isFollowsStar(firstStmtNum, secondStmtNum)) {
-			res->addSingleResult(lexical_cast<string>(secondStmtNum));
+			res->addSingleResult(lexical_cast<string>(firstStmtNum));
 		}
 	}
 
