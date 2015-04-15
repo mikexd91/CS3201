@@ -24,7 +24,7 @@ public:
 	Constant(const string &name);
 
 	// GETTERS
-	string* getConstName();						// get name of const
+	string getConstName();						// get name of const
 	int getValue();								// get value of const
 	const set<TNode*> getTNodes();				// get reference to const TNode
 	const set<int>& getAppearsIn();				// get set of stmt numbers const appears in
