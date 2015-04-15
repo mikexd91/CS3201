@@ -4,6 +4,7 @@
 #include "Constant.h"
 #include "ConstTable.h"
 
+using namespace std;
 using namespace boost;
 
 bool ConstTable::instanceFlag = false;			// instance flag
@@ -69,7 +70,7 @@ vector<Constant*> ConstTable::getAllConst() {
 
 	ConstTable::ConstantTable::iterator tableIter;
 	for(tableIter=table.begin(); tableIter!=table.end(); tableIter++) {
-		allConst.emplace(tableIter->second);
+		allConst.push_back(tableIter->second);
 	}
 
 	return allConst;
@@ -81,7 +82,7 @@ vector<string> ConstTable::getAllConstNames() {
 
 	ConstTable::ConstantTable::iterator tableIter;
 	for(tableIter=table.begin(); tableIter!=table.end(); tableIter++) {
-		allConstNames.emplace(tableIter->second->getConstName());
+		allConstNames.push_back(tableIter->second->getConstName());
 	}
 
 	return allConstNames;
@@ -93,7 +94,7 @@ vector<int> ConstTable::getAllConstValues() {
 
 	ConstTable::ConstantTable::iterator tableIter;
 	for(tableIter=table.begin(); tableIter!=table.end(); tableIter++) {
-		allConstValues.emplace(tableIter->second->getConstValue());
+		allConstValues.push_back(tableIter->second->getValue());
 	}
 
 	return allConstValues;
@@ -114,7 +115,7 @@ void ConstTable::clearTable() {
 
 // GENERAL METHODS
 // checks if const exists in table
-bool contains(const string &constName) {
+bool ConstTable::contains(const string &constName) {
 	ConstTable::ConstantTable::iterator tableIter;
 	for(tableIter=table.begin(); tableIter!=table.end(); tableIter++) {
 		if(tableIter->first == constName) {
@@ -124,3 +125,7 @@ bool contains(const string &constName) {
 
 	return false;
 }
+
+// PRIVATE FUNCTIONS
+// empty private constructor
+ConstTable::ConstTable() {}

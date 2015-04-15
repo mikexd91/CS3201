@@ -36,4 +36,5 @@ public:
 	void testWhileModifies();
 
 	void testStmtTableAllWhile();
+	void testConstTable();
 };
