@@ -23,7 +23,9 @@
     <ClInclude Include="AST.h" />
     <ClInclude Include="CallNode.h" />
     <ClInclude Include="Clause.h" />
+    <ClInclude Include="Constant.h" />
     <ClInclude Include="ConstNode.h" />
+    <ClInclude Include="ConstTable.h" />
     <ClInclude Include="FollowsClause.h" />
     <ClInclude Include="FollowsStarClause.h" />
     <ClInclude Include="IfNode.h" />
@@ -67,6 +69,7 @@
     <ClCompile Include="AST.cpp" />
     <ClCompile Include="CallNode.cpp" />
     <ClCompile Include="Clause.cpp" />
+    <ClCompile Include="Constant.cpp" />
     <ClCompile Include="ConstNode.cpp" />
     <ClCompile Include="FollowsClause.cpp" />
     <ClCompile Include="FollowsStarClause.cpp" />
