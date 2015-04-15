@@ -39,6 +39,4 @@ public:
 
 	void testStmtTableAllWhile();
 	void testConstTable();
-
-	void testReadSource();
 };
