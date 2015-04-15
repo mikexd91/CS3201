@@ -26,6 +26,7 @@
 #include "OpNode.h"
 #include "AST.h"
 #include "Constant.h"
+#include "ConstTable.h"
 
 using namespace std;
 
