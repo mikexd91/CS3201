@@ -219,10 +219,13 @@ void QueryParser::parseDeclarations(Query* query, vector<string> list){
 		vector<string> tokens = tokeniser(current, ',');
 		string first = tokens.at(0);
 		vector<string> split = tokeniser(first, ' ');
-		string decType = split.at(0);
+		string decType = split.at(0); 
 		boost::trim(decType);
 		if (!containsDeclarationType(decType)){
 			throw InvalidDeclarationException();
+		}
+		if (decType == stringconst::ARG_PROGLINE){
+			decType = stringconst::ARG_STATEMENT;
 		}
 		StringPair* newPair = new StringPair();
 		newPair->setFirst(split.at(1));

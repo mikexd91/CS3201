@@ -70,7 +70,7 @@ void QueryParserTest::testDeclaration(){
 
 	boost::unordered_map<string, string> decList2 = result2->getDeclarationList();
 	CPPUNIT_ASSERT(decList2.at("c") == stringconst::ARG_CONSTANT);
-	CPPUNIT_ASSERT(decList2.at("p") == stringconst::ARG_PROGLINE);
+	CPPUNIT_ASSERT(decList2.at("p") == stringconst::ARG_STATEMENT);
 
 }
 
