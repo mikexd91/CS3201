@@ -153,3 +153,23 @@ assign a;
 Select a pattern a("summation", _)
 11, 13, 15, 17, 19
 5000
+32 - testing for uses
+prog_line l;
+Select l such that Uses(l, "d")
+5, 10, 11, 12, 14, 18
+5000
+33 - testing for modifies
+proc_line l;
+Select l such that Modifies(l, "b")
+2, 5, 7, 8
+5000
+34 - testing for follows
+proc_line l; assign a;
+Select l such that Follows(a, l) pattern a(_, _"a"_)
+4, 5, 7, 12
+5000
+35 - testing for parent
+constant c;
+Select c such that Follows(6, 7)
+3, 5, 1, 2
+5000
