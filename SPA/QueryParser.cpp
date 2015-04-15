@@ -146,6 +146,7 @@ bool QueryParser::containsDeclarationType(string s){
 	decVector.push_back(stringconst::ARG_STATEMENT);
 	decVector.push_back(stringconst::ARG_WHILE);
 	decVector.push_back(stringconst::ARG_VARIABLE);
+	decVector.push_back(stringconst::ARG_PROGLINE);
 	return containsAny(s, decVector);
 }
 
