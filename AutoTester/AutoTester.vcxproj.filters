@@ -34,5 +34,7 @@
     <None Include="SystemTests\Query-File-3.txt" />
     <None Include="SystemTests\Source-File-1.txt" />
     <None Include="SystemTests\Source-File-2.txt" />
+    <None Include="SystemTests\Source-File-4.txt" />
+    <None Include="SystemTests\Query-File-4.txt" />
   </ItemGroup>
 </Project>
