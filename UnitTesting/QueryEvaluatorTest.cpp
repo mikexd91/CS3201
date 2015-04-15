@@ -15,6 +15,7 @@
 #include "../SPA/ConstNode.h"
 #include "../SPA/OpNode.h"
 #include "../SPA/WhileNode.h"
+#include "../SPA/Constant.h"
 
 using namespace stringconst;
 using namespace std;
@@ -313,6 +314,31 @@ void QueryEvaluatorTest::testEvaluator() {
 
 	CPPUNIT_ASSERT(res4.size() == 2);
 
+	// Test FollowsStar with select type constant
+	FollowsStarClause* f2 = new FollowsStarClause();
+	f2->setFirstArg("3");
+	f2->setFirstArgFixed(true);
+	f2->setFirstArgType(ARG_STATEMENT);
+	f2->setSecondArg("a");
+	f2->setSecondArgFixed(false);
+	f2->setSecondArgType(ARG_STATEMENT);
+
+	StringPair p5 = *new StringPair();
+	p5.setFirst("c");
+	p5.setSecond(ARG_CONSTANT);
+
+	Query q5 = *new Query();
+	q5.addSelectSynonym(p5);
+	q5.addClause(f2);
+
+	set<string> res5 = e.evaluateQuery(q5);
+
+	for (set<string>::iterator iter=res5.begin(); iter != res5.end(); iter++) {
+		cout << "result: " << *iter << "!";
+	}
+	// to check
+	CPPUNIT_ASSERT(res4.size() == 2);
+
 }
 
 // Test 2 clauses
@@ -458,5 +484,35 @@ void QueryEvaluatorTest::testEvaluator2() {
 	set<string> res5 = e.evaluateQuery(q5);
 	
 	CPPUNIT_ASSERT(res5.size() == 2);
+
+	// Test 2 same unfixed syn between 2 clauses
+	// Select v s.t. Follows*(a1,a2) pattern a2(v,_)
+	FollowsStarClause* f2 = new FollowsStarClause();
+	f2->setFirstArg("a1");
+	f2->setFirstArgFixed(false);
+	f2->setFirstArgType(ARG_STATEMENT);
+	f2->setSecondArg("a2");
+	f2->setSecondArgFixed(false);
+	f2->setSecondArgType(ARG_STATEMENT);
+	CPPUNIT_ASSERT(f1->isValid());
+
+	PatternAssgClause* p6 = new PatternAssgClause("a2");
+	p6->setVar("v");
+	p6->setVarFixed(false);
+	p6->setExpression("_");
+	CPPUNIT_ASSERT(p6->isValid());
+
+	StringPair pr6 = *new StringPair();
+	pr6.setFirst("c");
+	pr6.setSecond(ARG_CONSTANT);
+
+	Query q6 = *new Query();
+	q6.addSelectSynonym(pr6);
+	q6.addClause(f1);
+	q6.addClause(p5);
+
+	set<string> res6 = e.evaluateQuery(q6);
+	// To be checked
+	CPPUNIT_ASSERT(res6.size() == 2);
 }
 

@@ -63,14 +63,14 @@ void QueryParserTest::testDeclaration(){
 	CPPUNIT_ASSERT(decList.at("a1") == stringconst::ARG_ASSIGN);*/
 	
 	Query* result2 = new Query();
-	string const USER_INPUT2 = "assign a;variable v";
+	string const USER_INPUT2 = "constant c; prog_line p";
 	
 	vector<string> testList2 = QueryParser::tokeniser(USER_INPUT2, ';');
 	QueryParser::parseDeclarations(result2, testList2);
 
-	//boost::unordered_map<string, string> decList2 = result2->getDeclarationList();
-	//CPPUNIT_ASSERT(decList2.at("a") == stringconst::ARG_ASSIGN);
-	//CPPUNIT_ASSERT(decList2.at("v") == stringconst::ARG_VARIABLE);
+	boost::unordered_map<string, string> decList2 = result2->getDeclarationList();
+	CPPUNIT_ASSERT(decList2.at("c") == stringconst::ARG_CONSTANT);
+	CPPUNIT_ASSERT(decList2.at("p") == stringconst::ARG_PROGLINE);
 
 }
 
