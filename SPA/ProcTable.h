@@ -9,7 +9,7 @@ class ProcTable {
 	ProcTable Implementation:
 	---------------------------------
 	|_[key]______|__________________|
-	| stmt no.	 | stmt object ref	|
+	| stmt no.	 | proc object ref	|
 	|_[key]______|__________________|
 	---------------------------------
 
