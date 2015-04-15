@@ -378,4 +378,13 @@ void TestOne::testConstTable() {
 
 	vector<Constant*> allConst = constTable->getAllConst();
 	CPPUNIT_ASSERT(allConst.size() == 2);
+
+	Constant* firstConstant = allConst[0];
+	Constant* secConstant = allConst[1];
+
+	string combi[2] = {firstConstant->getConstName(), secConstant->getConstName()};
+	string firstCombi[2] = {"2", "3"};
+	string secCombi[2] = {"3", "2"};
+
+	CPPUNIT_ASSERT(combi == firstCombi || secCombi);
 }
