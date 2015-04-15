@@ -4,6 +4,8 @@
 #include "Utils.h"
 #include "StmtTable.h"
 #include "VarTable.h"
+
+#include <boost\foreach.hpp>
 #include <vector>
 #include <sstream>
 #include <iostream>
@@ -75,6 +77,17 @@ set<string> QueryEvaluator::getAllSynValues(vector<StringPair> selectList) {
 			string varName = v.getName();
 			results->insert(varName); // might need to flush. currently not flushing
 		}
+		return *results;
+
+	} else if (synType == stringconst::ARG_CONSTANT) {
+
+		ConstTable* ctable = ConstTable::getInstance();
+		set<string> allConstName = ctable->getAllConstName();
+		
+		BOOST_FOREACH(auto p, allConstName) {
+			results->insert(p);
+		}
+
 		return *results;
 
 	} else {
