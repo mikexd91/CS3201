@@ -22,12 +22,11 @@ public:
 	// CONSTRUCTOR
 	Constant();
 	Constant(const string &name);
-	Constant(const string &name, TNode *tRef);
 
 	// GETTERS
-	string* getConstName();						// get name of const
+	string getConstName();						// get name of const
 	int getValue();								// get value of const
-	const set<TNode*> getTNodes();				// get reference to const TNode
+	const set<TNode*>& getTNodes();				// get set of references to TNodes
 	const set<int>& getAppearsIn();				// get set of stmt numbers const appears in
 
 	// SETTERS
@@ -45,4 +44,4 @@ private:
 	set<TNode*>			nodes;
 	set<int>			appearsIn;
 
-}
+};

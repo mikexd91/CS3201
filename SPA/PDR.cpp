@@ -329,13 +329,13 @@ void PDR::addToConstTable(TNode* constant) {
 	ConstTable* constTable = ConstTable::getInstance();
 
 	if(constTable->contains(constant->getName())) {
-		Constant* consta = constTable->getConstant(constant->getName());
+		Constant* consta = constTable->getConst(constant->getName());
 		consta->addTNodeRef(constant);
 		consta->addAppearsIn(stmtCounter);
 	} else {
 		Constant* consta = new Constant(constant->getName());
 		consta->addAppearsIn(stmtCounter);
-		constTable->addConstant(consta);
+		constTable->addConst(consta);
 	}
 }
 

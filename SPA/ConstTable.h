@@ -25,8 +25,10 @@ public:
 	ConstantTable::iterator getIterator();		// gets iterator to const table
 	ConstantTable::iterator getEnd();			// gets iterator to end of const table
 
+	Constant* getConst(const string &name);		// get const by name
+	Constant* getConst(int value);				// get const by value
 	vector<Constant*> getAllConst();			// gets all const objects
-	vector<string*> getAllConstNames();			// gets all const names
+	vector<string> getAllConstNames();			// gets all const names
 	vector<int> getAllConstValues();			// gets all const values
 
 	// MUTATORS
