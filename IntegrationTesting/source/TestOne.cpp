@@ -146,7 +146,7 @@ void TestOne::testWhileAST() {
 	parser.parse("procedure whileTest {while x{}}");
 	CPPUNIT_ASSERT(ast->contains("whileTest"));
 	CPPUNIT_ASSERT(ast->getProcNode("whileTest")->hasChildren() == true);
-	CPPUNIT_ASSERT(ast->getProcNode("whileTest")->getStmtLstNode()->getChildren().at(0)->getNodeType() == NodeType::WHILE_STMT_);
+	CPPUNIT_ASSERT(ast->getProcNode("whileTest")->getStmtLstNode()->getChildren().at(0)->getNodeType() == WHILE_STMT_);
 	
 	WhileNode* whileNode = (WhileNode*) ast->getProcNode("whileTest")->getStmtLstNode()->getChildren().at(0);
 	CPPUNIT_ASSERT(whileNode->getStmtNum() == 1);
@@ -163,7 +163,7 @@ void TestOne::testNestedWhileAST() {
 	
 	StmtLstNode* stmtLst = procNode->getStmtLstNode();
 	CPPUNIT_ASSERT(stmtLst->hasChildren());
-	CPPUNIT_ASSERT(stmtLst->getChildren().at(0)->getNodeType() == NodeType::WHILE_STMT_);
+	CPPUNIT_ASSERT(stmtLst->getChildren().at(0)->getNodeType() == WHILE_STMT_);
 
 	WhileNode* firstWhile = (WhileNode*)stmtLst->getChildren().at(0);
 	CPPUNIT_ASSERT(firstWhile->getChildren().size() == 2);
@@ -182,7 +182,7 @@ void TestOne::testNestedWhileAST() {
 	StmtLstNode* secondWhileStmtLst = secondWhile->getStmtLstNode();
 	CPPUNIT_ASSERT(secondWhileStmtLst->hasChildren());
 	CPPUNIT_ASSERT(secondWhileStmtLst->getChildren().size() == 1);
-	CPPUNIT_ASSERT(secondWhileStmtLst->getChildren().at(0)->getNodeType() == NodeType::ASSIGN_STMT_);
+	CPPUNIT_ASSERT(secondWhileStmtLst->getChildren().at(0)->getNodeType() == ASSIGN_STMT_);
 
 	AssgNode* assign = (AssgNode*)secondWhileStmtLst->getChildren().at(0);
 	CPPUNIT_ASSERT(assign->hasChildren());
@@ -205,9 +205,9 @@ void TestOne::testSiblingsAST() {
 	StmtLstNode* procStmtLst = proc->getStmtLstNode();
 	CPPUNIT_ASSERT(procStmtLst->hasChildren());
 	CPPUNIT_ASSERT(procStmtLst->getChildren().size() == 3);
-	CPPUNIT_ASSERT(procStmtLst->getChildren().at(0)->getNodeType() == NodeType::ASSIGN_STMT_);
-	CPPUNIT_ASSERT(procStmtLst->getChildren().at(1)->getNodeType() == NodeType::ASSIGN_STMT_);
-	CPPUNIT_ASSERT(procStmtLst->getChildren().at(2)->getNodeType() == NodeType::WHILE_STMT_);
+	CPPUNIT_ASSERT(procStmtLst->getChildren().at(0)->getNodeType() == ASSIGN_STMT_);
+	CPPUNIT_ASSERT(procStmtLst->getChildren().at(1)->getNodeType() == ASSIGN_STMT_);
+	CPPUNIT_ASSERT(procStmtLst->getChildren().at(2)->getNodeType() == WHILE_STMT_);
 
 	AssgNode* firstAssg = (AssgNode*)procStmtLst->getChildren().at(0);
 	AssgNode* secAssg = (AssgNode*)procStmtLst->getChildren().at(1);
@@ -240,7 +240,7 @@ void TestOne::testSiblingsAST() {
 	CPPUNIT_ASSERT(thirdAssg->getLeftSibling() == NULL);
 	CPPUNIT_ASSERT(thirdAssg->getRightSibling() == NULL);
 	CPPUNIT_ASSERT(thirdAssg->getVarNode()->getName() == "z");
-	CPPUNIT_ASSERT(thirdAssg->getExprNode()->getNodeType() == NodeType::OPERATOR_);
+	CPPUNIT_ASSERT(thirdAssg->getExprNode()->getNodeType() == OPERATOR_);
 
 	OpNode* operat = (OpNode*)thirdAssg->getExprNode();
 	CPPUNIT_ASSERT(operat->getName() == "+");
