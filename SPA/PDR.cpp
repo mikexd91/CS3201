@@ -324,6 +324,17 @@ void PDR::addToVarTable(TNode* variable, Flag statusFlag) {
     }
 }
 
+void PDR::addToConstTable(TNode* constant) {
+	ConstTable* constTable = ConstTable::getInstance();
+
+	if(constTable->contains(constant->getName())) {
+		Constant* consta = constTable->getConstant(constant->getName());
+		consta->addTNode(constant);
+	} else {
+		Constant consta = new Constant(constant->getName());
+	}
+}
+
 void PDR::processEndProgram() {
     for(int i = 0; i < currNestingLevel; i++) {
         nodeStack.pop();
