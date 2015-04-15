@@ -267,6 +267,7 @@ void QueryEvaluatorTest::tearDown() {
 	AST::reset();
 	StmtTable::getInstance()->clearTable();
 	VarTable::reset();
+	ConstTable::getInstance()->clearTable();
 }
 
 // Registers the fixture into the 'registry'
