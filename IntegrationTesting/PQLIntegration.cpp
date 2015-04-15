@@ -381,3 +381,19 @@ void PQLIntegration::testSelectConstant() {
 	r2 = pcc->parse(QUERY_STRING_2);
 	CPPUNIT_ASSERT(0 == r2.size());
 }
+
+void PQLIntegration::testSelectProgLine() {
+	string QUERY_STRING = "prog_line p; Select p such that Follows(1, p)";
+	PQLController* pcc = new PQLController();
+	set<string> r;
+	r = pcc->parse(QUERY_STRING);
+	//cout << *r.begin() << endl;
+	//cout << r.size() << endl;
+	CPPUNIT_ASSERT(1 == r.size());
+	CPPUNIT_ASSERT(r.find("2") != r.end());
+
+	string QUERY_STRING_2 = "prog_line p; Select p such that Follows(8, p)";
+	set<string> r2;
+	r2 = pcc->parse(QUERY_STRING_2);
+	CPPUNIT_ASSERT(0 == r2.size());
+}
