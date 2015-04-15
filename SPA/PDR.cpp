@@ -335,6 +335,7 @@ void PDR::addToConstTable(TNode* constant) {
 	} else {
 		Constant* consta = new Constant(constant->getName());
 		consta->addAppearsIn(stmtCounter);
+		consta->addTNodeRef(constant);
 		constTable->addConst(consta);
 	}
 }
