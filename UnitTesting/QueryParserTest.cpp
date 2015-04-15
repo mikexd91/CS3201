@@ -165,16 +165,16 @@ void QueryParserTest::testPattern(){
 }
 
 void QueryParserTest::testParser(){
-	string const USER_INPUT1 = "assign a; variable v; Select a pattern a(\"v\", _\"x+y\"_) and Modifies(a, v) and pattern a(v, _)";
-	
+	//string const USER_INPUT1 = "assign a; variable v; Select a pattern a(\"v\", _\"x+y\"_) and Modifies(a, v) and pattern a(v, _)";
+	string const USER_INPUT1 = "prog_line p; variable v; Select p such that pattern a(\"v\", _\"x+y\"_) and Modifies(a, v) and pattern a(v, _)";
 	Query q1 = QueryParser::parseQuery(USER_INPUT1);
 
 	Query* Q1 = new Query();
 	StringPair dec1a = StringPair();
 	StringPair dec1b = StringPair();
 	StringPair syn1a = StringPair();
-	syn1a.setFirst("a"); syn1a.setSecond(stringconst::ARG_ASSIGN);
-	dec1a.setFirst("a"); dec1a.setSecond(stringconst::ARG_ASSIGN);
+	syn1a.setFirst("p"); syn1a.setSecond(stringconst::ARG_STATEMENT);
+	dec1a.setFirst("p"); dec1a.setSecond(stringconst::ARG_STATEMENT);
 	dec1b.setFirst("v"); dec1b.setSecond(stringconst::ARG_VARIABLE);
 	
 	Q1->addSelectSynonym(syn1a);
@@ -186,8 +186,8 @@ void QueryParserTest::testParser(){
 	vector<StringPair> sel_Q1 = Q1->getSelectList();
 	vector<StringPair> sel_q1 = q1.getSelectList();
 
-	string q1_dec_a = dec_q1.at("a");
-	string Q1_dec_a = dec_Q1.at("a");
+	string q1_dec_a = dec_q1.at("p");
+	string Q1_dec_a = dec_Q1.at("p");
 	string q1_dec_b = dec_q1.at("v");
 	string Q1_dec_b = dec_Q1.at("v");
 	StringPair q1_sel_a = sel_q1.at(0);
