@@ -22,7 +22,6 @@ public:
 	// CONSTRUCTOR
 	Constant();
 	Constant(const string &name);
-	Constant(const string &name, TNode *tRef);
 
 	// GETTERS
 	string* getConstName();						// get name of const
