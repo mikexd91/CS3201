@@ -381,9 +381,9 @@ void QueryEvaluatorTest::testEvaluator() {
 
 	set<string> res5 = e.evaluateQuery(q5);
 
-	for (set<string>::iterator iter=res5.begin(); iter != res5.end(); iter++) {
+	/*for (set<string>::iterator iter=res5.begin(); iter != res5.end(); iter++) {
 		cout << "result: " << *iter << "!";
-	}
+	}*/
 	// to check
 	CPPUNIT_ASSERT(res4.size() == 2);
 
