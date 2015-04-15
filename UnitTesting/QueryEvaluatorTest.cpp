@@ -16,7 +16,6 @@
 #include "../SPA/OpNode.h"
 #include "../SPA/WhileNode.h"
 #include "../SPA/ConstTable.h"
-#include "../SPA/Constant.h"
 
 using namespace stringconst;
 using namespace std;
