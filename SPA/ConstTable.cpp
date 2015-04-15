@@ -125,3 +125,7 @@ bool ConstTable::contains(const string &constName) {
 
 	return false;
 }
+
+// PRIVATE FUNCTIONS
+// empty private constructor
+ConstTable::ConstTable() {}
