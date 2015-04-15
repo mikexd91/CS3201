@@ -46,6 +46,6 @@ private:
 namespace ParserConstants {
 	const string DELIM_STRING = " ;={}+*-";
 	const char DELIMITERS[] = { ';', '=', '{', '}', '+', '*', '-' };
-	const string ERROR_MESSAGE = "Error at line ";
+	const string ERROR_MESSAGE = "Error near line ";
 	
 }

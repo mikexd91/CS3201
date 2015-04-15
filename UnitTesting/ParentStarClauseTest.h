@@ -8,6 +8,7 @@ class ParentStarClauseTest : public CPPUNIT_NS::TestFixture {
 	
 	CPPUNIT_TEST( testParentStarFixedFixedPass );
 	CPPUNIT_TEST( testParentStarFixedFixedFail );
+	CPPUNIT_TEST( testParentStarFixedFixedFailSameStmt );
 	CPPUNIT_TEST( testParentStarSynFixedPass );
 	CPPUNIT_TEST( testParentStarSynFixedFail );
 	CPPUNIT_TEST( testParentStarFixedSynPass );
@@ -25,6 +26,7 @@ public:
 	
 	void testParentStarFixedFixedPass();
 	void testParentStarFixedFixedFail();
+	void testParentStarFixedFixedFailSameStmt();
 	void testParentStarSynFixedPass();
 	void testParentStarSynFixedFail();
 	void testParentStarFixedSynPass();

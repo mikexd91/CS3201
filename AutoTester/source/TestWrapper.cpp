@@ -32,8 +32,12 @@ void TestWrapper::parse(std::string filename) {
     buffer << in.rdbuf();
     string programSource = buffer.str();
 	// call parser.parse on the string
+	try {
 	parser->parse(programSource);
-
+	} catch (InvalidCodeException e) {
+		cout << e.what();
+		exit(EXIT_FAILURE);
+	}
 }
 
 // method to evaluating a query
@@ -42,14 +46,16 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
 	// ...code to evaluate query...
 	// store the answers to the query in the results list (it is initially empty)
 	// each result must be a string.
-	counter;
 	// eval the query
-	set<string> resultSet = pqlController->parse(query);
-	// get results
-	// iterate through the results and stuff them into the results list
-	set<string>::iterator iter;
-	for (iter = resultSet.begin(); iter != resultSet.end(); ++iter) {
-		results.push_back(*iter);
+	try {
+		set<string> resultSet = pqlController->parse(query);
+		// get results
+		// iterate through the results and stuff them into the results list
+		set<string>::iterator iter;
+		for (iter = resultSet.begin(); iter != resultSet.end(); ++iter) {
+			results.push_back(*iter);
+		}
+	} catch (exception e) {
+		results.push_back(e.what());
 	}
-	counter++;
 }
