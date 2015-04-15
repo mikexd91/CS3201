@@ -3,6 +3,7 @@
 #include "../../SPA/Parser.h"
 #include "../../SPA/PDR.h"
 
+using namespace std;
 // TEST VARIABLES
 
 //ProcTable* procTable = ProcTable::getInstance();// test proctable instance
@@ -43,7 +44,6 @@ void TestOne::testAddProc() {
 	//StmtTable* stmtTable1 = StmtTable::getInstance();
 	//VarTable* varTable1 = VarTable::getInstance();
 	CPPUNIT_ASSERT(procTable->contains("test"));
-	
 	
 	Statement* stmt1 = stmtTable1->getStmtObj(1);
 	string initUses1[] = { "x" };
@@ -374,7 +374,8 @@ void TestOne::testStmtTableAllWhile() {
 }
 
 void TestOne::testConstTable() {
-	parser.parse("procedure proc {x = 2; y = 3}");
+	parser.parse("procedure proc {x = 2; y = 3;}");
 
-
+	vector<Constant*> allConst = constTable->getAllConst();
+	CPPUNIT_ASSERT(allConst.size() == 2);
 }
