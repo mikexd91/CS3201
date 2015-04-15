@@ -3,15 +3,20 @@
 #include "Constant.h"
 #include <boost/lexical_cast.hpp>
 
+using namespace boost;
 using namespace std;
 
 /* ----------------------------- */
 /* -------- CONSTRUCTORS ------- */
 /* ----------------------------- */
 // empty contructor (null attributes)
-Constant::Constant() {}
+Constant::Constant() {
+	appearsIn = set<int>();
+	nodes = set<TNode*>();
+}
 
 Constant::Constant(const string &name) {
+	Constant();
 	constName = name;
 	value = lexical_cast<int>(name);
 }
@@ -36,8 +41,8 @@ const set<TNode*>& Constant::getTNodes() {
 }
 
 // get set of stmt numbers const appears in
-const set<int>& getAppearsIn() {
-	return appearsInStmt;
+const set<int>& Constant::getAppearsIn() {
+	return appearsIn;
 }
 
 

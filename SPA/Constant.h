@@ -42,6 +42,6 @@ private:
 
 	// PRIVATE SETS
 	set<TNode*>			nodes;
-	set<int>			appearsInStmt;
+	set<int>			appearsIn;
 
 };
