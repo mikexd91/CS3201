@@ -59,6 +59,7 @@ namespace stringconst{
 	string const ARG_STATEMENT = "stmt";
 	string const ARG_ASSIGN = "assign";
 	string const ARG_VARIABLE = "variable";
+	string const ARG_PROGLINE = "prog_line";
 	string const ARG_BOOLEAN = "boolean";
 
 	const string DELIM_STRING = " ;={}";
