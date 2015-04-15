@@ -16,7 +16,7 @@ class ConstTable {
 
 	*/
 
-	typedef boost::unordered_map<string*, Constant*> ConstantTable;
+	typedef boost::unordered_map<string, Constant*> ConstantTable;
 
 public:
 	// ACCESSORS
@@ -32,11 +32,11 @@ public:
 	vector<int> getAllConstValues();			// gets all const values
 
 	// MUTATORS
-	void addConst(Constant *const);				// adds const to table
+	void addConst(Constant *constant);			// adds const to table
 	void clearTable();							// removes all constants to the table (for testing)
 
 	// GENERAL METHODS
-	bool contains(const string &procName);		// checks if const exists in table
+	bool contains(const string &constName);		// checks if const exists in table
 
 private:
 	ConstantTable table;
