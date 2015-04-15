@@ -366,3 +366,18 @@ void PQLIntegration::testSelectFollowsPattern() {
 	//cout << r.size() << endl;
 	CPPUNIT_ASSERT(1 == r.size());
 }
+
+void PQLIntegration::testSelectConstant() {
+	string QUERY_STRING = "constant c; Select c such that Follows(1, 2)";
+	PQLController* pcc = new PQLController();
+	set<string> r;
+	r = pcc->parse(QUERY_STRING);
+	//cout << *r.begin() << endl;
+	//cout << r.size() << endl;
+	CPPUNIT_ASSERT(5 == r.size());
+
+	string QUERY_STRING_2 = "constant c; assign a; Select c such that Follows(a, 1)";
+	set<string> r2;
+	r2 = pcc->parse(QUERY_STRING_2);
+	CPPUNIT_ASSERT(0 == r2.size());
+}
