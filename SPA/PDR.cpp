@@ -103,7 +103,6 @@ void PDR::processAssignStmt(ParsedData data) {
     assignNode->linkVarNode(modifiesVar);
     addToVarTable(modifiesVar, MODIFIES);
     
-    
     // Populating the StmtTable
     StmtTable* stmtTable = StmtTable::getInstance();
     Statement* stmt = new Statement();
@@ -112,7 +111,6 @@ void PDR::processAssignStmt(ParsedData data) {
     stmt->setTNodeRef(assignNode);
     stmt->setModifies(modifies);
     stmt->setUses(uses);
-	
     
     if(assignNode->hasLeftSibling()) {
         StmtNode* leftSib = (StmtNode*)assignNode->getLeftSibling();
@@ -159,7 +157,6 @@ void PDR::processWhileStmt(ParsedData data) {
         whileNode->linkLeftSibling(leftSibling);
     }
     
-
     // Linking the AST
     VarNode* whileVar = new VarNode(data.getWhileVar());
     whileNode->linkParent(parentStmtLst);
@@ -202,7 +199,6 @@ void PDR::processWhileStmt(ParsedData data) {
 }
 
 TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
-    // Assume expression to be the RPN of the variables and operators
     queue<string> expression = data.getAssignExpression();
     stack<TNode*> rpnNodeStack;
 	int numExp = expression.size();
