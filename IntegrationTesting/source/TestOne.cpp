@@ -12,10 +12,12 @@ AST* ast;
 VarTable* varTable1;
 ProcTable* procTable;
 StmtTable* stmtTable1;
+ConstTable* constTable;
 
 void TestOne::setUp() {
 	pdr = PDR::getInstance();
 	ast = AST::getInstance();
+	constTable = ConstTable::getInstance();
 	parser = Parser();
 	varTable1 = VarTable::getInstance();
 	procTable = ProcTable::getInstance();
@@ -26,6 +28,7 @@ void TestOne::setUp() {
 void TestOne::tearDown() {
 	PDR::resetInstanceFlag();
 	AST::reset();
+	constTable->clearTable();
 	VarTable::reset();
 	procTable->clearTable();
 	stmtTable1->clearTable();
@@ -370,3 +373,8 @@ void TestOne::testStmtTableAllWhile() {
 	}
 }
 
+void TestOne::testConstTable() {
+	parser.parse("procedure proc {x = 2; y = 3}");
+
+
+}
