@@ -330,9 +330,11 @@ void PDR::addToConstTable(TNode* constant) {
 
 	if(constTable->contains(constant->getName())) {
 		Constant* consta = constTable->getConstant(constant->getName());
-		consta->addTNode(constant);
+		consta->addTNodeRef(constant);
+		consta->addAppearsIn(stmtCounter);
 	} else {
 		Constant* consta = new Constant(constant->getName());
+		consta->addAppearsIn(stmtCounter);
 		constTable->addConstant(consta);
 	}
 }
