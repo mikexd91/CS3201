@@ -290,7 +290,7 @@ void PQLIntegration::tearDown() {
 	AST::reset();
 	StmtTable::getInstance()->clearTable();
 	VarTable::reset();
-	ConstTable::reset();
+	ConstTable::getInstance()->clearTable();
 }
 
 // Registers the fixture into the 'registry'

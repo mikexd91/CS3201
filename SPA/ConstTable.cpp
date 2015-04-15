@@ -128,4 +128,6 @@ bool ConstTable::contains(const string &constName) {
 
 // PRIVATE FUNCTIONS
 // empty private constructor
-ConstTable::ConstTable() {}
+ConstTable::ConstTable() {
+	table = *new ConstTable::ConstantTable();
+}
