@@ -19,6 +19,8 @@ Constant::Constant(const string &name) {
 	Constant();
 	constName = name;
 	value = lexical_cast<int>(name);
+	appearsIn = set<int>();
+	nodes = set<TNode*>();
 }
 
 
