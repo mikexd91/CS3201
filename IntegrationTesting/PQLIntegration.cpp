@@ -9,6 +9,7 @@
 #include "../SPA/StmtTable.h"
 #include "../SPA/VarTable.h"
 #include "../SPA/Utils.h"
+#include "../SPA/ConstTable.h"
 
 #include <iostream>
 #include <string>
@@ -43,8 +44,9 @@ void PQLIntegration::setUp() {
 
 	AssgNode* assg1 = new AssgNode(1);
 	VarNode* a1 = new VarNode("a");
+	ConstNode* c1 = new ConstNode("4");
 	assg1->linkVarNode(a1);
-	assg1->linkExprNode(new ConstNode("4"));
+	assg1->linkExprNode(c1);
 	procsl->linkStmtNode(assg1);
 
 	WhileNode* while1 = new WhileNode(2);
@@ -57,7 +59,8 @@ void PQLIntegration::setUp() {
 	AssgNode* assg2 = new AssgNode(3);
 	VarNode* k1 = new VarNode("k");
 	assg2->linkVarNode(k1);
-	assg2->linkExprNode(new ConstNode("3"));
+	ConstNode* c2 = new ConstNode("3");
+	assg2->linkExprNode(c2);
 	whilesl1->linkStmtNode(assg2);
 
 	WhileNode* while2 = new WhileNode(4);
@@ -70,19 +73,22 @@ void PQLIntegration::setUp() {
 	AssgNode* assg3 = new AssgNode(5);
 	VarNode* i2 = new VarNode("i");
 	assg3->linkVarNode(i2);
-	assg3->linkExprNode(new ConstNode("1"));
+	ConstNode* c3 = new ConstNode("1");
+	assg3->linkExprNode(c3);
 	whilesl2->linkStmtNode(assg3);
 
 	AssgNode* assg4 = new AssgNode(6);
 	VarNode* j2 = new VarNode("j");
 	assg4->linkVarNode(j2);
-	assg4->linkExprNode(new ConstNode("2"));
+	ConstNode* c4 = new ConstNode("2");
+	assg4->linkExprNode(c4);
 	whilesl2->linkStmtNode(assg4);
 
 	AssgNode* assg5 = new AssgNode(7);
 	VarNode* b1 = new VarNode("b");
 	assg5->linkVarNode(b1);
-	assg5->linkExprNode(new ConstNode("5"));
+	ConstNode* c5 = new ConstNode("5");
+	assg5->linkExprNode(c5);
 	whilesl1->linkStmtNode(assg5);
 
 	AssgNode* assg6 = new AssgNode(8);
@@ -239,6 +245,44 @@ void PQLIntegration::setUp() {
 	vb->addModifyingStmt(7);
 	vb->addTNode(b1);
 	vtable->addVariable(vb);
+
+	ConstTable* ctable = ConstTable::getInstance();
+	//Populate Constant Table
+	Constant* const1 = new Constant();
+	const1->addAppearsIn(5);
+	const1->addTNodeRef(c3);
+	const1->setConstName("1");
+	ctable->addConst(const1);
+	
+	Constant* const2 = new Constant();
+	const2->addAppearsIn(6);
+	const2->addAppearsIn(8);
+	const2->addTNodeRef(c4);
+	const2->addTNodeRef(two2);
+	const2->setConstName("2");
+	ctable->addConst(const2);
+
+	Constant* const3 = new Constant();
+	const3->addAppearsIn(3);
+	const3->addAppearsIn(8);
+	const3->addTNodeRef(c2);
+	const3->addTNodeRef(three2);
+	const3->setConstName("3");
+	ctable->addConst(const3);
+
+	Constant* const4 = new Constant();
+	const4->addAppearsIn(1);
+	const4->addAppearsIn(8);
+	const4->addTNodeRef(c1);
+	const4->addTNodeRef(four2);
+	const4->setConstName("4");
+	ctable->addConst(const4);
+
+	Constant* const5 = new Constant();
+	const5->addAppearsIn(7);
+	const5->addTNodeRef(c5);
+	const5->setConstName("5");
+	ctable->addConst(const5);
 }
 
 void PQLIntegration::tearDown() {
@@ -246,6 +290,7 @@ void PQLIntegration::tearDown() {
 	AST::reset();
 	StmtTable::getInstance()->clearTable();
 	VarTable::reset();
+	ConstTable::getInstance()->clearTable();
 }
 
 // Registers the fixture into the 'registry'
