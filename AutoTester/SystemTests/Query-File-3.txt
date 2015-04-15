@@ -171,7 +171,7 @@ none
 35 - testing for parent*
 prog_line l; stmt s;
 Select l such that Parent*(l, s)
-5, 15, 17
+5, 15, 17, 18
 5000
 36 - testing for modifies
 constant c; assign a;
