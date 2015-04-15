@@ -234,6 +234,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
             if(isInteger(exp)) {
                 ConstNode* constNode = new ConstNode(exp);
                 rpnNodeStack.push(constNode);
+				addToConstTable(constNode);
             } else {
                 VarNode* var = new VarNode(exp);
                 rpnNodeStack.push(var);
@@ -322,6 +323,20 @@ void PDR::addToVarTable(TNode* variable, Flag statusFlag) {
 		}
 		varTable->addVariable(var);
     }
+}
+
+void PDR::addToConstTable(TNode* constant) {
+	ConstTable* constTable = ConstTable::getInstance();
+
+	if(constTable->contains(constant->getName())) {
+		Constant* consta = constTable->getConstant(constant->getName());
+		consta->addTNodeRef(constant);
+		consta->addAppearsIn(stmtCounter);
+	} else {
+		Constant* consta = new Constant(constant->getName());
+		consta->addAppearsIn(stmtCounter);
+		constTable->addConstant(consta);
+	}
 }
 
 void PDR::processEndProgram() {

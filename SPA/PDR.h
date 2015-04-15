@@ -25,6 +25,7 @@
 #include "CallNode.h"
 #include "OpNode.h"
 #include "AST.h"
+#include "Constant.h"
 
 using namespace std;
 
@@ -64,6 +65,7 @@ private:
     void addParentSet(set<string>, Flag);
     void addToProcTable(TNode*);
     void addToVarTable(TNode*, Flag);
+	void addToConstTable(TNode*);
     
     TNode* breakDownAssignExpression(ParsedData, set<string>&);
     
