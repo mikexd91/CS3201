@@ -556,11 +556,11 @@ void QueryEvaluatorTest::testEvaluator2() {
 
 	Query q6 = *new Query();
 	q6.addSelectSynonym(pr6);
-	q6.addClause(f1);
-	q6.addClause(p5);
+	q6.addClause(f2);
+	q6.addClause(p6);
 
 	set<string> res6 = e.evaluateQuery(q6);
 	// To be checked
-	CPPUNIT_ASSERT(res6.size() == 2);
+	CPPUNIT_ASSERT(res6.size() == 5);
 }
 
