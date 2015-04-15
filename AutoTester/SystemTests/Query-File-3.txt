@@ -95,8 +95,8 @@ Select a1 such that Follows*(a1, a2) pattern a2(_, _"5"_)
 5000
 20 - testing for follows*
 stmt s; assign a;
-Select s such that Follows(s, a) pattern a(_, _"3"_)
-17
+Select s such that Follows*(s, a) pattern a(_, _"3"_)
+16, 17
 5000
 21 - testing for parent
 stmt s;
