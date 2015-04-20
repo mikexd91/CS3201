@@ -255,10 +255,7 @@ void UsesClauseTest::testUsesGenericSynFixedPass() {
 	vector<string> singleResults = r.getSinglesResults();
 	
 	CPPUNIT_ASSERT(r.isClausePassed());
-	CPPUNIT_ASSERT(singleResults.size() == 3);
-	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "1") != singleResults.end());
-	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "3") != singleResults.end());
-	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "5") != singleResults.end());
+	CPPUNIT_ASSERT(singleResults.size() == 0);
 }
 
 void UsesClauseTest::testUsesAssignSynFixedFail() {
