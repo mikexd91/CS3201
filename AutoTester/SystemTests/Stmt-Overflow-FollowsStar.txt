@@ -20,6 +20,11 @@ none
 5000
 5 - testing for overflow
 assign a;
-Select a such that Follows(0, 1)
+Select a such that Follows*(0, 1)
+none
+5000
+6 - testing for overflow
+assign a;
+Select a such that Follows*(-1, 0)
 none
 5000
