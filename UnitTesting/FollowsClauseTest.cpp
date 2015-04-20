@@ -148,6 +148,28 @@ void FollowsClauseTest::testIsFollows() {
 	CPPUNIT_ASSERT(r4.getPairResults().at(1).first == res1);
 	CPPUNIT_ASSERT(r4.getPairResults().at(1).second == res2);
 
+	// Test Follows(s,s) where s is a statement
+	fol.setFirstArg("s");
+	fol.setSecondArg("s");
+
+	fol.setFirstArgType(stringconst::ARG_STATEMENT);
+	fol.setSecondArgType(stringconst::ARG_STATEMENT);
+
+	Results r5 = fol.evaluate();
+	CPPUNIT_ASSERT(!r5.isClausePassed());
+
+	// Test Follows(_,_) where _ is a generic statement
+	FollowsClause fol2 = *new FollowsClause();
+
+	fol2.setFirstArgFixed(false);
+	fol2.setSecondArgFixed(false);
+
+	fol2.setFirstArgType(stringconst::ARG_GENERIC);
+	fol2.setSecondArgType(stringconst::ARG_GENERIC);
+
+	Results r6 = fol2.evaluate();
+	CPPUNIT_ASSERT(r6.isClausePassed());
+	cout << r6.getPairResults().size() << "lala";
 	return;
 }
 
@@ -197,6 +219,17 @@ void FollowsClauseTest::testIsFollows2() {
 
 	CPPUNIT_ASSERT(!r2.isClausePassed());
 
+	// Test Follows(2,_) where _ is a generic type
+	fol.setFirstArg("2");
+	fol.setSecondArg("_");
+
+	fol.setFirstArgType(stringconst::ARG_STATEMENT);
+	fol.setSecondArgType(stringconst::ARG_GENERIC);
+
+	Results r3 = fol.evaluate();
+
+	CPPUNIT_ASSERT(r3.isClausePassed());
+
 	return ;
 }
 
@@ -234,6 +267,23 @@ void FollowsClauseTest::testIsFollows3() {
 
 	CPPUNIT_ASSERT(!r2.isClausePassed());
 
+	// Test Follows(_,3) where _ is a generic type
+	fol.setFirstArg("_");
+	fol.setSecondArg("3");
+
+	fol.setFirstArgType(stringconst::ARG_GENERIC);
+	fol.setSecondArgType(stringconst::ARG_STATEMENT);
+
+	Results r3 = fol.evaluate();
+	/*
+	cout <<	"singles Result size: " << r3.getSinglesResults().size() << endl;
+	vector<string> resultSet = r3.getSinglesResults();
+	for (size_t i = 0; i < resultSet.size(); i++) {
+		cout << "result: " << resultSet.at(i) << "!";
+	}
+	*/
+	CPPUNIT_ASSERT(r3.isClausePassed());
+	
 	return ;
 }
 
