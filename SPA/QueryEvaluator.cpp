@@ -189,13 +189,22 @@ set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vecto
 	switch (numRepeatingClause) {
 		case 0 : 
 			if (obj1.isClausePassed() && obj2.isClausePassed()) {
-				set<string> result = getAllSynValues(selectList);
-				return result;
+				if (obj1.usesSyn(syn)) {
+					set<string> result = obj1.getSelectSynResult(syn);
+					return result;
+				}
 
-			} else {
-				return set<string>();
+				if (obj2.usesSyn(syn)) {
+					set<string> result = obj2.getSelectSynResult(syn);
+					return result;
+				}
 
+				if (!obj1.usesSyn(syn) && !obj2.usesSyn(syn)) {
+					set<string> result = getAllSynValues(selectList);
+					return result;
+				}
 			}
+			return set<string>();
 
 		case 1 :
 			if (obj1.isClausePassed() && obj2.isClausePassed()) {
@@ -216,9 +225,9 @@ set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vecto
 					return result;
 				}
 
-				return set<string>();
 			}
-			
+			return set<string>();
+
 		case 2 :
 			if (obj1.isClausePassed() && obj2.isClausePassed()) {
 				obj1.getIntersect(obj2);
@@ -236,7 +245,6 @@ set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vecto
 			return set<string>();
 
 		default :
-			// error
 			return set<string>();
 	}
 	
