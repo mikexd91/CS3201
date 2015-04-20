@@ -471,7 +471,6 @@ void ParentStarClauseTest::testParentStarSynSynPassWithGeneric() {
 	Results r1 = m1->evaluate();
 	vector<pair<string, string>> pairResults = r1.getPairResults();
 
-	cout << r1.getPairResults().size();
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getPairResults().size() == 7);
 	pair<string, string> pair0("2","3");
