@@ -484,17 +484,16 @@ void FollowsStarClauseTest::testFollowsStarSynSyn() {
 	f1->setSecondArg("s1");
 	f1->setSecondArgFixed(false);
 	f1->setSecondArgType(ARG_STATEMENT);
-	CPPUNIT_ASSERT(f1->isValid()); 
+	CPPUNIT_ASSERT(f1->isValid());
 
 	r1 = f1->evaluate(); 
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
-	//cout << r1.getSinglesResults().size() << endl;
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 5);
 
-	/*BOOST_FOREACH(auto p, r1.getSinglesResults()) {
+	BOOST_FOREACH(auto p, r1.getSinglesResults()) {
 		cout << p << " ";
-	}*/
+	}
 
 	// pass, s, _
 	f1 = new FollowsStarClause();
@@ -509,8 +508,11 @@ void FollowsStarClauseTest::testFollowsStarSynSyn() {
 	r1 = f1->evaluate();
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
-	//cout << r1.getSinglesResults().size() << endl;
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 5);
+
+	BOOST_FOREACH(auto p, r1.getSinglesResults()) {
+		cout << p << endl;
+	}
 
 	// pass _,_
 	f1 = new FollowsStarClause();
