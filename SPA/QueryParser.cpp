@@ -298,6 +298,7 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 				if (firstArg != stringconst::STRING_EMPTY){
 					throw MissingDeclarationException();
 				} else {
+					//cout << "im a new " << newClause->getClauseType() << endl;
 					newClause->setFirstArg(firstArg);
 					newClause->setFirstArgFixed(false);
 					newClause->setFirstArgType(stringconst::ARG_GENERIC);
@@ -506,6 +507,9 @@ Query QueryParser::parseQuery(string input){
 	for (size_t i=0; i<clauseList.size(); i++){
 		Clause* current = clauseList.at(i);
 		if (!current->isValid()){
+			/*cout << current->getClauseType() << endl;
+			cout << current->getFirstArgType() << endl;
+			cout << current->getSecondArgType() << endl;*/
 			throw InvalidClauseException();
 		}
 	}

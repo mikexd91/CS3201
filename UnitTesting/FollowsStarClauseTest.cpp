@@ -279,6 +279,19 @@ void FollowsStarClauseTest::testFollowsStarFixedFixed() {
 
 	Results r3 = f3->evaluate();
 	CPPUNIT_ASSERT(!r3.isClausePassed());
+
+	// fail, targeting stmt num exceed
+	FollowsStarClause* f4 = new FollowsStarClause();
+	f4->setFirstArg("0");
+	f4->setFirstArgFixed(true);
+	f4->setFirstArgType(ARG_STATEMENT);
+	f4->setSecondArg("1");
+	f4->setSecondArgFixed(true);
+	f4->setSecondArgType(ARG_STATEMENT);
+	CPPUNIT_ASSERT(f4->isValid());
+
+	Results r4 = f4->evaluate();
+	CPPUNIT_ASSERT(!r4.isClausePassed());
 }
 
 void FollowsStarClauseTest::testFollowsStarFixedSyn() {
@@ -427,6 +440,19 @@ void FollowsStarClauseTest::testFollowsStarSynFixed() {
 	f3->setFirstArgType(ARG_WHILE);
 	f3->setSecondArg("-6");
 	f3->setSecondArgFixed(true);
+	f3->setSecondArgType(ARG_STATEMENT);
+	CPPUNIT_ASSERT(f3->isValid());
+
+	r3 = f3->evaluate();
+	CPPUNIT_ASSERT(!r3.isClausePassed());
+
+	// fail targeting stmtnum zero
+	f3 = new FollowsStarClause();
+	f3->setFirstArg("0");
+	f3->setFirstArgFixed(true);
+	f3->setFirstArgType(ARG_WHILE);
+	f3->setSecondArg("s");
+	f3->setSecondArgFixed(false);
 	f3->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(f3->isValid());
 

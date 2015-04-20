@@ -1,0 +1,35 @@
+1 - testing for overflow
+stmt s;
+Select s such that Parent(s, 0)
+none
+5000
+2 - testing for overflow
+assign a;
+Select a such that Parent(0, a)
+none
+5000
+3 - testing for overflow
+while w;
+Select w such that Parent(w, 30)
+none
+5000
+4 - testing for overflow
+stmt s;
+Select s such that Parent(50, s)
+none
+5000
+5 - testing for overflow
+stmt s;
+Select s such that Parent(-1, s)
+none
+5000
+6 - testing for overflow
+while w;
+Select w such that Parent(w, -3)
+none
+5000
+7 - testing for overflow
+stmt s;
+Select s such that Parent(-3, 0)
+none
+5000
