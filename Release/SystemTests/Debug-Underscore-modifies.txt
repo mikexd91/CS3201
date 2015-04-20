@@ -58,3 +58,8 @@ while w; assign a;
 Select w such that Modifies(w, _) pattern a(_, _)
 5, 15, 17, 18
 5000
+12 - double clause with pattern
+assign a; variable v; 
+Select a such that Modifies(a, v) pattern a(v, _"1"_)
+6, 7, 8
+5000
