@@ -4,3 +4,17 @@ Select a such that Parent*(15, a) pattern a1(_, _"charmander"_)
 16, 19, 20
 5000
 2 - testing for follows* stmt overflow
+stmt s;
+Select s such that Follows*(s, 23)
+none
+5000
+3 - testing for follows* stmt overflow
+stmt s;
+Select s such that Follows*(41, s)
+none
+5000
+4 - testing for follows* stmt overflow
+assign a;
+Select a such that Follows*(20, 21)
+none
+5000
