@@ -23,8 +23,13 @@ UsesClause::~UsesClause(void){
 bool UsesClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
-	bool firstArg = (firstType == ARG_GENERIC) || (firstType == ARG_STATEMENT) || (firstType == ARG_ASSIGN) || (firstType == ARG_WHILE) || (firstType == ARG_PROGLINE);
-	bool secondArg = (secondType == ARG_GENERIC) || (secondType == ARG_VARIABLE);
+	bool firstArg = (firstType == ARG_GENERIC) 
+		|| (firstType == ARG_STATEMENT) 
+		|| (firstType == ARG_ASSIGN) 
+		|| (firstType == ARG_WHILE) 
+		|| (firstType == ARG_PROGLINE);
+	bool secondArg = (secondType == ARG_GENERIC) 
+		|| (secondType == ARG_VARIABLE);
 	return (firstArg && secondArg);
 }
 

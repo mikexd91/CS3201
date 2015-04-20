@@ -391,3 +391,17 @@ void UsesClauseTest::testUsesGenericSynSynPass() {
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair<string,string>("3", "j")) != pairResults.end());
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair<string,string>("5", "i")) != pairResults.end());
 }
+
+void UsesClauseTest::testUsesStmtOverflow() {
+	UsesClause* c = new UsesClause();
+	c->setFirstArg("99");
+	c->setFirstArgFixed(true);
+	c->setFirstArgType(ARG_STATEMENT);
+	c->setSecondArg("j");
+	c->setSecondArgFixed(true);
+	c->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(c->isValid());
+
+	Results r = c->evaluate();
+	CPPUNIT_ASSERT(!r.isClausePassed());
+}

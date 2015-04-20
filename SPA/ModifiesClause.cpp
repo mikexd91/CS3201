@@ -146,19 +146,24 @@ Results ModifiesClause::evaluateSynFixed(string stmt, string varName) {
 }
 
 Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
-	Results* res = new Results();
-	res->setFirstClauseSyn(stmt);
-	res->setSecondClauseSyn(var);
+	bool isFirstGeneric = getStmtType() == ARG_GENERIC;
+	bool isSecondGeneric = getSecondArgType() == ARG_GENERIC;
+	bool isBothGeneric = isFirstGeneric && isSecondGeneric;
 
-	// set synonym count
-	string firstType = this->getFirstArgType();
-	string secondType = this->getSecondArgType();
-	if(firstType==ARG_GENERIC && secondType==ARG_GENERIC) {
-		res->setNumOfSyn(2);
-	} else if(firstType==ARG_GENERIC || secondType==ARG_GENERIC) {
+	Results* res = new Results();
+	res->setNumOfSyn(0);
+	if (isBothGeneric) {
+		res->setNumOfSyn(0);
+	} else if (isFirstGeneric) {
+		res->setFirstClauseSyn(stmt);
+		res->setNumOfSyn(1);
+	} else if (isSecondGeneric) {
+		res->setFirstClauseSyn(var);
 		res->setNumOfSyn(1);
 	} else {
-		res->setNumOfSyn(0);
+		res->setFirstClauseSyn(stmt);
+		res->setSecondClauseSyn(var);
+		res->setNumOfSyn(2);
 	}
 
 	StmtTable* stable = StmtTable::getInstance();
@@ -175,7 +180,8 @@ Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
 		allStmt = stable->getAllStmts();
 	}
 
-	//cout << endl << "all stmt size " << allStmt.size() << endl;
+	set<string>* singles = new set<string>();
+	set<pair<string, string>>* pairs = new set<pair<string, string>>();
 
 	BOOST_FOREACH(auto p, allStmt) {
 		int stmtNum = p->getStmtNum();
@@ -184,12 +190,31 @@ Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
 		for (size_t i = 0; i < allVarNames->size(); i++) {
 			string varName = allVarNames->at(i);
 			if (isModifies(stmtNum, varName)) {
-				res->addPairResult(lexical_cast<string>(stmtNum), varName);
+				if (isBothGeneric) {
+					pair<string, string> pr = pair<string, string>(lexical_cast<string>(stmtNum), lexical_cast<string>(varName));
+					pairs->emplace(pr);
+				} else if (isFirstGeneric) {
+					singles->emplace(lexical_cast<string>(stmtNum));
+				} else if (isSecondGeneric) {
+					singles->emplace(lexical_cast<string>(varName));
+				} else {
+					pair<string, string> pr = pair<string, string>(lexical_cast<string>(stmtNum), lexical_cast<string>(varName));
+					pairs->emplace(pr);
+				}
 			}
 		}
 	}
 
-	res->setClausePassed(res->getPairResults().size() > 0);
+	// transfer from set to vector
+	if (isBothGeneric) {
+		transferPairsToResult(pairs, res);
+	} else if (isFirstGeneric) {
+		transferSinglesToResult(singles, res);
+	} else if (isSecondGeneric) {
+		transferSinglesToResult(singles, res);
+	} else {
+		transferPairsToResult(pairs, res);
+	}
 
 	return *res;
 }
@@ -197,7 +222,7 @@ Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
 bool ModifiesClause::isModifies(int stmtNum, string varName) {
 	StmtTable* stable = StmtTable::getInstance();
 	int maxStmts = stable->getAllStmts().size();
-	if (stmtNum > maxStmts) {
+	if (stmtNum > maxStmts || stmtNum <= 0) {
 		return false;
 	} else {
 		Statement* stmt = stable->getStmtObj(stmtNum);
@@ -206,4 +231,20 @@ bool ModifiesClause::isModifies(int stmtNum, string varName) {
 
 		return mods.find(varName) != mods.end();
 	}
+}
+
+void ModifiesClause::transferSinglesToResult(set<string>* singles, Results* res) {
+	
+	BOOST_FOREACH(auto p, *singles) {
+		res->addSingleResult(p);
+	}
+	res->setClausePassed(res->getSinglesResults().size() > 0);
+}
+
+void ModifiesClause::transferPairsToResult(set<pair<string, string>>* pairs, Results* res) {
+	
+	BOOST_FOREACH(auto p, *pairs) {
+		res->addPairResult(p.first, p.second);
+	}
+	res->setClausePassed(res->getPairResults().size() > 0);
 }

@@ -17,7 +17,7 @@ ParentStarClause::~ParentStarClause(void){
 bool ParentStarClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
-	bool firstArg = ((firstType == ARG_GENERIC) || (firstType == ARG_WHILE) || (firstType == ARG_STATEMENT) || (firstType == ARG_PROGLINE));
+	bool firstArg = ((firstType == ARG_GENERIC) || (firstType == ARG_WHILE) || (firstType == ARG_STATEMENT) || (firstType == ARG_PROGLINE) || (firstType == ARG_ASSIGN));
 	bool secondArg = ((secondType == ARG_GENERIC) || (secondType == ARG_WHILE) || (secondType == ARG_ASSIGN) || (secondType == ARG_STATEMENT) || (secondType == ARG_PROGLINE));
 	return (firstArg && secondArg);
 }
@@ -185,9 +185,16 @@ void ParentStarClause::recurParentCheckS1WildS2Fixed(Results &res, string s1, st
 		res.addSingleResult(originS1);
 	} else {
 		// get all children of first arg (type does not matter)
-		set<int> argChildren = stmtTable->getStmtObj(lexical_cast<int>(s1))->getChildren();
+		Statement* currStmt = stmtTable->getStmtObj(lexical_cast<int>(s1));
 
-		// base case 2 - s1 has no children
+		// base case 2 - s1 doesn't exist
+		if(currStmt == nullptr) {
+			return;
+		}
+
+		set<int> argChildren = currStmt->getChildren();
+
+		// base case 3 - s1 has no children
 		if(argChildren.size() == 0) {
 			return;
 
@@ -259,9 +266,16 @@ void ParentStarClause::recurParentCheckS1FixedS2Wild(Results &res, string s1, st
 		res.addSingleResult(originS2);
 	} else {
 		// get all children of first arg
-		set<int> argChildren = stmtTable->getStmtObj(lexical_cast<int>(s1))->getChildren();
+		Statement* currStmt = stmtTable->getStmtObj(lexical_cast<int>(s1));
 
-		// base case 2 - s1 has no children
+		// base case 2 - s1 doesn't exist
+		if(currStmt == nullptr) {
+			return;
+		}
+
+		set<int> argChildren = currStmt->getChildren();
+
+		// base case 3 - s1 has no children
 		if(argChildren.size() == 0) {
 			return;
 
@@ -302,9 +316,16 @@ void ParentStarClause::recurParentCheckS1FixedS2Fixed(Results &res, string s1, s
 		return;
 	} else {
 		// get all children of first arg
-		set<int> argChildren = stmtTable->getStmtObj(lexical_cast<int>(s1))->getChildren();
+		Statement* currStmt = stmtTable->getStmtObj(lexical_cast<int>(s1));
+		
+		// base case 2 - s1 doesn't exist
+		if(currStmt == nullptr) {
+			return;
+		}
 
-		// base case 2 - s1 has no children
+		set<int> argChildren = currStmt->getChildren();
+
+		// base case 3 - s1 has no children
 		if(argChildren.size() == 0) {
 			return;
 

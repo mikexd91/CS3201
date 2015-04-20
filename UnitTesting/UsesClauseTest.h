@@ -15,6 +15,7 @@ class UsesClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testUsesAssignSynSynPass );
 	CPPUNIT_TEST( testUsesWhileSynSynPass );
 	CPPUNIT_TEST( testUsesGenericSynSynPass );
+	CPPUNIT_TEST( testUsesStmtOverflow );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -32,4 +33,5 @@ public:
 	void testUsesAssignSynSynPass();
 	void testUsesWhileSynSynPass();
 	void testUsesGenericSynSynPass();
+	void testUsesStmtOverflow();
 };

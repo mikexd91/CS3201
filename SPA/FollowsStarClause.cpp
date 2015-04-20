@@ -151,7 +151,6 @@ Results FollowsStarClause::evaluateFollowsStarSynSyn(string firstStmtSyn, string
 	Results* res = new Results();
 	res->setNumOfSyn(0);
 	if (isBothGeneric) {
-		res->setFirstClauseSyn(firstStmtSyn);
 		res->setNumOfSyn(0);
 	} else if (isFirstGeneric) {
 		res->setFirstClauseSyn(firstStmtSyn);
@@ -233,7 +232,7 @@ Results FollowsStarClause::evaluateFollowsStarSynSyn(string firstStmtSyn, string
 }
 
 void FollowsStarClause::transferSinglesToResult(set<string>* singles, Results* res) {
-	//typedef int INT;
+	
 	BOOST_FOREACH(auto p, *singles) {
 		res->addSingleResult(p);
 	}
@@ -241,8 +240,8 @@ void FollowsStarClause::transferSinglesToResult(set<string>* singles, Results* r
 }
 
 void FollowsStarClause::transferPairsToResult(set<pair<string, string>>* pairs, Results* res) {
-	typedef pair<string, string> PAIR;
-	BOOST_FOREACH(PAIR p, *pairs) {
+	
+	BOOST_FOREACH(auto p, *pairs) {
 		res->addPairResult(p.first, p.second);
 	}
 	res->setClausePassed(res->getPairResults().size() > 0);
