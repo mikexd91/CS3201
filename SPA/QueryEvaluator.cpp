@@ -99,12 +99,12 @@ set<string> QueryEvaluator::getAllSynValues(vector<StringPair> selectList) {
 }
 
 // return the NUMBER of times syn appear in both obj1 and obj2
-int QueryEvaluator::getSameClause(Results obj1, Results obj2) {
+int QueryEvaluator::getNumOfRepeatingSyn(Results obj1, Results obj2) {
 	int numSynObj1 = obj1.getNumOfSyn();
 	int numSynObj2 = obj2.getNumOfSyn();
 
 	if (numSynObj1 == 2 && numSynObj2 == 1) {
-		int countr = getSameClause(obj2, obj1);
+		int countr = getNumOfRepeatingSyn(obj2, obj1);
 		return countr;
 	}
 	
@@ -183,19 +183,28 @@ set<string> QueryEvaluator::evaluateOneClause(Results res, vector<StringPair> se
 set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vector<StringPair> selectList) {
 	Results obj1 = resultList.at(0);
 	Results obj2 = resultList.at(1);
-	int numRepeatingClause = getSameClause(obj1, obj2);
+	int numRepeatingSyn = getNumOfRepeatingSyn(obj1, obj2);
 	string syn = selectList.at(0).getFirst();
 	
-	switch (numRepeatingClause) {
+	switch (numRepeatingSyn) {
 		case 0 : 
 			if (obj1.isClausePassed() && obj2.isClausePassed()) {
-				set<string> result = getAllSynValues(selectList);
-				return result;
+				if (obj1.usesSyn(syn)) {
+					set<string> result = obj1.getSelectSynResult(syn);
+					return result;
+				}
 
-			} else {
-				return set<string>();
+				if (obj2.usesSyn(syn)) {
+					set<string> result = obj2.getSelectSynResult(syn);
+					return result;
+				}
 
+				if (!obj1.usesSyn(syn) && !obj2.usesSyn(syn)) {
+					set<string> result = getAllSynValues(selectList);
+					return result;
+				}
 			}
+			return set<string>();
 
 		case 1 :
 			if (obj1.isClausePassed() && obj2.isClausePassed()) {
@@ -216,9 +225,9 @@ set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vecto
 					return result;
 				}
 
-				return set<string>();
 			}
-			
+			return set<string>();
+
 		case 2 :
 			if (obj1.isClausePassed() && obj2.isClausePassed()) {
 				obj1.getIntersect(obj2);
@@ -236,7 +245,6 @@ set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vecto
 			return set<string>();
 
 		default :
-			// error
 			return set<string>();
 	}
 	

@@ -14,7 +14,8 @@ FollowsClause::~FollowsClause(void){
 bool FollowsClause::checkIsSameType(NodeType type, string stmtType) {
 	if ((stmtType == stringconst::ARG_STATEMENT) ||
 		(type == WHILE_STMT_ && stmtType == stringconst::ARG_WHILE) ||
-		(type == ASSIGN_STMT_ && stmtType == stringconst::ARG_ASSIGN)) {
+		(type == ASSIGN_STMT_ && stmtType == stringconst::ARG_ASSIGN) ||
+		(stmtType == stringconst::ARG_GENERIC)) {
 		return true;
 	
 	} else {
@@ -95,8 +96,8 @@ bool FollowsClause::isFollows(string stmtNum1, string stmtNum2) {
 bool FollowsClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
-	bool firstArg = (firstType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_ASSIGN) || (firstType == stringconst::ARG_WHILE) || (firstType == stringconst::ARG_PROGLINE);
-	bool secondArg = (secondType == stringconst::ARG_STATEMENT) || (secondType == stringconst::ARG_ASSIGN) || (secondType == stringconst::ARG_WHILE) || (secondType == stringconst::ARG_PROGLINE);
+	bool firstArg = (firstType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_ASSIGN) || (firstType == stringconst::ARG_WHILE) || (firstType == stringconst::ARG_PROGLINE) || (firstType == stringconst::ARG_GENERIC);
+	bool secondArg = (secondType == stringconst::ARG_STATEMENT) || (secondType == stringconst::ARG_ASSIGN) || (secondType == stringconst::ARG_WHILE) || (secondType == stringconst::ARG_PROGLINE) || (firstType == stringconst::ARG_GENERIC);
 	return (firstArg && secondArg);
 }
 
@@ -150,7 +151,8 @@ void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgT
 			}
 		}
 
-	} else if (firstArgType == stringconst::ARG_STATEMENT) {
+	} else if (firstArgType == stringconst::ARG_STATEMENT ||
+		firstArgType == stringconst::ARG_GENERIC) {
 		StmtTable* stmtTable = StmtTable::getInstance();
 		boost::unordered_map<int, Statement*>::iterator iter;
 		
@@ -223,6 +225,15 @@ Results FollowsClause::evaluate(void) {
 	} else if (!isFirstFixed && !isSecondFixed) {
 		Results resObj = *resultsObj;
 		
+		if (firstArgType == stringconst::ARG_GENERIC && secondArgType == stringconst::ARG_GENERIC) {
+			followsBothUnfixedArg(firstArgType, secondArgType, resObj);
+			if (resObj.isClausePassed()) {
+				resObj.setNumOfSyn(0);
+				resObj.setFirstClauseSyn("_");
+				resObj.setSecondClauseSyn("_");
+			}
+		}
+
 		if (firstArgSyn != secondArgSyn) {
 			followsBothUnfixedArg(firstArgType, secondArgType, resObj);
 			if (resObj.isClausePassed()) {
@@ -230,7 +241,7 @@ Results FollowsClause::evaluate(void) {
 				resObj.setFirstClauseSyn(firstArgSyn);
 				resObj.setSecondClauseSyn(secondArgSyn);
 			}
-		} 
+		}
 		return resObj;
 
 	} else {

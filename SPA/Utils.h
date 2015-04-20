@@ -25,6 +25,7 @@ public:
 	static bool isSameType(string, NodeType);
 	static string convertNodeTypeToArgType(NodeType);
 	static set<int> filterStatements(set<int>, NodeType);
+	static NodeType convertArgTypeToNodeType(string);
 };
 
 namespace UtilsConstants {
@@ -62,6 +63,7 @@ namespace stringconst{
 	string const ARG_PROGLINE = "prog_line";
 	string const ARG_BOOLEAN = "boolean";
 	string const ARG_CONSTANT = "constant";
+	string const ARG_GENERIC = "underscore";
 
 	const string DELIM_STRING = " ;={}";
 	const char DELIMITERS[] = { ';', '=', '{', '}' };

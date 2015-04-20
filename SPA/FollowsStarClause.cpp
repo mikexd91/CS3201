@@ -7,6 +7,7 @@
 
 using namespace stringconst;
 using namespace boost;
+using namespace std;
 
 FollowsStarClause::FollowsStarClause(void):Clause(FOLLOWSSTAR_){
 }
@@ -17,8 +18,16 @@ FollowsStarClause::~FollowsStarClause(void){
 bool FollowsStarClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
-	bool firstArg = (firstType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_ASSIGN) || (firstType == stringconst::ARG_WHILE) || (firstType == stringconst::ARG_PROGLINE);
-	bool secondArg = (secondType == stringconst::ARG_STATEMENT) || (secondType == stringconst::ARG_ASSIGN) || (secondType == stringconst::ARG_WHILE) || (secondType == stringconst::ARG_PROGLINE);
+	bool firstArg = (firstType == stringconst::ARG_STATEMENT) 
+		|| (firstType == stringconst::ARG_ASSIGN) 
+		|| (firstType == stringconst::ARG_WHILE) 
+		|| (firstType == stringconst::ARG_PROGLINE) 
+		|| (firstType == stringconst::ARG_GENERIC);
+	bool secondArg = (secondType == stringconst::ARG_STATEMENT) 
+		|| (secondType == stringconst::ARG_ASSIGN) 
+		|| (secondType == stringconst::ARG_WHILE) 
+		|| (secondType == stringconst::ARG_PROGLINE) 
+		|| (secondType == stringconst::ARG_GENERIC);
 	return (firstArg && secondArg);
 }
 
@@ -47,7 +56,6 @@ string FollowsStarClause::getSecondStmtType() {
 }
 
 Results FollowsStarClause::evaluate(void) {
-
 	if (firstArgFixed) {
 		if (secondArgFixed) {
 			return evaluateFollowsStarFixedFixed(getFirstStmtNum(), getSecondStmtNum());
@@ -75,8 +83,11 @@ Results FollowsStarClause::evaluateFollowsStarFixedFixed(int firstStmtNum, int s
 
 Results FollowsStarClause::evaluateFollowsStarFixedSyn(int firstStmtNum, string secondStmtSyn) {
 	Results* res = new Results();
-	res->setNumOfSyn(1);
-	res->setFirstClauseSyn(secondStmtSyn);
+	res->setNumOfSyn(0);
+	if (getSecondStmtType() != ARG_GENERIC) {
+		res->setNumOfSyn(1);
+		res->setFirstClauseSyn(secondStmtSyn);
+	}
 
 	StmtTable* stable = StmtTable::getInstance();
 	set<Statement*> allStmt2;	
@@ -103,8 +114,11 @@ Results FollowsStarClause::evaluateFollowsStarFixedSyn(int firstStmtNum, string 
 
 Results FollowsStarClause::evaluateFollowsStarSynFixed(string firstStmtSyn, int secondStmtNum) {
 	Results* res = new Results();
-	res->setNumOfSyn(1);
-	res->setFirstClauseSyn(firstStmtSyn);
+	res->setNumOfSyn(0);
+	if (getFirstStmtType() != ARG_GENERIC) {
+		res->setNumOfSyn(1);
+		res->setFirstClauseSyn(firstStmtSyn);
+	}
 
 	StmtTable* stable = StmtTable::getInstance();
 	set<Statement*> allStmt1;	
@@ -130,10 +144,33 @@ Results FollowsStarClause::evaluateFollowsStarSynFixed(string firstStmtSyn, int 
 }
 
 Results FollowsStarClause::evaluateFollowsStarSynSyn(string firstStmtSyn, string secondStmtSyn) {
+	bool isFirstGeneric = getFirstStmtType() == ARG_GENERIC;
+	bool isSecondGeneric = getSecondStmtType() == ARG_GENERIC;
+	bool isBothGeneric = isFirstGeneric && isSecondGeneric;
+
 	Results* res = new Results();
-	res->setFirstClauseSyn(firstStmtSyn);
-	res->setSecondClauseSyn(secondStmtSyn);
-	res->setNumOfSyn(2);
+	res->setNumOfSyn(0);
+	if (isBothGeneric) {
+		res->setNumOfSyn(0);
+	} else if (isFirstGeneric) {
+		res->setFirstClauseSyn(firstStmtSyn);
+		res->setNumOfSyn(1);
+	} else if (isSecondGeneric) {
+		res->setFirstClauseSyn(secondStmtSyn);
+		res->setNumOfSyn(1);
+	} else {
+		res->setFirstClauseSyn(firstStmtSyn);
+		res->setSecondClauseSyn(secondStmtSyn);
+		res->setNumOfSyn(2);
+	}
+
+	// check if same, unless if _,_
+	if ((getFirstStmtType() != ARG_GENERIC) 
+		|| (getSecondStmtType() != ARG_GENERIC)) {
+		if (firstStmtSyn == secondStmtSyn) {
+			return *res;
+		}
+	}
 
 	StmtTable* stable = StmtTable::getInstance();
 	set<Statement*> allStmt1;
@@ -155,23 +192,59 @@ Results FollowsStarClause::evaluateFollowsStarSynSyn(string firstStmtSyn, string
 		allStmt2 = stable->getAllStmts();
 	}
 
-	//cout << endl << "all stmt size " << allStmt.size() << endl;
+	set<string>* singles = new set<string>();
+	set<pair<string, string>>* pairs = new set<pair<string, string>>();
 
 	BOOST_FOREACH(auto p, allStmt1) {
 		int firstStmtNum = p->getStmtNum();
 
 		BOOST_FOREACH(auto q, allStmt2) {
-		//for (size_t i = 0; i < allVarNames->size(); i++) {
 			int secondStmtNum = q->getStmtNum();
 			if (isFollowsStar(firstStmtNum, secondStmtNum)) {
-				res->addPairResult(lexical_cast<string>(firstStmtNum), lexical_cast<string>(secondStmtNum));
+				// put in a set first, then from set put in vector.
+				if (isBothGeneric) {
+					pair<string, string> pr = pair<string, string>(lexical_cast<string>(firstStmtNum), lexical_cast<string>(secondStmtNum));
+					pairs->emplace(pr);
+				} else if (isFirstGeneric) {
+					singles->emplace(lexical_cast<string>(firstStmtNum));
+				} else if (isSecondGeneric) {
+					singles->emplace(lexical_cast<string>(secondStmtNum));
+				} else {
+					pair<string, string> pr = pair<string, string>(lexical_cast<string>(firstStmtNum), lexical_cast<string>(secondStmtNum));
+					pairs->emplace(pr);
+				}
 			}
 		}
 	}
 
-	res->setClausePassed(res->getPairResults().size() > 0);
-
+	// transfer from set to vector
+	if (isBothGeneric) {
+		transferPairsToResult(pairs, res);
+	} else if (isFirstGeneric) {
+		transferSinglesToResult(singles, res);
+	} else if (isSecondGeneric) {
+		transferSinglesToResult(singles, res);
+	} else {
+		transferPairsToResult(pairs, res);
+	}
+	
 	return *res;
+}
+
+void FollowsStarClause::transferSinglesToResult(set<string>* singles, Results* res) {
+	
+	BOOST_FOREACH(auto p, *singles) {
+		res->addSingleResult(p);
+	}
+	res->setClausePassed(res->getSinglesResults().size() > 0);
+}
+
+void FollowsStarClause::transferPairsToResult(set<pair<string, string>>* pairs, Results* res) {
+	
+	BOOST_FOREACH(auto p, *pairs) {
+		res->addPairResult(p.first, p.second);
+	}
+	res->setClausePassed(res->getPairResults().size() > 0);
 }
 
 bool FollowsStarClause::isFollowsStar(int stmtNum1, int stmtNum2) {
@@ -182,12 +255,19 @@ bool FollowsStarClause::isFollowsStar(int stmtNum1, int stmtNum2) {
 	
 	StmtTable* stable = StmtTable::getInstance();
 	Statement* stmt1 = stable->getStmtObj(stmtNum1);
+
+	if (stmt1 == nullptr) {
+		return false;
+	}
 	
 	int nextFollows = stmt1->getFollowsAfter();
 
 	while (nextFollows != -1) {
 		if (nextFollows == stmtNum2) {
 			return true;
+		}
+		if (stable->getStmtObj(nextFollows) == nullptr) {
+			return false;
 		}
 		nextFollows = stable->getStmtObj(nextFollows)->getFollowsAfter();
 	}

@@ -96,9 +96,9 @@ void QueryParserTest::testSelect(){
 
 void QueryParserTest::testClause(){
 	Query* ASSERTION = new Query();
-	string const DEC_LINE = "assign a; variable v;";
+	string const DEC_LINE = "assign a;";
 	string const SEL_LINE = "Select a";
-	string const CLS_LINE = "Follows(a, \"v\")";
+	string const CLS_LINE = "Follows(a, _)";
 
 	vector<string> DEC_LIST = QueryParser::tokeniser(DEC_LINE, ';');
 	QueryParser::parseDeclarations(ASSERTION, DEC_LIST);
@@ -114,7 +114,7 @@ void QueryParserTest::testClause(){
 	vector<Clause*> cls = ASSERTION->getClauseList();
 
 	CPPUNIT_ASSERT(dec.at("a") == stringconst::ARG_ASSIGN);
-	CPPUNIT_ASSERT(dec.at("v") == stringconst::ARG_VARIABLE);
+	//CPPUNIT_ASSERT(dec.at("v") == stringconst::ARG_VARIABLE);
 	CPPUNIT_ASSERT(sel.at(0).getFirst() == "a");
 	CPPUNIT_ASSERT(sel.at(0).getSecond() == stringconst::ARG_ASSIGN);
 	
@@ -124,9 +124,9 @@ void QueryParserTest::testClause(){
 	CPPUNIT_ASSERT(TEST->getFirstArg() == "a");
 	CPPUNIT_ASSERT(TEST->getFirstArgType() == stringconst::ARG_ASSIGN);
 	bool SECOND_FIXED = TEST->getSecondArgFixed();
-	CPPUNIT_ASSERT(SECOND_FIXED);
-	CPPUNIT_ASSERT(TEST->getSecondArg() == "v");
-	CPPUNIT_ASSERT(TEST->getSecondArgType() == stringconst::ARG_VARIABLE);
+	CPPUNIT_ASSERT(!SECOND_FIXED);
+	CPPUNIT_ASSERT(TEST->getSecondArg() == "_");
+	CPPUNIT_ASSERT(TEST->getSecondArgType() == stringconst::ARG_GENERIC);
 }
 
 void QueryParserTest::testPattern(){

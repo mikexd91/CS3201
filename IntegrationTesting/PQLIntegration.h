@@ -16,6 +16,8 @@ class PQLIntegration : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testSelectFollowsPattern );
 	CPPUNIT_TEST( testSelectConstant );
 	CPPUNIT_TEST( testSelectProgLine );
+	CPPUNIT_TEST( testFailParent );
+	CPPUNIT_TEST( testFailUses );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -34,4 +36,6 @@ public:
 	void testSelectFollowsPattern();
 	void testSelectConstant();
 	void testSelectProgLine();
+	void testFailParent();
+	void testFailUses();
 };

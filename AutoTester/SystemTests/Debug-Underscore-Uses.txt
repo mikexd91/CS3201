@@ -1,0 +1,30 @@
+1 - testing for Uses
+assign a;
+Select a such that Uses(a, _)
+6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 19
+5000
+2 - testing for Uses
+while w;
+Select w such that Uses(w, _)
+5, 15, 17, 18
+5000
+3 - testing for Uses
+variable v;
+Select v such that Uses(_, v)
+firstStageEvolution, charmander, bulbasaur, squirtle, charmeleon, wartortle, ivysaur, battle1, battle2, battle3, lastPokemon
+5000
+4 - testing for Uses
+stmt s;
+Select s such that Uses(s, _)
+5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
+5000
+5 - testing for Uses
+assign a;
+Select a such that Uses(_, _)
+1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 19, 20
+5000
+6 - testing for Uses
+assign a;
+Select a such that Uses(1, _)
+none
+5000 

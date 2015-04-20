@@ -6,6 +6,7 @@
 
 using namespace std;
 using namespace boost;
+using namespace stringconst;
 
 ParentStarClause::ParentStarClause(void):ParentClause(){
 }
@@ -16,8 +17,8 @@ ParentStarClause::~ParentStarClause(void){
 bool ParentStarClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
-	bool firstArg = ((firstType == stringconst::ARG_WHILE) || (firstType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_PROGLINE));
-	bool secondArg = ((secondType == stringconst::ARG_WHILE) || (secondType == stringconst::ARG_ASSIGN) || (secondType == stringconst::ARG_STATEMENT) || (secondType == stringconst::ARG_PROGLINE));
+	bool firstArg = ((firstType == ARG_GENERIC) || (firstType == ARG_WHILE) || (firstType == ARG_STATEMENT) || (firstType == ARG_PROGLINE) || (firstType == ARG_ASSIGN));
+	bool secondArg = ((secondType == ARG_GENERIC) || (secondType == ARG_WHILE) || (secondType == ARG_ASSIGN) || (secondType == ARG_STATEMENT) || (secondType == ARG_PROGLINE));
 	return (firstArg && secondArg);
 }
 
@@ -50,11 +51,20 @@ Results ParentStarClause::evaluate(void) {
 Results ParentStarClause::evaluateS1WildS2Wild() {
 	Results res = Results();
 	// set synonyms
-	res.setNumOfSyn(2);
 	res.setFirstClauseSyn(this->getFirstArg());
 	res.setSecondClauseSyn(this->getSecondArg());
+	// set synonym count
+	string firstType = this->getFirstArgType();
+	string secondType = this->getSecondArgType();
+	if(firstType==ARG_GENERIC && secondType==ARG_GENERIC) {
+		res.setNumOfSyn(2);
+	} else if(firstType==ARG_GENERIC || secondType==ARG_GENERIC) {
+		res.setNumOfSyn(1);
+	} else {
+		res.setNumOfSyn(0);
+	}
 
-	if(res.getFirstClauseSyn() == res.getSecondClauseSyn()) {
+	if((res.getFirstClauseSyn()==res.getSecondClauseSyn()) && res.getFirstClauseSyn()!="_") {
 		return res;
 	}
 
@@ -67,17 +77,17 @@ Results ParentStarClause::evaluateS1WildS2Wild() {
 	set<Statement*>::iterator s1Iter, s2Iter;
 
 	// TODO did not include if statements
-	if(firstArgType == stringconst::ARG_STATEMENT) {
+	if(firstArgType == ARG_STATEMENT || firstArgType == ARG_GENERIC) {
 		s1Set = stmtTable->getAllStmts();
-	} else if(firstArgType == stringconst::ARG_WHILE) {
+	} else if(firstArgType == ARG_WHILE) {
 		s1Set = stmtTable->getWhileStmts();
 	}
 
-	if(secondArgType == stringconst::ARG_STATEMENT) {
+	if(secondArgType == ARG_STATEMENT || secondArgType == ARG_GENERIC) {
 		s2Set = stmtTable->getAllStmts();
-	} else if(secondArgType == stringconst::ARG_WHILE) {
+	} else if(secondArgType == ARG_WHILE) {
 		s2Set = stmtTable->getWhileStmts();
-	} else if(secondArgType == stringconst::ARG_ASSIGN) {
+	} else if(secondArgType == ARG_ASSIGN) {
 		s2Set = stmtTable->getAssgStmts();
 	}
 
@@ -132,8 +142,12 @@ void ParentStarClause::recurParentCheckS1WildS2Wild(Results& res, string s1, str
 Results ParentStarClause::evaluateS1WildS2Fixed() {
 	Results res = Results();
 	// set synonyms
-	res.setNumOfSyn(1);
 	res.setFirstClauseSyn(this->getFirstArg());
+	if(this->getFirstArgType() == ARG_GENERIC) {
+		res.setNumOfSyn(0);
+	} else {
+		res.setNumOfSyn(1);
+	}
 
 	string secondArg = this->getSecondArg();
 
@@ -141,7 +155,7 @@ Results ParentStarClause::evaluateS1WildS2Fixed() {
 	string firstArgType = this->getFirstArgType();
 
 	// get the right statement set
-	if(firstArgType == stringconst::ARG_WHILE) {
+	if(firstArgType == ARG_WHILE) {
 		set<Statement*> whileSet = stmtTable->getWhileStmts();
 		set<Statement*>::iterator stmtIter;
 		
@@ -150,7 +164,7 @@ Results ParentStarClause::evaluateS1WildS2Fixed() {
 			recurParentCheckS1WildS2Fixed(res, currentStmtNum, currentStmtNum);
 		}
 
-	} else if(firstArgType == stringconst::ARG_STATEMENT) {
+	} else if(firstArgType == ARG_STATEMENT || firstArgType == ARG_GENERIC) {
 		StmtTable::StmtTableIterator stmtIter;
 
 		for(stmtIter=stmtTable->getIterator(); stmtIter!=stmtTable->getEnd(); stmtIter++) {
@@ -171,9 +185,16 @@ void ParentStarClause::recurParentCheckS1WildS2Fixed(Results &res, string s1, st
 		res.addSingleResult(originS1);
 	} else {
 		// get all children of first arg (type does not matter)
-		set<int> argChildren = stmtTable->getStmtObj(lexical_cast<int>(s1))->getChildren();
+		Statement* currStmt = stmtTable->getStmtObj(lexical_cast<int>(s1));
 
-		// base case 2 - s1 has no children
+		// base case 2 - s1 doesn't exist
+		if(currStmt == nullptr) {
+			return;
+		}
+
+		set<int> argChildren = currStmt->getChildren();
+
+		// base case 3 - s1 has no children
 		if(argChildren.size() == 0) {
 			return;
 
@@ -194,8 +215,12 @@ void ParentStarClause::recurParentCheckS1WildS2Fixed(Results &res, string s1, st
 Results ParentStarClause::evaluateS1FixedS2Wild() {
 	Results res = Results();
 	// set synonyms
-	res.setNumOfSyn(1);
 	res.setFirstClauseSyn(this->getSecondArg());
+	if(this->getSecondArgType() == ARG_GENERIC) {
+		res.setNumOfSyn(0);
+	} else {
+		res.setNumOfSyn(1);
+	}
 
 	string firstArg = this->getFirstArg();
 
@@ -203,7 +228,7 @@ Results ParentStarClause::evaluateS1FixedS2Wild() {
 	string secondArgType = this->getSecondArgType();
 
 	// get the right statement set
-	if(secondArgType == stringconst::ARG_ASSIGN) {
+	if(secondArgType == ARG_ASSIGN) {
 		set<Statement*> assignSet = stmtTable->getAssgStmts();
 		set<Statement*>::iterator stmtIter;
 		
@@ -212,7 +237,7 @@ Results ParentStarClause::evaluateS1FixedS2Wild() {
 			recurParentCheckS1FixedS2Wild(res, firstArg, currentStmtNum, currentStmtNum);
 		}
 
-	} else if(secondArgType == stringconst::ARG_WHILE) {
+	} else if(secondArgType == ARG_WHILE) {
 		set<Statement*> whileSet = stmtTable->getWhileStmts();
 		set<Statement*>::iterator stmtIter;
 		
@@ -221,7 +246,7 @@ Results ParentStarClause::evaluateS1FixedS2Wild() {
 			recurParentCheckS1FixedS2Wild(res, firstArg, currentStmtNum, currentStmtNum);
 		}
 
-	} else if(secondArgType == stringconst::ARG_STATEMENT) {
+	} else if(secondArgType == ARG_STATEMENT || secondArgType == ARG_GENERIC) {
 		StmtTable::StmtTableIterator stmtIter;
 
 		for(stmtIter=stmtTable->getIterator(); stmtIter!=stmtTable->getEnd(); stmtIter++) {
@@ -241,9 +266,16 @@ void ParentStarClause::recurParentCheckS1FixedS2Wild(Results &res, string s1, st
 		res.addSingleResult(originS2);
 	} else {
 		// get all children of first arg
-		set<int> argChildren = stmtTable->getStmtObj(lexical_cast<int>(s1))->getChildren();
+		Statement* currStmt = stmtTable->getStmtObj(lexical_cast<int>(s1));
 
-		// base case 2 - s1 has no children
+		// base case 2 - s1 doesn't exist
+		if(currStmt == nullptr) {
+			return;
+		}
+
+		set<int> argChildren = currStmt->getChildren();
+
+		// base case 3 - s1 has no children
 		if(argChildren.size() == 0) {
 			return;
 
@@ -284,9 +316,16 @@ void ParentStarClause::recurParentCheckS1FixedS2Fixed(Results &res, string s1, s
 		return;
 	} else {
 		// get all children of first arg
-		set<int> argChildren = stmtTable->getStmtObj(lexical_cast<int>(s1))->getChildren();
+		Statement* currStmt = stmtTable->getStmtObj(lexical_cast<int>(s1));
+		
+		// base case 2 - s1 doesn't exist
+		if(currStmt == nullptr) {
+			return;
+		}
 
-		// base case 2 - s1 has no children
+		set<int> argChildren = currStmt->getChildren();
+
+		// base case 3 - s1 has no children
 		if(argChildren.size() == 0) {
 			return;
 

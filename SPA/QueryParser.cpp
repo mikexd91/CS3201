@@ -295,7 +295,13 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 	if (decList.find(firstArg) == decList.end()){
 		if (!Utils::isValidConstant(firstArg)){
 			if (!contains(firstArg, "\"")){
-				throw MissingDeclarationException();
+				if (firstArg != stringconst::STRING_EMPTY){
+					throw MissingDeclarationException();
+				} else {
+					newClause->setFirstArg(firstArg);
+					newClause->setFirstArgFixed(false);
+					newClause->setFirstArgType(stringconst::ARG_GENERIC);
+				}
 			} else {
 				int start = firstArg.find_first_of("\"");
 				int end = firstArg.find_last_of("\"");
@@ -319,7 +325,13 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 	if (decList.find(secondArg) == decList.end()){
 		if (!Utils::isValidConstant(secondArg)){
 			if (!contains(secondArg, "\"")){
-				throw MissingDeclarationException();
+				if (secondArg != stringconst::STRING_EMPTY){
+					throw MissingDeclarationException();
+				} else {
+					newClause->setSecondArg(secondArg);
+					newClause->setSecondArgFixed(false);
+					newClause->setSecondArgType(stringconst::ARG_GENERIC);
+				}
 			} else {
 				int start = secondArg.find_first_of("\"");
 				int end = secondArg.find_last_of("\"");

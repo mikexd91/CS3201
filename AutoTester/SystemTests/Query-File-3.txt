@@ -182,3 +182,9 @@ Select c such that Modifies(a, "battle1")
 while w; prog_line l; assign a;
 Select l such that Follows(a, w)
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+5000
+38 - testing for parent*
+assign a, a1;
+Select a such that Parent*(15, a) pattern a1(_, _"charmander"_)
+16, 19, 20
+5000
