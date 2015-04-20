@@ -31,7 +31,7 @@ bool ParentClause::isParent(string stmt1, string stmt2) {
 set<int> ParentClause::getChildren(string stmt, string stmtArgType) {
 	int stmtNum = atoi(stmt.c_str());
 	Statement* stmtObj = stmtTable->getStmtObj(stmtNum);
-	if (stmtObj == NULL) {
+	if (stmtObj == nullptr) {
 		return set<int>();
 	} else {
 		set<int> stmtSet = stmtObj->getChildren();
@@ -48,7 +48,7 @@ set<int> ParentClause::getChildren(string stmt, string stmtArgType) {
 
 int ParentClause::getParent(int stmtNum) {
 	Statement* stmtObj = stmtTable->getStmtObj(stmtNum);
-	if (stmtObj == NULL) {
+	if (stmtObj == nullptr) {
 		return -1;
 	} else {
 		int stmt = stmtObj->getParent();
