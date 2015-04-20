@@ -138,7 +138,7 @@ Results UsesClause::evaluateStmtWildVarFixed() {
 	if(stmtSet.size() != 0) {
 		res.setClausePassed(true);
 
-		//if(this->getFirstArgType() != ARG_GENERIC) {
+		if(this->getFirstArgType() != ARG_GENERIC) {
 			for(stmtIter=stmtSet.begin(); stmtIter!=stmtSet.end(); stmtIter++) {
 				Statement* currentStmt = stmtTable->getStmtObj(*stmtIter);
 				// check if current stmt conforms to specific stmt type
@@ -146,7 +146,7 @@ Results UsesClause::evaluateStmtWildVarFixed() {
 					res.addSingleResult(lexical_cast<string>(*stmtIter));
 				}
 			}
-		//}
+		}
 	}
 
 	return res;
