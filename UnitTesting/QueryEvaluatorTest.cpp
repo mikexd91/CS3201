@@ -278,6 +278,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( QueryEvaluatorTest );
 void QueryEvaluatorTest::testEvaluator() {
 	QueryEvaluator e = *new QueryEvaluator();
 
+	// Test Follows(a1, a2)
 	FollowsClause* fol = new FollowsClause();
 	fol->setFirstArg("a1");
 	fol->setSecondArg("a2");
@@ -297,6 +298,26 @@ void QueryEvaluatorTest::testEvaluator() {
 	set<string> res = e.evaluateQuery(q);
 	
 	CPPUNIT_ASSERT(res.size() == 1);
+
+	// test Follows(_,_)
+	FollowsClause* fol2 = new FollowsClause();
+	fol2->setFirstArgFixed(false);
+	fol2->setSecondArgFixed(false);
+	fol2->setFirstArgType(ARG_GENERIC);
+	fol2->setSecondArgType(ARG_GENERIC);
+	fol2->isValid();
+
+	StringPair p6 = *new StringPair();
+	p6.setFirst("s");
+	p6.setSecond(ARG_STATEMENT);
+
+	Query q6 = *new Query();
+	q6.addSelectSynonym(p6);
+	q6.addClause(fol2);
+
+	set<string> res6 = e.evaluateQuery(q6);
+
+	CPPUNIT_ASSERT(res6.size() == 7);
 
 	//test ParentStar FixedSyn With While
 	ParentStarClause* m1 = new ParentStarClause();
@@ -381,12 +402,13 @@ void QueryEvaluatorTest::testEvaluator() {
 	q5.addClause(f2);
 
 	set<string> res5 = e.evaluateQuery(q5);
-
-	/*for (set<string>::iterator iter=res5.begin(); iter != res5.end(); iter++) {
+	/*
+	for (set<string>::iterator iter=res5.begin(); iter != res5.end(); iter++) {
 		cout << "result: " << *iter << "!";
-	}*/
+	}
+	*/
 	// to check
-	CPPUNIT_ASSERT(res4.size() == 2);
+	CPPUNIT_ASSERT(res5.size() == 5);
 
 }
 
@@ -445,8 +467,12 @@ void QueryEvaluatorTest::testEvaluator2() {
 	q2.addClause(p2);
 
 	set<string> res2 = e.evaluateQuery(q2);
-
-	CPPUNIT_ASSERT(res2.size() == 5);
+	/*
+	for (set<string>::iterator iter=res2.begin(); iter != res2.end(); iter++) {
+		cout << "result: " << *iter << "!";
+	}
+	*/
+	CPPUNIT_ASSERT(res2.size() == 1);
 
 	// Test 1 same unfixed syn between 2 clauses
 	// Select a s.t. Modifies(a,v1) pattern a(v2,_)
