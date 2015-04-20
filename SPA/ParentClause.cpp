@@ -155,7 +155,7 @@ Results* ParentClause::evaluateS1WildS2Wild(string firstArgSyn, string secondArg
 			resultsObj->setNumOfSyn(0);
 		} else if (firstArgType == stringconst::ARG_GENERIC) {
 			resultsObj->setNumOfSyn(1);
-			resultsObj->setSecondClauseSyn(secondArgSyn);
+			resultsObj->setFirstClauseSyn(secondArgSyn);
 		} else if (secondArgType == stringconst::ARG_GENERIC) {
 			resultsObj->setNumOfSyn(1);
 			resultsObj->setFirstClauseSyn(firstArgSyn);

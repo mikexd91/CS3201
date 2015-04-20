@@ -228,6 +228,7 @@ void ParentClauseTest::testParentSynFixedPass() {
 
 	Results r1 = m1->evaluate();
 	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s");
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "3");
 }
@@ -259,6 +260,7 @@ void ParentClauseTest::testParentFixedSynPass() {
 
 	Results r1 = m1->evaluate();
 	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s");
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 2);
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "2");
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(1) == "3");
@@ -276,6 +278,7 @@ void ParentClauseTest::testParentFixedSynPassWithWhile() {
 
 	Results r1 = m1->evaluate();
 	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "w");
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "3");
 }
@@ -321,6 +324,8 @@ void ParentClauseTest::testParentSynSynPass() {
 	Results r1 = m1->evaluate();
 	vector<pair<string, string>> resultVector = r1.getPairResults();
 	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s1");
+	CPPUNIT_ASSERT(r1.getSecondClauseSyn() == "s2");
 	CPPUNIT_ASSERT(resultVector.size() == 4);
 	pair<string, string> pair0("1","2");
 	pair<string, string> pair1("1","3");
@@ -346,6 +351,7 @@ void ParentClauseTest::testParentFirstUnderscorePass() {
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 4);
+	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s2");
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "2");
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(1) == "3");
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(2) == "4");
@@ -366,6 +372,7 @@ void ParentClauseTest::testParentSecondUnderscorePass() {
 	Results r1 = m1->evaluate();
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
+	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s2");
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 2);
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "1");
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(1) == "3");
@@ -400,6 +407,8 @@ void ParentClauseTest::testParentSynSynPassWithWhile() {
 	Results r1 = m1->evaluate();
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getPairResults().size() == 1);
+	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s1");
+	CPPUNIT_ASSERT(r1.getSecondClauseSyn() == "s2");
 	pair<string, string> pair0("1","3");
 	CPPUNIT_ASSERT(r1.getPairResults().at(0) == pair0);
 }
