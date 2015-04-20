@@ -166,7 +166,7 @@ void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgT
 			int stmt1 = iter->first;
 			Statement* stmtObj1 = iter->second;
 			int stmt2 = stmtObj1->getFollowsAfter();
-			
+
 			if (stmt2 != -1) {
 				Statement* stmtObj2 = stmtTable->getStmtObj(stmt2);
 				NodeType type = stmtObj2->getType();
@@ -191,6 +191,44 @@ void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgT
 		resObj.setClausePassed(true);
 		//resObj.setNumOfSyn(2);
 	}
+}
+
+void FollowsClause::followsWithOneUnderscore(string firstArgType, string secondArgType, Results &resObj) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	boost::unordered_map<int, Statement*>::iterator iter;
+		
+	for (iter = stmtTable->getIterator(); iter != stmtTable->getEnd(); iter++) {
+		int stmt1 = iter->first;
+		Statement* stmtObj1 = iter->second;
+			
+		int stmt2;
+		if (firstArgType == stringconst::ARG_GENERIC) {
+			stmt2 = stmtObj1->getFollowsAfter();
+		} else {
+			stmt2 = stmtObj1->getFollowsBefore();
+		}
+
+		if (stmt2 != -1) {
+			Statement* stmtObj2 = stmtTable->getStmtObj(stmt2);
+			NodeType type = stmtObj2->getType();
+				
+			bool isSameType;
+			if (firstArgType == stringconst::ARG_GENERIC) {
+				isSameType = checkIsSameType(type, secondArgType);
+			} else {
+				isSameType = checkIsSameType(type, firstArgType);
+			}
+
+			if (isSameType) {
+				stringstream ss;
+				ss << stmt2;
+				string strStmt2;
+				ss >> strStmt2;
+
+				resObj.addSingleResult(strStmt2);
+			}
+		}
+	}	
 }
 
 Results FollowsClause::evaluate(void) {
@@ -235,8 +273,22 @@ Results FollowsClause::evaluate(void) {
 			followsBothUnfixedArg(firstArgType, secondArgType, resObj);
 			if (resObj.isClausePassed()) {
 				resObj.setNumOfSyn(0);
-				resObj.setFirstClauseSyn("_");
-				resObj.setSecondClauseSyn("_");
+			}
+		}
+
+		if (firstArgType == stringconst::ARG_GENERIC) {
+			followsWithOneUnderscore(firstArgType, secondArgType, resObj);
+			if (resObj.isClausePassed()) {
+				resObj.setNumOfSyn(1);
+				resObj.setFirstClauseSyn(secondArgSyn);
+			}
+		}
+
+		if (secondArgType == stringconst::ARG_GENERIC) {
+			followsWithOneUnderscore(firstArgType, secondArgType, resObj);
+			if (resObj.isClausePassed()) {
+				resObj.setNumOfSyn(1);
+				resObj.setFirstClauseSyn(firstArgSyn);
 			}
 		}
 

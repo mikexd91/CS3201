@@ -204,6 +204,9 @@ void PQLIntegration::setUp() {
 	Statement* stmt8 = new Statement();
 	stmt8->setStmtNum(8);
 	stmt8->setType(ASSIGN_STMT_);
+	set<string> mods8 = set<string>();
+	mods8.emplace("j");
+	stmt8->setModifies(mods8);
 	stmt8->setFollowsBefore(7);
 	stmt8->setTNodeRef(assg6);
 	stmt8->setParent(2);
@@ -229,6 +232,7 @@ void PQLIntegration::setUp() {
 	vj->addModifyingStmt(2);
 	vj->addModifyingStmt(4);
 	vj->addModifyingStmt(6);
+	vj->addModifyingStmt(8);
 	vj->addUsingStmt(4);
 	vj->addTNode(j1);
 	vj->addTNode(j2);
@@ -311,6 +315,11 @@ void PQLIntegration::testSelectModifies() {
 	set<string> r;
 	r = pcc->parse(QUERY_STRING);
 	CPPUNIT_ASSERT(1 == r.size());
+
+	string QUERY_STRING2 = "assign a; variable v; Select a such that Modifies(a, v)";
+	set<string> r2;
+	r2 = pcc->parse(QUERY_STRING2);
+	CPPUNIT_ASSERT(6 == r2.size());
 }
 
 void PQLIntegration::testSelectUses() {
@@ -327,7 +336,7 @@ void PQLIntegration::testSelectUses() {
 
 	string QUERY_STRING3 = "stmt s; variable v; Select v such that Uses(s, v)";
 	set<string> r3;
-	r3 = pcc->parse(QUERY_STRING2);
+	r3 = pcc->parse(QUERY_STRING3);
 	CPPUNIT_ASSERT(2 == r3.size());
 }
 
@@ -346,6 +355,7 @@ void PQLIntegration::testSelectFollows() {
 
 	string QUERY_STRING3 = "stmt s; Select s such that Follows(_, s)";
 	r = pcc->parse(QUERY_STRING3);
+	cout << r.size() << "fol _ s";
 	CPPUNIT_ASSERT(5 == r.size());
 
 	string QUERY_STRING4 = "assign a; Select a such that Follows(_, _)";
@@ -394,6 +404,14 @@ void PQLIntegration::testSelectParent() {
 	r = pcc->parse(QUERY_STRING4);
 	CPPUNIT_ASSERT(6 == r.size());
 
+	/*string QUERY_STRING5 = "assign a; Select a such that Parent(3, _)";
+	r = pcc->parse(QUERY_STRING5);
+	CPPUNIT_ASSERT(6 == r.size());
+
+	string QUERY_STRING5 = "assign a; Select a such that Parent(2, _)";
+	r = pcc->parse(QUERY_STRING5);
+	CPPUNIT_ASSERT(6 == r.size());*/
+
 }
 
 void PQLIntegration::testSelectParentStar() {
@@ -432,7 +450,6 @@ void PQLIntegration::testSelectPattern() {
 	string QUERY_STRING3 = "assign a; variable v; Select a pattern a(v, _\"2 + 3 + 4\"_)";
 	set<string> r3;
 	r3 = pcc->parse(QUERY_STRING3);
-	//cout << r2.size() << endl;
 	CPPUNIT_ASSERT(1 == r3.size());
 	CPPUNIT_ASSERT("8" == *r3.begin());
 }
@@ -445,10 +462,10 @@ void PQLIntegration::testSelectModifiesPattern() {
 
 	CPPUNIT_ASSERT(1 == r.size());
 
-	string QUERY_STRING2 = "assign a; variable v; Select a such that Modifies(a, v) pattern a(v, _\"2 + 3\"_)";
+	string QUERY_STRING2 = "assign a; variable v; Select a such that Modifies(a, v) pattern a(v, _\"2 + 3 + 4\"_)";
 	set<string> r2;
-	r2 = pcc->parse(QUERY_STRING);
-	//cout << *r2.begin() << endl;
+	r2 = pcc->parse(QUERY_STRING2);
+	cout << r2.size() << "mod av pattern av 2+3+4" << endl;
 	CPPUNIT_ASSERT(1 == r2.size());
 }
 

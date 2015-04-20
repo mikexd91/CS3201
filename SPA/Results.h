@@ -21,12 +21,6 @@ public:
 	void setSingleResult(vector<string>& v);
 	void setPairResult(vector<pair<string, string>>& v);
 
-	void addSinglesResultsDuplicateHack(string s); // This hack implements uses a set to prevent duplicate results before 
-															//	turning it to a vector
-	void addPairResultsDuplicateHack(string s1, string s2);
-	void convertSinglesSetToVector();
-	void convertPairSetToVector();
-
 	bool isClausePassed();
 	bool usesSyn(string syn);
 
