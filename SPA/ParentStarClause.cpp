@@ -57,11 +57,11 @@ Results ParentStarClause::evaluateS1WildS2Wild() {
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
 	if(firstType==ARG_GENERIC && secondType==ARG_GENERIC) {
-		res.setNumOfSyn(2);
+		res.setNumOfSyn(0);
 	} else if(firstType==ARG_GENERIC || secondType==ARG_GENERIC) {
 		res.setNumOfSyn(1);
 	} else {
-		res.setNumOfSyn(0);
+		res.setNumOfSyn(2);
 	}
 
 	if((res.getFirstClauseSyn()==res.getSecondClauseSyn()) && res.getFirstClauseSyn()!="_") {
@@ -113,7 +113,18 @@ void ParentStarClause::recurParentCheckS1WildS2Wild(Results& res, string s1, str
 	// base case 1 - stmts are direct parent/child
 	if(isParent(s1, s2)) {
 		res.setClausePassed(true);
-		res.addPairResult(originS1, originS2);
+
+		// add result depending on whether generics are involved
+		string firstType = this->getFirstArgType();
+		string secondType = this->getSecondArgType();
+		if(firstType == ARG_GENERIC && secondType != ARG_GENERIC) {
+			res.addSingleResult(originS2);
+		} else if(firstType != ARG_GENERIC && secondType == ARG_GENERIC) {
+			res.addSingleResult(originS1);
+		} else if(firstType != ARG_GENERIC && secondType != ARG_GENERIC) {
+			res.addPairResult(originS1, originS2);
+		}
+
 	// base case 2 - checking same stmt
 	} else if(s1 == s2) {
 		return;
@@ -182,7 +193,11 @@ void ParentStarClause::recurParentCheckS1WildS2Fixed(Results &res, string s1, st
 	// base case 1 - stmts are direct parent/child
 	if(isParent(s1, secondArg)) {
 		res.setClausePassed(true);
-		res.addSingleResult(originS1);
+
+		// add if wild is not generic
+		if(this->getFirstArgType() != ARG_GENERIC) {
+			res.addSingleResult(originS1);
+		}
 	} else {
 		// get all children of first arg (type does not matter)
 		Statement* currStmt = stmtTable->getStmtObj(lexical_cast<int>(s1));
@@ -263,7 +278,11 @@ void ParentStarClause::recurParentCheckS1FixedS2Wild(Results &res, string s1, st
 	// base case 1 - stmts are direct parent/child
 	if(isParent(s1, s2)) {
 		res.setClausePassed(true);
-		res.addSingleResult(originS2);
+		
+		// add result if wild is not a generic
+		if(this->getSecondArgType() != ARG_GENERIC) {
+			res.addSingleResult(originS2);
+		}
 	} else {
 		// get all children of first arg
 		Statement* currStmt = stmtTable->getStmtObj(lexical_cast<int>(s1));

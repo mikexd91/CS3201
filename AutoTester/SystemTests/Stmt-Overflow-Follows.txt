@@ -28,3 +28,8 @@ while w;
 Select w such that Follows(-20, -19)
 none
 5000
+7 - testing for overflow
+while w;
+Select w such that Follows(-1, 0)
+none
+5000

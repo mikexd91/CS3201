@@ -137,7 +137,6 @@
     <ClCompile Include="ModifiesClauseTest.cpp" />
     <ClCompile Include="OpNodeTest.cpp" />
     <ClCompile Include="ParserTest.cpp" />
-    <ClCompile Include="ParentClauseTest.cpp" />
     <ClCompile Include="ParentStarClauseTest.cpp" />
     <ClCompile Include="PatternAssgClauseTest.cpp" />
     <ClCompile Include="PatternAssgTest.cpp" />
@@ -168,7 +167,6 @@
     <ClInclude Include="ModifiesClauseTest.h" />
     <ClInclude Include="OpNodeTest.h" />
     <ClInclude Include="ParserTest.h" />
-    <ClInclude Include="ParentClauseTest.h" />
     <ClInclude Include="ParentStarClauseTest.h" />
     <ClInclude Include="PatternAssgClauseTest.h" />
     <ClInclude Include="PatternAssgTest.h" />

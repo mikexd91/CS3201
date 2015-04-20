@@ -28,3 +28,8 @@ while w;
 Select w such that Modifies(_, _)
 5, 15, 17, 18
 5000
+6 - testing for modifies
+assign a;
+Select a such that Modifies(_, "lastPokemon")
+1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 19, 20
+5000
