@@ -2,6 +2,7 @@
 #include "QueryParser.h"
 #include "QueryEvaluator.h"
 #include <string>
+#include <iostream>
 #include <set>
 
 using namespace std;
@@ -22,14 +23,29 @@ set<string> PQLController::parse(string query) {
 	// display query result
 	try {
 		Query q = *new Query();
-		q = QueryParser::parseQuery(query);
+		try {
+			q = QueryParser::parseQuery(query);
+		} catch (exception e) {
+			cout << "parser not ok" << endl;
+			cout << e.what() << endl;
+		}
+
 		QueryEvaluator* qe = new QueryEvaluator();
-		set<string> results = qe->evaluateQuery(q);
+		set<string> results = set<string>();
+
+		try {
+			results = qe->evaluateQuery(q);
+		} catch (exception e) {
+			cout << "eval not ok" << endl;
+			cout << e.what() << endl;
+		}
 
 		postProcess(results);
 
 		return results;
-	} catch (...){
+	} catch (exception e) {
+		//cout << "omg spoil" << endl;
+		//cout << e.what() << endl;
 		set<string>* empty = new set<string>();
 		return *empty;
 	}
