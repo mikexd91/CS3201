@@ -332,6 +332,61 @@ void ParentClauseTest::testParentSynSynPass() {
 	CPPUNIT_ASSERT(find(resultVector.begin(), resultVector.end(), pair3) != resultVector.end());
 }
 
+void ParentClauseTest::testParentFirstUnderscorePass() {
+	ParentClause* m1 = new ParentClause();
+	m1->setFirstArg("_");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_GENERIC);
+	m1->setSecondArg("s2");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_STATEMENT);
+	CPPUNIT_ASSERT(m1->isValid());
+
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 4);
+	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "2");
+	CPPUNIT_ASSERT(r1.getSinglesResults().at(1) == "3");
+	CPPUNIT_ASSERT(r1.getSinglesResults().at(2) == "4");
+	CPPUNIT_ASSERT(r1.getSinglesResults().at(3) == "5");
+
+}
+
+void ParentClauseTest::testParentSecondUnderscorePass() {
+	ParentClause* m1 = new ParentClause();
+	m1->setFirstArg("s2");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("_");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(m1->isValid());
+
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 2);
+	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "1");
+	CPPUNIT_ASSERT(r1.getSinglesResults().at(1) == "3");
+}
+
+void ParentClauseTest::testParentBothUnderscorePass() {
+	ParentClause* m1 = new ParentClause();
+	m1->setFirstArg("_");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_GENERIC);
+	m1->setSecondArg("_");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(m1->isValid());
+
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getNumOfSyn() == 0);
+}
+
+
 void ParentClauseTest::testParentSynSynPassWithWhile() {
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("s1");
