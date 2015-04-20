@@ -18,6 +18,10 @@ Clause::Clause(ClauseType type){
 Clause::~Clause(void){
 }
 
+ClauseType Clause::getClauseType() {
+	return clauseType;
+}
+
 void Clause::setFirstArg(string first){
 	this->firstArg = first;
 }

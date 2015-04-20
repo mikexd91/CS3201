@@ -25,9 +25,11 @@ set<string> PQLController::parse(string query) {
 		Query q = *new Query();
 		try {
 			q = QueryParser::parseQuery(query);
-		} catch (exception e) {
+		} catch (exception& e) {
 			cout << "parser not ok" << endl;
 			cout << e.what() << endl;
+			set<string>* empty = new set<string>();
+			return *empty;
 		}
 
 		QueryEvaluator* qe = new QueryEvaluator();
@@ -35,15 +37,17 @@ set<string> PQLController::parse(string query) {
 
 		try {
 			results = qe->evaluateQuery(q);
-		} catch (exception e) {
+		} catch (exception& e) {
 			cout << "eval not ok" << endl;
 			cout << e.what() << endl;
+			set<string>* empty = new set<string>();
+			return *empty;
 		}
 
 		postProcess(results);
 
 		return results;
-	} catch (exception e) {
+	} catch (exception& e) {
 		//cout << "omg spoil" << endl;
 		//cout << e.what() << endl;
 		set<string>* empty = new set<string>();

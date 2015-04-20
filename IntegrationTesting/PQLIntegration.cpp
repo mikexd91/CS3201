@@ -310,9 +310,7 @@ void PQLIntegration::testSelectModifies() {
 	PQLController* pcc = new PQLController();
 	set<string> r;
 	r = pcc->parse(QUERY_STRING);
-	//cout << *r.begin() << endl;
 	CPPUNIT_ASSERT(1 == r.size());
-	//CPPUNIT_ASSERT("1" == *r.begin());
 }
 
 void PQLIntegration::testSelectUses() {
@@ -320,20 +318,17 @@ void PQLIntegration::testSelectUses() {
 	PQLController* pcc = new PQLController();
 	set<string> r;
 	r = pcc->parse(QUERY_STRING);
-	cout << r.size() << endl;
-	//CPPUNIT_ASSERT(2 == r.size());
+	CPPUNIT_ASSERT(2 == r.size());
 
 	string QUERY_STRING2 = "assign a; variable v; Select v such that Uses(a, v)";
 	set<string> r2;
 	r2 = pcc->parse(QUERY_STRING2);
-	cout << r2.size() << endl;
-	//CPPUNIT_ASSERT(0 == r2.size());
+	CPPUNIT_ASSERT(0 == r2.size());
 
 	string QUERY_STRING3 = "stmt s; variable v; Select v such that Uses(s, v)";
 	set<string> r3;
 	r3 = pcc->parse(QUERY_STRING2);
-	cout << r3.size() << endl;
-	//CPPUNIT_ASSERT(2 == r3.size());
+	CPPUNIT_ASSERT(2 == r3.size());
 }
 
 void PQLIntegration::testSelectFollows() {
@@ -343,7 +338,6 @@ void PQLIntegration::testSelectFollows() {
 	r = pcc->parse(QUERY_STRING);
 	
 	CPPUNIT_ASSERT(2 == r.size());
-	//CPPUNIT_ASSERT("5" == *r.begin());
 }
 
 void PQLIntegration::testSelectFollowsStar() {
@@ -353,7 +347,6 @@ void PQLIntegration::testSelectFollowsStar() {
 	r = pcc->parse(QUERY_STRING);
 
 	CPPUNIT_ASSERT(3 == r.size());
-	//CPPUNIT_ASSERT("6" == *r.begin());
 }
 
 void PQLIntegration::testSelectParent() {
@@ -371,6 +364,19 @@ void PQLIntegration::testSelectParentStar() {
 	set<string> r;
 	r = pcc->parse(QUERY_STRING);
 	CPPUNIT_ASSERT(2 == r.size());
+
+	string QUERY_STRING2 = "while w; Select w such that Parent*(w, _)";
+	r = pcc->parse(QUERY_STRING2);
+	CPPUNIT_ASSERT(2 == r.size());
+
+	string QUERY_STRING3 = "while w; Select w such that Parent*(_, w)";
+	r = pcc->parse(QUERY_STRING3);
+	cout << r.size() << endl;
+	CPPUNIT_ASSERT(1 == r.size());
+
+	string QUERY_STRING4 = "assign a; Select a such that Parent*(_, _)";
+	r = pcc->parse(QUERY_STRING4);
+	CPPUNIT_ASSERT(6 == r.size());
 }
 
 void PQLIntegration::testSelectPattern() {
@@ -385,7 +391,6 @@ void PQLIntegration::testSelectPattern() {
 	r2 = pcc->parse(QUERY_STRING2);
 	//cout << r2.size() << endl;
 	CPPUNIT_ASSERT(2 == r2.size());
-	//CPPUNIT_ASSERT("1" == *r2.begin());
 
 	string QUERY_STRING3 = "assign a; variable v; Select a pattern a(v, _\"2 + 3 + 4\"_)";
 	set<string> r3;
