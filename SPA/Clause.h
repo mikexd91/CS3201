@@ -35,6 +35,7 @@ public:
 	Clause(ClauseType);
 	~Clause(void);
 
+	ClauseType getClauseType();
 	void setFirstArg(string);
 	void setSecondArg(string);
 	void setFirstArgType(string);

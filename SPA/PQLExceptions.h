@@ -1,7 +1,7 @@
 #include <iostream>
 #include <exception>
 
-using std::exception;
+using namespace std;
 
 struct MissingDeclarationException : public exception{
 	const char * what() const throw(){
