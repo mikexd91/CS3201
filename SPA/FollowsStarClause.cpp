@@ -256,12 +256,19 @@ bool FollowsStarClause::isFollowsStar(int stmtNum1, int stmtNum2) {
 	
 	StmtTable* stable = StmtTable::getInstance();
 	Statement* stmt1 = stable->getStmtObj(stmtNum1);
+
+	if (stmt1 == nullptr) {
+		return false;
+	}
 	
 	int nextFollows = stmt1->getFollowsAfter();
 
 	while (nextFollows != -1) {
 		if (nextFollows == stmtNum2) {
 			return true;
+		}
+		if (stable->getStmtObj(nextFollows) == nullptr) {
+			return false;
 		}
 		nextFollows = stable->getStmtObj(nextFollows)->getFollowsAfter();
 	}
