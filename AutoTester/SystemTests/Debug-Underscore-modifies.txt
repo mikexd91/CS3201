@@ -11,7 +11,7 @@ Select w such that Modifies(w, _)
 3 - testing for modifies
 stmt s;
 Select s such that Modifies(s, _)
-1, 2, 3, 4, 5, 6, 7, 8, 9 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
 5000
 4 - testing for modifies
 while w;
@@ -27,4 +27,9 @@ Select w such that Modifies(_, "bulbasaur")
 while w;
 Select w such that Modifies(_, _)
 5, 15, 17, 18
+5000
+6 - testing for modifies
+assign a;
+Select a such that Modifies(_, "lastPokemon")
+1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 19, 20
 5000
