@@ -153,10 +153,10 @@ Results FollowsStarClause::evaluateFollowsStarSynSyn(string firstStmtSyn, string
 	if (isBothGeneric) {
 		res->setNumOfSyn(0);
 	} else if (isFirstGeneric) {
-		res->setFirstClauseSyn(firstStmtSyn);
+		res->setFirstClauseSyn(secondStmtSyn);
 		res->setNumOfSyn(1);
 	} else if (isSecondGeneric) {
-		res->setFirstClauseSyn(secondStmtSyn);
+		res->setFirstClauseSyn(firstStmtSyn);
 		res->setNumOfSyn(1);
 	} else {
 		res->setFirstClauseSyn(firstStmtSyn);
