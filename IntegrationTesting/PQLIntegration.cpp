@@ -336,8 +336,22 @@ void PQLIntegration::testSelectFollows() {
 	PQLController* pcc = new PQLController();
 	set<string> r;
 	r = pcc->parse(QUERY_STRING);
-	
 	CPPUNIT_ASSERT(2 == r.size());
+
+	string QUERY_STRING2 = "stmt s; Select s such that Follows(s, _)";
+	r = pcc->parse(QUERY_STRING2);
+	cout << r.size() << "fol s _";
+	// answer supposed to be 1,3,4,5,7
+	CPPUNIT_ASSERT(5 == r.size());
+
+	string QUERY_STRING3 = "stmt s; Select s such that Follows(_, s)";
+	r = pcc->parse(QUERY_STRING3);
+	CPPUNIT_ASSERT(5 == r.size());
+
+	string QUERY_STRING4 = "assign a; Select a such that Follows(_, _)";
+	r = pcc->parse(QUERY_STRING4);
+	cout << r.size() << "fol _ _";
+	CPPUNIT_ASSERT(6 == r.size());
 }
 
 void PQLIntegration::testSelectFollowsStar() {
@@ -345,8 +359,20 @@ void PQLIntegration::testSelectFollowsStar() {
 	PQLController* pcc = new PQLController();
 	set<string> r;
 	r = pcc->parse(QUERY_STRING);
-
 	CPPUNIT_ASSERT(3 == r.size());
+
+	string QUERY_STRING2 = "while w; Select w such that Follows*(w, _)";
+	r = pcc->parse(QUERY_STRING2);
+	CPPUNIT_ASSERT(2 == r.size());
+
+	string QUERY_STRING3 = "while w; Select w such that Follows*(_, w)";
+	r = pcc->parse(QUERY_STRING3);
+	cout << r.size() << endl;
+	CPPUNIT_ASSERT(2 == r.size());
+
+	string QUERY_STRING4 = "assign a; Select a such that Follows*(_, _)";
+	r = pcc->parse(QUERY_STRING4);
+	CPPUNIT_ASSERT(6 == r.size());
 }
 
 void PQLIntegration::testSelectParent() {
@@ -356,6 +382,18 @@ void PQLIntegration::testSelectParent() {
 	r = pcc->parse(QUERY_STRING);
 	CPPUNIT_ASSERT(4 == r.size());
 
+	string QUERY_STRING2 = "while w; Select w such that Parent(w, _)";
+	r = pcc->parse(QUERY_STRING2);
+	CPPUNIT_ASSERT(2 == r.size());
+
+	string QUERY_STRING3 = "while w; Select w such that Parent(_, w)";
+	r = pcc->parse(QUERY_STRING3);
+	CPPUNIT_ASSERT(1 == r.size());
+
+	string QUERY_STRING4 = "assign a; Select a such that Parent(_, _)";
+	r = pcc->parse(QUERY_STRING4);
+	CPPUNIT_ASSERT(6 == r.size());
+
 }
 
 void PQLIntegration::testSelectParentStar() {
@@ -363,7 +401,7 @@ void PQLIntegration::testSelectParentStar() {
 	PQLController* pcc = new PQLController();
 	set<string> r;
 	r = pcc->parse(QUERY_STRING);
-	CPPUNIT_ASSERT(2 == r.size());
+	CPPUNIT_ASSERT(2 == r.size()); 
 
 	string QUERY_STRING2 = "while w; Select w such that Parent*(w, _)";
 	r = pcc->parse(QUERY_STRING2);
@@ -371,7 +409,6 @@ void PQLIntegration::testSelectParentStar() {
 
 	string QUERY_STRING3 = "while w; Select w such that Parent*(_, w)";
 	r = pcc->parse(QUERY_STRING3);
-	cout << r.size() << endl;
 	CPPUNIT_ASSERT(1 == r.size());
 
 	string QUERY_STRING4 = "assign a; Select a such that Parent*(_, _)";
