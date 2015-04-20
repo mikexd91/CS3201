@@ -1,0 +1,5 @@
+1 - only 1 clause
+assign a;
+Select a such that Follows(a, _)
+1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 16
+5000 
