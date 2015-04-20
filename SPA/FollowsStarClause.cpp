@@ -7,6 +7,7 @@
 
 using namespace stringconst;
 using namespace boost;
+using namespace std;
 
 FollowsStarClause::FollowsStarClause(void):Clause(FOLLOWSSTAR_){
 }
@@ -47,7 +48,7 @@ string FollowsStarClause::getSecondStmtType() {
 }
 
 Results FollowsStarClause::evaluate(void) {
-
+	cout << "asdasd" << endl;
 	if (firstArgFixed) {
 		if (secondArgFixed) {
 			return evaluateFollowsStarFixedFixed(getFirstStmtNum(), getSecondStmtNum());
@@ -92,7 +93,9 @@ Results FollowsStarClause::evaluateFollowsStarFixedSyn(int firstStmtNum, string 
 	BOOST_FOREACH(auto p, allStmt2) {
 		int secondStmtNum = p->getStmtNum();
 		if (isFollowsStar(firstStmtNum, secondStmtNum)) {
-			res->addSingleResult(lexical_cast<string>(secondStmtNum));
+			if (getSecondStmtType() == ARG_GENERIC) {
+				res->addSingleResult(lexical_cast<string>(secondStmtNum));
+			}
 		}
 	}
 
@@ -134,6 +137,11 @@ Results FollowsStarClause::evaluateFollowsStarSynSyn(string firstStmtSyn, string
 	res->setFirstClauseSyn(firstStmtSyn);
 	res->setSecondClauseSyn(secondStmtSyn);
 	res->setNumOfSyn(2);
+
+	cout << endl << firstStmtSyn << " " << secondStmtSyn << endl;
+	if (firstStmtSyn == secondStmtSyn) {
+		return *res;
+	}
 
 	StmtTable* stable = StmtTable::getInstance();
 	set<Statement*> allStmt1;
