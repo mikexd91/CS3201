@@ -221,7 +221,8 @@ Results ParentStarClause::evaluateS1FixedS2Wild() {
 			recurParentCheckS1FixedS2Wild(res, firstArg, currentStmtNum, currentStmtNum);
 		}
 
-	} else if(secondArgType == stringconst::ARG_STATEMENT) {
+	} else if(secondArgType == stringconst::ARG_STATEMENT ||
+		secondArgType == stringconst::ARG_GENERIC) {
 		StmtTable::StmtTableIterator stmtIter;
 
 		for(stmtIter=stmtTable->getIterator(); stmtIter!=stmtTable->getEnd(); stmtIter++) {
