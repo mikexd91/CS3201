@@ -33,3 +33,23 @@ assign a;
 Select a such that Follows*(-1, 21)
 none
 5000
+8 - testing for parent* stmt overflow
+assign a;
+Select a such that Parent*(-1, a)
+none 
+5000
+9 - testing for parent* stmt overflow
+stmt s;
+Select s such that Parent*(s, -2)
+none
+5000
+10 - testing for parent* stmt overflow
+while w;
+Select w such that Parent*(50, w)
+none
+5000
+11 - testint for parent* stmt overflow
+stmt s;
+Select s such that Parent*(s, 30)
+none
+5000
