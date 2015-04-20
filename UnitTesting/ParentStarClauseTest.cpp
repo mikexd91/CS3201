@@ -509,8 +509,8 @@ void ParentStarClauseTest::testParentStarInvalid() {
 
 void ParentStarClauseTest::testParentStarStmtOverflow() {
 	ParentStarClause* m1 = new ParentStarClause();
-	m1->setFirstArg("99");
-	m1->setFirstArgFixed(true);
+	m1->setFirstArg("s");
+	m1->setFirstArgFixed(false);
 	m1->setFirstArgType(ARG_STATEMENT);
 	m1->setSecondArg("-100");
 	m1->setSecondArgFixed(true);
