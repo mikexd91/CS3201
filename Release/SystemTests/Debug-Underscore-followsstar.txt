@@ -6,7 +6,7 @@ Select a such that Follows*(a, _)
 2 - one clause
 stmt s;
 Select s such that Follows*(_, s)
-2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15, 17, 20
+2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 20
 5000
 3 - one clause
 while w; 
@@ -31,7 +31,7 @@ none
 7 - one clause
 assign a;
 Select a such that Follows*(_, a)
-2, 3, 4, 7, 8, 10, 11, 12, 13, 14, 20
+2, 3, 4, 7, 8, 9, 10, 11, 12, 13, 14, 20
 5000
 8 - two clauses
 assign a;
