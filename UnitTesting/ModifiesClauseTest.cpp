@@ -375,3 +375,57 @@ void ModifiesClauseTest::testModifiesSynSyn() {
 	CPPUNIT_ASSERT(!r2.isClausePassed());
 	//CPPUNIT_ASSERT(r1.getPairResults().size() == 6);
 }
+
+void ModifiesClauseTest::testModifiesGenericFixed() {
+	ModifiesClause* m1 = new ModifiesClause();
+	m1->setFirstArg("_");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_GENERIC);
+	m1->setSecondArg("i");
+	m1->setSecondArgFixed(true);
+	m1->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m1->isValid());
+
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 2); // 1 and 6 mods i
+	for (int i = 0; i < r1.getSinglesResults().size(); i++) {
+		if (r1.getSinglesResults().at(i) == "1" 
+			|| r1.getSinglesResults().at(i) == "6") {
+			CPPUNIT_ASSERT(true);
+		} else {
+			CPPUNIT_ASSERT(false);
+		}
+	}
+}
+
+void ModifiesClauseTest::testModifiesFixedGeneric() {
+	ModifiesClause* m1 = new ModifiesClause();
+	m1->setFirstArg("1");
+	m1->setFirstArgFixed(true);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("_");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(m1->isValid());
+
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
+	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "i");
+}
+
+void ModifiesClauseTest::testModifiesGenericGeneric() {
+	ModifiesClause* m1 = new ModifiesClause();
+	m1->setFirstArg("_");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_GENERIC);
+	m1->setSecondArg("_");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(m1->isValid());
+
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getPairResults().size() == 6);
+}
