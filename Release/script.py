@@ -20,3 +20,6 @@ os.system("AutoTester SystemTests/Source-File-3.txt SystemTests/Stmt-Overflow-Mo
 os.system("AutoTester SystemTests/Source-File-3.txt SystemTests/Stmt-Overflow-Parent.txt SystemTests/Results/overflow_parent.xml")
 os.system("AutoTester SystemTests/Source-File-3.txt SystemTests/Stmt-Overflow-Parentstar.txt SystemTests/Results/overflow_parentstar.xml")
 os.system("AutoTester SystemTests/Source-File-3.txt SystemTests/Stmt-Overflow-Uses.txt SystemTests/Results/overflow_uses.xml")
+
+# For other miscellaneous crashes
+os.system("AutoTester SystemTests/Source-File-3.txt SystemTests/miscellaneous_crashes.txt SystemTests/Results/miscellaneous_crashes.xml")

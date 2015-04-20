@@ -6,5 +6,5 @@ Select a such that Parent*(15, a) pattern a1(_, _"charmander"_)
 2 - testing for modifies
 assign a; while w; 
 Select a such that Modifies(w, "charmander") pattern a(_, _"charmander"_)
-6
+6, 9
 5000
