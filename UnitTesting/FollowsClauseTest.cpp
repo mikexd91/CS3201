@@ -317,6 +317,16 @@ void FollowsClauseTest::testIsFollows4() {
 
 	CPPUNIT_ASSERT(!r2.isClausePassed());
 
+	// Test out of bounds
+	fol.setFirstArg("-1");
+	fol.setSecondArg("0");
+
+	fol.setFirstArgFixed(true);
+	fol.setSecondArgFixed(true);
+
+	Results r3 = fol.evaluate();
+
+	CPPUNIT_ASSERT(!r3.isClausePassed());
 	return;
 }
 
