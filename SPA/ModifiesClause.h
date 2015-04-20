@@ -25,5 +25,7 @@ private:
 	Results evaluateSynSyn(string stmt, string var);
 	
 	bool isModifies(int stmtNum, string var);
+	void transferSinglesToResult(set<string>* singles, Results* res);
+	void transferPairsToResult(set<pair<string, string>>* pairs, Results* res);
 };
 

@@ -419,6 +419,19 @@ void FollowsStarClauseTest::testFollowsStarSynFixed() {
 
 	Results r3 = f3->evaluate();
 	CPPUNIT_ASSERT(!r3.isClausePassed());
+
+	// fail targeting stmtnum negative
+	f3 = new FollowsStarClause();
+	f3->setFirstArg("w");
+	f3->setFirstArgFixed(false);
+	f3->setFirstArgType(ARG_WHILE);
+	f3->setSecondArg("-6");
+	f3->setSecondArgFixed(true);
+	f3->setSecondArgType(ARG_STATEMENT);
+	CPPUNIT_ASSERT(f3->isValid());
+
+	r3 = f3->evaluate();
+	CPPUNIT_ASSERT(!r3.isClausePassed());
 }
 
 void FollowsStarClauseTest::testFollowsStarSynSyn() {
@@ -447,7 +460,7 @@ void FollowsStarClauseTest::testFollowsStarSynSyn() {
 	f1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(f1->isValid()); 
 
-	r1 = f1->evaluate();
+	r1 = f1->evaluate(); 
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
 	//cout << r1.getSinglesResults().size() << endl;
