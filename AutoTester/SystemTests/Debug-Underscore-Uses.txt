@@ -11,7 +11,7 @@ Select w such that Uses(w, _)
 3 - testing for Uses
 variable v;
 Select v such that Uses(_, v)
-firstStageEvolution, charmander, bulbasaur, squirtle, charmeleon, wartortle, ivysaur, battle1, battle2, battle3, lastPokemon
+firstStageEvolution, charmander, bulbasaur, squirtle, charmeleon, wartortle, ivysaur, battle1, battle2, battle3
 5000
 4 - testing for Uses
 stmt s;
