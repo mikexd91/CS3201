@@ -196,3 +196,17 @@ set<int> Utils::filterStatements(set<int> stmtSet, NodeType type) {
 	}
 	return finalValue;
 }
+
+void Utils::removeVectorDupes(vector<string> &vec) {
+	// convert to set then back to vector
+	set<string> s(vec.begin(), vec.end());
+	vec.clear();
+	vec.assign(s.begin(), s.end());
+}
+
+void Utils::removeVectorDupes(vector<pair<string,string>> &vec) {
+	// convert to set then back to vector
+	set<pair<string,string>> s(vec.begin(), vec.end());
+	vec.clear();
+	vec.assign(s.begin(), s.end());
+}
