@@ -153,10 +153,10 @@ Results FollowsStarClause::evaluateFollowsStarSynSyn(string firstStmtSyn, string
 	if (isBothGeneric) {
 		res->setNumOfSyn(0);
 	} else if (isFirstGeneric) {
-		res->setFirstClauseSyn(firstStmtSyn);
+		res->setFirstClauseSyn(secondStmtSyn);
 		res->setNumOfSyn(1);
 	} else if (isSecondGeneric) {
-		res->setFirstClauseSyn(secondStmtSyn);
+		res->setFirstClauseSyn(firstStmtSyn);
 		res->setNumOfSyn(1);
 	} else {
 		res->setFirstClauseSyn(firstStmtSyn);
@@ -206,9 +206,9 @@ Results FollowsStarClause::evaluateFollowsStarSynSyn(string firstStmtSyn, string
 					pair<string, string> pr = pair<string, string>(lexical_cast<string>(firstStmtNum), lexical_cast<string>(secondStmtNum));
 					pairs->emplace(pr);
 				} else if (isFirstGeneric) {
-					singles->emplace(lexical_cast<string>(firstStmtNum));
-				} else if (isSecondGeneric) {
 					singles->emplace(lexical_cast<string>(secondStmtNum));
+				} else if (isSecondGeneric) {
+					singles->emplace(lexical_cast<string>(firstStmtNum));
 				} else {
 					pair<string, string> pr = pair<string, string>(lexical_cast<string>(firstStmtNum), lexical_cast<string>(secondStmtNum));
 					pairs->emplace(pr);

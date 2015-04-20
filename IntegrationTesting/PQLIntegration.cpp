@@ -14,6 +14,7 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <boost\foreach.hpp>
 
 using namespace stringconst;
 using namespace std;
@@ -349,18 +350,15 @@ void PQLIntegration::testSelectFollows() {
 
 	string QUERY_STRING2 = "stmt s; Select s such that Follows(s, _)";
 	r = pcc->parse(QUERY_STRING2);
-	cout << r.size() << "fol s _";
 	// answer supposed to be 1,3,4,5,7
-	CPPUNIT_ASSERT(5 == r.size());
+    CPPUNIT_ASSERT(5 == r.size());
 
 	string QUERY_STRING3 = "stmt s; Select s such that Follows(_, s)";
 	r = pcc->parse(QUERY_STRING3);
-	cout << r.size() << "fol _ s";
 	CPPUNIT_ASSERT(5 == r.size());
 
 	string QUERY_STRING4 = "assign a; Select a such that Follows(_, _)";
 	r = pcc->parse(QUERY_STRING4);
-	cout << r.size() << "fol _ _";
 	CPPUNIT_ASSERT(6 == r.size());
 }
 
@@ -371,14 +369,17 @@ void PQLIntegration::testSelectFollowsStar() {
 	r = pcc->parse(QUERY_STRING);
 	CPPUNIT_ASSERT(3 == r.size());
 
-	string QUERY_STRING2 = "while w; Select w such that Follows*(w, _)";
+	string QUERY_STRING2 = "stmt s; Select s such that Follows*(s, _)";
 	r = pcc->parse(QUERY_STRING2);
-	CPPUNIT_ASSERT(2 == r.size());
+	// answer: 1,3,4,5,7
+	/*BOOST_FOREACH(auto p, r) {
+		cout << p << " ";
+	}*/
+	CPPUNIT_ASSERT(5 == r.size());
 
-	string QUERY_STRING3 = "while w; Select w such that Follows*(_, w)";
+	string QUERY_STRING3 = "stmt s; Select s such that Follows*(_, s)";
 	r = pcc->parse(QUERY_STRING3);
-	cout << r.size() << endl;
-	CPPUNIT_ASSERT(2 == r.size());
+	CPPUNIT_ASSERT(5 == r.size());
 
 	string QUERY_STRING4 = "assign a; Select a such that Follows*(_, _)";
 	r = pcc->parse(QUERY_STRING4);
@@ -404,13 +405,13 @@ void PQLIntegration::testSelectParent() {
 	r = pcc->parse(QUERY_STRING4);
 	CPPUNIT_ASSERT(6 == r.size());
 
-	/*string QUERY_STRING5 = "assign a; Select a such that Parent(3, _)";
+	string QUERY_STRING5 = "assign a; Select a such that Parent(3, _)";
 	r = pcc->parse(QUERY_STRING5);
-	CPPUNIT_ASSERT(6 == r.size());
+	CPPUNIT_ASSERT(0 == r.size());
 
-	string QUERY_STRING5 = "assign a; Select a such that Parent(2, _)";
-	r = pcc->parse(QUERY_STRING5);
-	CPPUNIT_ASSERT(6 == r.size());*/
+	string QUERY_STRING6 = "assign a; Select a such that Parent(2, _)";
+	r = pcc->parse(QUERY_STRING6);
+	CPPUNIT_ASSERT(6 == r.size());
 
 }
 
@@ -465,7 +466,6 @@ void PQLIntegration::testSelectModifiesPattern() {
 	string QUERY_STRING2 = "assign a; variable v; Select a such that Modifies(a, v) pattern a(v, _\"2 + 3 + 4\"_)";
 	set<string> r2;
 	r2 = pcc->parse(QUERY_STRING2);
-	cout << r2.size() << "mod av pattern av 2+3+4" << endl;
 	CPPUNIT_ASSERT(1 == r2.size());
 }
 
@@ -511,6 +511,7 @@ void PQLIntegration::testSelectProgLine() {
 }
 
 void PQLIntegration::testFailParent(){
+	cout << "will throw exception" << endl;
 	string QUERY_STRING = "assign a; variable v; Select a such that Parent(v, a)";
 	PQLController* pcc = new PQLController();
 	set<string> r;
@@ -519,6 +520,7 @@ void PQLIntegration::testFailParent(){
 }
 
 void PQLIntegration::testFailUses(){
+	cout << "will throw exception" << endl;
 	string QUERY_STRING = "variable v, v1; Select v such that Uses(v, v1)";
 	PQLController* pcc = new PQLController();
 	set<string> r;

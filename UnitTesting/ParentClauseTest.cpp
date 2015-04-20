@@ -362,24 +362,24 @@ void ParentClauseTest::testParentFirstUnderscorePass() {
 	CPPUNIT_ASSERT(find(results.begin(), results.end(), "5") != results.end());
 }
 
-//void ParentClauseTest::testParentSecondUnderscorePass() {
-//	ParentClause* m1 = new ParentClause();
-//	m1->setFirstArg("s2");
-//	m1->setFirstArgFixed(false);
-//	m1->setFirstArgType(ARG_STATEMENT);
-//	m1->setSecondArg("_");
-//	m1->setSecondArgFixed(false);
-//	m1->setSecondArgType(ARG_GENERIC);
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	Results r1 = m1->evaluate();
-//	CPPUNIT_ASSERT(r1.isClausePassed());
-//	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
-//	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s2");
-//	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 2);
-//	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "1");
-//	CPPUNIT_ASSERT(r1.getSinglesResults().at(1) == "3");
-//}
+void ParentClauseTest::testParentSecondUnderscorePass() {
+	ParentClause* m1 = new ParentClause();
+	m1->setFirstArg("s2");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("_");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(m1->isValid());
+
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
+	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s2");
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 2);
+	/*CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "1");
+	CPPUNIT_ASSERT(r1.getSinglesResults().at(1) == "3");*/
+}
 
 void ParentClauseTest::testParentBothUnderscorePass() {
 	ParentClause* m1 = new ParentClause();
