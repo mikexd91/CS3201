@@ -105,6 +105,13 @@ Results ParentStarClause::evaluateS1WildS2Wild() {
 		}
 	}
 
+	vector<string> temp1 = res.getSinglesResults();
+	vector<pair<string,string>> temp2 = res.getPairResults();
+	Utils::removeVectorDupes(temp1);
+	Utils::removeVectorDupes(temp2);
+	res.setSingleResult(temp1);
+	res.setPairResult(temp2);
+
 	return res;
 }
 
@@ -183,6 +190,13 @@ Results ParentStarClause::evaluateS1WildS2Fixed() {
 			recurParentCheckS1WildS2Fixed(res, currentStmtNum, currentStmtNum);
 		}	
 	}
+
+	vector<string> temp1 = res.getSinglesResults();
+	vector<pair<string,string>> temp2 = res.getPairResults();
+	Utils::removeVectorDupes(temp1);
+	Utils::removeVectorDupes(temp2);
+	res.setSingleResult(temp1);
+	res.setPairResult(temp2);
 
 	return res;
 }
@@ -270,6 +284,13 @@ Results ParentStarClause::evaluateS1FixedS2Wild() {
 		}		
 	}
 
+	vector<string> temp1 = res.getSinglesResults();
+	vector<pair<string,string>> temp2 = res.getPairResults();
+	Utils::removeVectorDupes(temp1);
+	Utils::removeVectorDupes(temp2);
+	res.setSingleResult(temp1);
+	res.setPairResult(temp2);
+
 	return res;
 }
 
@@ -322,6 +343,13 @@ Results ParentStarClause::evaluateS1FixedS2Fixed() {
 
 	// recursively determine result
 	recurParentCheckS1FixedS2Fixed(res, firstArg, secondArg);
+
+	vector<string> temp1 = res.getSinglesResults();
+	vector<pair<string,string>> temp2 = res.getPairResults();
+	Utils::removeVectorDupes(temp1);
+	Utils::removeVectorDupes(temp2);
+	res.setSingleResult(temp1);
+	res.setPairResult(temp2);
 
 	return res;
 }

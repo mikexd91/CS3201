@@ -29,19 +29,19 @@ void Results::addPairResult(string s1, string s2) {
 	this->pairResults.push_back(pair);
 }
 
-void Results::addSinglesResultsDuplicateHack(string s) {
-	set<string> tempSet = *new set<string>();
-	this->singleSet.emplace(s);
-}
-
-void Results::addPairResultsDuplicateHack(string s1, string s2) {
-	StringPair pair = *new StringPair();
-	pair.setFirst(s1);
-	pair.setSecond(s2);
-
-	set<StringPair> tempSet = *new set<StringPair>();
-	this->pairSet.emplace(pair); 
-}
+//void Results::addSinglesResultsDuplicateHack(string s) {
+//	set<string> tempSet = *new set<string>();
+//	this->singleSet.emplace(s);
+//}
+//
+//void Results::addPairResultsDuplicateHack(string s1, string s2) {
+//	StringPair pair = *new StringPair();
+//	pair.setFirst(s1);
+//	pair.setSecond(s2);
+//
+//	set<StringPair> tempSet = *new set<StringPair>();
+//	this->pairSet.emplace(pair); 
+//}
 
 void Results::convertSinglesSetToVector() {
 	set<string> set1 = this->singleSet;

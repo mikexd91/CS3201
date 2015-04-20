@@ -381,11 +381,6 @@ void UsesClauseTest::testUsesFirstGenericPass() {
 
 	CPPUNIT_ASSERT(r.isClausePassed());
 	CPPUNIT_ASSERT(r.getNumOfSyn() == 1); 
-	cout << singleResults.size();
-	vector<string>::iterator iter;
-	for(iter=singleResults.begin(); iter!=singleResults.end(); iter++) {
-		cout << *iter << endl;
-	}
 	CPPUNIT_ASSERT(singleResults.size() == 2);
 	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "i") != singleResults.end());
 	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "j") != singleResults.end());
