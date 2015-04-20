@@ -3,7 +3,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 class StmtTableTest : public CPPUNIT_NS::TestFixture { 
-	CPPUNIT_TEST_SUITE( StmtTableTest );
+	CPPUNIT_TEST_SUITE( ConstTableTest );
 	CPPUNIT_TEST( testInstance );
 	CPPUNIT_TEST_SUITE_END();
 
