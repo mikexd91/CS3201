@@ -51,17 +51,21 @@ Results ParentStarClause::evaluate(void) {
 Results ParentStarClause::evaluateS1WildS2Wild() {
 	Results res = Results();
 	// set synonyms
-	res.setFirstClauseSyn(this->getFirstArg());
-	res.setSecondClauseSyn(this->getSecondArg());
-	// set synonym count
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
 	if(firstType==ARG_GENERIC && secondType==ARG_GENERIC) {
 		res.setNumOfSyn(0);
 	} else if(firstType==ARG_GENERIC || secondType==ARG_GENERIC) {
 		res.setNumOfSyn(1);
+		if(firstType != ARG_GENERIC) {
+			res.setFirstClauseSyn(this->getFirstArg());
+		} else {
+			res.setFirstClauseSyn(this->getSecondArg());
+		}
 	} else {
 		res.setNumOfSyn(2);
+		res.setFirstClauseSyn(this->getFirstArg());
+		res.setSecondClauseSyn(this->getSecondArg());
 	}
 
 	if((res.getFirstClauseSyn()==res.getSecondClauseSyn()) && res.getFirstClauseSyn()!="_") {
@@ -160,11 +164,11 @@ void ParentStarClause::recurParentCheckS1WildS2Wild(Results& res, string s1, str
 Results ParentStarClause::evaluateS1WildS2Fixed() {
 	Results res = Results();
 	// set synonyms
-	res.setFirstClauseSyn(this->getFirstArg());
 	if(this->getFirstArgType() == ARG_GENERIC) {
 		res.setNumOfSyn(0);
 	} else {
 		res.setNumOfSyn(1);
+		res.setFirstClauseSyn(this->getFirstArg());
 	}
 
 	string secondArg = this->getSecondArg();
@@ -244,11 +248,11 @@ void ParentStarClause::recurParentCheckS1WildS2Fixed(Results &res, string s1, st
 Results ParentStarClause::evaluateS1FixedS2Wild() {
 	Results res = Results();
 	// set synonyms
-	res.setFirstClauseSyn(this->getSecondArg());
 	if(this->getSecondArgType() == ARG_GENERIC) {
 		res.setNumOfSyn(0);
 	} else {
 		res.setNumOfSyn(1);
+		res.setFirstClauseSyn(this->getSecondArg());
 	}
 
 	string firstArg = this->getFirstArg();
