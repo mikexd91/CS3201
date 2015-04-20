@@ -18,3 +18,18 @@ assign a;
 Select a such that Follows*(20, 21)
 none
 5000
+5 - testing for uses stmt overflow
+variable v;
+Select v such that Uses(45, v)
+none
+5000
+6 - testing for uses stmt overflow
+variable v;
+Select v such that Uses(-1, v)
+none
+5000
+7 - testing for follows* stmt overflow
+assign a;
+Select a such that Follows*(-1, 21)
+none
+5000
