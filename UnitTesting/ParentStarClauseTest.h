@@ -10,13 +10,16 @@ class ParentStarClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testParentStarFixedFixedFail );
 	CPPUNIT_TEST( testParentStarFixedFixedFailSameStmt );
 	CPPUNIT_TEST( testParentStarSynFixedPass );
+	CPPUNIT_TEST( testParentStarSynFixedPassWithGeneric );
 	CPPUNIT_TEST( testParentStarSynFixedFail );
 	CPPUNIT_TEST( testParentStarFixedSynPass );
 	CPPUNIT_TEST( testParentStarFixedSynPassWithWhile );
+	CPPUNIT_TEST( testParentStarFixedSynPassWithGeneric );
 	CPPUNIT_TEST( testParentStarFixedSynFail );
 	CPPUNIT_TEST( testParentStarFixedSynFailWithWhile );
 	CPPUNIT_TEST( testParentStarSynSynPass );
 	CPPUNIT_TEST( testParentStarSynSynPassWithWhile );
+	CPPUNIT_TEST( testParentStarSynSynPassWithGeneric );
 	CPPUNIT_TEST( testParentStarInvalid );
 	CPPUNIT_TEST_SUITE_END();
 
@@ -28,16 +31,16 @@ public:
 	void testParentStarFixedFixedFail();
 	void testParentStarFixedFixedFailSameStmt();
 	void testParentStarSynFixedPass();
-	void testParentStarSynFixedPassWithGeneric();	// TODO
+	void testParentStarSynFixedPassWithGeneric();
 	void testParentStarSynFixedFail();
 	void testParentStarFixedSynPass();
 	void testParentStarFixedSynPassWithWhile();
-	void testParentStarFixedSynPassWithGeneric();	// TODO
+	void testParentStarFixedSynPassWithGeneric();
 	void testParentStarFixedSynFail();
 	void testParentStarFixedSynFailWithWhile();
 	void testParentStarSynSynPass();
 	void testParentStarSynSynPassWithWhile();
-	void testParentStarSynSynPassWithGeneric();		// TODO
+	void testParentStarSynSynPassWithGeneric();
 	void testParentStarInvalid();
 };
     
