@@ -328,9 +328,9 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 				if (secondArg != stringconst::STRING_EMPTY){
 					throw MissingDeclarationException();
 				} else {
-					newClause->setFirstArg(secondArg);
-					newClause->setFirstArgFixed(false);
-					newClause->setFirstArgType(stringconst::ARG_GENERIC);
+					newClause->setSecondArg(secondArg);
+					newClause->setSecondArgFixed(false);
+					newClause->setSecondArgType(stringconst::ARG_GENERIC);
 				}
 			} else {
 				int start = secondArg.find_first_of("\"");

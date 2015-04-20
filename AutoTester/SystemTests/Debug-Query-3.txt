@@ -1,0 +1,5 @@
+1 - testing for parent*
+assign a, a1;
+Select a such that Parent*(15, a) pattern a1(_, _"charmander"_)
+16, 19, 20
+5000
