@@ -170,7 +170,18 @@ void FollowsClauseTest::testIsFollows() {
 	Results r6 = fol2.evaluate();
 	CPPUNIT_ASSERT(r6.isClausePassed());
 	//cout << r6.getPairResults().size() << "lala";
-	return;
+
+	// test follow (s, _)
+	fol2.setFirstArg("s");
+	fol2.setFirstArgFixed(false);
+	fol2.setSecondArgFixed(false);
+
+	fol2.setFirstArgType(stringconst::ARG_STATEMENT);
+	fol2.setSecondArgType(stringconst::ARG_GENERIC);
+
+	r6 = fol2.evaluate();
+	CPPUNIT_ASSERT(r6.isClausePassed());
+	CPPUNIT_ASSERT(r6.getSinglesResults().size() == 2);
 }
 
 // Test augument-type combinations of Follows (1, a) where a is unfixed
@@ -327,6 +338,7 @@ void FollowsClauseTest::testIsFollows4() {
 	Results r3 = fol.evaluate();
 
 	CPPUNIT_ASSERT(!r3.isClausePassed());
+
 	return;
 }
 

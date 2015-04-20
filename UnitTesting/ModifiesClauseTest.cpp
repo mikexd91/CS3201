@@ -415,7 +415,7 @@ void ModifiesClauseTest::testModifiesSynSyn() {
 	Results r1 = m1->evaluate();
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getNumOfSyn() == 2);
-	cout << r1.getPairResults().size()<< endl;
+	//cout << r1.getPairResults().size()<< endl;
 	CPPUNIT_ASSERT(r1.getPairResults().size() == 6);
 
 	// pass _, _
