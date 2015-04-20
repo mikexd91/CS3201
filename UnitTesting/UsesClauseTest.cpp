@@ -255,10 +255,7 @@ void UsesClauseTest::testUsesGenericSynFixedPass() {
 	vector<string> singleResults = r.getSinglesResults();
 	
 	CPPUNIT_ASSERT(r.isClausePassed());
-	CPPUNIT_ASSERT(singleResults.size() == 3);
-	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "1") != singleResults.end());
-	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "3") != singleResults.end());
-	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "5") != singleResults.end());
+	CPPUNIT_ASSERT(singleResults.size() == 0);
 }
 
 void UsesClauseTest::testUsesAssignSynFixedFail() {
@@ -310,8 +307,7 @@ void UsesClauseTest::testUsesGenericFixedSynPass() {
 	vector<string> singleResults = r.getSinglesResults();
 	
 	CPPUNIT_ASSERT(r.isClausePassed());
-	CPPUNIT_ASSERT(singleResults.size() == 1);
-	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "i") != singleResults.end());
+	CPPUNIT_ASSERT(singleResults.size() == 0);
 }
 
 void UsesClauseTest::testUsesAssignFixedSynFail() {
@@ -385,6 +381,11 @@ void UsesClauseTest::testUsesFirstGenericPass() {
 
 	CPPUNIT_ASSERT(r.isClausePassed());
 	CPPUNIT_ASSERT(r.getNumOfSyn() == 1); 
+	cout << singleResults.size();
+	vector<string>::iterator iter;
+	for(iter=singleResults.begin(); iter!=singleResults.end(); iter++) {
+		cout << *iter << endl;
+	}
 	CPPUNIT_ASSERT(singleResults.size() == 2);
 	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "i") != singleResults.end());
 	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "j") != singleResults.end());
@@ -455,13 +456,9 @@ void UsesClauseTest::testUsesGenericSynSynPass() {
 	vector<pair<string,string>> pairResults = r.getPairResults();
 
 	CPPUNIT_ASSERT(r.isClausePassed());
-	CPPUNIT_ASSERT(r.getNumOfSyn() == 2); 
-	CPPUNIT_ASSERT(pairResults.size() == 5);
-	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair<string,string>("1", "i")) != pairResults.end());
-	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair<string,string>("1", "j")) != pairResults.end());
-	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair<string,string>("3", "i")) != pairResults.end());
-	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair<string,string>("3", "j")) != pairResults.end());
-	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair<string,string>("5", "i")) != pairResults.end());
+	CPPUNIT_ASSERT(r.getNumOfSyn() == 0); 
+	CPPUNIT_ASSERT(pairResults.size() == 0);
+
 }
 
 void UsesClauseTest::testUsesStmtOverflow() {
