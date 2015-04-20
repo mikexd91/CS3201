@@ -486,7 +486,7 @@ void FollowsStarClauseTest::testFollowsStarSynSyn() {
 	f1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(f1->isValid());
 
-	r1 = f1->evaluate(); 
+	r1 = f1->evaluate();
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 5);
