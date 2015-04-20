@@ -284,6 +284,12 @@ void ParentStarClauseTest::testParentStarSynFixedPass() {
 	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "4") != singleResults.end());
 }
 
+// TODO
+void ParentStarClauseTest::testParentStarSynFixedPassWithGeneric() {
+
+
+}
+
 void ParentStarClauseTest::testParentStarSynFixedFail() {
 	ParentStarClause* m1 = new ParentStarClause();
 	m1->setFirstArg("s");
@@ -334,6 +340,12 @@ void ParentStarClauseTest::testParentStarFixedSynPassWithWhile() {
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "4");
+}
+
+// TODO
+void ParentStarClauseTest::testParentStarFixedSynPassWithGeneric() {
+
+
 }
 
 void ParentStarClauseTest::testParentStarFixedSynFail() {
@@ -415,6 +427,12 @@ void ParentStarClauseTest::testParentStarSynSynPassWithWhile() {
 	CPPUNIT_ASSERT(r1.getPairResults().size() == 1);
 	pair<string, string> pair0("2","4");
 	CPPUNIT_ASSERT(r1.getPairResults().at(0) == pair0);
+}
+
+// TODO
+void ParentStarClauseTest::testParentStarSynSynPassWithGeneric() {
+
+
 }
 
 void ParentStarClauseTest::testParentStarInvalid() {

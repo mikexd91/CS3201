@@ -28,13 +28,16 @@ public:
 	void testParentStarFixedFixedFail();
 	void testParentStarFixedFixedFailSameStmt();
 	void testParentStarSynFixedPass();
+	void testParentStarSynFixedPassWithGeneric();	// TODO
 	void testParentStarSynFixedFail();
 	void testParentStarFixedSynPass();
 	void testParentStarFixedSynPassWithWhile();
+	void testParentStarFixedSynPassWithGeneric();	// TODO
 	void testParentStarFixedSynFail();
 	void testParentStarFixedSynFailWithWhile();
 	void testParentStarSynSynPass();
 	void testParentStarSynSynPassWithWhile();
+	void testParentStarSynSynPassWithGeneric();		// TODO
 	void testParentStarInvalid();
 };
     
