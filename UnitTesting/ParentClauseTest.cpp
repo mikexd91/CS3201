@@ -412,14 +412,3 @@ void ParentClauseTest::testParentSynSynPassWithWhile() {
 	pair<string, string> pair0("1","3");
 	CPPUNIT_ASSERT(r1.getPairResults().at(0) == pair0);
 }
-
-void ParentClauseTest::testParentInvalid() {
-	ParentClause* m1 = new ParentClause();
-	m1->setFirstArg("s1");
-	m1->setFirstArgFixed(false);
-	m1->setFirstArgType(ARG_ASSIGN);
-	m1->setSecondArg("s2");
-	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_STATEMENT);
-	CPPUNIT_ASSERT(!m1->isValid());
-}
