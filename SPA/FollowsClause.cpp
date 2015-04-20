@@ -79,18 +79,24 @@ bool FollowsClause::isFollows(string stmtNum1, string stmtNum2) {
 	StmtTable* table = StmtTable::getInstance();
 	int stmt1 = stoi(stmtNum1);
 	Statement* stmtObj1 = table->getStmtObj(stmt1);
-	int stmt2 = stmtObj1->getFollowsAfter();
 
-	stringstream ss;
-	ss << stmt2;
-	string stmt2Str;
-	ss >> stmt2Str;
+	if (stmtObj1 != NULL) {
+		int stmt2 = stmtObj1->getFollowsAfter();
+		if (stmt2 != -1) {
 
-	if (stmt2Str != "-1" && stmt2Str == stmtNum2) {
-		return true;
-	} else {
-		return false;
+			stringstream ss;
+			ss << stmt2;
+			string stmt2Str;
+			ss >> stmt2Str;
+
+			if (stmt2Str == stmtNum2) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
+	return false;
 }
 
 bool FollowsClause::isValid(void){
