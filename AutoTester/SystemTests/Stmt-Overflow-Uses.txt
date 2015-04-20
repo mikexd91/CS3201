@@ -1,0 +1,13 @@
+1 - testing for uses stmt overflow
+variable v;
+Select v such that Uses(45, v)
+none
+5000
+2 - testing for uses stmt overflow
+variable v;
+Select v such that Uses(-1, v)
+none
+5000
+3 - testing for uses stmt overflow
+assign a;
+Select a such that Uses(a, "helloworld")
