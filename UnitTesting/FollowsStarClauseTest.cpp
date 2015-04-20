@@ -491,9 +491,9 @@ void FollowsStarClauseTest::testFollowsStarSynSyn() {
 	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 5);
 
-	BOOST_FOREACH(auto p, r1.getSinglesResults()) {
+	/*BOOST_FOREACH(auto p, r1.getSinglesResults()) {
 		cout << p << " ";
-	}
+	}*/
 
 	// pass, s, _
 	f1 = new FollowsStarClause();
@@ -510,9 +510,9 @@ void FollowsStarClauseTest::testFollowsStarSynSyn() {
 	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 5);
 
-	BOOST_FOREACH(auto p, r1.getSinglesResults()) {
+	/*BOOST_FOREACH(auto p, r1.getSinglesResults()) {
 		cout << p << endl;
-	}
+	}*/
 
 	// pass _,_
 	f1 = new FollowsStarClause();

@@ -182,7 +182,7 @@ void FollowsClauseTest::testIsFollows() {
 	Results r7 = fol2.evaluate();
 	CPPUNIT_ASSERT(r6.isClausePassed());
 
-	cout <<	"singles Result size: " << r7.getSinglesResults().size() << endl;
+	//cout <<	"singles Result size: " << r7.getSinglesResults().size() << endl;
 	vector<string> resultSet = r7.getSinglesResults();
 	/*for (size_t i = 0; i < resultSet.size(); i++) {
 		cout << "result: " << resultSet.at(i) << "!";
