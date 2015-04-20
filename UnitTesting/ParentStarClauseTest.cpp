@@ -478,11 +478,28 @@ void ParentStarClauseTest::testParentStarSynSynPassWithGeneric() {
 	CPPUNIT_ASSERT(m2->isValid());
 
 	Results r2 = m2->evaluate();
-	vector<string> singleResults = r2.getSinglesResults();
+	vector<string> singleResults2 = r2.getSinglesResults();
 
 	CPPUNIT_ASSERT(r2.isClausePassed());
 	CPPUNIT_ASSERT(r2.getPairResults().size() == 0);
-	CPPUNIT_ASSERT(singleResults.size() == 5);
+	CPPUNIT_ASSERT(singleResults2.size() == 5);
+
+	// Parent*(_,w)
+	ParentStarClause* m3 = new ParentStarClause();
+	m3->setFirstArg("_");
+	m3->setFirstArgFixed(false);
+	m3->setFirstArgType(ARG_GENERIC);
+	m3->setSecondArg("w");
+	m3->setSecondArgFixed(false);
+	m3->setSecondArgType(ARG_WHILE);
+	CPPUNIT_ASSERT(m3->isValid());
+
+	Results r3 = m3->evaluate();
+	vector<string> singleResults3 = r3.getSinglesResults();
+
+	CPPUNIT_ASSERT(r3.isClausePassed());
+	CPPUNIT_ASSERT(r3.getPairResults().size() == 0);
+	CPPUNIT_ASSERT(singleResults3.size() == 1);
 }
 
 void ParentStarClauseTest::testParentStarInvalid() {
