@@ -23,5 +23,7 @@ private:
 	Results evaluateFollowsStarSynSyn(string firstStmtSyn, string secondStmtSyn);
 
 	bool isFollowsStar(int stmt1, int stmt2);
+	void transferSinglesToResult(set<string>* singles, Results* res);
+	void transferPairsToResult(set<pair<string, string>>* pairs, Results* res);
 };
 
