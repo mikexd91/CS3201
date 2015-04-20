@@ -179,9 +179,16 @@ void FollowsClauseTest::testIsFollows() {
 	fol2.setFirstArgType(stringconst::ARG_STATEMENT);
 	fol2.setSecondArgType(stringconst::ARG_GENERIC);
 
-	r6 = fol2.evaluate();
+	Results r7 = fol2.evaluate();
 	CPPUNIT_ASSERT(r6.isClausePassed());
-	CPPUNIT_ASSERT(r6.getSinglesResults().size() == 2);
+
+	cout <<	"singles Result size: " << r7.getSinglesResults().size() << endl;
+	vector<string> resultSet = r7.getSinglesResults();
+	for (size_t i = 0; i < resultSet.size(); i++) {
+		cout << "result: " << resultSet.at(i) << "!";
+	}
+
+	CPPUNIT_ASSERT(r7.getSinglesResults().size() == 2);
 }
 
 // Test augument-type combinations of Follows (1, a) where a is unfixed
