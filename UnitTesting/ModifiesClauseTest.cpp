@@ -254,7 +254,7 @@ void ModifiesClauseTest::testModifiesFixedFixed() {
 
 	// fail targeting exceed stmt num
 	ModifiesClause* m3 = new ModifiesClause();
-	m3->setFirstArg("7");
+	m3->setFirstArg("99");
 	m3->setFirstArgFixed(true);
 	m3->setFirstArgType(ARG_WHILE);
 	m3->setSecondArg("i");
@@ -264,6 +264,32 @@ void ModifiesClauseTest::testModifiesFixedFixed() {
 
 	Results r3 = m3->evaluate();
 	CPPUNIT_ASSERT(!r3.isClausePassed());
+
+	// fail targeting var not exist
+	ModifiesClause* m4 = new ModifiesClause();
+	m4->setFirstArg("2");
+	m4->setFirstArgFixed(true);
+	m4->setFirstArgType(ARG_WHILE);
+	m4->setSecondArg("ausiydgk");
+	m4->setSecondArgFixed(true);
+	m4->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m4->isValid());
+
+	Results r4 = m4->evaluate();
+	CPPUNIT_ASSERT(!r4.isClausePassed());
+
+	// fail tagretting negative stmtnum
+	ModifiesClause* m5 = new ModifiesClause();
+	m5->setFirstArg("-1");
+	m5->setFirstArgFixed(true);
+	m5->setFirstArgType(ARG_WHILE);
+	m5->setSecondArg("i");
+	m5->setSecondArgFixed(true);
+	m5->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m5->isValid());
+
+	Results r5 = m5->evaluate();
+	CPPUNIT_ASSERT(!r5.isClausePassed());
 }
 
 void ModifiesClauseTest::testModifiesFixedSyn() {
@@ -281,6 +307,21 @@ void ModifiesClauseTest::testModifiesFixedSyn() {
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "i");
+
+	// pass 1, _
+	m1 = new ModifiesClause();
+	m1->setFirstArg("1");
+	m1->setFirstArgFixed(true);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("f");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(m1->isValid());
+
+	r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
+	//CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "i");
 
 	// fail targeting stmt num exceed
 	ModifiesClause* m2 = new ModifiesClause();
@@ -318,6 +359,20 @@ void ModifiesClauseTest::testModifiesSynFixed() {
 			CPPUNIT_ASSERT(false);
 		}
 	}
+
+	// pass _, "j"
+	m1 = new ModifiesClause();
+	m1->setFirstArg("_");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_GENERIC);
+	m1->setSecondArg("j");
+	m1->setSecondArgFixed(true);
+	m1->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(m1->isValid());
+
+	r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
 	
 	// fail targeting wrong statement type
 	ModifiesClause* m2 = new ModifiesClause();
@@ -359,7 +414,24 @@ void ModifiesClauseTest::testModifiesSynSyn() {
 
 	Results r1 = m1->evaluate();
 	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getNumOfSyn() == 2);
+	cout << r1.getPairResults().size()<< endl;
 	CPPUNIT_ASSERT(r1.getPairResults().size() == 6);
+
+	// pass _, _
+	m1 = new ModifiesClause();
+	m1->setFirstArg("asd");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_GENERIC);
+	m1->setSecondArg("j");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(m1->isValid());
+
+	r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getNumOfSyn() == 0);
+	//CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
 
 	// fail targeting wrong stmt type
 	ModifiesClause* m2 = new ModifiesClause();

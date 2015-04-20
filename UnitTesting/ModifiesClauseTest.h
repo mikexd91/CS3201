@@ -10,8 +10,8 @@ class ModifiesClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testModifiesFixedSyn );
 	CPPUNIT_TEST( testModifiesSynSyn );
 	CPPUNIT_TEST( testModifiesGenericFixed );
-	//CPPUNIT_TEST( testModifiesFixedGeneric );
-	//CPPUNIT_TEST( testModifiesGenericGeneric );
+	CPPUNIT_TEST( testModifiesFixedGeneric );
+	CPPUNIT_TEST( testModifiesGenericGeneric );
 
 	//CPPUNIT_TEST( evaulateVarWildExpr );
 	//CPPUNIT_TEST( evaluateVarFixedExprWild );

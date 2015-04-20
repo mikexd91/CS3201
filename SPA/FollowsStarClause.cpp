@@ -151,7 +151,6 @@ Results FollowsStarClause::evaluateFollowsStarSynSyn(string firstStmtSyn, string
 	Results* res = new Results();
 	res->setNumOfSyn(0);
 	if (isBothGeneric) {
-		res->setFirstClauseSyn(firstStmtSyn);
 		res->setNumOfSyn(0);
 	} else if (isFirstGeneric) {
 		res->setFirstClauseSyn(firstStmtSyn);
