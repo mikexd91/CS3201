@@ -111,6 +111,13 @@ Results UsesClause::evaluateStmtWildVarWild() {
 		}
 	}
 
+	vector<string> temp1 = res.getSinglesResults();
+	vector<pair<string,string>> temp2 = res.getPairResults();
+	Utils::removeVectorDupes(temp1);
+	Utils::removeVectorDupes(temp2);
+	res.setSingleResult(temp1);
+	res.setPairResult(temp2);
+
 	return res;
 }
 
@@ -148,6 +155,13 @@ Results UsesClause::evaluateStmtWildVarFixed() {
 			}
 		}
 	}
+
+	vector<string> temp1 = res.getSinglesResults();
+	vector<pair<string,string>> temp2 = res.getPairResults();
+	Utils::removeVectorDupes(temp1);
+	Utils::removeVectorDupes(temp2);
+	res.setSingleResult(temp1);
+	res.setPairResult(temp2);
 
 	return res;
 }
@@ -200,6 +214,13 @@ Results UsesClause::evaluateStmtFixedVarWild() {
 		}
 	}
 
+	vector<string> temp1 = res.getSinglesResults();
+	vector<pair<string,string>> temp2 = res.getPairResults();
+	Utils::removeVectorDupes(temp1);
+	Utils::removeVectorDupes(temp2);
+	res.setSingleResult(temp1);
+	res.setPairResult(temp2);
+
 	return res;
 }
 
@@ -238,6 +259,13 @@ Results UsesClause::evaluateStmtFixedVarFixed() {
 			break;
 		}
 	}
+
+	vector<string> temp1 = res.getSinglesResults();
+	vector<pair<string,string>> temp2 = res.getPairResults();
+	Utils::removeVectorDupes(temp1);
+	Utils::removeVectorDupes(temp2);
+	res.setSingleResult(temp1);
+	res.setPairResult(temp2);
 
 	return res;
 }

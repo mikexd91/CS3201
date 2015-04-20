@@ -482,11 +482,6 @@ void ParentStarClauseTest::testParentStarSynSynPassWithGeneric() {
 
 	CPPUNIT_ASSERT(r2.isClausePassed());
 	CPPUNIT_ASSERT(r2.getPairResults().size() == 0);
-	cout << singleResults.size() << endl;
-	vector<string>::iterator iter;
-	for(iter=singleResults.begin(); iter!=singleResults.end(); iter++) {
-		cout << *iter << endl;
-	}
 	CPPUNIT_ASSERT(singleResults.size() == 5);
 }
 
