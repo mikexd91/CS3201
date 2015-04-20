@@ -452,6 +452,7 @@ void ParentStarClauseTest::testParentStarSynSynPassWithWhile() {
 }
 
 void ParentStarClauseTest::testParentStarSynSynPassWithGeneric() {
+	// Parent*(_,_)
 	ParentStarClause* m1 = new ParentStarClause();
 	m1->setFirstArg("_");
 	m1->setFirstArgFixed(false);
@@ -462,10 +463,31 @@ void ParentStarClauseTest::testParentStarSynSynPassWithGeneric() {
 	CPPUNIT_ASSERT(m1->isValid());
 
 	Results r1 = m1->evaluate();
-	vector<pair<string, string>> pairResults = r1.getPairResults();
-
 	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 0);
 	CPPUNIT_ASSERT(r1.getPairResults().size() == 0);
+
+	// Parent*(_,s)
+	ParentStarClause* m2 = new ParentStarClause();
+	m2->setFirstArg("_");
+	m2->setFirstArgFixed(false);
+	m2->setFirstArgType(ARG_GENERIC);
+	m2->setSecondArg("s");
+	m2->setSecondArgFixed(false);
+	m2->setSecondArgType(ARG_STATEMENT);
+	CPPUNIT_ASSERT(m2->isValid());
+
+	Results r2 = m2->evaluate();
+	vector<string> singleResults = r2.getSinglesResults();
+
+	CPPUNIT_ASSERT(r2.isClausePassed());
+	CPPUNIT_ASSERT(r2.getPairResults().size() == 0);
+	cout << singleResults.size() << endl;
+	vector<string>::iterator iter;
+	for(iter=singleResults.begin(); iter!=singleResults.end(); iter++) {
+		cout << *iter << endl;
+	}
+	CPPUNIT_ASSERT(singleResults.size() == 5);
 }
 
 void ParentStarClauseTest::testParentStarInvalid() {
