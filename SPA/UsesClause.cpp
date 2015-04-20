@@ -59,9 +59,18 @@ Results UsesClause::evaluate(void) {
 Results UsesClause::evaluateStmtWildVarWild() {
 	Results res = Results();
 	// set synonyms
-	res.setNumOfSyn(2);
 	res.setFirstClauseSyn(this->getFirstArg());
 	res.setSecondClauseSyn(this->getSecondArg());
+	// set synonym count
+	string firstType = this->getFirstArgType();
+	string secondType = this->getSecondArgType();
+	if(firstType==ARG_GENERIC && secondType==ARG_GENERIC) {
+		res.setNumOfSyn(2);
+	} else if(firstType==ARG_GENERIC || secondType==ARG_GENERIC) {
+		res.setNumOfSyn(1);
+	} else {
+		res.setNumOfSyn(0);
+	}
 
 	// generate all possible combinations using stmtTable as reference
 	set<Statement*> allStmts = stmtTable->getAllStmts();

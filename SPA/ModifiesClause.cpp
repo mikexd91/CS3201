@@ -92,9 +92,11 @@ Results ModifiesClause::evaluateFixedFixed(int stmtNum, string varName) {
 
 Results ModifiesClause::evaluateFixedSyn(int stmtNum, string var) {
 	Results* res = new Results();
+	res->setFirstClauseSyn(var);
 	if(this->getSecondArgType() != ARG_GENERIC) {
-		res->setFirstClauseSyn(var);
 		res->setNumOfSyn(1);
+	} else {
+		res->setNumOfSyn(0);
 	}
 
 	VarTable* vtable = VarTable::getInstance();
@@ -113,9 +115,11 @@ Results ModifiesClause::evaluateFixedSyn(int stmtNum, string var) {
 
 Results ModifiesClause::evaluateSynFixed(string stmt, string varName) {
 	Results* res = new Results();
+	res->setFirstClauseSyn(stmt);
 	if(this->getFirstArgType() != ARG_GENERIC) {
-		res->setFirstClauseSyn(stmt);
 		res->setNumOfSyn(1);
+	} else {
+		res->setNumOfSyn(0);
 	}
 
 	StmtTable* stable = StmtTable::getInstance();
