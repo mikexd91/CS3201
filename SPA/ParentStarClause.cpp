@@ -68,7 +68,7 @@ Results ParentStarClause::evaluateS1WildS2Wild() {
 		res.setSecondClauseSyn(this->getSecondArg());
 	}
 
-	if((res.getFirstClauseSyn()==res.getSecondClauseSyn()) && res.getFirstClauseSyn()!="_") {
+	if((this->getFirstArg()==this->getSecondArg()) && this->getFirstArg()!="_") {
 		return res;
 	}
 
