@@ -40,7 +40,7 @@ set<int> ParentClause::getChildren(string stmt, string stmtArgType) {
 		} else if (stmtArgType == stringconst::ARG_WHILE ) {
 			return Utils::filterStatements(stmtSet, WHILE_STMT_);
 		} else {
-			assert(stmtArgType == stringconst::ARG_STATEMENT);
+			//assert(stmtArgType == stringconst::ARG_STATEMENT);
 			return stmtSet;
 		}
 	}

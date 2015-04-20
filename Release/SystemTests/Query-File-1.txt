@@ -178,3 +178,8 @@ constant c;
 Select c such that Parent(4, 5)
 none
 5000
+37 - modifies double clause
+assign a; variable v;  
+Select a such that Modifies(a, v) pattern a(v, _"a + b + c"_)
+11
+5000
