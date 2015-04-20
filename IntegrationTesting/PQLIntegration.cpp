@@ -404,13 +404,13 @@ void PQLIntegration::testSelectParent() {
 	r = pcc->parse(QUERY_STRING4);
 	CPPUNIT_ASSERT(6 == r.size());
 
-	/*string QUERY_STRING5 = "assign a; Select a such that Parent(3, _)";
+	string QUERY_STRING5 = "assign a; Select a such that Parent(3, _)";
 	r = pcc->parse(QUERY_STRING5);
-	CPPUNIT_ASSERT(6 == r.size());
+	CPPUNIT_ASSERT(0 == r.size());
 
-	string QUERY_STRING5 = "assign a; Select a such that Parent(2, _)";
-	r = pcc->parse(QUERY_STRING5);
-	CPPUNIT_ASSERT(6 == r.size());*/
+	string QUERY_STRING6 = "assign a; Select a such that Parent(2, _)";
+	r = pcc->parse(QUERY_STRING6);
+	CPPUNIT_ASSERT(6 == r.size());
 
 }
 
