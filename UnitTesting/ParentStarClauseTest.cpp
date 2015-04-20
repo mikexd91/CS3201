@@ -501,5 +501,22 @@ void ParentStarClauseTest::testParentStarInvalid() {
 	m1->setSecondArg("s2");
 	m1->setSecondArgFixed(false);
 	m1->setSecondArgType(ARG_STATEMENT);
-	CPPUNIT_ASSERT(!m1->isValid());
+	CPPUNIT_ASSERT(m1->isValid());
+
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(!r1.isClausePassed());
+}
+
+void ParentStarClauseTest::testParentStarStmtOverflow() {
+	ParentStarClause* m1 = new ParentStarClause();
+	m1->setFirstArg("99");
+	m1->setFirstArgFixed(true);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("-100");
+	m1->setSecondArgFixed(true);
+	m1->setSecondArgType(ARG_STATEMENT);
+	CPPUNIT_ASSERT(m1->isValid());
+
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(!r1.isClausePassed());
 }

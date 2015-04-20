@@ -21,6 +21,7 @@ class ParentStarClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testParentStarSynSynPassWithWhile );
 	CPPUNIT_TEST( testParentStarSynSynPassWithGeneric );
 	CPPUNIT_TEST( testParentStarInvalid );
+	CPPUNIT_TEST( testParentStarStmtOverflow );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,5 +43,6 @@ public:
 	void testParentStarSynSynPassWithWhile();
 	void testParentStarSynSynPassWithGeneric();
 	void testParentStarInvalid();
+	void testParentStarStmtOverflow();
 };
     
