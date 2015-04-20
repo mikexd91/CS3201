@@ -351,7 +351,7 @@ void PQLIntegration::testSelectFollows() {
 	r = pcc->parse(QUERY_STRING2);
 	cout << r.size() << "fol s _";
 	// answer supposed to be 1,3,4,5,7
-	CPPUNIT_ASSERT(5 == r.size());
+    CPPUNIT_ASSERT(5 == r.size());
 
 	string QUERY_STRING3 = "stmt s; Select s such that Follows(_, s)";
 	r = pcc->parse(QUERY_STRING3);
