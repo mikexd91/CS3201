@@ -169,7 +169,7 @@ void FollowsClauseTest::testIsFollows() {
 
 	Results r6 = fol2.evaluate();
 	CPPUNIT_ASSERT(r6.isClausePassed());
-	cout << r6.getPairResults().size() << "lala";
+	//cout << r6.getPairResults().size() << "lala";
 	return;
 }
 

@@ -99,12 +99,12 @@ set<string> QueryEvaluator::getAllSynValues(vector<StringPair> selectList) {
 }
 
 // return the NUMBER of times syn appear in both obj1 and obj2
-int QueryEvaluator::getSameClause(Results obj1, Results obj2) {
+int QueryEvaluator::getNumOfRepeatingSyn(Results obj1, Results obj2) {
 	int numSynObj1 = obj1.getNumOfSyn();
 	int numSynObj2 = obj2.getNumOfSyn();
 
 	if (numSynObj1 == 2 && numSynObj2 == 1) {
-		int countr = getSameClause(obj2, obj1);
+		int countr = getNumOfRepeatingSyn(obj2, obj1);
 		return countr;
 	}
 	
@@ -183,10 +183,10 @@ set<string> QueryEvaluator::evaluateOneClause(Results res, vector<StringPair> se
 set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vector<StringPair> selectList) {
 	Results obj1 = resultList.at(0);
 	Results obj2 = resultList.at(1);
-	int numRepeatingClause = getSameClause(obj1, obj2);
+	int numRepeatingSyn = getNumOfRepeatingSyn(obj1, obj2);
 	string syn = selectList.at(0).getFirst();
 	
-	switch (numRepeatingClause) {
+	switch (numRepeatingSyn) {
 		case 0 : 
 			if (obj1.isClausePassed() && obj2.isClausePassed()) {
 				if (obj1.usesSyn(syn)) {

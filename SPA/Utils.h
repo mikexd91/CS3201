@@ -25,6 +25,7 @@ public:
 	static bool isSameType(string, NodeType);
 	static string convertNodeTypeToArgType(NodeType);
 	static set<int> filterStatements(set<int>, NodeType);
+	static NodeType convertArgTypeToNodeType(string);
 };
 
 namespace UtilsConstants {

@@ -22,9 +22,9 @@ private:
 	
 	// set<set<int>> getAllParent(int stmtNum1, int stmtNum2);		// gets lists of all possible Parents
 
-	Results* addParentPairToResult(set<Statement*>, NodeType);
-	Results* evaluateS1WildS2Wild(string, string);				// Case: Parent(s1,s2) - stmt1 wild, stmt2 wild
-	Results* evaluateS1WildS2Fixed(string, string);			// Case: Parent(s1,2) - stmt1 wild, stmt2 fixed
+	Results* addParentPairToResult(set<Statement*>, string, string);
+	Results* evaluateS1WildS2Wild(string, string, string, string);				// Case: Parent(s1,s2) - stmt1 wild, stmt2 wild
+	Results* evaluateS1WildS2Fixed(string, string, string);			// Case: Parent(s1,2) - stmt1 wild, stmt2 fixed
 	Results* evaluateS1FixedS2Wild(string, string, string);			// Case: Parent(1,s2) - stmt1 fixed, stmt2 wild
 	Results* evaluateS1FixedS2Fixed(string, string);	// Case: Parent(1,2) - stmt1 fixed, stmt2 fixed
 

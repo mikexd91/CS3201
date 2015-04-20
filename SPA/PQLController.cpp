@@ -20,16 +20,19 @@ set<string> PQLController::parse(string query) {
 	// else return none
 	// call query evaluator to format query
 	// display query result
+	try {
+		Query q = *new Query();
+		q = QueryParser::parseQuery(query);
+		QueryEvaluator* qe = new QueryEvaluator();
+		set<string> results = qe->evaluateQuery(q);
 
-	Query q = *new Query();
-	q = QueryParser::parseQuery(query);
-	QueryEvaluator* qe = new QueryEvaluator();
-	set<string> results = qe->evaluateQuery(q);
+		postProcess(results);
 
-	postProcess(results);
-
-	return results;
-
+		return results;
+	} catch (...){
+		set<string>* empty = new set<string>();
+		return *empty;
+	}
 }
 
 void PQLController::postProcess(set<string>& results) {

@@ -144,6 +144,7 @@
     <ClCompile Include="PDRTest.cpp" />
     <ClCompile Include="ProcNodeTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
+    <ClCompile Include="QueryEvaluatorTest.cpp" />
     <ClCompile Include="QueryParserTest.cpp" />
     <ClCompile Include="ResultsTest.cpp" />
     <ClCompile Include="source\AllUnitTest.cpp" />
