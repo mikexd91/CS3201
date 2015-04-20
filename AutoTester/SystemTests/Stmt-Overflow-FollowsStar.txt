@@ -18,3 +18,8 @@ assign a;
 Select a such that Follows*(-1, 21)
 none
 5000
+5 - testing for overflow
+assign a;
+Select a such that Follows(0, 1)
+none
+5000

@@ -1,0 +1,15 @@
+1 - testing for overflow
+variable v;
+Select v such that Modifies(0, v)
+none
+5000
+2 - testing for overflow
+variable v;
+Select v such that Modifies(-1, v)
+none
+5000
+3 - testing for overflow
+stmt s, variable v;
+Select s such that Modifies(-4, v)
+none
+5000
