@@ -64,17 +64,21 @@ Results UsesClause::evaluate(void) {
 Results UsesClause::evaluateStmtWildVarWild() {
 	Results res = Results();
 	// set synonyms
-	res.setFirstClauseSyn(this->getFirstArg());
-	res.setSecondClauseSyn(this->getSecondArg());
-	// set synonym count
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
 	if(firstType==ARG_GENERIC && secondType==ARG_GENERIC) {
 		res.setNumOfSyn(0);
 	} else if(firstType==ARG_GENERIC || secondType==ARG_GENERIC) {
 		res.setNumOfSyn(1);
+		if(firstType!=ARG_GENERIC) {
+			res.setFirstClauseSyn(this->getFirstArg());
+		} else {
+			res.setFirstClauseSyn(this->getSecondArg());
+		}
 	} else {
 		res.setNumOfSyn(2);
+		res.setFirstClauseSyn(this->getFirstArg());
+		res.setSecondClauseSyn(this->getSecondArg());
 	}
 
 	// generate all possible combinations using stmtTable as reference
@@ -125,11 +129,11 @@ Results UsesClause::evaluateStmtWildVarWild() {
 Results UsesClause::evaluateStmtWildVarFixed() {
 	Results res = Results();
 	// set synonyms
-	res.setFirstClauseSyn(this->getFirstArg());
 	if(this->getFirstArgType() == ARG_GENERIC) {
 		res.setNumOfSyn(0);
 	} else {
 		res.setNumOfSyn(1);
+		res.setFirstClauseSyn(this->getFirstArg());
 	}
 
 	// get the fixed var and usedby
@@ -170,11 +174,11 @@ Results UsesClause::evaluateStmtWildVarFixed() {
 Results UsesClause::evaluateStmtFixedVarWild() {
 	Results res = Results();
 	// set synonyms
-	res.setFirstClauseSyn(this->getSecondArg());
 	if(this->getSecondArgType() == ARG_GENERIC) {
 		res.setNumOfSyn(0);
 	} else {
 		res.setNumOfSyn(1);
+		res.setFirstClauseSyn(this->getSecondArg());
 	}
 
 	// get relevant stmts
