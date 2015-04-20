@@ -255,7 +255,6 @@ void UsesClauseTest::testUsesGenericSynFixedPass() {
 	vector<string> singleResults = r.getSinglesResults();
 	
 	CPPUNIT_ASSERT(r.isClausePassed());
-	cout << singleResults.size();
 	CPPUNIT_ASSERT(singleResults.size() == 3);
 	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "1") != singleResults.end());
 	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "3") != singleResults.end());

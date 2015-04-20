@@ -48,8 +48,8 @@ string ModifiesClause::getStmtType() {
 bool ModifiesClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
-	bool firstArg = (firstType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_ASSIGN) || (firstType == stringconst::ARG_WHILE) || (firstType == stringconst::ARG_PROGLINE);
-	bool secondArg = (secondType == stringconst::ARG_VARIABLE);
+	bool firstArg = (firstType == ARG_GENERIC) || (firstType == ARG_STATEMENT) || (firstType == ARG_ASSIGN) || (firstType == ARG_WHILE) || (firstType == ARG_PROGLINE);
+	bool secondArg = (secondType == ARG_GENERIC) || (secondType == ARG_VARIABLE);
 	return (firstArg && secondArg);
 }
 
@@ -93,8 +93,12 @@ Results ModifiesClause::evaluateFixedFixed(int stmtNum, string varName) {
 Results ModifiesClause::evaluateFixedSyn(int stmtNum, string var) {
 	Results* res = new Results();
 	res->setFirstClauseSyn(var);
-	res->setNumOfSyn(1);
-	
+	if(this->getSecondArgType() != ARG_GENERIC) {
+		res->setNumOfSyn(1);
+	} else {
+		res->setNumOfSyn(0);
+	}
+
 	VarTable* vtable = VarTable::getInstance();
 	vector<string>* allVarNames = vtable->getAllVarNames();
 
@@ -112,14 +116,18 @@ Results ModifiesClause::evaluateFixedSyn(int stmtNum, string var) {
 Results ModifiesClause::evaluateSynFixed(string stmt, string varName) {
 	Results* res = new Results();
 	res->setFirstClauseSyn(stmt);
-	res->setNumOfSyn(1);
+	if(this->getFirstArgType() != ARG_GENERIC) {
+		res->setNumOfSyn(1);
+	} else {
+		res->setNumOfSyn(0);
+	}
 
 	StmtTable* stable = StmtTable::getInstance();
 	set<Statement*> allStmt;	
 	
-	if (getStmtType() == stringconst::ARG_ASSIGN) {
+	if (getStmtType() == ARG_ASSIGN) {
 		allStmt = stable->getAssgStmts();
-	} else if (getStmtType() == stringconst::ARG_WHILE) {
+	} else if (getStmtType() == ARG_WHILE) {
 		allStmt = stable->getWhileStmts();
 	} else {
 		allStmt = stable->getAllStmts();
@@ -141,7 +149,17 @@ Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
 	Results* res = new Results();
 	res->setFirstClauseSyn(stmt);
 	res->setSecondClauseSyn(var);
-	res->setNumOfSyn(2);
+
+	// set synonym count
+	string firstType = this->getFirstArgType();
+	string secondType = this->getSecondArgType();
+	if(firstType==ARG_GENERIC && secondType==ARG_GENERIC) {
+		res->setNumOfSyn(2);
+	} else if(firstType==ARG_GENERIC || secondType==ARG_GENERIC) {
+		res->setNumOfSyn(1);
+	} else {
+		res->setNumOfSyn(0);
+	}
 
 	StmtTable* stable = StmtTable::getInstance();
 	set<Statement*> allStmt;
