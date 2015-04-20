@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <string>
+#include <boost/foreach.hpp>
 
 using namespace stringconst;
 using namespace std;
@@ -309,6 +310,20 @@ void FollowsStarClauseTest::testFollowsStarFixedSyn() {
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 5);
 
+	// pass, 1, _
+	f1 = new FollowsStarClause();
+	f1->setFirstArg("1");
+	f1->setFirstArgFixed(true);
+	f1->setFirstArgType(ARG_STATEMENT);
+	f1->setSecondArg("_");
+	f1->setSecondArgFixed(false);
+	f1->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(f1->isValid());
+
+	r1 = f1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getNumOfSyn() == 0);
+
 	// fail, targeting arg type not exist
 	FollowsStarClause* f2 = new FollowsStarClause();
 	f2->setFirstArg("1");
@@ -352,6 +367,20 @@ void FollowsStarClauseTest::testFollowsStarSynFixed() {
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 5);
 
+	// pass, _, 6
+	f1 = new FollowsStarClause();
+	f1->setFirstArg("_");
+	f1->setFirstArgFixed(false);
+	f1->setFirstArgType(ARG_GENERIC);
+	f1->setSecondArg("6");
+	f1->setSecondArgFixed(true);
+	f1->setSecondArgType(ARG_ASSIGN);
+	CPPUNIT_ASSERT(f1->isValid());
+
+	r1 = f1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getNumOfSyn() == 0);
+
 	// fail, targeting arg type not exist
 	FollowsStarClause* f2 = new FollowsStarClause();
 	f2->setFirstArg("w");
@@ -380,35 +409,70 @@ void FollowsStarClauseTest::testFollowsStarSynFixed() {
 }
 
 void FollowsStarClauseTest::testFollowsStarSynSyn() {
-	cout << "asd" << endl;
-	// pass, s, s
+	// pass, s, s1
 	FollowsStarClause* f1 = new FollowsStarClause();
 	f1->setFirstArg("s");
 	f1->setFirstArgFixed(false);
 	f1->setFirstArgType(ARG_STATEMENT);
-	f1->setSecondArg("s");
+	f1->setSecondArg("s1");
 	f1->setSecondArgFixed(false);
 	f1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(f1->isValid()); 
 
 	Results r1 = f1->evaluate();
-	cout << "evaled" << endl;
-	CPPUNIT_ASSERT(!r1.isClausePassed());
-	//CPPUNIT_ASSERT(r1.getPairResults().size() == 15);
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getNumOfSyn() == 2);
+	CPPUNIT_ASSERT(r1.getPairResults().size() == 15);
 
-	// pass, a, a
+	// pass, _, s1
 	f1 = new FollowsStarClause();
-	f1->setFirstArg("a");
+	f1->setFirstArg("_");
 	f1->setFirstArgFixed(false);
-	f1->setFirstArgType(ARG_STATEMENT);
-	f1->setSecondArg("a");
+	f1->setFirstArgType(ARG_GENERIC);
+	f1->setSecondArg("s1");
 	f1->setSecondArgFixed(false);
 	f1->setSecondArgType(ARG_STATEMENT);
-	CPPUNIT_ASSERT(f1->isValid());
+	CPPUNIT_ASSERT(f1->isValid()); 
 
 	r1 = f1->evaluate();
-	CPPUNIT_ASSERT(!r1.isClausePassed());
-	//CPPUNIT_ASSERT(r1.getPairResults().size() == 15);
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
+	//cout << r1.getSinglesResults().size() << endl;
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 5);
+
+	/*BOOST_FOREACH(auto p, r1.getSinglesResults()) {
+		cout << p << " ";
+	}*/
+
+	// pass, s, _
+	f1 = new FollowsStarClause();
+	f1->setFirstArg("s");
+	f1->setFirstArgFixed(false);
+	f1->setFirstArgType(ARG_STATEMENT);
+	f1->setSecondArg("s1");
+	f1->setSecondArgFixed(false);
+	f1->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(f1->isValid()); 
+
+	r1 = f1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
+	//cout << r1.getSinglesResults().size() << endl;
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 5);
+
+	// pass _,_
+	f1 = new FollowsStarClause();
+	f1->setFirstArg("s");
+	f1->setFirstArgFixed(false);
+	f1->setFirstArgType(ARG_GENERIC);
+	f1->setSecondArg("s1");
+	f1->setSecondArgFixed(false);
+	f1->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(f1->isValid()); 
+
+	r1 = f1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getNumOfSyn() == 0);
 
 	// fail, targeting arg type not exist
 	FollowsStarClause* f2 = new FollowsStarClause();
@@ -422,4 +486,18 @@ void FollowsStarClauseTest::testFollowsStarSynSyn() {
 
 	Results r2 = f2->evaluate();
 	CPPUNIT_ASSERT(!r2.isClausePassed());
+
+	// fail, s, s
+	FollowsStarClause* f3 = new FollowsStarClause();
+	f3->setFirstArg("s");
+	f3->setFirstArgFixed(false);
+	f3->setFirstArgType(ARG_STATEMENT);
+	f3->setSecondArg("s");
+	f3->setSecondArgFixed(false);
+	f3->setSecondArgType(ARG_STATEMENT);
+	CPPUNIT_ASSERT(f3->isValid()); 
+
+	Results r3 = f3->evaluate();
+	//cout << "evaled" << endl;
+	CPPUNIT_ASSERT(!r3.isClausePassed());
 }
