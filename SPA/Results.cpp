@@ -29,6 +29,37 @@ void Results::addPairResult(string s1, string s2) {
 	this->pairResults.push_back(pair);
 }
 
+void Results::addSinglesResultsDuplicateHack(string s) {
+	set<string> tempSet = *new set<string>();
+	this->singleSet.emplace(s);
+}
+
+void Results::addPairResultsDuplicateHack(string s1, string s2) {
+	StringPair pair = *new StringPair();
+	pair.setFirst(s1);
+	pair.setSecond(s2);
+
+	set<StringPair> tempSet = *new set<StringPair>();
+	this->pairSet.emplace(pair); 
+}
+
+void Results::convertSinglesSetToVector() {
+	set<string> set1 = this->singleSet;
+	for (set<string>::iterator iter = set1.begin(); iter != set1.end(); iter++) {
+		addSingleResult(*iter);
+	}
+}
+
+void Results::convertPairSetToVector() {
+	set<StringPair> set1 = this->pairSet;
+	for (set<StringPair>::iterator iter = set1.begin(); iter != set1.end(); iter++) {
+		StringPair strPair = *iter;
+		string s1 = strPair.getFirst();
+		string s2 = strPair.getSecond();
+		addPairResult(s1, s2);
+	}
+}
+
 void Results::setFirstClauseSyn(string s1) {
 	this->firstClauseSyn = s1;
 }
