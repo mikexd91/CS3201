@@ -371,13 +371,13 @@ void PQLIntegration::testSelectFollowsStar() {
 	r = pcc->parse(QUERY_STRING);
 	CPPUNIT_ASSERT(3 == r.size());
 
-	string QUERY_STRING2 = "while w; Select w such that Follows*(w, _)";
+	string QUERY_STRING2 = "stmt s; Select s such that Follows*(s, _)";
 	r = pcc->parse(QUERY_STRING2);
-	CPPUNIT_ASSERT(2 == r.size());
+	// answer: 1,3,4,5,7
+	CPPUNIT_ASSERT(5 == r.size());
 
 	string QUERY_STRING3 = "while w; Select w such that Follows*(_, w)";
 	r = pcc->parse(QUERY_STRING3);
-	cout << r.size() << endl;
 	CPPUNIT_ASSERT(2 == r.size());
 
 	string QUERY_STRING4 = "assign a; Select a such that Follows*(_, _)";
