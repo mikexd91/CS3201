@@ -261,9 +261,11 @@ void ParentClauseTest::testParentFixedSynPass() {
 	Results r1 = m1->evaluate();
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s");
-	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 2);
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "2");
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(1) == "3");
+	
+	vector<string> results = r1.getSinglesResults();
+	CPPUNIT_ASSERT(results.size() == 2);
+	CPPUNIT_ASSERT(find(results.begin(), results.end(), "2") != results.end());
+	CPPUNIT_ASSERT(find(results.begin(), results.end(), "3") != results.end());
 }
 
 void ParentClauseTest::testParentFixedSynPassWithWhile() {
@@ -279,8 +281,9 @@ void ParentClauseTest::testParentFixedSynPassWithWhile() {
 	Results r1 = m1->evaluate();
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "w");
-	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "3");
+	vector<string> results = r1.getSinglesResults();
+	CPPUNIT_ASSERT(results.size() == 1);
+	CPPUNIT_ASSERT(find(results.begin(), results.end(), "3") != results.end());
 }
 
 void ParentClauseTest::testParentFixedSynFail() {
@@ -352,11 +355,11 @@ void ParentClauseTest::testParentFirstUnderscorePass() {
 	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 4);
 	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s2");
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "2");
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(1) == "3");
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(2) == "4");
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(3) == "5");
-
+	vector<string> results = r1.getSinglesResults();
+	CPPUNIT_ASSERT(find(results.begin(), results.end(), "2") != results.end());
+	CPPUNIT_ASSERT(find(results.begin(), results.end(), "3") != results.end());
+	CPPUNIT_ASSERT(find(results.begin(), results.end(), "4") != results.end());
+	CPPUNIT_ASSERT(find(results.begin(), results.end(), "5") != results.end());
 }
 
 void ParentClauseTest::testParentSecondUnderscorePass() {
