@@ -1,0 +1,16 @@
+procedure Alice {
+	x = 1;
+	y = 2;
+	z = x;
+	z = y;
+}
+
+statement s;
+Select s such that Follows(1, s);
+
+statement s;
+Select s such that Follows(s, 1);
+
+statement s1; statement s2;
+Select s1 such that Follows(s1, s2);
+

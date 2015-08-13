@@ -1,0 +1,60 @@
+1 - only 1 clause
+assign a;
+Select a such that Follows(a, _)
+1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 16
+5000 
+2 - 1 clause
+stmt s;
+Select s such that Follows(_, s)
+2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 20
+5000
+3 - 1 clause
+while w;
+Select w such that Follows(s, _)
+none
+5000
+4 - 1 clause
+while w;
+Select w such that Follows(_, w)
+5, 15, 17
+5000
+5 - 1 clause
+stmt s;
+Select s such that Follows(_, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+5000
+6 - 1 clause
+while w;
+Select w such that Follows(3, 4)
+5, 15, 17, 18
+5000
+7 - 1 clause
+assign a;
+Select a such that Follows(18, 20)
+none
+5000
+8 - 2 clauses
+assign a; stmt s;
+Select s such that Follows(_, s) pattern a(_, _)
+2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 20
+5000
+9 - 2 clauses
+assign a;
+Select a such that Follows(a, _) pattern a("lastPokemon", _)
+none
+5000
+10 - 2 clauses
+while w;
+Select w such that Follows(w, _) pattern a("squirtle", _)
+none
+5000
+11 - 2 clauses
+assign a;
+Select a such that Follows(_, a) pattern a(_, _"5"_)
+2, 3
+5000
+12 - 2 clauses
+variable v; assign a;
+Select v such that Follows(a, _) pattern a(v, _)
+charmander, squirtle, bulbasaur, firstStageEvolution, charmeleon, wartortle, battle1, battle2, battle3, ivysaur
+5000

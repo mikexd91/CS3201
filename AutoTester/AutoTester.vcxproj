@@ -50,8 +50,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\SPA;$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -70,6 +69,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -85,6 +85,16 @@
   <ItemGroup>
     <ClInclude Include="source\AbstractWrapper.h" />
     <ClInclude Include="source\TestWrapper.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SystemTests\Query-File-1.txt" />
+    <None Include="SystemTests\Query-File-2.txt" />
+    <None Include="SystemTests\Query-File-3.txt" />
+    <None Include="SystemTests\Query-File-4.txt" />
+    <None Include="SystemTests\Source-File-1.txt" />
+    <None Include="SystemTests\Source-File-2.txt" />
+    <None Include="SystemTests\Source-File-3.txt" />
+    <None Include="SystemTests\Source-File-4.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

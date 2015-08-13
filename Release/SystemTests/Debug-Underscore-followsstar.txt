@@ -1,0 +1,60 @@
+1 - only one clause
+assign a;
+Select a such that Follows*(a, _)
+1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 16
+5000
+2 - one clause
+stmt s;
+Select s such that Follows*(_, s)
+2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 20
+5000
+3 - one clause
+while w; 
+Select w such that Follows*(w, _)
+5, 17
+5000
+4 - one clause
+assign a;
+Select a such that Follows*(_, _)
+1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 19, 20
+5000
+5 - one clause
+stmt s;
+Select s such that Follows*(3, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+5000
+6 - one clause
+while w;
+Select w such that Follows*(_, 18)
+none
+5000
+7 - one clause
+assign a;
+Select a such that Follows*(_, a)
+2, 3, 4, 7, 8, 9, 10, 11, 12, 13, 14, 20
+5000
+8 - two clauses
+assign a;
+Select w such that Follows*(_, a) pattern a(_, _)
+none
+5000
+9 - two clauses
+stmt s; while w; assign a;
+Select s such that Follows*(_, w) pattern a("charizard", _)
+none
+5000
+10 - two clauses
+variable v; stmt s; assign a;
+Select v such that Follows*(s, _) pattern a(v, _)
+charmander, squirtle, bulbasaur, firstStageEvolution, charmeleon, wartortle, ivysaur, battle1, battle2, battle3, lastPokemon
+5000
+11 - two clauses
+variable v; assign a;
+Select v such that Follows*(_, _) pattern a(v, _)
+charmander, squirtle, bulbasaur, firstStageEvolution, charmeleon, wartortle, ivysaur, battle1, battle2, battle3, lastPokemon
+5000
+12 - two clauses
+assign a;
+Select a such that Follows*(_, a) pattern a(_, _"squirtle"_)
+10, 8, 14
+5000

@@ -10,6 +10,15 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="PQLIntegration.cpp" />
+    <ClCompile Include="source\IntegrationTest.cpp" />
+    <ClCompile Include="source\TestOne.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PQLIntegration.h" />
+    <ClInclude Include="source\TestOne.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{44B65641-96D6-4FB5-B78A-F0CAD8DDA42C}</ProjectGuid>
     <RootNamespace>IntegrationTesting</RootNamespace>
@@ -36,18 +45,27 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)source;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"$(SolutionDir)source";"$(SolutionDir)include";%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)lib\cppunit_debug.lib;$(SolutionDir)$(Configuration)\SPA.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>"$(SolutionDir)lib\cppunit_debug.lib";"$(SolutionDir)Debug\SPA.lib"</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Release</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>"$(TargetPath)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Unit Tests...</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -65,9 +83,6 @@
       <AdditionalDependencies>$(SolutionDir)lib\cppunit.lib;$(SolutionDir)$(Configuration)\SPA.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="source\IntegrationTest.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
