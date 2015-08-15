@@ -6,11 +6,14 @@
 #include <regex>
 #include <queue>
 #include <stack>
+#include "boost/assign.hpp"
 
 #include "InvalidExpressionException.h"
 #include "StmtTable.h"
 
 using namespace std;
+
+const boost::unordered_map<std::string, int> OPERATOR_PRIORITIES = boost::assign::map_list_of ("+", 2) ("-", 2) ("*", 3);
 
 //Removes the sanitised characters from str, and return a new string
 string Utils::sanitise(string str) {
@@ -90,7 +93,7 @@ void Utils::parseSymbol(string word, queue<string> &expressionQueue, stack<strin
 	//if top of stack is *, all other operation (+-*) are lower or equal, so just add top to output queue
 	//if top of stack is + or -, only add top to output queue if word is + or -
 	if (isValidSymbol(word)) {
-		while (!operationStack.empty() && !(operationStack.top() != "*" && word == "*")) {
+		while (!operationStack.empty() && OPERATOR_PRIORITIES.at(word) < OPERATOR_PRIORITIES.at(operationStack.top())) {
 			expressionQueue.push(operationStack.top());
 			operationStack.pop();
 		}
