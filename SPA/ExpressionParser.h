@@ -15,6 +15,7 @@ private:
 	stack<string> operationStack;
 	queue<string> expressionQueue;
 	queue<string> originalExpression;
+	string previousWord;
 	string word;
 	string getWordAndPop(queue<string>&);
 	void parseFactor();
