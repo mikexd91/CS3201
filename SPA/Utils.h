@@ -7,6 +7,8 @@
 #include <set>
 
 #include "Statement.h"
+#include "boost/assign.hpp"
+#include "boost/unordered_map.hpp"
 
 class Utils
 {
@@ -14,10 +16,7 @@ public:
 	
 	static std::string sanitise(string str);
 	static vector<string> explode(const string&, const string, const vector<char>);
-	static queue<string> getRPN(queue<string>);
 	static string getWordAndPop(queue<string>&);
-	static void parseFactor(string, queue<string>&);
-	static void parseSymbol(string, queue<string>&, stack<string>&);
 	static bool isValidFactor(string);
 	static bool isValidOperator(string);
 	static bool isValidName(string);
@@ -34,6 +33,7 @@ namespace UtilsConstants {
 	//const string DELIM_STRING = " ;={}";
 	//const char DELIMITERS[] = { ';', '=', '{', '}' };
 	const char SANITISED_CHARS[] = { '\t', '\n' };
+	const boost::unordered_map<std::string, int> OPERATOR_PRIORITIES = boost::assign::map_list_of ("+", 2) ("-", 2) ("*", 3);
 };
 
 namespace stringconst{

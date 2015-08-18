@@ -18,13 +18,7 @@ private:
 	string word;
 	string getWordAndPop(queue<string>&);
 	void parseFactor();
-	void parseSymbol();
+	void parseOperator();
 	void parseOpenBracket();
 	void parseCloseBracket();
-	bool isValidFactor(string);
-	bool isValidOperator(string);
 };
-
-namespace ExpressionParserConstants {
-	const boost::unordered_map<std::string, int> OPERATOR_PRIORITIES = boost::assign::map_list_of ("+", 2) ("-", 2) ("*", 3);
-}

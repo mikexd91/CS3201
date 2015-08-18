@@ -10,7 +10,7 @@ queue<string> ExpressionParser::getRPN(queue<string> expr) {
 	//using Shunting-yard algorithm
 	int count = 0;
 	word = getWordAndPop(originalExpression);
-	if (isValidFactor(word)) {
+	if (Utils::isValidFactor(word)) {
 		parseFactor();
 	} else if (word == "(") {
 		parseOpenBracket();
@@ -29,8 +29,8 @@ void ExpressionParser::parseFactor() {
 	expressionQueue.push(word);
 	if (!originalExpression.empty()) {
 		word = getWordAndPop(originalExpression);
-		if (isValidOperator(word)) {
-			parseSymbol();
+		if (Utils::isValidOperator(word)) {
+			parseOperator();
 		} else if (word == ")") {
 			parseCloseBracket();
 		} else {
@@ -40,9 +40,9 @@ void ExpressionParser::parseFactor() {
 }
 
 //Needed for generating RPN. Checks and adds the factor to the expression queue.
-void ExpressionParser::parseSymbol() {
+void ExpressionParser::parseOperator() {
 	//while there is an operator token, o2, at the top of the operator stack and the current operator o1 has precedence less than that of o2,
-	while (!operationStack.empty() && Utils::isValidOperator(operationStack.top()) && ExpressionParserConstants::OPERATOR_PRIORITIES.at(word) <= ExpressionParserConstants::OPERATOR_PRIORITIES.at(operationStack.top())) {
+	while (!operationStack.empty() && Utils::isValidOperator(operationStack.top()) && UtilsConstants::OPERATOR_PRIORITIES.at(word) <= UtilsConstants::OPERATOR_PRIORITIES.at(operationStack.top())) {
 		//then pop o2 off the operator stack, onto the output queue;
 		expressionQueue.push(operationStack.top());
 		operationStack.pop();
@@ -50,7 +50,7 @@ void ExpressionParser::parseSymbol() {
 	//push o1 onto the operator stack.
 	operationStack.push(word);
 	word = getWordAndPop(originalExpression);
-	if (isValidFactor(word)) {
+	if (Utils::isValidFactor(word)) {
 		parseFactor();
 	} else if (word == "(") {
 		parseOpenBracket();
@@ -64,7 +64,7 @@ void ExpressionParser::parseOpenBracket() {
 	//push open bracket onto the operator stack.
 	operationStack.push(word);
 	word = getWordAndPop(originalExpression);
-	if (isValidFactor(word)) {
+	if (Utils::isValidFactor(word)) {
 		parseFactor();
 	} else {
 		throw InvalidExpressionException("Invalid Expression!");
@@ -93,8 +93,8 @@ void ExpressionParser::parseCloseBracket() {
 		if (operationStack.top() == "(") {
 			operationStack.pop();
 			word = getWordAndPop(originalExpression);
-			if (ExpressionParser::isValidOperator(word)) {
-				parseSymbol();
+			if (Utils::isValidOperator(word)) {
+				parseOperator();
 				return;
 			} else {
 				throw InvalidExpressionException("Invalid Expression!");
@@ -105,14 +105,4 @@ void ExpressionParser::parseCloseBracket() {
 		}
 	}
 	throw InvalidExpressionException("Invalid Expression!");
-}
-
-//Check if a string is a valid symbol
-bool ExpressionParser::isValidOperator(string word) {
-	return ExpressionParserConstants::OPERATOR_PRIORITIES.find(word) != ExpressionParserConstants::OPERATOR_PRIORITIES.end();
-}
-
-//Check if a string is a valid factor (constant or name)
-bool ExpressionParser::isValidFactor(string word) {
-	return Utils::isValidConstant(word) || Utils::isValidName(word);
 }

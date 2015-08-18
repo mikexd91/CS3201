@@ -6,14 +6,12 @@
 #include <regex>
 #include <queue>
 #include <stack>
-#include "boost/assign.hpp"
+
 
 #include "InvalidExpressionException.h"
 #include "StmtTable.h"
 
 using namespace std;
-
-const boost::unordered_map<std::string, int> OPERATOR_PRIORITIES = boost::assign::map_list_of ("+", 2) ("-", 2) ("*", 3);
 
 //Removes the sanitised characters from str, and return a new string
 string Utils::sanitise(string str) {
@@ -47,31 +45,6 @@ vector<string> Utils::explode(const string &str, const string delim_string, cons
 	return elems;
 }
 
-//takes in a queue of assignment expression, with every word and symbol separated.
-//e.g. a+b+c -> ["a", "+", "b", "+", "c"]
-//returns another queue of the assignment expression in its RPN format
-//e.g. a+b+c-> ["a",  "b", "+", "c" "+", ]
-queue<string> Utils::getRPN(queue<string> originalExpression) {
-	stack<string> operationStack;
-	queue<string> expressionQueue;
-	//using Shunting-yard algorithm
-	string word;
-	int count = 0;
-	word = getWordAndPop(originalExpression);
-	parseFactor(word, expressionQueue);
-	while (!originalExpression.empty()) {
-		word = getWordAndPop(originalExpression);
-		parseSymbol(word, expressionQueue, operationStack);
-		word = getWordAndPop(originalExpression);
-		parseFactor(word, expressionQueue);
-	}
-	while (!operationStack.empty()) {
-		expressionQueue.push(operationStack.top());
-		operationStack.pop();
-	}
-	return expressionQueue;
-}
-
 //checks that the queue is not empty, then gets the next element of the queue and pop the head
 string Utils::getWordAndPop(queue<string> &originalExpression) {
 	if(originalExpression.empty()) {
@@ -80,31 +53,6 @@ string Utils::getWordAndPop(queue<string> &originalExpression) {
 		string word = originalExpression.front();
 		originalExpression.pop();
 		return word;
-	}
-}
-
-//Needed for generating RPN. Checks the symbol.
-//It also adds the past symbols to the expression queue (if needed) and current symbol to the operation stack
-void Utils::parseSymbol(string word, queue<string> &expressionQueue, stack<string> &operationStack) {
-	//if top of stack is *, all other operation (+-*) are lower or equal, so just add top to output queue
-	//if top of stack is + or -, only add top to output queue if word is + or -
-	if (isValidOperator(word)) {
-		while (!operationStack.empty() && isValidOperator(operationStack.top()) && OPERATOR_PRIORITIES.at(word) <= OPERATOR_PRIORITIES.at(operationStack.top())) {
-			expressionQueue.push(operationStack.top());
-			operationStack.pop();
-		}
-		operationStack.push(word);
-	} else {
-		throw InvalidExpressionException("Invalid Expression!");
-	}
-}
-
-//Needed for generating RPN. Checks and adds the factor to the expression queue.
-void Utils::parseFactor(string word, queue<string> &expressionQueue) {
-	if (isValidFactor(word)) {
-		expressionQueue.push(word);
-	} else {
-		throw InvalidExpressionException("Invalid Expression!");
 	}
 }
 
@@ -139,7 +87,7 @@ bool Utils::isValidFactor(string factor) {
 
 //Check if a string is a valid operator
 bool Utils::isValidOperator(string symbol) {
-	return OPERATOR_PRIORITIES.find(symbol) != OPERATOR_PRIORITIES.end();
+	return UtilsConstants::OPERATOR_PRIORITIES.find(symbol) != UtilsConstants::OPERATOR_PRIORITIES.end();
 }
 
 //Checks if the arg type and statement type are matching
