@@ -88,8 +88,8 @@ string Utils::getWordAndPop(queue<string> &originalExpression) {
 void Utils::parseSymbol(string word, queue<string> &expressionQueue, stack<string> &operationStack) {
 	//if top of stack is *, all other operation (+-*) are lower or equal, so just add top to output queue
 	//if top of stack is + or -, only add top to output queue if word is + or -
-	if (isValidSymbol(word)) {
-		while (!operationStack.empty() && OPERATOR_PRIORITIES.at(word) < OPERATOR_PRIORITIES.at(operationStack.top())) {
+	if (isValidOperator(word)) {
+		while (!operationStack.empty() && isValidOperator(operationStack.top()) && OPERATOR_PRIORITIES.at(word) <= OPERATOR_PRIORITIES.at(operationStack.top())) {
 			expressionQueue.push(operationStack.top());
 			operationStack.pop();
 		}
@@ -137,9 +137,9 @@ bool Utils::isValidFactor(string factor) {
 	return isValidConstant(factor) || isValidName(factor);
 }
 
-//Check if a string is a valid symbol
-bool Utils::isValidSymbol(string symbol) {
-	return symbol == "+" || symbol == "-" || symbol == "*";
+//Check if a string is a valid operator
+bool Utils::isValidOperator(string symbol) {
+	return OPERATOR_PRIORITIES.find(symbol) != OPERATOR_PRIORITIES.end();
 }
 
 //Checks if the arg type and statement type are matching

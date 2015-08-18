@@ -19,7 +19,7 @@ public:
 	static void parseFactor(string, queue<string>&);
 	static void parseSymbol(string, queue<string>&, stack<string>&);
 	static bool isValidFactor(string);
-	static bool isValidSymbol(string);
+	static bool isValidOperator(string);
 	static bool isValidName(string);
 	static bool isValidConstant(string);
 	static bool isSameType(string, NodeType);

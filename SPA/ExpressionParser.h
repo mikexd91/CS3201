@@ -21,8 +21,8 @@ private:
 	void parseSymbol();
 	void parseOpenBracket();
 	void parseCloseBracket();
-	bool isValidFactor();
-	bool isValidSymbol();
+	bool isValidFactor(string);
+	bool isValidOperator(string);
 };
 
 namespace ExpressionParserConstants {

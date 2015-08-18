@@ -140,7 +140,7 @@ queue<string> Parser::getExpression() {
 	queue<string> originalExpression;
 	string word;
 	while ((word = getWord()) != ";") {
-		if (Utils::isValidFactor(word) || Utils::isValidSymbol(word) || word == "(" || word == ")") {
+		if (Utils::isValidFactor(word) || Utils::isValidOperator(word) || word == "(" || word == ")") {
 			originalExpression.push(word);
 		} else {
 			throwException(stmtCount);
