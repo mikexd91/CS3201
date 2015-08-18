@@ -21,6 +21,8 @@ public:
 	static bool isValidOperator(string);
 	static bool isValidName(string);
 	static bool isValidConstant(string);
+	static bool isOpenBracket(string);
+	static bool isCloseBracket(string);
 	static bool isSameType(string, NodeType);
 	static string convertNodeTypeToArgType(NodeType);
 	static NodeType convertArgTypeToNodeType(string);

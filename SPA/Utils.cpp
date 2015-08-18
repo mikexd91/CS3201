@@ -85,10 +85,18 @@ bool Utils::isValidFactor(string factor) {
 	return isValidConstant(factor) || isValidName(factor);
 }
 
-//Check if a string is a valid operator
 bool Utils::isValidOperator(string symbol) {
 	return UtilsConstants::OPERATOR_PRIORITIES.find(symbol) != UtilsConstants::OPERATOR_PRIORITIES.end();
 }
+
+bool Utils::isOpenBracket(string symbol) {
+	return symbol == "(";
+}
+
+bool Utils::isCloseBracket(string symbol) {
+	return symbol == ")";
+}
+
 
 //Checks if the arg type and statement type are matching
 bool Utils::isSameType(string argType, NodeType stmt) {

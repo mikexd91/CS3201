@@ -12,12 +12,15 @@ queue<string> ExpressionParser::getRPN(queue<string> expr) {
 	word = getWordAndPop(originalExpression);
 	if (Utils::isValidFactor(word)) {
 		parseFactor();
-	} else if (word == "(") {
+	} else if (Utils::isOpenBracket(word)) {
 		parseOpenBracket();
 	} else {
 		throw InvalidExpressionException("Invalid Expression!");
 	}
 	while (!operationStack.empty()) {
+		if (!Utils::isValidOperator(operationStack.top())) {
+			throw InvalidExpressionException("Invalid Expression!");
+		}
 		expressionQueue.push(operationStack.top());
 		operationStack.pop();
 	}
@@ -31,7 +34,7 @@ void ExpressionParser::parseFactor() {
 		word = getWordAndPop(originalExpression);
 		if (Utils::isValidOperator(word)) {
 			parseOperator();
-		} else if (word == ")") {
+		} else if (Utils::isCloseBracket(word)) {
 			parseCloseBracket();
 		} else {
 			throw InvalidExpressionException("Invalid Expression!");
@@ -52,7 +55,7 @@ void ExpressionParser::parseOperator() {
 	word = getWordAndPop(originalExpression);
 	if (Utils::isValidFactor(word)) {
 		parseFactor();
-	} else if (word == "(") {
+	} else if (Utils::isOpenBracket(word)) {
 		parseOpenBracket();
 	} else {
 		throw InvalidExpressionException("Invalid Expression!");
@@ -90,14 +93,18 @@ string ExpressionParser::getWordAndPop(queue<string> &originalExpression) {
 **/
 void ExpressionParser::parseCloseBracket() {
 	while (!operationStack.empty()) {
-		if (operationStack.top() == "(") {
+		if (Utils::isOpenBracket(operationStack.top())) {
 			operationStack.pop();
-			word = getWordAndPop(originalExpression);
-			if (Utils::isValidOperator(word)) {
-				parseOperator();
+			if (originalExpression.empty()) {
 				return;
 			} else {
-				throw InvalidExpressionException("Invalid Expression!");
+				word = getWordAndPop(originalExpression);
+				if (Utils::isValidOperator(word)) {
+					parseOperator();
+					return;
+				} else {
+					throw InvalidExpressionException("Invalid Expression!");
+				}
 			}
 		} else {
 			expressionQueue.push(operationStack.top());
