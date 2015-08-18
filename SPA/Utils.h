@@ -13,7 +13,7 @@ class Utils
 public:
 	
 	static std::string sanitise(string str);
-	static vector<string> explode(const string&, const string, const char[7]);
+	static vector<string> explode(const string&, const string, const vector<char>);
 	static queue<string> getRPN(queue<string>);
 	static string getWordAndPop(queue<string>&);
 	static void parseFactor(string, queue<string>&);

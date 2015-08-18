@@ -10,6 +10,7 @@
 #include "ParsedData.h"
 #include "Utils.h"
 #include "InvalidExpressionException.h"
+#include "ExpressionParser.h"
 
 using namespace std;
 
@@ -139,14 +140,15 @@ queue<string> Parser::getExpression() {
 	queue<string> originalExpression;
 	string word;
 	while ((word = getWord()) != ";") {
-		if (Utils::isValidFactor(word) || Utils::isValidSymbol(word)) {
+		if (Utils::isValidFactor(word) || Utils::isValidSymbol(word) || word == "(" || word == ")") {
 			originalExpression.push(word);
 		} else {
 			throwException(stmtCount);
 		}
 	}
 	try {
-		return Utils::getRPN(originalExpression);
+		ExpressionParser expressionParser;
+		return expressionParser.getRPN(originalExpression);
 	} catch (InvalidExpressionException) {
 		throwException(stmtCount);
 	}

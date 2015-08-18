@@ -28,11 +28,7 @@ string Utils::sanitise(string str) {
 //delim_string contains all of the delimiters, including those that should not be in the final token list. 
 //delimiters consists of characters that should be included in the final vector, but should be delimited and separated accordingly
 //this means that delim_string should be a superset of delimiters
-vector<string> Utils::explode(const string &str, const string delim_string, const char delimiters[7] ) {
-	char delimitersToUse[7]; 
-	for (int i = 0; i < 7; i++) {
-		delimitersToUse[i] = delimiters[i];
-	}
+vector<string> Utils::explode(const string &str, const string delim_string, const vector<char> delimiters) {
 
 	vector<string> elems;
 	int pos;
@@ -43,7 +39,7 @@ vector<string> Utils::explode(const string &str, const string delim_string, cons
 			elems.push_back(str.substr(prev, pos - prev));
 		}
 		//if it is a delimiter that should be included (aka all delimiters but spaces)
-		if (find(begin(delimitersToUse), end(delimitersToUse), str[pos]) != end(delimitersToUse)) {
+		if (find(begin(delimiters), end(delimiters), str[pos]) != end(delimiters)) {
 			elems.push_back(string(1, str[pos]));
 		}
 		prev = pos + 1;
