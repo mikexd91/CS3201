@@ -15,6 +15,8 @@
 #include "../SPA/ConstNode.h"
 #include "../SPA/OpNode.h"
 #include "../SPA/WhileNode.h"
+#include "../SPA/ConstTable.h"
+#include <boost\foreach.hpp>
 
 using namespace stringconst;
 using namespace std;
@@ -45,7 +47,8 @@ void QueryEvaluatorTest::setUp() {
 	AssgNode* assg1 = new AssgNode(1);
 	VarNode* a1 = new VarNode("a");
 	assg1->linkVarNode(a1);
-	assg1->linkExprNode(new ConstNode("4"));
+	ConstNode* cn4 = new ConstNode("4");
+	assg1->linkExprNode(cn4);
 	procsl->linkStmtNode(assg1);
 
 	WhileNode* while1 = new WhileNode(2);
@@ -58,7 +61,8 @@ void QueryEvaluatorTest::setUp() {
 	AssgNode* assg2 = new AssgNode(3);
 	VarNode* k1 = new VarNode("k");
 	assg2->linkVarNode(k1);
-	assg2->linkExprNode(new ConstNode("3"));
+	ConstNode* cn3 = new ConstNode("3");
+	assg2->linkExprNode(cn3);
 	whilesl1->linkStmtNode(assg2);
 
 	WhileNode* while2 = new WhileNode(4);
@@ -71,19 +75,22 @@ void QueryEvaluatorTest::setUp() {
 	AssgNode* assg3 = new AssgNode(5);
 	VarNode* i2 = new VarNode("i");
 	assg3->linkVarNode(i2);
-	assg3->linkExprNode(new ConstNode("1"));
+	ConstNode* cn1 = new ConstNode("1");
+	assg3->linkExprNode(cn1);
 	whilesl2->linkStmtNode(assg3);
 
 	AssgNode* assg4 = new AssgNode(6);
 	VarNode* j2 = new VarNode("j");
 	assg4->linkVarNode(j2);
-	assg4->linkExprNode(new ConstNode("4"));
+	ConstNode* cn2 = new ConstNode("2");
+	assg4->linkExprNode(cn2);
 	whilesl2->linkStmtNode(assg4);
 
 	AssgNode* assg5 = new AssgNode(7);
 	VarNode* b1 = new VarNode("b");
 	assg5->linkVarNode(b1);
-	assg5->linkExprNode(new ConstNode("5"));
+	ConstNode* cn5 = new ConstNode("5");
+	assg5->linkExprNode(cn5);
 	whilesl1->linkStmtNode(assg5);
 
 	ast->addProcNode(proc);
@@ -212,6 +219,48 @@ void QueryEvaluatorTest::setUp() {
 	vb->addModifyingStmt(7);
 	vb->addTNode(b1);
 	vtable->addVariable(vb);
+
+	// to set up the const table manually
+	/* testing this source
+
+	procedure chocs {
+		a=4;
+		while i {
+			k = 3;
+			while j {
+				i=1;
+				j=2;
+			}
+			b=5;
+		}	
+	}
+	*/
+	ConstTable* ctable = ConstTable::getInstance();
+
+	Constant* c4 = new Constant("4");
+	c4->addTNodeRef(cn4);
+	c4->addAppearsIn(1);
+	ctable->addConst(c4);
+
+	Constant* c3 = new Constant("3");
+	c3->addTNodeRef(cn4);
+	c3->addAppearsIn(3);
+	ctable->addConst(c3);
+
+	Constant* c1 = new Constant("1");
+	c1->addTNodeRef(cn3);
+	c1->addAppearsIn(5);
+	ctable->addConst(c1);
+
+	Constant* c2 = new Constant("2");
+	c2->addTNodeRef(cn2);
+	c2->addAppearsIn(6);
+	ctable->addConst(c2);
+
+	Constant* c5 = new Constant("5");
+	c5->addTNodeRef(cn5);
+	c5->addAppearsIn(7);
+	ctable->addConst(c5);
 }
 
 void QueryEvaluatorTest::tearDown() {
@@ -219,6 +268,7 @@ void QueryEvaluatorTest::tearDown() {
 	AST::reset();
 	StmtTable::getInstance()->clearTable();
 	VarTable::reset();
+	ConstTable::getInstance()->clearTable();
 }
 
 // Registers the fixture into the 'registry'
@@ -228,6 +278,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( QueryEvaluatorTest );
 void QueryEvaluatorTest::testEvaluator() {
 	QueryEvaluator e = *new QueryEvaluator();
 
+	// Test Follows(a1, a2)
 	FollowsClause* fol = new FollowsClause();
 	fol->setFirstArg("a1");
 	fol->setSecondArg("a2");
@@ -247,6 +298,26 @@ void QueryEvaluatorTest::testEvaluator() {
 	set<string> res = e.evaluateQuery(q);
 	
 	CPPUNIT_ASSERT(res.size() == 1);
+
+	// test Follows(_,_)
+	FollowsClause* fol2 = new FollowsClause();
+	fol2->setFirstArgFixed(false);
+	fol2->setSecondArgFixed(false);
+	fol2->setFirstArgType(ARG_GENERIC);
+	fol2->setSecondArgType(ARG_GENERIC);
+	fol2->isValid();
+
+	StringPair p6 = *new StringPair();
+	p6.setFirst("s");
+	p6.setSecond(ARG_STATEMENT);
+
+	Query q6 = *new Query();
+	q6.addSelectSynonym(p6);
+	q6.addClause(fol2);
+
+	set<string> res6 = e.evaluateQuery(q6);
+
+	CPPUNIT_ASSERT(res6.size() == 7);
 
 	//test ParentStar FixedSyn With While
 	ParentStarClause* m1 = new ParentStarClause();
@@ -313,6 +384,32 @@ void QueryEvaluatorTest::testEvaluator() {
 
 	CPPUNIT_ASSERT(res4.size() == 2);
 
+	// Test FollowsStar with select type constant
+	FollowsStarClause* f2 = new FollowsStarClause();
+	f2->setFirstArg("3");
+	f2->setFirstArgFixed(true);
+	f2->setFirstArgType(ARG_STATEMENT);
+	f2->setSecondArg("a");
+	f2->setSecondArgFixed(false);
+	f2->setSecondArgType(ARG_STATEMENT);
+
+	StringPair p5 = *new StringPair();
+	p5.setFirst("c");
+	p5.setSecond(ARG_CONSTANT);
+
+	Query q5 = *new Query();
+	q5.addSelectSynonym(p5);
+	q5.addClause(f2);
+
+	set<string> res5 = e.evaluateQuery(q5);
+	/*
+	for (set<string>::iterator iter=res5.begin(); iter != res5.end(); iter++) {
+		cout << "result: " << *iter << "!";
+	}
+	*/
+	// to check
+	CPPUNIT_ASSERT(res5.size() == 5);
+
 }
 
 // Test 2 clauses
@@ -370,8 +467,12 @@ void QueryEvaluatorTest::testEvaluator2() {
 	q2.addClause(p2);
 
 	set<string> res2 = e.evaluateQuery(q2);
-
-	CPPUNIT_ASSERT(res2.size() == 5);
+	/*
+	for (set<string>::iterator iter=res2.begin(); iter != res2.end(); iter++) {
+		cout << "result: " << *iter << "!";
+	}
+	*/
+	CPPUNIT_ASSERT(res2.size() == 1);
 
 	// Test 1 same unfixed syn between 2 clauses
 	// Select a s.t. Modifies(a,v1) pattern a(v2,_)
@@ -458,5 +559,38 @@ void QueryEvaluatorTest::testEvaluator2() {
 	set<string> res5 = e.evaluateQuery(q5);
 	
 	CPPUNIT_ASSERT(res5.size() == 2);
+
+	// Test 2 same unfixed syn between 2 clauses
+	// Select v s.t. Follows*(a1,a2) pattern a2(v,_)
+	FollowsStarClause* f2 = new FollowsStarClause();
+	f2->setFirstArg("a1");
+	f2->setFirstArgFixed(false);
+	f2->setFirstArgType(ARG_STATEMENT);
+	f2->setSecondArg("a2");
+	f2->setSecondArgFixed(false);
+	f2->setSecondArgType(ARG_STATEMENT);
+	CPPUNIT_ASSERT(f1->isValid());
+
+	PatternAssgClause* p6 = new PatternAssgClause("a2");
+	p6->setVar("v");
+	p6->setVarFixed(false);
+	p6->setExpression("_");
+	CPPUNIT_ASSERT(p6->isValid());
+
+	StringPair pr6 = *new StringPair();
+	pr6.setFirst("c");
+	pr6.setSecond(ARG_CONSTANT);
+
+	Query q6 = *new Query();
+	q6.addSelectSynonym(pr6);
+	q6.addClause(f2);
+	q6.addClause(p6);
+
+	set<string> res6 = e.evaluateQuery(q6);
+	// To be checked
+	//BOOST_FOREACH(auto p, res6) {
+	//	cout << p << endl;
+	//}
+	CPPUNIT_ASSERT(res6.size() == 5);
 }
 

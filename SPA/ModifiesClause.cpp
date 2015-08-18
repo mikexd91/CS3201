@@ -48,8 +48,8 @@ string ModifiesClause::getStmtType() {
 bool ModifiesClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
-	bool firstArg = (firstType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_ASSIGN) || (firstType == stringconst::ARG_WHILE);
-	bool secondArg = (secondType == stringconst::ARG_VARIABLE);
+	bool firstArg = (firstType == ARG_GENERIC) || (firstType == ARG_STATEMENT) || (firstType == ARG_ASSIGN) || (firstType == ARG_WHILE) || (firstType == ARG_PROGLINE);
+	bool secondArg = (secondType == ARG_GENERIC) || (secondType == ARG_VARIABLE);
 	return (firstArg && secondArg);
 }
 
@@ -93,8 +93,12 @@ Results ModifiesClause::evaluateFixedFixed(int stmtNum, string varName) {
 Results ModifiesClause::evaluateFixedSyn(int stmtNum, string var) {
 	Results* res = new Results();
 	res->setFirstClauseSyn(var);
-	res->setNumOfSyn(1);
-	
+	if(this->getSecondArgType() != ARG_GENERIC) {
+		res->setNumOfSyn(1);
+	} else {
+		res->setNumOfSyn(0);
+	}
+
 	VarTable* vtable = VarTable::getInstance();
 	vector<string>* allVarNames = vtable->getAllVarNames();
 
@@ -112,14 +116,18 @@ Results ModifiesClause::evaluateFixedSyn(int stmtNum, string var) {
 Results ModifiesClause::evaluateSynFixed(string stmt, string varName) {
 	Results* res = new Results();
 	res->setFirstClauseSyn(stmt);
-	res->setNumOfSyn(1);
+	if(this->getFirstArgType() != ARG_GENERIC) {
+		res->setNumOfSyn(1);
+	} else {
+		res->setNumOfSyn(0);
+	}
 
 	StmtTable* stable = StmtTable::getInstance();
 	set<Statement*> allStmt;	
 	
-	if (getStmtType() == stringconst::ARG_ASSIGN) {
+	if (getStmtType() == ARG_ASSIGN) {
 		allStmt = stable->getAssgStmts();
-	} else if (getStmtType() == stringconst::ARG_WHILE) {
+	} else if (getStmtType() == ARG_WHILE) {
 		allStmt = stable->getWhileStmts();
 	} else {
 		allStmt = stable->getAllStmts();
@@ -138,10 +146,25 @@ Results ModifiesClause::evaluateSynFixed(string stmt, string varName) {
 }
 
 Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
+	bool isFirstGeneric = getStmtType() == ARG_GENERIC;
+	bool isSecondGeneric = getSecondArgType() == ARG_GENERIC;
+	bool isBothGeneric = isFirstGeneric && isSecondGeneric;
+
 	Results* res = new Results();
-	res->setFirstClauseSyn(stmt);
-	res->setSecondClauseSyn(var);
-	res->setNumOfSyn(2);
+	res->setNumOfSyn(0);
+	if (isBothGeneric) {
+		res->setNumOfSyn(0);
+	} else if (isFirstGeneric) {
+		res->setFirstClauseSyn(stmt);
+		res->setNumOfSyn(1);
+	} else if (isSecondGeneric) {
+		res->setFirstClauseSyn(var);
+		res->setNumOfSyn(1);
+	} else {
+		res->setFirstClauseSyn(stmt);
+		res->setSecondClauseSyn(var);
+		res->setNumOfSyn(2);
+	}
 
 	StmtTable* stable = StmtTable::getInstance();
 	set<Statement*> allStmt;
@@ -157,7 +180,8 @@ Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
 		allStmt = stable->getAllStmts();
 	}
 
-	//cout << endl << "all stmt size " << allStmt.size() << endl;
+	set<string>* singles = new set<string>();
+	set<pair<string, string>>* pairs = new set<pair<string, string>>();
 
 	BOOST_FOREACH(auto p, allStmt) {
 		int stmtNum = p->getStmtNum();
@@ -166,12 +190,31 @@ Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
 		for (size_t i = 0; i < allVarNames->size(); i++) {
 			string varName = allVarNames->at(i);
 			if (isModifies(stmtNum, varName)) {
-				res->addPairResult(lexical_cast<string>(stmtNum), varName);
+				if (isBothGeneric) {
+					pair<string, string> pr = pair<string, string>(lexical_cast<string>(stmtNum), lexical_cast<string>(varName));
+					pairs->emplace(pr);
+				} else if (isFirstGeneric) {
+					singles->emplace(lexical_cast<string>(stmtNum));
+				} else if (isSecondGeneric) {
+					singles->emplace(lexical_cast<string>(varName));
+				} else {
+					pair<string, string> pr = pair<string, string>(lexical_cast<string>(stmtNum), lexical_cast<string>(varName));
+					pairs->emplace(pr);
+				}
 			}
 		}
 	}
 
-	res->setClausePassed(res->getPairResults().size() > 0);
+	// transfer from set to vector
+	if (isBothGeneric) {
+		transferPairsToResult(pairs, res);
+	} else if (isFirstGeneric) {
+		transferSinglesToResult(singles, res);
+	} else if (isSecondGeneric) {
+		transferSinglesToResult(singles, res);
+	} else {
+		transferPairsToResult(pairs, res);
+	}
 
 	return *res;
 }
@@ -179,7 +222,7 @@ Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
 bool ModifiesClause::isModifies(int stmtNum, string varName) {
 	StmtTable* stable = StmtTable::getInstance();
 	int maxStmts = stable->getAllStmts().size();
-	if (stmtNum > maxStmts) {
+	if (stmtNum > maxStmts || stmtNum <= 0) {
 		return false;
 	} else {
 		Statement* stmt = stable->getStmtObj(stmtNum);
@@ -188,4 +231,20 @@ bool ModifiesClause::isModifies(int stmtNum, string varName) {
 
 		return mods.find(varName) != mods.end();
 	}
+}
+
+void ModifiesClause::transferSinglesToResult(set<string>* singles, Results* res) {
+	
+	BOOST_FOREACH(auto p, *singles) {
+		res->addSingleResult(p);
+	}
+	res->setClausePassed(res->getSinglesResults().size() > 0);
+}
+
+void ModifiesClause::transferPairsToResult(set<pair<string, string>>* pairs, Results* res) {
+	
+	BOOST_FOREACH(auto p, *pairs) {
+		res->addPairResult(p.first, p.second);
+	}
+	res->setClausePassed(res->getPairResults().size() > 0);
 }

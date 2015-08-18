@@ -24,7 +24,10 @@ public:
 	static bool isValidConstant(string);
 	static bool isSameType(string, NodeType);
 	static string convertNodeTypeToArgType(NodeType);
+	static NodeType convertArgTypeToNodeType(string);
 	static set<int> filterStatements(set<int>, NodeType);
+	static void removeVectorDupes(vector<string> &vec);
+	static void removeVectorDupes(vector<pair<string,string>> &vec);
 };
 
 namespace UtilsConstants {
@@ -59,7 +62,10 @@ namespace stringconst{
 	string const ARG_STATEMENT = "stmt";
 	string const ARG_ASSIGN = "assign";
 	string const ARG_VARIABLE = "variable";
+	string const ARG_PROGLINE = "prog_line";
 	string const ARG_BOOLEAN = "boolean";
+	string const ARG_CONSTANT = "constant";
+	string const ARG_GENERIC = "underscore";
 
 	const string DELIM_STRING = " ;={}";
 	const char DELIMITERS[] = { ';', '=', '{', '}' };

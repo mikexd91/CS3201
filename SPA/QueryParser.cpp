@@ -146,6 +146,8 @@ bool QueryParser::containsDeclarationType(string s){
 	decVector.push_back(stringconst::ARG_STATEMENT);
 	decVector.push_back(stringconst::ARG_WHILE);
 	decVector.push_back(stringconst::ARG_VARIABLE);
+	decVector.push_back(stringconst::ARG_PROGLINE);
+	decVector.push_back(stringconst::ARG_CONSTANT);
 	return containsAny(s, decVector);
 }
 
@@ -217,10 +219,13 @@ void QueryParser::parseDeclarations(Query* query, vector<string> list){
 		vector<string> tokens = tokeniser(current, ',');
 		string first = tokens.at(0);
 		vector<string> split = tokeniser(first, ' ');
-		string decType = split.at(0);
+		string decType = split.at(0); 
 		boost::trim(decType);
 		if (!containsDeclarationType(decType)){
 			throw InvalidDeclarationException();
+		}
+		if (decType == stringconst::ARG_PROGLINE){
+			decType = stringconst::ARG_STATEMENT;
 		}
 		StringPair* newPair = new StringPair();
 		newPair->setFirst(split.at(1));
@@ -290,7 +295,14 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 	if (decList.find(firstArg) == decList.end()){
 		if (!Utils::isValidConstant(firstArg)){
 			if (!contains(firstArg, "\"")){
-				throw MissingDeclarationException();
+				if (firstArg != stringconst::STRING_EMPTY){
+					throw MissingDeclarationException();
+				} else {
+					//cout << "im a new " << newClause->getClauseType() << endl;
+					newClause->setFirstArg(firstArg);
+					newClause->setFirstArgFixed(false);
+					newClause->setFirstArgType(stringconst::ARG_GENERIC);
+				}
 			} else {
 				int start = firstArg.find_first_of("\"");
 				int end = firstArg.find_last_of("\"");
@@ -314,7 +326,13 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 	if (decList.find(secondArg) == decList.end()){
 		if (!Utils::isValidConstant(secondArg)){
 			if (!contains(secondArg, "\"")){
-				throw MissingDeclarationException();
+				if (secondArg != stringconst::STRING_EMPTY){
+					throw MissingDeclarationException();
+				} else {
+					newClause->setSecondArg(secondArg);
+					newClause->setSecondArgFixed(false);
+					newClause->setSecondArgType(stringconst::ARG_GENERIC);
+				}
 			} else {
 				int start = secondArg.find_first_of("\"");
 				int end = secondArg.find_last_of("\"");
@@ -489,6 +507,9 @@ Query QueryParser::parseQuery(string input){
 	for (size_t i=0; i<clauseList.size(); i++){
 		Clause* current = clauseList.at(i);
 		if (!current->isValid()){
+			/*cout << current->getClauseType() << endl;
+			cout << current->getFirstArgType() << endl;
+			cout << current->getSecondArgType() << endl;*/
 			throw InvalidClauseException();
 		}
 	}

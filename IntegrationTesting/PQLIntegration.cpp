@@ -9,10 +9,12 @@
 #include "../SPA/StmtTable.h"
 #include "../SPA/VarTable.h"
 #include "../SPA/Utils.h"
+#include "../SPA/ConstTable.h"
 
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <boost\foreach.hpp>
 
 using namespace stringconst;
 using namespace std;
@@ -43,8 +45,9 @@ void PQLIntegration::setUp() {
 
 	AssgNode* assg1 = new AssgNode(1);
 	VarNode* a1 = new VarNode("a");
+	ConstNode* c1 = new ConstNode("4");
 	assg1->linkVarNode(a1);
-	assg1->linkExprNode(new ConstNode("4"));
+	assg1->linkExprNode(c1);
 	procsl->linkStmtNode(assg1);
 
 	WhileNode* while1 = new WhileNode(2);
@@ -57,7 +60,8 @@ void PQLIntegration::setUp() {
 	AssgNode* assg2 = new AssgNode(3);
 	VarNode* k1 = new VarNode("k");
 	assg2->linkVarNode(k1);
-	assg2->linkExprNode(new ConstNode("3"));
+	ConstNode* c2 = new ConstNode("3");
+	assg2->linkExprNode(c2);
 	whilesl1->linkStmtNode(assg2);
 
 	WhileNode* while2 = new WhileNode(4);
@@ -70,19 +74,22 @@ void PQLIntegration::setUp() {
 	AssgNode* assg3 = new AssgNode(5);
 	VarNode* i2 = new VarNode("i");
 	assg3->linkVarNode(i2);
-	assg3->linkExprNode(new ConstNode("1"));
+	ConstNode* c3 = new ConstNode("1");
+	assg3->linkExprNode(c3);
 	whilesl2->linkStmtNode(assg3);
 
 	AssgNode* assg4 = new AssgNode(6);
 	VarNode* j2 = new VarNode("j");
 	assg4->linkVarNode(j2);
-	assg4->linkExprNode(new ConstNode("2"));
+	ConstNode* c4 = new ConstNode("2");
+	assg4->linkExprNode(c4);
 	whilesl2->linkStmtNode(assg4);
 
 	AssgNode* assg5 = new AssgNode(7);
 	VarNode* b1 = new VarNode("b");
 	assg5->linkVarNode(b1);
-	assg5->linkExprNode(new ConstNode("5"));
+	ConstNode* c5 = new ConstNode("5");
+	assg5->linkExprNode(c5);
 	whilesl1->linkStmtNode(assg5);
 
 	AssgNode* assg6 = new AssgNode(8);
@@ -198,6 +205,9 @@ void PQLIntegration::setUp() {
 	Statement* stmt8 = new Statement();
 	stmt8->setStmtNum(8);
 	stmt8->setType(ASSIGN_STMT_);
+	set<string> mods8 = set<string>();
+	mods8.emplace("j");
+	stmt8->setModifies(mods8);
 	stmt8->setFollowsBefore(7);
 	stmt8->setTNodeRef(assg6);
 	stmt8->setParent(2);
@@ -223,6 +233,7 @@ void PQLIntegration::setUp() {
 	vj->addModifyingStmt(2);
 	vj->addModifyingStmt(4);
 	vj->addModifyingStmt(6);
+	vj->addModifyingStmt(8);
 	vj->addUsingStmt(4);
 	vj->addTNode(j1);
 	vj->addTNode(j2);
@@ -239,6 +250,44 @@ void PQLIntegration::setUp() {
 	vb->addModifyingStmt(7);
 	vb->addTNode(b1);
 	vtable->addVariable(vb);
+
+	ConstTable* ctable = ConstTable::getInstance();
+	//Populate Constant Table
+	Constant* const1 = new Constant();
+	const1->addAppearsIn(5);
+	const1->addTNodeRef(c3);
+	const1->setConstName("1");
+	ctable->addConst(const1);
+	
+	Constant* const2 = new Constant();
+	const2->addAppearsIn(6);
+	const2->addAppearsIn(8);
+	const2->addTNodeRef(c4);
+	const2->addTNodeRef(two2);
+	const2->setConstName("2");
+	ctable->addConst(const2);
+
+	Constant* const3 = new Constant();
+	const3->addAppearsIn(3);
+	const3->addAppearsIn(8);
+	const3->addTNodeRef(c2);
+	const3->addTNodeRef(three2);
+	const3->setConstName("3");
+	ctable->addConst(const3);
+
+	Constant* const4 = new Constant();
+	const4->addAppearsIn(1);
+	const4->addAppearsIn(8);
+	const4->addTNodeRef(c1);
+	const4->addTNodeRef(four2);
+	const4->setConstName("4");
+	ctable->addConst(const4);
+
+	Constant* const5 = new Constant();
+	const5->addAppearsIn(7);
+	const5->addTNodeRef(c5);
+	const5->setConstName("5");
+	ctable->addConst(const5);
 }
 
 void PQLIntegration::tearDown() {
@@ -246,6 +295,7 @@ void PQLIntegration::tearDown() {
 	AST::reset();
 	StmtTable::getInstance()->clearTable();
 	VarTable::reset();
+	ConstTable::getInstance()->clearTable();
 }
 
 // Registers the fixture into the 'registry'
@@ -265,9 +315,12 @@ void PQLIntegration::testSelectModifies() {
 	PQLController* pcc = new PQLController();
 	set<string> r;
 	r = pcc->parse(QUERY_STRING);
-	//cout << *r.begin() << endl;
 	CPPUNIT_ASSERT(1 == r.size());
-	//CPPUNIT_ASSERT("1" == *r.begin());
+
+	string QUERY_STRING2 = "assign a; variable v; Select a such that Modifies(a, v)";
+	set<string> r2;
+	r2 = pcc->parse(QUERY_STRING2);
+	CPPUNIT_ASSERT(6 == r2.size());
 }
 
 void PQLIntegration::testSelectUses() {
@@ -280,7 +333,12 @@ void PQLIntegration::testSelectUses() {
 	string QUERY_STRING2 = "assign a; variable v; Select v such that Uses(a, v)";
 	set<string> r2;
 	r2 = pcc->parse(QUERY_STRING2);
-	CPPUNIT_ASSERT(2 == r.size());
+	CPPUNIT_ASSERT(0 == r2.size());
+
+	string QUERY_STRING3 = "stmt s; variable v; Select v such that Uses(s, v)";
+	set<string> r3;
+	r3 = pcc->parse(QUERY_STRING3);
+	CPPUNIT_ASSERT(2 == r3.size());
 }
 
 void PQLIntegration::testSelectFollows() {
@@ -288,9 +346,20 @@ void PQLIntegration::testSelectFollows() {
 	PQLController* pcc = new PQLController();
 	set<string> r;
 	r = pcc->parse(QUERY_STRING);
-	
 	CPPUNIT_ASSERT(2 == r.size());
-	//CPPUNIT_ASSERT("5" == *r.begin());
+
+	string QUERY_STRING2 = "stmt s; Select s such that Follows(s, _)";
+	r = pcc->parse(QUERY_STRING2);
+	// answer supposed to be 1,3,4,5,7
+    CPPUNIT_ASSERT(5 == r.size());
+
+	string QUERY_STRING3 = "stmt s; Select s such that Follows(_, s)";
+	r = pcc->parse(QUERY_STRING3);
+	CPPUNIT_ASSERT(5 == r.size());
+
+	string QUERY_STRING4 = "assign a; Select a such that Follows(_, _)";
+	r = pcc->parse(QUERY_STRING4);
+	CPPUNIT_ASSERT(6 == r.size());
 }
 
 void PQLIntegration::testSelectFollowsStar() {
@@ -298,9 +367,23 @@ void PQLIntegration::testSelectFollowsStar() {
 	PQLController* pcc = new PQLController();
 	set<string> r;
 	r = pcc->parse(QUERY_STRING);
-
 	CPPUNIT_ASSERT(3 == r.size());
-	//CPPUNIT_ASSERT("6" == *r.begin());
+
+	string QUERY_STRING2 = "stmt s; Select s such that Follows*(s, _)";
+	r = pcc->parse(QUERY_STRING2);
+	// answer: 1,3,4,5,7
+	/*BOOST_FOREACH(auto p, r) {
+		cout << p << " ";
+	}*/
+	CPPUNIT_ASSERT(5 == r.size());
+
+	string QUERY_STRING3 = "stmt s; Select s such that Follows*(_, s)";
+	r = pcc->parse(QUERY_STRING3);
+	CPPUNIT_ASSERT(5 == r.size());
+
+	string QUERY_STRING4 = "assign a; Select a such that Follows*(_, _)";
+	r = pcc->parse(QUERY_STRING4);
+	CPPUNIT_ASSERT(6 == r.size());
 }
 
 void PQLIntegration::testSelectParent() {
@@ -310,6 +393,26 @@ void PQLIntegration::testSelectParent() {
 	r = pcc->parse(QUERY_STRING);
 	CPPUNIT_ASSERT(4 == r.size());
 
+	string QUERY_STRING2 = "while w; Select w such that Parent(w, _)";
+	r = pcc->parse(QUERY_STRING2);
+	CPPUNIT_ASSERT(2 == r.size());
+
+	string QUERY_STRING3 = "while w; Select w such that Parent(_, w)";
+	r = pcc->parse(QUERY_STRING3);
+	CPPUNIT_ASSERT(1 == r.size());
+
+	string QUERY_STRING4 = "assign a; Select a such that Parent(_, _)";
+	r = pcc->parse(QUERY_STRING4);
+	CPPUNIT_ASSERT(6 == r.size());
+
+	string QUERY_STRING5 = "assign a; Select a such that Parent(3, _)";
+	r = pcc->parse(QUERY_STRING5);
+	CPPUNIT_ASSERT(0 == r.size());
+
+	string QUERY_STRING6 = "assign a; Select a such that Parent(2, _)";
+	r = pcc->parse(QUERY_STRING6);
+	CPPUNIT_ASSERT(6 == r.size());
+
 }
 
 void PQLIntegration::testSelectParentStar() {
@@ -317,7 +420,19 @@ void PQLIntegration::testSelectParentStar() {
 	PQLController* pcc = new PQLController();
 	set<string> r;
 	r = pcc->parse(QUERY_STRING);
+	CPPUNIT_ASSERT(2 == r.size()); 
+
+	string QUERY_STRING2 = "while w; Select w such that Parent*(w, _)";
+	r = pcc->parse(QUERY_STRING2);
 	CPPUNIT_ASSERT(2 == r.size());
+
+	string QUERY_STRING3 = "while w; Select w such that Parent*(_, w)";
+	r = pcc->parse(QUERY_STRING3);
+	//CPPUNIT_ASSERT(1 == r.size());
+
+	string QUERY_STRING4 = "assign a; Select a such that Parent*(_, _)";
+	r = pcc->parse(QUERY_STRING4);
+	CPPUNIT_ASSERT(6 == r.size());
 }
 
 void PQLIntegration::testSelectPattern() {
@@ -332,12 +447,10 @@ void PQLIntegration::testSelectPattern() {
 	r2 = pcc->parse(QUERY_STRING2);
 	//cout << r2.size() << endl;
 	CPPUNIT_ASSERT(2 == r2.size());
-	//CPPUNIT_ASSERT("1" == *r2.begin());
 
 	string QUERY_STRING3 = "assign a; variable v; Select a pattern a(v, _\"2 + 3 + 4\"_)";
 	set<string> r3;
 	r3 = pcc->parse(QUERY_STRING3);
-	//cout << r2.size() << endl;
 	CPPUNIT_ASSERT(1 == r3.size());
 	CPPUNIT_ASSERT("8" == *r3.begin());
 }
@@ -350,10 +463,9 @@ void PQLIntegration::testSelectModifiesPattern() {
 
 	CPPUNIT_ASSERT(1 == r.size());
 
-	string QUERY_STRING2 = "assign a; variable v; Select a such that Modifies(a, v) pattern a(v, _\"2 + 3\"_)";
+	string QUERY_STRING2 = "assign a; variable v; Select a such that Modifies(a, v) pattern a(v, _\"2 + 3 + 4\"_)";
 	set<string> r2;
-	r2 = pcc->parse(QUERY_STRING);
-	//cout << *r2.begin() << endl;
+	r2 = pcc->parse(QUERY_STRING2);
 	CPPUNIT_ASSERT(1 == r2.size());
 }
 
@@ -362,7 +474,62 @@ void PQLIntegration::testSelectFollowsPattern() {
 	PQLController* pcc = new PQLController();
 	set<string> r;
 	r = pcc->parse(QUERY_STRING);
-	//cout << *r.begin() << endl;
-	//cout << r.size() << endl;
 	CPPUNIT_ASSERT(1 == r.size());
+}
+
+void PQLIntegration::testSelectUsesPattern() {
+	string QUERY_STRING = "variable v; assign a; Select v such that Uses(_, v) pattern a(v, _)";
+	PQLController* pcc = new PQLController();
+	set<string> r;
+	r = pcc->parse(QUERY_STRING);
+	// answer: i, j
+	BOOST_FOREACH(auto p, r) {
+		cout << p << " ";
+	}
+	//CPPUNIT_ASSERT(2 == r.size());
+}
+
+void PQLIntegration::testSelectConstant() {
+	string QUERY_STRING = "constant c; Select c such that Follows(1, 2)";
+	PQLController* pcc = new PQLController();
+	set<string> r;
+	r = pcc->parse(QUERY_STRING);
+	CPPUNIT_ASSERT(5 == r.size());
+
+	string QUERY_STRING_2 = "constant c; assign a; Select c such that Follows(a, 1)";
+	set<string> r2;
+	r2 = pcc->parse(QUERY_STRING_2);
+	CPPUNIT_ASSERT(0 == r2.size());
+}
+
+void PQLIntegration::testSelectProgLine() {
+	string QUERY_STRING = "prog_line p; Select p such that Follows(1, p)";
+	PQLController* pcc = new PQLController();
+	set<string> r;
+	r = pcc->parse(QUERY_STRING);
+	CPPUNIT_ASSERT(1 == r.size());
+	CPPUNIT_ASSERT(r.find("2") != r.end());
+
+	string QUERY_STRING_2 = "prog_line p; Select p such that Follows(8, p)";
+	set<string> r2;
+	r2 = pcc->parse(QUERY_STRING_2);
+	CPPUNIT_ASSERT(0 == r2.size());
+}
+
+void PQLIntegration::testFailParent(){
+	cout << "will throw exception" << endl;
+	string QUERY_STRING = "assign a; variable v; Select a such that Parent(v, a)";
+	PQLController* pcc = new PQLController();
+	set<string> r;
+	r = pcc->parse(QUERY_STRING);
+	CPPUNIT_ASSERT(0 == r.size());
+}
+
+void PQLIntegration::testFailUses(){
+	cout << "will throw exception" << endl;
+	string QUERY_STRING = "variable v, v1; Select v such that Uses(v, v1)";
+	PQLController* pcc = new PQLController();
+	set<string> r;
+	r = pcc->parse(QUERY_STRING);
+	CPPUNIT_ASSERT(0 == r.size());
 }

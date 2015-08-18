@@ -1,0 +1,10 @@
+1 - testing for parent
+assign a;
+Select a such that Parent(_, a)
+6, 7, 8, 16, 19, 20
+5000
+2 - testing for parent
+stmt s;
+Select s such that Parent(s, _)
+5, 15, 17, 18
+5000

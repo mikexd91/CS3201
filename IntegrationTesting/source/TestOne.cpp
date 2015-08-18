@@ -3,6 +3,7 @@
 #include "../../SPA/Parser.h"
 #include "../../SPA/PDR.h"
 
+using namespace std;
 // TEST VARIABLES
 
 //ProcTable* procTable = ProcTable::getInstance();// test proctable instance
@@ -12,10 +13,12 @@ AST* ast;
 VarTable* varTable1;
 ProcTable* procTable;
 StmtTable* stmtTable1;
+ConstTable* constTable;
 
 void TestOne::setUp() {
 	pdr = PDR::getInstance();
 	ast = AST::getInstance();
+	constTable = ConstTable::getInstance();
 	parser = Parser();
 	varTable1 = VarTable::getInstance();
 	procTable = ProcTable::getInstance();
@@ -26,6 +29,7 @@ void TestOne::setUp() {
 void TestOne::tearDown() {
 	PDR::resetInstanceFlag();
 	AST::reset();
+	constTable->clearTable();
 	VarTable::reset();
 	procTable->clearTable();
 	stmtTable1->clearTable();
@@ -40,7 +44,6 @@ void TestOne::testAddProc() {
 	//StmtTable* stmtTable1 = StmtTable::getInstance();
 	//VarTable* varTable1 = VarTable::getInstance();
 	CPPUNIT_ASSERT(procTable->contains("test"));
-	
 	
 	Statement* stmt1 = stmtTable1->getStmtObj(1);
 	string initUses1[] = { "x" };
@@ -370,3 +373,18 @@ void TestOne::testStmtTableAllWhile() {
 	}
 }
 
+void TestOne::testConstTable() {
+	parser.parse("procedure proc {x = 2; y = 3;}");
+
+	vector<Constant*> allConst = constTable->getAllConst();
+	CPPUNIT_ASSERT(allConst.size() == 2);
+
+	Constant* firstConstant = allConst[0];
+	Constant* secConstant = allConst[1];
+
+	string combi[2] = {firstConstant->getConstName(), secConstant->getConstName()};
+	string firstCombi[2] = {"2", "3"};
+	string secCombi[2] = {"3", "2"};
+
+	CPPUNIT_ASSERT(combi == firstCombi || secCombi);
+}

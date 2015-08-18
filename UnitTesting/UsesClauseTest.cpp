@@ -241,6 +241,23 @@ void UsesClauseTest::testUsesAssignSynFixedPass() {
 	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "5") != singleResults.end());
 }
 
+void UsesClauseTest::testUsesGenericSynFixedPass() {
+	UsesClause* c = new UsesClause();
+	c->setFirstArg("_");
+	c->setFirstArgFixed(false);
+	c->setFirstArgType(ARG_GENERIC);
+	c->setSecondArg("i");
+	c->setSecondArgFixed(true);
+	c->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(c->isValid());
+
+	Results r = c->evaluate();
+	vector<string> singleResults = r.getSinglesResults();
+	
+	CPPUNIT_ASSERT(r.isClausePassed());
+	CPPUNIT_ASSERT(singleResults.size() == 0);
+}
+
 void UsesClauseTest::testUsesAssignSynFixedFail() {
 	UsesClause* c = new UsesClause();
 	c->setFirstArg("a");
@@ -274,6 +291,23 @@ void UsesClauseTest::testUsesAssignFixedSynPass() {
 	CPPUNIT_ASSERT(r.isClausePassed());
 	CPPUNIT_ASSERT(singleResults.size() == 1);
 	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "i") != singleResults.end());
+}
+
+void UsesClauseTest::testUsesGenericFixedSynPass() {
+	UsesClause* c = new UsesClause();
+	c->setFirstArg("5");
+	c->setFirstArgFixed(true);
+	c->setFirstArgType(ARG_ASSIGN);
+	c->setSecondArg("_");
+	c->setSecondArgFixed(false);
+	c->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(c->isValid());
+
+	Results r = c->evaluate();
+	vector<string> singleResults = r.getSinglesResults();
+	
+	CPPUNIT_ASSERT(r.isClausePassed());
+	CPPUNIT_ASSERT(singleResults.size() == 0);
 }
 
 void UsesClauseTest::testUsesAssignFixedSynFail() {
@@ -330,4 +364,108 @@ void UsesClauseTest::testUsesWhileSynSynPass() {
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair<string,string>("1", "j")) != pairResults.end());
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair<string,string>("3", "i")) != pairResults.end());
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair<string,string>("3", "j")) != pairResults.end());
+}
+
+void UsesClauseTest::testUsesFirstGenericPass() {
+	UsesClause* c = new UsesClause();
+	c->setFirstArg("_");
+	c->setFirstArgFixed(false);
+	c->setFirstArgType(ARG_GENERIC);
+	c->setSecondArg("v");
+	c->setSecondArgFixed(false);
+	c->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(c->isValid());
+
+	Results r = c->evaluate();
+	vector<string> singleResults = r.getSinglesResults();
+
+	CPPUNIT_ASSERT(r.isClausePassed());
+	CPPUNIT_ASSERT(r.getNumOfSyn() == 1); 
+	CPPUNIT_ASSERT(singleResults.size() == 2);
+	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "i") != singleResults.end());
+	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "j") != singleResults.end());
+}
+
+void UsesClauseTest::testUsesSecondGenericPass() {
+	UsesClause* c = new UsesClause();
+	c->setFirstArg("s");
+	c->setFirstArgFixed(false);
+	c->setFirstArgType(ARG_STATEMENT);
+	c->setSecondArg("_");
+	c->setSecondArgFixed(false);
+	c->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(c->isValid());
+
+	Results r = c->evaluate();
+	vector<string> singleResults = r.getSinglesResults();
+
+	CPPUNIT_ASSERT(r.isClausePassed());
+	CPPUNIT_ASSERT(r.getNumOfSyn() == 1); 
+	CPPUNIT_ASSERT(singleResults.size() == 3);
+	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "1") != singleResults.end());
+	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "3") != singleResults.end());
+	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "5") != singleResults.end());
+}
+
+void UsesClauseTest::testUsesGenericFixedPass() {
+	UsesClause* c = new UsesClause();
+	c->setFirstArg("_");
+	c->setFirstArgFixed(false);
+	c->setFirstArgType(ARG_GENERIC);
+	c->setSecondArg("i");
+	c->setSecondArgFixed(true);
+	c->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(c->isValid());
+
+	Results r = c->evaluate();
+
+	CPPUNIT_ASSERT(r.isClausePassed());
+	CPPUNIT_ASSERT(r.getNumOfSyn() == 0); 
+}
+
+void UsesClauseTest::testUsesFixedGenericFail() {
+	UsesClause* c = new UsesClause();
+	c->setFirstArg("2");
+	c->setFirstArgFixed(true);
+	c->setFirstArgType(ARG_STATEMENT);
+	c->setSecondArg("_");
+	c->setSecondArgFixed(false);
+	c->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(c->isValid());
+
+	Results r = c->evaluate();
+	CPPUNIT_ASSERT(!r.isClausePassed());
+}
+
+void UsesClauseTest::testUsesGenericSynSynPass() {
+	UsesClause* c = new UsesClause();
+	c->setFirstArg("_");
+	c->setFirstArgFixed(false);
+	c->setFirstArgType(ARG_GENERIC);
+	c->setSecondArg("_");
+	c->setSecondArgFixed(false);
+	c->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(c->isValid());
+
+	Results r = c->evaluate();
+	vector<pair<string,string>> pairResults = r.getPairResults();
+
+	CPPUNIT_ASSERT(r.isClausePassed());
+	CPPUNIT_ASSERT(r.getNumOfSyn() == 0); 
+	CPPUNIT_ASSERT(pairResults.size() == 0);
+
+}
+
+void UsesClauseTest::testUsesStmtOverflow() {
+	UsesClause* c = new UsesClause();
+	c->setFirstArg("99");
+	c->setFirstArgFixed(true);
+	c->setFirstArgType(ARG_STATEMENT);
+	c->setSecondArg("j");
+	c->setSecondArgFixed(true);
+	c->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(c->isValid());
+
+	Results r = c->evaluate();
+	CPPUNIT_ASSERT(!r.isClausePassed());
 }

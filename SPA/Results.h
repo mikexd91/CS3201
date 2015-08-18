@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include "StringPair.h"
 
 using namespace std;
 
@@ -41,8 +42,11 @@ private:
 	string firstClauseSyn;
 	string secondClauseSyn;
 	int numOfSyn;
+
 	vector<pair<string, string>> pairResults;
 	vector<string> singleResults;
 
+	set<StringPair> pairSet;
+	set<string> singleSet;
 };
 

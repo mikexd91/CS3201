@@ -7,22 +7,18 @@
 using namespace std;
 
 	PDR* pdr;
-	ProcTable* procTable;
-	StmtTable* sTable;
 
 void PDRTest::setUp() {
-	PDR::resetInstanceFlag();
 	pdr = PDR::getInstance();
-	procTable = ProcTable::getInstance();
-	sTable = StmtTable::getInstance();
 }
 
 void PDRTest::tearDown() {
 	PDR::resetInstanceFlag();
-	AST::reset();
-	VarTable::reset();
-	procTable->clearTable();
-	sTable->clearTable();
+	AST::getInstance()->reset();
+	VarTable::getInstance()->reset();
+	ProcTable::getInstance()->clearTable();
+	StmtTable::getInstance()->clearTable();
+	ConstTable::getInstance()->clearTable();
 }
 
 CPPUNIT_TEST_SUITE_REGISTRATION( PDRTest );
@@ -33,7 +29,7 @@ void PDRTest::testProcessProc() {
 
 	pdr->processParsedData(procedure);
 	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 1);
-	//CPPUNIT_ASSERT(pdr->getCurrStmtNumber() == 0);
+	CPPUNIT_ASSERT(pdr->getCurrStmtNumber() == 0);
 
 	stack<TNode*> nodeStack = pdr->getNodeStack();
 

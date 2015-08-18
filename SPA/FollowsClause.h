@@ -17,6 +17,7 @@ public:
 	string getFollowedBy(string stmtNum, string unfixedStmtType);		// gets list of statements that stmtNum follows
 	bool checkIsSameType(NodeType type, string stmtType);
 	void followsBothUnfixedArg(string firstArgType, string secondArgType, Results &resObj);
+	void followsWithOneUnderscore(string firstArgType, string secondArgType, Results &resObj);
 
 private:
 	

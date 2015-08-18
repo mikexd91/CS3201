@@ -170,6 +170,19 @@ string Utils::convertNodeTypeToArgType(NodeType stmtType) {
 	return NULL;
 }
 
+
+//Converts statement NodeType to ArgType for clauses
+NodeType Utils::convertArgTypeToNodeType(string stmtType) {
+	if (stmtType == stringconst::ARG_ASSIGN) {
+		return ASSIGN_STMT_;
+	} else if (stmtType == stringconst::ARG_WHILE) {
+		return WHILE_STMT_;
+	} else {
+		return NULL_;
+	}
+}
+
+
 //filters the set to retrieve the statement of the specified type
 set<int> Utils::filterStatements(set<int> stmtSet, NodeType type) {
 	StmtTable * stmtTable = StmtTable::getInstance();
@@ -182,4 +195,18 @@ set<int> Utils::filterStatements(set<int> stmtSet, NodeType type) {
 		}
 	}
 	return finalValue;
+}
+
+void Utils::removeVectorDupes(vector<string> &vec) {
+	// convert to set then back to vector
+	set<string> s(vec.begin(), vec.end());
+	vec.clear();
+	vec.assign(s.begin(), s.end());
+}
+
+void Utils::removeVectorDupes(vector<pair<string,string>> &vec) {
+	// convert to set then back to vector
+	set<pair<string,string>> s(vec.begin(), vec.end());
+	vec.clear();
+	vec.assign(s.begin(), s.end());
 }

@@ -9,6 +9,7 @@
 
 using namespace boost;
 using namespace std;
+using namespace stringconst;
 
 StmtTable* stmtTable = StmtTable::getInstance();
 VarTable* varTable = VarTable::getInstance();
@@ -22,8 +23,13 @@ UsesClause::~UsesClause(void){
 bool UsesClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
-	bool firstArg = (firstType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_ASSIGN) || (firstType == stringconst::ARG_WHILE);
-	bool secondArg = (secondType == stringconst::ARG_VARIABLE);
+	bool firstArg = (firstType == ARG_GENERIC) 
+		|| (firstType == ARG_STATEMENT) 
+		|| (firstType == ARG_ASSIGN) 
+		|| (firstType == ARG_WHILE) 
+		|| (firstType == ARG_PROGLINE);
+	bool secondArg = (secondType == ARG_GENERIC) 
+		|| (secondType == ARG_VARIABLE);
 	return (firstArg && secondArg);
 }
 
@@ -58,9 +64,22 @@ Results UsesClause::evaluate(void) {
 Results UsesClause::evaluateStmtWildVarWild() {
 	Results res = Results();
 	// set synonyms
-	res.setNumOfSyn(2);
-	res.setFirstClauseSyn(this->getFirstArg());
-	res.setSecondClauseSyn(this->getSecondArg());
+	string firstType = this->getFirstArgType();
+	string secondType = this->getSecondArgType();
+	if(firstType==ARG_GENERIC && secondType==ARG_GENERIC) {
+		res.setNumOfSyn(0);
+	} else if(firstType==ARG_GENERIC || secondType==ARG_GENERIC) {
+		res.setNumOfSyn(1);
+		if(firstType!=ARG_GENERIC) {
+			res.setFirstClauseSyn(this->getFirstArg());
+		} else {
+			res.setFirstClauseSyn(this->getSecondArg());
+		}
+	} else {
+		res.setNumOfSyn(2);
+		res.setFirstClauseSyn(this->getFirstArg());
+		res.setSecondClauseSyn(this->getSecondArg());
+	}
 
 	// generate all possible combinations using stmtTable as reference
 	set<Statement*> allStmts = stmtTable->getAllStmts();
@@ -71,7 +90,7 @@ Results UsesClause::evaluateStmtWildVarWild() {
 		Statement* currentStmt = *stmtIter;
 
 		// check if current stmt conforms to specific stmt type, if not, skip to next statement
-		if(!Utils::isSameType(this->firstArgType, currentStmt->getType())) {
+		if((this->firstArgType!=ARG_GENERIC) && !Utils::isSameType(this->firstArgType, currentStmt->getType())) {
 			continue;
 		}
 		
@@ -83,14 +102,25 @@ Results UsesClause::evaluateStmtWildVarWild() {
 			string stmtNum = lexical_cast<string>(currentStmt->getStmtNum());
 			string var = *useIter;
 
-			res.addPairResult(stmtNum, var);
+			// add results depending on whether generics are present
+			if(firstType == ARG_GENERIC && secondType != ARG_GENERIC) {
+				res.addSingleResult(var);
+			} else if(firstType != ARG_GENERIC && secondType == ARG_GENERIC) {
+				res.addSingleResult(stmtNum);
+			} else if(firstType != ARG_GENERIC && secondType != ARG_GENERIC) {
+				res.addPairResult(stmtNum, var);
+			}
+
+			res.setClausePassed(true);
 		}
 	}
 
-	// checks if result is empty
-	if(res.getPairResults().size() != 0) {
-		res.setClausePassed(true);
-	}
+	vector<string> temp1 = res.getSinglesResults();
+	vector<pair<string,string>> temp2 = res.getPairResults();
+	Utils::removeVectorDupes(temp1);
+	Utils::removeVectorDupes(temp2);
+	res.setSingleResult(temp1);
+	res.setPairResult(temp2);
 
 	return res;
 }
@@ -99,8 +129,12 @@ Results UsesClause::evaluateStmtWildVarWild() {
 Results UsesClause::evaluateStmtWildVarFixed() {
 	Results res = Results();
 	// set synonyms
-	res.setNumOfSyn(1);
-	res.setFirstClauseSyn(this->getFirstArg());
+	if(this->getFirstArgType() == ARG_GENERIC) {
+		res.setNumOfSyn(0);
+	} else {
+		res.setNumOfSyn(1);
+		res.setFirstClauseSyn(this->getFirstArg());
+	}
 
 	// get the fixed var and usedby
 	Variable* fixedVar = varTable->getVariable(this->getSecondArg());
@@ -114,14 +148,24 @@ Results UsesClause::evaluateStmtWildVarFixed() {
 	// check set for results
 	if(stmtSet.size() != 0) {
 		res.setClausePassed(true);
-		for(stmtIter=stmtSet.begin(); stmtIter!=stmtSet.end(); stmtIter++) {
-			Statement* currentStmt = stmtTable->getStmtObj(*stmtIter);
-			// check if current stmt conforms to specific stmt type
-			if(Utils::isSameType(this->firstArgType, currentStmt->getType())) {
-				res.addSingleResult(lexical_cast<string>(*stmtIter));
+
+		if(this->getFirstArgType() != ARG_GENERIC) {
+			for(stmtIter=stmtSet.begin(); stmtIter!=stmtSet.end(); stmtIter++) {
+				Statement* currentStmt = stmtTable->getStmtObj(*stmtIter);
+				// check if current stmt conforms to specific stmt type
+				if((this->firstArgType==ARG_GENERIC) || (Utils::isSameType(this->firstArgType, currentStmt->getType()))) {
+					res.addSingleResult(lexical_cast<string>(*stmtIter));
+				}
 			}
 		}
 	}
+
+	vector<string> temp1 = res.getSinglesResults();
+	vector<pair<string,string>> temp2 = res.getPairResults();
+	Utils::removeVectorDupes(temp1);
+	Utils::removeVectorDupes(temp2);
+	res.setSingleResult(temp1);
+	res.setPairResult(temp2);
 
 	return res;
 }
@@ -130,16 +174,20 @@ Results UsesClause::evaluateStmtWildVarFixed() {
 Results UsesClause::evaluateStmtFixedVarWild() {
 	Results res = Results();
 	// set synonyms
-	res.setNumOfSyn(1);
-	res.setFirstClauseSyn(this->getSecondArg());
+	if(this->getSecondArgType() == ARG_GENERIC) {
+		res.setNumOfSyn(0);
+	} else {
+		res.setNumOfSyn(1);
+		res.setFirstClauseSyn(this->getSecondArg());
+	}
 
 	// get relevant stmts
 	string firstArgType = this->getFirstArgType();
 	set<Statement*>::iterator stmtIter;
 	set<Statement*> stmtSet;
-	if(firstArgType == stringconst::ARG_WHILE) {				// only while stmts
+	if(firstArgType == ARG_WHILE) {				// only while stmts
 		stmtSet = stmtTable->getWhileStmts();
-	} else if(firstArgType == stringconst::ARG_ASSIGN) {		// only assign stmts
+	} else if(firstArgType == ARG_ASSIGN) {		// only assign stmts
 		stmtSet = stmtTable->getAssgStmts();
 	} else {													// all types of stmts
 		stmtSet = stmtTable->getAllStmts();
@@ -159,14 +207,23 @@ Results UsesClause::evaluateStmtFixedVarWild() {
 			if(currentUses.size() != 0) {
 				res.setClausePassed(true);
 
-				// add all pairs into results
-				Statement::UsesSet::iterator setIter;
-				for(setIter=currentUses.begin(); setIter!=currentUses.end(); setIter++) {
-					res.addSingleResult(*setIter);
+				if(this->getSecondArgType() != ARG_GENERIC) {
+					// add all pairs into results
+					Statement::UsesSet::iterator setIter;
+					for(setIter=currentUses.begin(); setIter!=currentUses.end(); setIter++) {
+						res.addSingleResult(*setIter);
+					}
 				}
 			}
 		}
 	}
+
+	vector<string> temp1 = res.getSinglesResults();
+	vector<pair<string,string>> temp2 = res.getPairResults();
+	Utils::removeVectorDupes(temp1);
+	Utils::removeVectorDupes(temp2);
+	res.setSingleResult(temp1);
+	res.setPairResult(temp2);
 
 	return res;
 }
@@ -181,9 +238,9 @@ Results UsesClause::evaluateStmtFixedVarFixed() {
 	string firstArgType = this->getFirstArgType();
 	set<Statement*>::iterator stmtIter;
 	set<Statement*> stmtSet;
-	if(firstArgType == stringconst::ARG_WHILE) {				// only while stmts
+	if(firstArgType == ARG_WHILE) {				// only while stmts
 		stmtSet = stmtTable->getWhileStmts();
-	} else if(firstArgType == stringconst::ARG_ASSIGN) {		// only assign stmts
+	} else if(firstArgType == ARG_ASSIGN) {		// only assign stmts
 		stmtSet = stmtTable->getAssgStmts();
 	} else {													// all types of stmts
 		stmtSet = stmtTable->getAllStmts();
@@ -206,6 +263,13 @@ Results UsesClause::evaluateStmtFixedVarFixed() {
 			break;
 		}
 	}
+
+	vector<string> temp1 = res.getSinglesResults();
+	vector<pair<string,string>> temp2 = res.getPairResults();
+	Utils::removeVectorDupes(temp1);
+	Utils::removeVectorDupes(temp2);
+	res.setSingleResult(temp1);
+	res.setPairResult(temp2);
 
 	return res;
 }

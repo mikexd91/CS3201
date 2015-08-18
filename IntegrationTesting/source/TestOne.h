@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
 class TestOne : public CPPUNIT_NS::TestFixture { 
@@ -15,6 +16,7 @@ class TestOne : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testWhileUses );
 	CPPUNIT_TEST( testWhileModifies );
 	CPPUNIT_TEST( testStmtTableAllWhile );
+	CPPUNIT_TEST( testConstTable );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -36,4 +38,5 @@ public:
 	void testWhileModifies();
 
 	void testStmtTableAllWhile();
+	void testConstTable();
 };

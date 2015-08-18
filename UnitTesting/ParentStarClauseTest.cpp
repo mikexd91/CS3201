@@ -284,6 +284,23 @@ void ParentStarClauseTest::testParentStarSynFixedPass() {
 	CPPUNIT_ASSERT(find(singleResults.begin(), singleResults.end(), "4") != singleResults.end());
 }
 
+void ParentStarClauseTest::testParentStarSynFixedPassWithGeneric() {
+	ParentStarClause* m1 = new ParentStarClause();
+	m1->setFirstArg("_");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_GENERIC);
+	m1->setSecondArg("5");
+	m1->setSecondArgFixed(true);
+	m1->setSecondArgType(ARG_STATEMENT);
+	CPPUNIT_ASSERT(m1->isValid());
+
+	
+	Results r1 = m1->evaluate();
+	vector<string> singleResults = r1.getSinglesResults();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 0);
+}
+
 void ParentStarClauseTest::testParentStarSynFixedFail() {
 	ParentStarClause* m1 = new ParentStarClause();
 	m1->setFirstArg("s");
@@ -334,6 +351,23 @@ void ParentStarClauseTest::testParentStarFixedSynPassWithWhile() {
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "4");
+}
+
+void ParentStarClauseTest::testParentStarFixedSynPassWithGeneric() {
+	ParentStarClause* m1 = new ParentStarClause();
+	m1->setFirstArg("2");
+	m1->setFirstArgFixed(true);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("_");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(m1->isValid());
+
+	Results r1 = m1->evaluate();
+	vector<string> singleResults = r1.getSinglesResults();
+
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(singleResults.size() == 0);
 }
 
 void ParentStarClauseTest::testParentStarFixedSynFail() {
@@ -417,6 +451,57 @@ void ParentStarClauseTest::testParentStarSynSynPassWithWhile() {
 	CPPUNIT_ASSERT(r1.getPairResults().at(0) == pair0);
 }
 
+void ParentStarClauseTest::testParentStarSynSynPassWithGeneric() {
+	// Parent*(_,_)
+	ParentStarClause* m1 = new ParentStarClause();
+	m1->setFirstArg("_");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_GENERIC);
+	m1->setSecondArg("_");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(m1->isValid());
+
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(r1.isClausePassed());
+	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 0);
+	CPPUNIT_ASSERT(r1.getPairResults().size() == 0);
+
+	// Parent*(_,s)
+	ParentStarClause* m2 = new ParentStarClause();
+	m2->setFirstArg("_");
+	m2->setFirstArgFixed(false);
+	m2->setFirstArgType(ARG_GENERIC);
+	m2->setSecondArg("s");
+	m2->setSecondArgFixed(false);
+	m2->setSecondArgType(ARG_STATEMENT);
+	CPPUNIT_ASSERT(m2->isValid());
+
+	Results r2 = m2->evaluate();
+	vector<string> singleResults2 = r2.getSinglesResults();
+
+	CPPUNIT_ASSERT(r2.isClausePassed());
+	CPPUNIT_ASSERT(r2.getPairResults().size() == 0);
+	CPPUNIT_ASSERT(singleResults2.size() == 5);
+
+	// Parent*(_,w)
+	ParentStarClause* m3 = new ParentStarClause();
+	m3->setFirstArg("_");
+	m3->setFirstArgFixed(false);
+	m3->setFirstArgType(ARG_GENERIC);
+	m3->setSecondArg("w");
+	m3->setSecondArgFixed(false);
+	m3->setSecondArgType(ARG_WHILE);
+	CPPUNIT_ASSERT(m3->isValid());
+
+	Results r3 = m3->evaluate();
+	vector<string> singleResults3 = r3.getSinglesResults();
+
+	CPPUNIT_ASSERT(r3.isClausePassed());
+	CPPUNIT_ASSERT(r3.getPairResults().size() == 0);
+	CPPUNIT_ASSERT(singleResults3.size() == 1);
+}
+
 void ParentStarClauseTest::testParentStarInvalid() {
 	ParentStarClause* m1 = new ParentStarClause();
 	m1->setFirstArg("s1");
@@ -425,5 +510,22 @@ void ParentStarClauseTest::testParentStarInvalid() {
 	m1->setSecondArg("s2");
 	m1->setSecondArgFixed(false);
 	m1->setSecondArgType(ARG_STATEMENT);
-	CPPUNIT_ASSERT(!m1->isValid());
+	CPPUNIT_ASSERT(m1->isValid());
+
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(!r1.isClausePassed());
+}
+
+void ParentStarClauseTest::testParentStarStmtOverflow() {
+	ParentStarClause* m1 = new ParentStarClause();
+	m1->setFirstArg("s");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("-100");
+	m1->setSecondArgFixed(true);
+	m1->setSecondArgType(ARG_STATEMENT);
+	CPPUNIT_ASSERT(m1->isValid());
+
+	Results r1 = m1->evaluate();
+	CPPUNIT_ASSERT(!r1.isClausePassed());
 }
