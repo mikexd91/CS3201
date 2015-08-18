@@ -35,6 +35,21 @@ ProcTable::ProcedureTable::iterator ProcTable::getEnd() {
 	return tableIter;
 }
 
+// gets set of procedures called by procName
+const set<string*>& getCalls(const string &procName) {
+
+}
+
+// gets set of variables modified by procName
+const set<string*>& getModifies(const string &procName) {
+
+}
+
+// gets set of variables used by procName
+const set<string*>& getUses(const string &procName) {
+
+}
+
 // MUTATORS
 // adds proc to table
 void ProcTable::addProc(Procedure *proc) {
