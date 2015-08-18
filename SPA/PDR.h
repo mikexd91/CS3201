@@ -67,6 +67,8 @@ private:
     void addToProcTable(TNode*);
     void addToVarTable(TNode*, Flag);
 	void addToConstTable(TNode*);
+
+	void checkAndProcessNestingLevel(ParsedData);
     
     TNode* breakDownAssignExpression(ParsedData, set<string>&);
     

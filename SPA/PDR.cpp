@@ -135,14 +135,14 @@ void PDR::processAssignStmt(ParsedData data) {
     
 }
 
+void PDR::processIfStmt(ParsedData data) {
+	checkAndProcessNestingLevel(data);
+
+
+}
+
 void PDR::processWhileStmt(ParsedData data) {
-    if(currNestingLevel > data.getNestingLevel()) {
-        int diffNestingLevel = currNestingLevel - data.getNestingLevel();
-        for(int i = 0; i < diffNestingLevel; i++) {
-            stmtParentNumStack.pop();
-            nodeStack.pop();
-        }
-    }
+    checkAndProcessNestingLevel(data);
     
 	set<string> uses;
 	uses.insert(data.getWhileVar());
@@ -374,4 +374,14 @@ int PDR::getCurrStmtNumber() {
 
 stack<TNode*> PDR::getNodeStack() {
 	return nodeStack;
+}
+
+void PDR::checkAndProcessNestingLevel(ParsedData data) {
+	if(currNestingLevel > data.getNestingLevel()) {
+        int diffNestingLevel = currNestingLevel - data.getNestingLevel();
+        for(int i = 0; i < diffNestingLevel; i++) {
+            stmtParentNumStack.pop();
+            nodeStack.pop();
+        }
+    }
 }
