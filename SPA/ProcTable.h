@@ -9,13 +9,14 @@ class ProcTable {
 	ProcTable Implementation:
 	---------------------------------
 	|_[key]______|__________________|
-	| stmt no.	 | proc object ref	|
+	| proc name	 | proc object ref	|
 	|_[key]______|__________________|
 	---------------------------------
 
 	*/
 
-	typedef boost::unordered_map<string*, Procedure*> ProcedureTable;
+	typedef boost::unordered_map<string, Procedure*> ProcedureTable;
+	typedef ProcedureTable::iterator ProcTableIterator;
 
 public:
 	// ACCESSORS
@@ -24,9 +25,9 @@ public:
 	ProcedureTable::iterator getIterator();					// gets iterator to proc table
 	ProcedureTable::iterator getEnd();						// gets iterator to end of proc table
 
-	const set<string*>& getCalls(const string &procName);	// gets set of procedures called by procName
-	const set<string*>& getModifies(const string &procName);// gets set of variables modified by procName
-	const set<string*>& getUses(const string &procName);	// gets set of variables used by procName
+	const set<string>& getCalls(const string &procName);	// gets set of procedures called by procName
+	const set<string>& getModifies(const string &procName);// gets set of variables modified by procName
+	const set<string>& getUses(const string &procName);	// gets set of variables used by procName
 
 	// MUTATORS
 	void addProc(Procedure *proc);							// adds proc to table

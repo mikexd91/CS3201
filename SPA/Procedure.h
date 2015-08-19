@@ -33,7 +33,7 @@ public:
 	Procedure(const string &name, TNode *tRef);
 
 	// GETTERS
-	string* getProcName();					// get name of proc
+	string getProcName();					// get name of proc
 	TNode* getTNodeRef();					// get reference to proc TNode
 	const UsesSet& getUses();				// get set of variables proc uses
 	const ModifiesSet& getModifies();		// get set of variables proc modifies

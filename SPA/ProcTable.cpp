@@ -1,6 +1,8 @@
 #pragma once
 
+#include <set>
 #include "boost/unordered_map.hpp"
+#include <boost/foreach.hpp>
 #include "Procedure.h"
 #include "ProcTable.h"
 
@@ -36,24 +38,54 @@ ProcTable::ProcedureTable::iterator ProcTable::getEnd() {
 }
 
 // gets set of procedures called by procName
-const set<string*>& getCalls(const string &procName) {
+const set<string>& ProcTable::getCalls(const string &procName) {
+	Procedure* proc = table.find(procName)->second;
 
+	set<string>* calls = new set<string>();
+
+	// get set of procedure call references
+	Procedure::CallsSet procSet = proc->getCalls();
+	BOOST_FOREACH(auto p, procSet) {
+		calls->insert(p->getProcName());
+	}
+
+	return *calls;
 }
 
 // gets set of variables modified by procName
-const set<string*>& getModifies(const string &procName) {
+const set<string>& ProcTable::getModifies(const string &procName) {
+	Procedure* proc = table.find(procName)->second;
 
+	set<string>* modifies = new set<string>();
+
+	// get set of procedure call references
+	Procedure::ModifiesSet procSet = proc->getModifies();
+	BOOST_FOREACH(auto p, procSet) {
+		modifies->insert(p);
+	}
+
+	return *modifies;
 }
 
 // gets set of variables used by procName
-const set<string*>& getUses(const string &procName) {
+const set<string>& ProcTable::getUses(const string &procName) {
+	Procedure* proc = table.find(procName)->second;
 
+	set<string>* uses = new set<string>();
+
+	// get set of procedure call references
+	Procedure::UsesSet procSet = proc->getUses();
+	BOOST_FOREACH(auto p, procSet) {
+		uses->insert(p);
+	}
+
+	return *uses;
 }
 
 // MUTATORS
 // adds proc to table
 void ProcTable::addProc(Procedure *proc) {
-	string *procName = proc->getProcName();
+	string procName = proc->getProcName();
 
 	// add proc to table
 	table.emplace(procName, proc);
@@ -67,10 +99,10 @@ void ProcTable::clearTable() {
 // GENERAL METHODS
 // checks if proc exists in table
 bool ProcTable::contains(const string &procName) {
-	ProcedureTable::iterator iter = getIterator();
+	ProcTableIterator iter = getIterator();
 
-	for( ; iter!=table.end(); iter++) {
-		if(*iter->first == procName) {
+	BOOST_FOREACH(auto p, table) {
+		if(p.first.compare(procName) == 0) {
 			return true;
 		}
 	}
