@@ -1,17 +1,63 @@
 #pragma once
 #include "Results.h"
-#include <algorithm>
-#include <iostream>
+
+using namespace std;
+
+bool clausePassed = false;
 
 Results::Results(void)
 {
-	clausePassed = false;
 }
 
 Results::~Results(void)
 {
 }
 
+bool Results::isClausePass() {
+	return this->clausePassed;
+}
+
+void Results::setClausePass() {
+	this->clausePassed = true;
+}
+
+void Results::resetClausePass() {
+	this->clausePassed = false;
+}
+
+vector<bool> isExist(vector<string> synList) {
+	return vector<bool>();
+}
+
+vector<unordered_map<string, string>> selectMultiSyn(vector<string> synList) {
+	return vector<unordered_map<string, string>>();
+}
+
+vector<string> selectSyn(string syn) {
+	return vector<string>();
+}
+
+vector<unordered_map<string, string>> selectSynWhere(string syn, string val, vector<unordered_map<string, string>>) {
+	return vector<unordered_map<string, string>>();
+}
+
+bool insertMultiResult(unordered_map<string, string> results) {
+	return false;
+}
+
+bool insertResult(string syn, string value) {
+	return false;
+}
+
+bool delMultiResult(unordered_map<string, string> results) {
+	return false;
+}
+
+bool delResult(string syn, string value) {
+	return false;
+}
+
+/*
 void Results::setClausePassed(bool passed) {
 	this->clausePassed = passed;
 }
@@ -295,3 +341,4 @@ bool Results::usesSyn(string syn) {
 		return false;
 	}
 }
+*/

@@ -1,8 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <set>
-#include "StringPair.h"
+#include <unordered_map>
 
 using namespace std;
 
@@ -12,41 +11,24 @@ public:
 	Results(void);
 	~Results(void);
 
-	void setClausePassed(bool passed);			// clause is true if it contains at least 1 result for unfixed arg or returns true for boolean
-	void setFirstClauseSyn(string s1);
-	void setSecondClauseSyn(string s2);
-	void setNumOfSyn(int n);
-	void addSingleResult(string s);
-	void addPairResult(string s1, string s2);
-	void setSingleResult(vector<string>& v);
-	void setPairResult(vector<pair<string, string>>& v);
+	bool isClausePass();
+	void setClausePass();
+	void resetClausePass();
 
-	bool isClausePassed();
-	bool usesSyn(string syn);
+	vector<bool> isExist(vector<string> synList);
+	vector<unordered_map<string, string>> selectMultiSyn(vector<string> synList); // we are using database query language as a guide, hence select instead of get
+	vector<string> selectSyn(string syn);
+	vector<unordered_map<string, string>> selectSynWhere(string syn, string val, vector<unordered_map<string, string>>);
+	
+	// Insert will help create the synonym and add results to it
+	bool insertMultiResult(unordered_map<string, string> results);
+	bool insertResult(string syn, string value);
 
-	string getFirstClauseSyn();
-	string getSecondClauseSyn();
-	vector<string> getSinglesResults();
-	vector<pair<string, string>> getPairResults();
-	set<string> getSelectSynResult(string syn);
-	int getNumOfSyn();
-	void getIntersect(Results &res);		// Mutates the obj that called this method.
-											// if no intercept found, object results will be empty
+	bool delMultiResult(unordered_map<string, string> results);
+	bool delResult(string syn, string value);
+
 private:
-
-	void getSingleIntercept(Results &res1, Results &res2);
-	void getSinglePairIntercept(Results &res1, Results &res2);
-	void getPairIntercept(Results &res1, Results &res2);
-
-	bool clausePassed;
-	string firstClauseSyn;
-	string secondClauseSyn;
-	int numOfSyn;
-
-	vector<pair<string, string>> pairResults;
-	vector<string> singleResults;
-
-	set<StringPair> pairSet;
-	set<string> singleSet;
+	static bool clausePassed;
+	static vector<unordered_map<string, string>> resultsTable;
 };
 
