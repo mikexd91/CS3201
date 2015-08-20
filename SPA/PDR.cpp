@@ -32,6 +32,12 @@ void PDR::processParsedData(ParsedData data) {
         case ParsedData::ASSIGNMENT:
             processAssignStmt(data);
             break;
+		case ParsedData::CALL:
+			processCallStmt(data);
+			break;
+		case ParsedData::IF:
+			processIfStmt(data);
+			break;
         case ParsedData::WHILE:
             processWhileStmt(data);
             break;
@@ -72,14 +78,7 @@ void PDR::processProcedureStmt(ParsedData data) {
 }
 
 void PDR::processAssignStmt(ParsedData data) {
-    if(currNestingLevel > data.getNestingLevel()) {
-        int diffNestingLevel = currNestingLevel - data.getNestingLevel();
-        for(int i = 0; i < diffNestingLevel; i++) {
-            stmtParentNumStack.pop();
-            nodeStack.pop();
-        }
-        currNestingLevel = data.getNestingLevel();
-    }
+    checkAndProcessNestingLevel(data);
     
     set<string> modifies;
     set<string> uses;
@@ -135,9 +134,24 @@ void PDR::processAssignStmt(ParsedData data) {
     
 }
 
+void PDR::processCallStmt(ParsedData data) {
+
+}
+
 void PDR::processIfStmt(ParsedData data) {
 	checkAndProcessNestingLevel(data);
 
+	set<string> uses;
+
+	IfNode* ifNode = new IfNode(++stmtCounter);
+	TNode* parentStmtLst = nodeStack.top();
+
+	if(parentStmtLst->hasChildren()) {
+		vector<TNode*> listOfChildren = parentStmtLst->getChildren();
+		long int lastChild = listOfChildren.size() - 1;
+		TNode* leftSibling = listOfChildren[lastChild];
+		ifNode->linkLeftSibling(leftSibling);
+	}
 
 }
 

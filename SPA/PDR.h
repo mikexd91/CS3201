@@ -45,7 +45,7 @@ public:
 	stack<TNode*> getNodeStack();
 
 private:
-	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHILE};
+	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHILE, IF, CALL};
 	enum Flag {USES, MODIFIES};
 
 	int stmtCounter;
