@@ -3,6 +3,7 @@
 #include <string>
 #include <regex>
 #include "PDR.h"
+#include "boost/assign.hpp"
 
 using namespace std;
 
@@ -21,7 +22,6 @@ private:
 	int stmtCount;
 
 	string sanitise(string str);
-	vector<string> explode(const string &str);
 	void match(string token);
 	void getNextToken();
 	string getWord();
@@ -44,8 +44,8 @@ private:
 };
 
 namespace ParserConstants {
-	const string DELIM_STRING = " ;={}+*-";
-	const char DELIMITERS[] = { ';', '=', '{', '}', '+', '*', '-' };
+	const string DELIM_STRING = " ;={}+*-()";
+	const vector<char> DELIMITERS = boost::assign::list_of(';')('=')('{')('}')('+')('*')('-')('(')(')');
 	const string ERROR_MESSAGE = "Error near line ";
 	
 }
