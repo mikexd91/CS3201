@@ -112,6 +112,8 @@ void Parser::stmt() {
 	stmtCount++;
 	if (nextToken == "while") {
 		parseWhile();
+	} else if (nextToken == "if") {
+		parseIfBlock();
 	} else {
 		assign(); 
 	}
@@ -161,6 +163,36 @@ void Parser::parseWhile() {
 	whileStmt.setWhileVar(conditionVar);
 	parsedDataReceiver->processParsedData(whileStmt);
 	match("{");
+	stmtLst();
+	match("}");
+}
+
+void Parser::parseIfBlock() {
+	parseIf();
+	parseThen();
+	parseElse();
+}
+
+void Parser::parseIf(){
+	match("if");
+	string conditionVar = getName();
+	ParsedData ifStmt = ParsedData(ParsedData::IF, nestingLevel);
+	ifStmt.setIfVar(conditionVar);
+	parsedDataReceiver->processParsedData(ifStmt);
+}
+
+void Parser::parseThen(){
+	match ("then");
+	match("{");
+	stmtLst();
+	match("}");
+}
+
+void Parser::parseElse() {
+	match ("else");
+	ParsedData elseStmt = ParsedData(ParsedData::ELSE, nestingLevel);
+	parsedDataReceiver->processParsedData(elseStmt);
+	match ("{");
 	stmtLst();
 	match("}");
 }
