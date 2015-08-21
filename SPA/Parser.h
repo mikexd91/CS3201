@@ -36,6 +36,10 @@ private:
 	void stmt();
 	void assign();
 	void parseWhile();
+	void parseIfBlock();
+	void parseIf();
+	void parseThen();
+	void parseElse();
 	void endParse();
 	string generateErrorMessage(int lineNumber);
 	

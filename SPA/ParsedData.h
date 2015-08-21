@@ -5,7 +5,7 @@ using namespace std;
 class ParsedData	
 {
 public:
-	enum Type {ASSIGNMENT, PROCEDURE, WHILE, IF, CALL, END};
+	enum Type {ASSIGNMENT, PROCEDURE, WHILE, IF, CALL, END, ELSE};
 
 	//Constructor
 	ParsedData(enum Type, int);
@@ -15,6 +15,7 @@ public:
 	void setAssignExpression(queue<string>);
 	void setProcName(string);
 	void setWhileVar(string name);
+	void setIfVar(string name);
 
 	//Getter
 	int getNestingLevel();
@@ -23,6 +24,7 @@ public:
 	string getProcName();
 	Type getType();
 	string getWhileVar();
+	string getIfVar();
 
 
 private:
@@ -35,4 +37,6 @@ private:
 	string procName;
 	//While
 	string whileVar;
+	//If
+	string ifVar;
 };
