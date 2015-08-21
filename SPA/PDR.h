@@ -53,6 +53,8 @@ private:
     static bool instanceFlag;
     static PDR* pdrInstance;
 
+	ProcNode* currentProc;
+
 	stack<int> stmtParentNumStack;
 	stack<TNode*> nodeStack;
 

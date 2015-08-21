@@ -8,6 +8,7 @@ PDR* PDR::pdrInstance = NULL;
 PDR::PDR() {
     currNestingLevel = 0;
     stmtCounter = 0;
+	currentProc = NULL;
 }
 
 PDR* PDR::getInstance() {
@@ -142,8 +143,9 @@ void PDR::processIfStmt(ParsedData data) {
 	checkAndProcessNestingLevel(data);
 
 	set<string> uses;
-
+	//uses.insert(data.getIfVar);
 	IfNode* ifNode = new IfNode(++stmtCounter);
+	StmtLstNode* thenStmtLst = new StmtLstNode();
 	TNode* parentStmtLst = nodeStack.top();
 
 	if(parentStmtLst->hasChildren()) {
@@ -152,6 +154,18 @@ void PDR::processIfStmt(ParsedData data) {
 		TNode* leftSibling = listOfChildren[lastChild];
 		ifNode->linkLeftSibling(leftSibling);
 	}
+
+	// Linking the AST
+	//VarNode* ifVar = new VarNode(data.getIfVar);
+	ifNode->linkParent(parentStmtLst);
+	//ifNode->linkVarNode(ifVar);
+	ifNode->linkThenStmtLstNode(thenStmtLst);
+
+	//addToVarTable(ifVar, USES);
+	
+	nodeStack.push(thenStmtLst);
+	currNestingLevel = data.getNestingLevel() + 1;
+
 
 }
 
