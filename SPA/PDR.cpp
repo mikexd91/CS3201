@@ -50,12 +50,15 @@ void PDR::processParsedData(ParsedData data) {
     }
 }
 
+// For processing declaration of a procedure
 void PDR::processProcedureStmt(ParsedData data) {
-    // New Procedure
     for(int i = 0; i < currNestingLevel - data.getNestingLevel(); i++) {
         nodeStack.pop();
     }
     
+	ProcNode* previousProc = getPreviousProcedure();
+	checkAndAddProc(data.getProcName(), previousProc);
+
     // If there was a previous procedure, link prev proc to AST
     if(!nodeStack.empty()) {
         ProcNode* previousProc = (ProcNode*)nodeStack.top();
@@ -75,7 +78,38 @@ void PDR::processProcedureStmt(ParsedData data) {
     currNestingLevel++;
     
     addToProcTable(procedure);
-    
+}
+
+ProcNode* PDR::getPreviousProcedure() {
+	if(!nodeStack.empty()) {
+		ProcNode* previousProc = (ProcNode*)nodeStack.top();
+		nodeStack.pop();
+		return previousProc;
+	}
+
+	return NULL;
+}
+
+void PDR::checkAndAddProc(string procName, ProcNode* previousProc) {
+	ProcTable* procTable = ProcTable::getInstance();
+	ProcNode* currentProcNode;
+	Procedure* currentProcObj;
+
+	if(procTable->contains(procName)) {
+		//currentProcObj = procTable->getProcObj(procName);
+	} else {
+		currentProcNode = new ProcNode(procName);
+		currentProcObj = new Procedure(procName, currentProcNode);
+	}
+
+	linkPreviousProc(currentProcNode, previousProc);
+
+	StmtLstNode* stmtLst = new StmtLstNode();
+	currentProcNode->linkChild(stmtLst);
+}
+
+void PDR::linkPreviousProc(ProcNode* currentProcNode, ProcNode* previousProc) {
+	
 }
 
 void PDR::processAssignStmt(ParsedData data) {
@@ -143,7 +177,7 @@ void PDR::processIfStmt(ParsedData data) {
 	checkAndProcessNestingLevel(data);
 
 	set<string> uses;
-	//uses.insert(data.getIfVar);
+	uses.insert(data.getIfVar());
 	IfNode* ifNode = new IfNode(++stmtCounter);
 	StmtLstNode* thenStmtLst = new StmtLstNode();
 	TNode* parentStmtLst = nodeStack.top();
@@ -156,16 +190,46 @@ void PDR::processIfStmt(ParsedData data) {
 	}
 
 	// Linking the AST
-	//VarNode* ifVar = new VarNode(data.getIfVar);
+	VarNode* ifVar = new VarNode(data.getIfVar());
 	ifNode->linkParent(parentStmtLst);
-	//ifNode->linkVarNode(ifVar);
+	ifNode->linkVarNode(ifVar);
 	ifNode->linkThenStmtLstNode(thenStmtLst);
 
-	//addToVarTable(ifVar, USES);
+	addToVarTable(ifVar, USES);
 	
 	nodeStack.push(thenStmtLst);
 	currNestingLevel = data.getNestingLevel() + 1;
 
+	// Populate Stmt Table
+	StmtTable* stmtTable = StmtTable::getInstance();
+	Statement* ifStmt = new Statement();
+	ifStmt->setType(ifNode->getNodeType());
+	ifStmt->setStmtNum(ifNode->getStmtNum());
+	ifStmt->setTNodeRef(ifNode);
+	ifStmt->setUses(uses);
+
+	if(ifNode->hasLeftSibling()) {
+		StmtNode* leftSib = (StmtNode*)ifNode->getLeftSibling();
+		ifStmt->setFollowsBefore(leftSib->getStmtNum());
+		Statement* leftStmt = stmtTable->getStmtObj(leftSib->getStmtNum());
+		leftStmt->setFollowsAfter(ifNode->getStmtNum());
+	}
+
+	if(!stmtParentNumStack.empty()) {
+		int parentStmtNum = stmtParentNumStack.top();
+		ifStmt->setParent(parentStmtNum);
+		Statement* parentStmt = stmtTable->getStmtObj(parentStmtNum);
+		set<int> children = parentStmt->getChildren();
+		children.insert(ifNode->getStmtNum());
+
+		addParentSet(uses, USES);
+	}
+
+	stmtParentNumStack.push(stmtCounter);
+	stmtTable->addStmt(ifStmt);
+}
+
+void PDR::processElseStmt(ParsedData data) {
 
 }
 

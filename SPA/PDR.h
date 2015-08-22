@@ -53,7 +53,7 @@ private:
     static bool instanceFlag;
     static PDR* pdrInstance;
 
-	ProcNode* currentProc;
+	Procedure* currentProc;
 
 	stack<int> stmtParentNumStack;
 	stack<TNode*> nodeStack;
@@ -61,6 +61,7 @@ private:
 	void processProcedureStmt(ParsedData);
 	void processAssignStmt(ParsedData);
 	void processIfStmt(ParsedData);
+	void processElseStmt(ParsedData);
 	void processWhileStmt(ParsedData);
 	void processCallStmt(ParsedData);
     void processEndProgram();
@@ -71,7 +72,12 @@ private:
 	void addToConstTable(TNode*);
 
 	void checkAndProcessNestingLevel(ParsedData);
+	void checkAndAddProc(string, ProcNode*);
     
+	void linkPreviousProc(ProcNode*, ProcNode*);
+
+	ProcNode* getPreviousProcedure();
+
     TNode* breakDownAssignExpression(ParsedData, set<string>&);
     
     bool isInteger(string);
