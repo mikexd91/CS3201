@@ -26,8 +26,8 @@ Procedure::Procedure(const string &name, TNode *tRef) {
 /* ---------- GETTERS ---------- */
 /* ----------------------------- */
 // get name of proc
-string* Procedure::getProcName() {
-	return &procName;
+string Procedure::getProcName() {
+	return procName;
 }
 
 // get reference to proc TNode
