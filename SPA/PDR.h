@@ -69,8 +69,12 @@ private:
     void addToProcTable(TNode*);
     void addToVarTable(TNode*, Flag);
 	void addToConstTable(TNode*);
+	void addCallToCurrentProcedure(Procedure*);
+	void addChildToParentStmtLstNode(TNode*);
     
+	void createFollowsLinks(TNode*);
 	void createCurrentProcedureLinks(ProcNode*, Procedure*);
+	void checkAndModifyNestingLevel(ParsedData);
 
 	Procedure* checkAndAddToProcTable(string);
 	ProcNode* retrievePreviousProc();
