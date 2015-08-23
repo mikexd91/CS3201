@@ -66,8 +66,8 @@ private:
 	void processCallStmt(ParsedData);
     void processEndProgram();
 	
+    void addToCurrProc(set<string>, Flag);
     void addParentSet(set<string>, Flag);
-    void addToProcTable(TNode*);
     void addToVarTable(TNode*, Flag);
 	void addToConstTable(TNode*);
 
