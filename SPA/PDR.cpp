@@ -56,7 +56,7 @@ void PDR::processProcedureStmt(ParsedData data) {
 	}
 
 	ProcNode* previousProc = getPreviousProcedure();
-	checkAndAddProc(data.getProcName(), previousProc);
+	createProcedureAstConnections(data.getProcName(), previousProc);
 
 	currNestingLevel = data.getNestingLevel();
 	currNestingLevel++;
@@ -65,6 +65,12 @@ void PDR::processProcedureStmt(ParsedData data) {
 // For processing declaration of a procedure
 void PDR::processCallStmt(ParsedData data) {
 	// TODO
+	string calledProcName = data.getProcName();
+	Procedure* calledProcedure = checkAndAddToProcTable(calledProcName);
+
+	// TODO add calls to current procedure
+
+	// TODO link the ast with the call stmt and stmt num
 }
 
 // Gets the left sibling of the current procedure
@@ -78,28 +84,35 @@ ProcNode* PDR::getPreviousProcedure() {
 	return NULL;
 }
 
-// Checks if the procedure already exists in the procTable. If not create one and add it to the proc table
-void PDR::checkAndAddProc(string procName, ProcNode* previousProc) {
+// checks if the procedure exists in the procTable. Creates, add, and returns the proc if it doesn't
+Procedure* PDR::checkAndAddToProcTable(string procName) {
 	ProcTable* procTable = ProcTable::getInstance();
-	ProcNode* currentProcNode;
-	Procedure* currentProcObj;
+	Procedure* procedure;
 
 	if(procTable->contains(procName)) {
-		//currentProcObj = procTable->getProcObj(procName);
+		procedure = procTable->getProcObj(procName);
 	} else {
-		currentProcNode = new ProcNode(procName);
-		currentProcObj = new Procedure(procName, currentProcNode);
-		procTable->addProc(currentProcObj);
+		ProcNode* procNode = new ProcNode(procName);
+		procedure = new Procedure(procName, procNode);
 	}
 
-	linkPreviousProc(currentProcNode, previousProc);
+	return procedure;
+}
+
+void PDR::createProcedureAstConnections(string procName, ProcNode* previousProc) {
+	ProcTable* procTable = ProcTable::getInstance();
+
+	Procedure* currentProcedure = checkAndAddToProcTable(procName);
+	ProcNode* currentProcedureNode = currentProcedure->getTNodeRef();
+
+	linkPreviousProc(currentProcedureNode, previousProc);
 
 	StmtLstNode* stmtLst = new StmtLstNode();
-	currentProcNode->linkChild(stmtLst);
+	currentProcedureNode->linkChild(stmtLst);
 
-	nodeStack.push(currentProcNode);
+	nodeStack.push(currentProcedureNode);
 	nodeStack.push(stmtLst);
-	currentProc = currentProcObj;
+	currentProc = currentProcedure;
 }
 
 // Creates sibling relationship for procedures
@@ -272,7 +285,6 @@ void PDR::processWhileStmt(ParsedData data) {
 		Statement* leftStmt = stmtTable->getStmtObj(leftSib->getStmtNum());
 		leftStmt->setFollowsAfter(whileNode->getStmtNum());
 	}
-
 
 	// setting children-parent relationships in the statement object
 	if(!stmtParentNumStack.empty()) {

@@ -70,9 +70,11 @@ private:
     void addParentSet(set<string>, Flag);
     void addToVarTable(TNode*, Flag);
 	void addToConstTable(TNode*);
+	void addToCurrProc();
 
+	Procedure* checkAndAddToProcTable(string);
 	void checkAndProcessNestingLevel(ParsedData);
-	void checkAndAddProc(string, ProcNode*);
+	void createProcedureAstConnections(string, ProcNode*);
     
 	void linkPreviousProc(ProcNode*, ProcNode*);
 
