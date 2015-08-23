@@ -45,7 +45,7 @@ public:
 	stack<TNode*> getNodeStack();
 
 private:
-	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHILE};
+	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHILE, IF, CALL};
 	enum Flag {USES, MODIFIES};
 
 	int stmtCounter;
@@ -53,21 +53,33 @@ private:
     static bool instanceFlag;
     static PDR* pdrInstance;
 
+	Procedure* currentProc;
+
 	stack<int> stmtParentNumStack;
 	stack<TNode*> nodeStack;
 
 	void processProcedureStmt(ParsedData);
 	void processAssignStmt(ParsedData);
 	void processIfStmt(ParsedData);
+	void processElseStmt(ParsedData);
 	void processWhileStmt(ParsedData);
 	void processCallStmt(ParsedData);
     void processEndProgram();
 	
+    void addToCurrProc(set<string>, Flag);
     void addParentSet(set<string>, Flag);
-    void addToProcTable(TNode*);
     void addToVarTable(TNode*, Flag);
 	void addToConstTable(TNode*);
+	void addToCurrProc();
+
+	Procedure* checkAndAddToProcTable(string);
+	void checkAndProcessNestingLevel(ParsedData);
+	void createProcedureAstConnections(string, ProcNode*);
     
+	void linkPreviousProc(ProcNode*, ProcNode*);
+
+	ProcNode* getPreviousProcedure();
+
     TNode* breakDownAssignExpression(ParsedData, set<string>&);
     
     bool isInteger(string);
