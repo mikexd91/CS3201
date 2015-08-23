@@ -53,6 +53,8 @@ private:
     static bool instanceFlag;
     static PDR* pdrInstance;
 
+    Procedure* currentProcedure;
+
 	stack<int> stmtParentNumStack;
 	stack<TNode*> nodeStack;
 
@@ -68,6 +70,12 @@ private:
     void addToVarTable(TNode*, Flag);
 	void addToConstTable(TNode*);
     
+	void createCurrentProcedureLinks(ProcNode*, Procedure*);
+
+	Procedure* checkAndAddToProcTable(string);
+	ProcNode* retrievePreviousProc();
+
+
     TNode* breakDownAssignExpression(ParsedData, set<string>&);
     
     bool isInteger(string);

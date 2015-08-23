@@ -49,26 +49,55 @@ void PDR::processProcedureStmt(ParsedData data) {
         nodeStack.pop();
     }
     
-    // If there was a previous procedure, link prev proc to AST
-    if(!nodeStack.empty()) {
-        ProcNode* previousProc = (ProcNode*)nodeStack.top();
-        AST* ast = AST::getInstance();
-        ast->addProcNode(previousProc);
-        nodeStack.pop();
-    }
+    ProcNode* previousProcNode = retrievePreviousProc();
+    Procedure* currentProcedure = checkAndAddToProcTable(data.getProcName());
 
-    ProcNode* procedure = new ProcNode(data.getProcName());
-    StmtLstNode* stmtLst = new StmtLstNode();
-    procedure->linkChild(stmtLst);
+    createCurrentProcedureLinks(previousProcNode, currentProcedure);
     
-    nodeStack.push(procedure);
-    nodeStack.push(stmtLst);
-    
+    this->currentProcedure = currentProcedure;
+
     currNestingLevel = data.getNestingLevel();
     currNestingLevel++;
-    
-    addToProcTable(procedure);
-    
+}
+
+void PDR::createCurrentProcedureLinks(ProcNode* previousProcNode, Procedure* currentProcedure) {
+	StmtLstNode* stmtLst = new StmtLstNode();
+	ProcNode* currentProcNode = (ProcNode*)currentProcedure->getTNodeRef();
+	currentProcNode->linkChild(stmtLst);
+
+	if(previousProcNode != NULL) {
+		currentProcNode->linkLeftSibling(previousProcNode);
+	}
+
+	nodeStack.push(currentProcNode);
+	nodeStack.push(stmtLst);
+}
+
+ProcNode* PDR::retrievePreviousProc() {
+	if(!nodeStack.empty()) {
+		ProcNode* previousProc = (ProcNode*)nodeStack.top();
+		AST* ast = AST::getInstance();
+		ast->addProcNode(previousProc);
+		nodeStack.pop();
+	}
+
+	return NULL;
+}
+
+Procedure* PDR::checkAndAddToProcTable(string procedureName) {
+	ProcTable* procTable = ProcTable::getInstance();
+
+	Procedure* procedure;
+
+	if(procTable->contains(procedureName)) {
+		procedure = procTable->getProcObj(procedureName);
+	} else {
+		ProcNode* procNode = new ProcNode(procedureName);
+		procedure = new Procedure(procedureName, procNode);
+		procTable->addProc(procedure);
+	}
+
+	return procedure;
 }
 
 void PDR::processAssignStmt(ParsedData data) {
