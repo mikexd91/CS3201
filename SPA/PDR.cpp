@@ -50,13 +50,12 @@ void PDR::processCallStmt(ParsedData data) {
 	checkAndModifyNestingLevel(data);
 
 	Procedure* calledProcedure = checkAndAddToProcTable(data.getProcName());
-	ProcNode* calledProcNode = (TNode*)calledProcedure->getTNodeRef();
+	ProcNode* calledProcNode = (ProcNode*)calledProcedure->getTNodeRef();
 
 	addCallToCurrentProcedure(calledProcedure);
 
 	// Create a new CallNode
-	CallNode* callNode = new CallNode(++stmtCounter);
-	callNode->setName(data.getProcName());
+	CallNode* callNode = new CallNode(++stmtCounter, data.getProcName());
 	addChildToParentStmtLstNode(callNode);
 
 	// TODO create call stmt obj for stmt table?
@@ -464,4 +463,8 @@ int PDR::getCurrStmtNumber() {
 
 stack<TNode*> PDR::getNodeStack() {
 	return nodeStack;
+}
+
+Procedure* PDR::getCurrentProcedure() {
+	return currentProcedure;
 }

@@ -42,6 +42,7 @@ public:
 
 	int getCurrNestingLevel();
 	int getCurrStmtNumber();
+	Procedure* getCurrentProcedure();
 	stack<TNode*> getNodeStack();
 
 private:
