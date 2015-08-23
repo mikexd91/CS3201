@@ -12,6 +12,7 @@ class PDRTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testProcessCallStmts1 );
 	CPPUNIT_TEST( testMultipleProcs1 );
 	CPPUNIT_TEST( testMultipleProcs2 );
+	CPPUNIT_TEST( testNestingLevel );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -25,4 +26,5 @@ public:
 	void testProcessCallStmts1();
 	void testMultipleProcs1();
 	void testMultipleProcs2();
+	void testNestingLevel();
 };

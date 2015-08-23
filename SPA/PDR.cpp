@@ -61,7 +61,9 @@ void PDR::processCallStmt(ParsedData data) {
 
 	// Add calls to stmt table
 	Statement* callStmt = new Statement();
+	callStmt->setStmtNum(stmtCounter);
 	callStmt->setCalls(data.getProcName());
+	callStmt->setType(NodeType::CALL_STMT_);
 	createFollowsLinks(callNode, callStmt);
 	addToStmtTable(callStmt);
 }
@@ -72,8 +74,10 @@ void PDR::addToStmtTable(Statement* stmt) {
 }
 
 void PDR::createFollowsLinks(StmtNode* node, Statement* stmt) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+
 	if(node->hasLeftSibling()) {
-		StmtNode* leftSibling = node->getLeftSibling();
+		StmtNode* leftSibling = (StmtNode*)node->getLeftSibling();
 		stmt->setFollowsBefore(leftSibling->getStmtNum());
 		Statement* leftStmt = stmtTable->getStmtObj(leftSibling->getStmtNum());
 		leftStmt->setFollowsAfter(node->getStmtNum());
@@ -87,7 +91,7 @@ void PDR::addChildToParentStmtLstNode(TNode* childNode) {
 		vector<TNode*> listOfChildren = parentStmtLst->getChildren();
 		long int lastChild = listOfChildren.size() - 1;
 		TNode* leftSibling = listOfChildren[lastChild];
-		childNode->linkLeftSibling(childNode);
+		childNode->linkLeftSibling(leftSibling);
 	}
 
 	childNode->linkParent(parentStmtLst);
@@ -107,19 +111,11 @@ void PDR::processAssignStmt(ParsedData data) {
     set<string> uses;
     AssgNode* assignNode = new AssgNode(++stmtCounter);
     TNode* assignExpChild = breakDownAssignExpression(data, uses);
-    TNode* parentStmtLst = nodeStack.top();
-
-    if(parentStmtLst->hasChildren()) {
-        vector<TNode*> listOfChildren = parentStmtLst->getChildren();
-        long int lastChild = listOfChildren.size() - 1;
-        TNode* leftSibling = listOfChildren[lastChild];
-        assignNode->linkLeftSibling(leftSibling);
-    }
-
+	
     modifies.insert(data.getAssignVar());
 
     // Linking the AST
-    assignNode->linkParent(parentStmtLst);
+	addChildToParentStmtLstNode(assignNode);
     assignNode->linkExprNode(assignExpChild);
     VarNode* modifiesVar = new VarNode(data.getAssignVar());
     assignNode->linkVarNode(modifiesVar);
@@ -134,12 +130,7 @@ void PDR::processAssignStmt(ParsedData data) {
     stmt->setModifies(modifies);
     stmt->setUses(uses);
 
-    if(assignNode->hasLeftSibling()) {
-        StmtNode* leftSib = (StmtNode*)assignNode->getLeftSibling();
-        stmt->setFollowsBefore(leftSib->getStmtNum());
-        Statement* leftStmt = stmtTable->getStmtObj(leftSib->getStmtNum());
-        leftStmt->setFollowsAfter(assignNode->getStmtNum());
-    }
+    createFollowsLinks(assignNode, stmt);
 
     if(!stmtParentNumStack.empty()) {
         int parentStmtNum = stmtParentNumStack.top();
@@ -154,7 +145,6 @@ void PDR::processAssignStmt(ParsedData data) {
     }
 
     stmtTable->addStmt(stmt);
-
 }
 
 void PDR::processWhileStmt(ParsedData data) {
@@ -170,18 +160,10 @@ void PDR::processWhileStmt(ParsedData data) {
 	uses.insert(data.getWhileVar());
     WhileNode* whileNode = new WhileNode(++stmtCounter);
     StmtLstNode* stmtLst = new StmtLstNode();
-    TNode* parentStmtLst = nodeStack.top();
-
-    if(parentStmtLst->hasChildren()) {
-        vector<TNode*> listOfChildren = parentStmtLst->getChildren();
-        long int lastChild = listOfChildren.size() - 1;
-        TNode* leftSibling = listOfChildren[lastChild];
-        whileNode->linkLeftSibling(leftSibling);
-    }
 
     // Linking the AST
+	addChildToParentStmtLstNode(whileNode);
     VarNode* whileVar = new VarNode(data.getWhileVar());
-    whileNode->linkParent(parentStmtLst);
     whileNode->linkVarNode(whileVar);
     whileNode->linkStmtLstNode(stmtLst);
 
@@ -198,12 +180,7 @@ void PDR::processWhileStmt(ParsedData data) {
     whileStmt->setTNodeRef(whileNode);
 	whileStmt->setUses(uses);
 
-    if(whileNode->hasLeftSibling()) {
-        StmtNode* leftSib = (StmtNode*)whileNode->getLeftSibling();
-        whileStmt->setFollowsBefore(leftSib->getStmtNum());
-        Statement* leftStmt = stmtTable->getStmtObj(leftSib->getStmtNum());
-        leftStmt->setFollowsAfter(whileNode->getStmtNum());
-    }
+    createFollowsLinks(whileNode, whileStmt);
 
     if(!stmtParentNumStack.empty()) {
         int parentStmtNum = stmtParentNumStack.top();

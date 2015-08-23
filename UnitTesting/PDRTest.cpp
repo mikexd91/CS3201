@@ -142,3 +142,24 @@ void PDRTest::testMultipleProcs2() {
 
 	CPPUNIT_ASSERT(pdr->getCurrentProcedure()->getProcName() == "proc2");
 }
+
+void PDRTest::testNestingLevel() {
+	ParsedData procedure = ParsedData(ParsedData::PROCEDURE, 0);
+	procedure.setProcName("proc");
+	pdr->processParsedData(procedure);
+
+	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 1);
+
+	ParsedData whileStmt = ParsedData(ParsedData::WHILE, 1);
+	whileStmt.setWhileVar("x");
+	pdr->processParsedData(whileStmt);
+
+	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 2);
+
+	ParsedData callStmt = ParsedData(ParsedData::CALL, 1);
+	callStmt.setProcName("proc1");
+	pdr->processParsedData(callStmt);
+
+	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 1);
+
+}

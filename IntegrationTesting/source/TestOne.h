@@ -17,6 +17,8 @@ class TestOne : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testWhileModifies );
 	CPPUNIT_TEST( testStmtTableAllWhile );
 	CPPUNIT_TEST( testConstTable );
+	CPPUNIT_TEST( testCallsAST );
+	CPPUNIT_TEST( testCallsPKB );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -39,4 +41,7 @@ public:
 
 	void testStmtTableAllWhile();
 	void testConstTable();
+
+	void testCallsAST();
+	void testCallsPKB();
 };
