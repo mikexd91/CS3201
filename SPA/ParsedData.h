@@ -33,7 +33,7 @@ private:
 	//Assignment
 	string assignVar;
 	queue<string> assignExpression; //in Reverse Polish notation
-	//Procedure
+	//Procedure/calls
 	string procName;
 	//While
 	string whileVar;
