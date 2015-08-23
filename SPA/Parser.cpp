@@ -89,6 +89,10 @@ void Parser::program() {
 void Parser::procedure() {
 	match("procedure");
 	string procName = getName();
+	if (find(existingProcedures.begin(), existingProcedures.end(), procName) != existingProcedures.end()) {
+			//same procedure is defined twice
+			throwException(stmtCount);
+	}
 	currentProcName = procName;
 	ParsedData procedure = ParsedData(ParsedData::PROCEDURE, this->nestingLevel);
 	procedure.setProcName(procName);
