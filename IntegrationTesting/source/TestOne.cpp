@@ -261,6 +261,9 @@ void TestOne::testMultipleProcAST() {
 	ProcNode* proc1 = ast->getProcNode("proc1");
 	ProcNode* proc2 = ast->getProcNode("proc2");
 	ProcNode* proc3 = ast->getProcNode("proc3");
+
+	CPPUNIT_ASSERT(proc1->getRightSibling() == proc2);
+	CPPUNIT_ASSERT(proc2->getRightSibling() == proc3);
 }
 
 void TestOne::testFollows() {

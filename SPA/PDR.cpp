@@ -79,6 +79,8 @@ ProcNode* PDR::retrievePreviousProc() {
 		AST* ast = AST::getInstance();
 		ast->addProcNode(previousProc);
 		nodeStack.pop();
+
+		return previousProc;
 	}
 
 	return NULL;

@@ -11,12 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PQLIntegration.cpp" />
+    <!-- <ClCompile Include="PQLIntegration.cpp" /> -->
     <ClCompile Include="source\IntegrationTest.cpp" />
     <ClCompile Include="source\TestOne.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PQLIntegration.h" />
+    <!-- <ClInclude Include="PQLIntegration.h" /> -->
     <ClInclude Include="source\TestOne.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
