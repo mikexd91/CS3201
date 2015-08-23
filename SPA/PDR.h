@@ -46,7 +46,7 @@ public:
 	stack<TNode*> getNodeStack();
 
 private:
-	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHILE};
+	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHILE, IF, CALL};
 	enum Flag {USES, MODIFIES};
 
 	int stmtCounter;
@@ -66,8 +66,8 @@ private:
 	void processCallStmt(ParsedData);
     void processEndProgram();
 	
+    void addToCurrProc(set<string>, Flag);
     void addParentSet(set<string>, Flag);
-    void addToProcTable(TNode*);
     void addToVarTable(TNode*, Flag);
 	void addToConstTable(TNode*);
 	void addCallToCurrentProcedure(Procedure*);

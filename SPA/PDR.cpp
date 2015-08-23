@@ -6,17 +6,18 @@ bool PDR::instanceFlag = false;
 PDR* PDR::pdrInstance = NULL;
 
 PDR::PDR() {
-    currNestingLevel = 0;
-    stmtCounter = 0;
+	currNestingLevel = 0;
+	stmtCounter = 0;
+	currentProcedure = NULL;
 }
 
 PDR* PDR::getInstance() {
-    if(!instanceFlag) {
-        pdrInstance = new PDR();
-        instanceFlag = true;
-    }
-    
-    return pdrInstance;
+	if(!instanceFlag) {
+		pdrInstance = new PDR();
+		instanceFlag = true;
+	}
+
+	return pdrInstance;
 }
 
 void PDR::resetInstanceFlag() {
@@ -201,10 +202,10 @@ void PDR::processWhileStmt(ParsedData data) {
 		parentStmt->setChildren(children);
 
 		addParentSet(uses, USES);
-    }
+	}
 
 	stmtParentNumStack.push(stmtCounter);
-    stmtTable->addStmt(whileStmt);
+	stmtTable->addStmt(whileStmt);
 }
 
 void PDR::addCallToCurrentProcedure(Procedure* calledProcedure) {
@@ -288,60 +289,60 @@ Procedure* PDR::checkAndAddToProcTable(string procedureName) {
 }
 
 TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
-    queue<string> expression = data.getAssignExpression();
-    stack<TNode*> rpnNodeStack;
+	queue<string> expression = data.getAssignExpression();
+	stack<TNode*> rpnNodeStack;
 	int numExp = expression.size();
-    
-    if(numExp == 1) {
-        string exp = expression.front();
-        expression.pop();
-        
-        if(isInteger(exp)) {
-            ConstNode* constNode = new ConstNode(exp);
+
+	if(numExp == 1) {
+		string exp = expression.front();
+		expression.pop();
+
+		if(isInteger(exp)) {
+			ConstNode* constNode = new ConstNode(exp);
 			addToConstTable(constNode);
-            return constNode;
-        } else {
-            VarNode* var = new VarNode(exp);
+			return constNode;
+		} else {
+			VarNode* var = new VarNode(exp);
 			addToVarTable(var, USES);
-            usesSet.insert(exp);
-            return var;
-        }
-    }
-    
-    for(int i = 0; i < numExp; i++) {
-        string exp = expression.front();
-        expression.pop();
-        
-        if(exp == "+" || exp == "-" || exp == "*" || exp == "/") {
-            OpNode* operat = new OpNode(exp);
-            TNode* right = rpnNodeStack.top();
-            rpnNodeStack.pop();
-            TNode* left = rpnNodeStack.top();
-            rpnNodeStack.pop();
-            operat->linkLeftNode(left);
-            operat->linkRightNode(right);
-            rpnNodeStack.push(operat);
-        } else {
-            if(isInteger(exp)) {
-                ConstNode* constNode = new ConstNode(exp);
-                rpnNodeStack.push(constNode);
+			usesSet.insert(exp);
+			return var;
+		}
+	}
+
+	for(int i = 0; i < numExp; i++) {
+		string exp = expression.front();
+		expression.pop();
+
+		if(exp == "+" || exp == "-" || exp == "*" || exp == "/") {
+			OpNode* operat = new OpNode(exp);
+			TNode* right = rpnNodeStack.top();
+			rpnNodeStack.pop();
+			TNode* left = rpnNodeStack.top();
+			rpnNodeStack.pop();
+			operat->linkLeftNode(left);
+			operat->linkRightNode(right);
+			rpnNodeStack.push(operat);
+		} else {
+			if(isInteger(exp)) {
+				ConstNode* constNode = new ConstNode(exp);
+				rpnNodeStack.push(constNode);
 				addToConstTable(constNode);
-            } else {
-                VarNode* var = new VarNode(exp);
-                rpnNodeStack.push(var);
-                usesSet.insert(exp);
-                addToVarTable(var, USES);
-            }
-        }
-    }
-    
-    TNode* result = NULL;
-    while(!rpnNodeStack.empty()) {
-        result = rpnNodeStack.top();
-        rpnNodeStack.pop();
-    }
-    
-    return result;
+			} else {
+				VarNode* var = new VarNode(exp);
+				rpnNodeStack.push(var);
+				usesSet.insert(exp);
+				addToVarTable(var, USES);
+			}
+		}
+	}
+
+	TNode* result = NULL;
+	while(!rpnNodeStack.empty()) {
+		result = rpnNodeStack.top();
+		rpnNodeStack.pop();
+	}
+
+	return result;
 }
 
 void PDR::addParentSet(set<string> setToBeAdded, Flag statusFlag) {
@@ -350,16 +351,16 @@ void PDR::addParentSet(set<string> setToBeAdded, Flag statusFlag) {
 	stack<int> holdingStack;
 
 	while(!stmtParentNumStack.empty()) {
-		Statement* parent = stmtTable->getStmtObj(stmtParentNumStack.top());	
+		Statement* parent = stmtTable->getStmtObj(stmtParentNumStack.top());
 		set<string> stmtSet;
-		set<string>::iterator iter;	
+		set<string>::iterator iter;
 
 		if(statusFlag == USES) {
 			stmtSet = parent->getUses();
 		} else {
 			stmtSet = parent->getModifies();
 		}
-		
+
 		for(iter = setToBeAdded.begin(); iter != setToBeAdded.end(); iter++) {
 			string var = *iter;
 			stmtSet.insert(var);
@@ -376,7 +377,7 @@ void PDR::addParentSet(set<string> setToBeAdded, Flag statusFlag) {
 		} else {
 			parent->setModifies(stmtSet);
 		}
-		
+
 		holdingStack.push(stmtParentNumStack.top());
 		stmtParentNumStack.pop();
 	}
@@ -387,33 +388,27 @@ void PDR::addParentSet(set<string> setToBeAdded, Flag statusFlag) {
 	}
 }
 
-void PDR::addToProcTable(TNode* procedure) {
-    ProcTable* procTable = ProcTable::getInstance();
-    Procedure* proc = new Procedure(procedure->getName(), procedure);
-    procTable->addProc(proc);
-}
-
 void PDR::addToVarTable(TNode* variable, Flag statusFlag) {
-    VarTable* varTable = VarTable::getInstance();
-    
-    if(varTable->contains(variable->getName())) {
-        Variable* var = varTable->getVariable(variable->getName());
-        var->addTNode(variable);
+	VarTable* varTable = VarTable::getInstance();
+
+	if(varTable->contains(variable->getName())) {
+		Variable* var = varTable->getVariable(variable->getName());
+		var->addTNode(variable);
 		if(statusFlag == USES) {
 			var->addUsingStmt(stmtCounter);
 		} else {
 			var->addModifyingStmt(stmtCounter);
 		}
 
-    } else {
-        Variable* var = new Variable(variable->getName());
-        if(statusFlag == USES) {
+	} else {
+		Variable* var = new Variable(variable->getName());
+		if(statusFlag == USES) {
 			var->addUsingStmt(stmtCounter);
 		} else {
 			var->addModifyingStmt(stmtCounter);
 		}
 		varTable->addVariable(var);
-    }
+	}
 }
 
 void PDR::addToConstTable(TNode* constant) {
@@ -432,25 +427,25 @@ void PDR::addToConstTable(TNode* constant) {
 }
 
 void PDR::processEndProgram() {
-    for(int i = 0; i < currNestingLevel; i++) {
-        nodeStack.pop();
-    }
-    
-    ProcNode* procNodeToBeLinked = (ProcNode*)nodeStack.top();
-    AST* ast = AST::getInstance();
-    ast->addProcNode(procNodeToBeLinked);
-    
-    nodeStack.pop();
+	for(int i = 0; i < currNestingLevel; i++) {
+		nodeStack.pop();
+	}
+
+	ProcNode* procNodeToBeLinked = (ProcNode*) nodeStack.top();
+	AST* ast = AST::getInstance();
+	ast->addProcNode(procNodeToBeLinked);
+
+	nodeStack.pop();
 }
 
 bool PDR::isInteger(string exp) {
-    regex integer("(\\+|-)?[[:digit:]]+");
-    
-    if(regex_match(exp, integer)) {
-        return true;
-    }
-    
-    return false;
+	regex integer("(\\+|-)?[[:digit:]]+");
+
+	if(regex_match(exp, integer)) {
+		return true;
+	}
+
+	return false;
 }
 
 int PDR::getCurrNestingLevel() {

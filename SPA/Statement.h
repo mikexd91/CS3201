@@ -49,6 +49,7 @@ public:
 	const ModifiesSet& getModifies();	// get set of variables stmt modifies
 	int getFollowsAfter();				// get stmt that follows after this stmt
 	int getFollowsBefore();				// get stmt that follows before this stmt
+	string getCalls();					// get proc name that stmt calls
 	const ChildrenSet& getChildren();	// get set of child nodes of this stmt
 	int getParent();					// get parent of this stmt
 	int getNext();						// get stmt that is next of this stmt
@@ -63,6 +64,7 @@ public:
 	void setModifies(const ModifiesSet &modifiesSet);
 	void setFollowsAfter(int followsAfter);
 	void setFollowsBefore(int followsBefore);
+	void setCalls(string calls);
 	void setChildren(const ChildrenSet &childrenSet);
 	void setParent(int parent);
 	void setNext(int next);
@@ -80,6 +82,7 @@ private:
 	ModifiesSet		modifies;
 	int				followsAfter;
 	int				followsBefore;
+	string			calls;
 	ChildrenSet		children;
 	int				parent;
 	int				next;

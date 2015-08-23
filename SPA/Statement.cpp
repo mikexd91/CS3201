@@ -16,6 +16,7 @@ Statement::Statement() {
 	modifies = ModifiesSet();
 	followsAfter = DEFAULT;
 	followsBefore = DEFAULT;
+	calls = DEFAULT;
 	children = ChildrenSet();
 	parent = DEFAULT;
 	next = DEFAULT;
@@ -76,6 +77,11 @@ int Statement::getFollowsBefore() {
 	return followsBefore;
 }
 
+// get proc name that stmt calls
+string Statement::getCalls() {
+	return calls;
+}
+
 // get set of child nodes of this stmt
 const Statement::ChildrenSet& Statement::getChildren() {
 	return children;
@@ -131,6 +137,10 @@ void Statement::setFollowsAfter(int followsAfter) {
 
 void Statement::setFollowsBefore(int followsBefore) {
 	this->followsBefore = followsBefore;
+}
+
+void Statement::setCalls(string procName) {
+	this->calls = procName;
 }
 
 void Statement::setChildren(const set<int> &childrenSet) {
