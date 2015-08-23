@@ -95,3 +95,71 @@ void PDRTest::testProcessWhile() {
 	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 3);
 	CPPUNIT_ASSERT(pdr->getCurrStmtNumber() == 3);
 }
+
+void PDRTest::testProcessCallStmts1() {
+	ParsedData procedure = ParsedData(ParsedData::PROCEDURE, 0);
+	procedure.setProcName("proc");
+	pdr->processParsedData(procedure);
+
+	ParsedData call = ParsedData(ParsedData::CALL, 1);
+	call.setProcName("proc2");
+	pdr->processParsedData(call);
+
+	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 1);
+	CPPUNIT_ASSERT(pdr->getCurrStmtNumber() == 1);
+}
+
+void PDRTest::testMultipleProcs1() {
+	ParsedData procedure1 = ParsedData(ParsedData::PROCEDURE, 0);
+	procedure1.setProcName("proc1");
+	pdr->processParsedData(procedure1);
+
+	CPPUNIT_ASSERT(pdr->getCurrentProcedure()->getProcName() == "proc1");
+	
+	ParsedData procedure2 = ParsedData(ParsedData::PROCEDURE, 0);
+	procedure2.setProcName("proc2");
+	pdr->processParsedData(procedure2);
+
+	CPPUNIT_ASSERT(pdr->getCurrentProcedure()->getProcName() == "proc2");
+}
+
+void PDRTest::testMultipleProcs2() {
+	ParsedData procedure1 = ParsedData(ParsedData::PROCEDURE, 0);
+	procedure1.setProcName("proc1");
+	pdr->processParsedData(procedure1);
+
+	CPPUNIT_ASSERT(pdr->getCurrentProcedure()->getProcName() == "proc1");
+	
+	ParsedData calledProc1 = ParsedData(ParsedData::CALL, 1);
+	calledProc1.setProcName("calledProc1");
+	pdr->processParsedData(calledProc1);
+
+	CPPUNIT_ASSERT(pdr->getCurrentProcedure()->getProcName() == "proc1");
+
+	ParsedData procedure2 = ParsedData(ParsedData::PROCEDURE, 0);
+	procedure2.setProcName("proc2");
+	pdr->processParsedData(procedure2);
+
+	CPPUNIT_ASSERT(pdr->getCurrentProcedure()->getProcName() == "proc2");
+}
+
+void PDRTest::testNestingLevel() {
+	ParsedData procedure = ParsedData(ParsedData::PROCEDURE, 0);
+	procedure.setProcName("proc");
+	pdr->processParsedData(procedure);
+
+	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 1);
+
+	ParsedData whileStmt = ParsedData(ParsedData::WHILE, 1);
+	whileStmt.setWhileVar("x");
+	pdr->processParsedData(whileStmt);
+
+	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 2);
+
+	ParsedData callStmt = ParsedData(ParsedData::CALL, 1);
+	callStmt.setProcName("proc1");
+	pdr->processParsedData(callStmt);
+
+	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 1);
+
+}

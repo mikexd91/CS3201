@@ -261,6 +261,9 @@ void TestOne::testMultipleProcAST() {
 	ProcNode* proc1 = ast->getProcNode("proc1");
 	ProcNode* proc2 = ast->getProcNode("proc2");
 	ProcNode* proc3 = ast->getProcNode("proc3");
+
+	CPPUNIT_ASSERT(proc1->getRightSibling() == proc2);
+	CPPUNIT_ASSERT(proc2->getRightSibling() == proc3);
 }
 
 void TestOne::testFollows() {
@@ -387,4 +390,55 @@ void TestOne::testConstTable() {
 	string secCombi[2] = {"3", "2"};
 
 	CPPUNIT_ASSERT(combi == firstCombi || secCombi);
+}
+
+void TestOne::testCallsAST() {
+	parser.parse("procedure proc1{call proc2;} procedure proc2{x = 2;}");
+
+	CPPUNIT_ASSERT(procTable->contains("proc1"));
+	CPPUNIT_ASSERT(procTable->contains("proc2"));
+
+	ProcNode* proc1Node = ast->getProcNode("proc1");
+	vector<TNode*> proc1Children = proc1Node->getChildren();
+	TNode* proc1StmtLstNode = proc1Children[0];
+
+	vector<TNode*> stmtLstNodeChildren = proc1StmtLstNode->getChildren();
+	CPPUNIT_ASSERT(stmtLstNodeChildren.size() == 1);
+
+	TNode* call1Node = stmtLstNodeChildren[0];
+	CPPUNIT_ASSERT(call1Node->getNodeType() == NodeType::CALL_STMT_);
+	CPPUNIT_ASSERT(call1Node->getName() == "proc2");
+
+	ProcNode* proc2Node = ast->getProcNode("proc2");
+	vector<TNode*> proc2Children = proc2Node->getChildren();
+	TNode* proc2StmtLstNode = proc2Children[0];
+
+	vector<TNode*> stmtLstNode2Children = proc2StmtLstNode->getChildren();
+	CPPUNIT_ASSERT(stmtLstNode2Children.size() == 1);
+	
+	TNode* assignNode = stmtLstNode2Children[0];
+	CPPUNIT_ASSERT(assignNode->getNodeType() == NodeType::ASSIGN_STMT_);
+	CPPUNIT_ASSERT(assignNode->getChildren().size() == 2);
+}
+
+void TestOne::testCallsPKB() {
+	parser.parse("procedure proc1{call proc2;} procedure proc2{x = 2;}");
+
+	Statement* stmt1 = stmtTable1->getStmtObj(1);
+	CPPUNIT_ASSERT(stmt1->getType() == NodeType::CALL_STMT_);
+	CPPUNIT_ASSERT(stmt1->getCalls() == "proc2");
+
+	Statement* stmt2 = stmtTable1->getStmtObj(2);
+	CPPUNIT_ASSERT(stmt2->getType() == NodeType::ASSIGN_STMT_);
+
+	Procedure* procedure1 = procTable->getProcObj("proc1");
+	Procedure* procedure2 = procTable->getProcObj("proc2");
+	
+	set<Procedure*> calledBy;
+	calledBy.insert(procedure1);
+	CPPUNIT_ASSERT(procedure2->getCalledBy() == calledBy);
+
+	set<Procedure*> calls;
+	calls.insert(procedure2);
+	CPPUNIT_ASSERT(procedure1->getCalls() == calls);
 }

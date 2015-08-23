@@ -42,6 +42,7 @@ public:
 
 	int getCurrNestingLevel();
 	int getCurrStmtNumber();
+	Procedure* getCurrentProcedure();
 	stack<TNode*> getNodeStack();
 
 private:
@@ -53,7 +54,7 @@ private:
     static bool instanceFlag;
     static PDR* pdrInstance;
 
-	Procedure* currentProc;
+    Procedure* currentProcedure;
 
 	stack<int> stmtParentNumStack;
 	stack<TNode*> nodeStack;
@@ -61,24 +62,25 @@ private:
 	void processProcedureStmt(ParsedData);
 	void processAssignStmt(ParsedData);
 	void processIfStmt(ParsedData);
-	void processElseStmt(ParsedData);
 	void processWhileStmt(ParsedData);
 	void processCallStmt(ParsedData);
     void processEndProgram();
 	
+    void addToStmtTable(Statement*);
     void addToCurrProc(set<string>, Flag);
     void addParentSet(set<string>, Flag);
     void addToVarTable(TNode*, Flag);
 	void addToConstTable(TNode*);
-	void addToCurrProc();
+	void addCallToCurrentProcedure(Procedure*);
+	void addChildToParentStmtLstNode(TNode*);
+    
+	void createFollowsLinks(StmtNode*, Statement*);
+	void createCurrentProcedureLinks(ProcNode*, Procedure*);
+	void checkAndModifyNestingLevel(ParsedData);
 
 	Procedure* checkAndAddToProcTable(string);
-	void checkAndProcessNestingLevel(ParsedData);
-	void createProcedureAstConnections(string, ProcNode*);
-    
-	void linkPreviousProc(ProcNode*, ProcNode*);
+	ProcNode* retrievePreviousProc();
 
-	ProcNode* getPreviousProcedure();
 
     TNode* breakDownAssignExpression(ParsedData, set<string>&);
     
