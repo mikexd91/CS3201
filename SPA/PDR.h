@@ -66,6 +66,7 @@ private:
 	void processCallStmt(ParsedData);
     void processEndProgram();
 	
+    void addToStmtTable(Statement*);
     void addToCurrProc(set<string>, Flag);
     void addParentSet(set<string>, Flag);
     void addToVarTable(TNode*, Flag);
@@ -73,7 +74,7 @@ private:
 	void addCallToCurrentProcedure(Procedure*);
 	void addChildToParentStmtLstNode(TNode*);
     
-	void createFollowsLinks(TNode*);
+	void createFollowsLinks(StmtNode*, Statement*);
 	void createCurrentProcedureLinks(ProcNode*, Procedure*);
 	void checkAndModifyNestingLevel(ParsedData);
 

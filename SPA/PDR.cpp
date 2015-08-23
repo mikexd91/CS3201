@@ -59,12 +59,24 @@ void PDR::processCallStmt(ParsedData data) {
 	CallNode* callNode = new CallNode(++stmtCounter, data.getProcName());
 	addChildToParentStmtLstNode(callNode);
 
-	// TODO create call stmt obj for stmt table?
+	// Add calls to stmt table
+	Statement* callStmt = new Statement();
+	callStmt->setCalls(data.getProcName());
+	createFollowsLinks(callNode, callStmt);
+	addToStmtTable(callStmt);
 }
 
-void PDR::createFollowsLinks(TNode* node) {
+void PDR::addToStmtTable(Statement* stmt) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	stmtTable->addStmt(stmt);
+}
+
+void PDR::createFollowsLinks(StmtNode* node, Statement* stmt) {
 	if(node->hasLeftSibling()) {
-		StmtNode* leftSibling = (StmtNode*)node->getLeftSibling();
+		StmtNode* leftSibling = node->getLeftSibling();
+		stmt->setFollowsBefore(leftSibling->getStmtNum());
+		Statement* leftStmt = stmtTable->getStmtObj(leftSibling->getStmtNum());
+		leftStmt->setFollowsAfter(node->getStmtNum());
 	}
 }
 
