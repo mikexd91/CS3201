@@ -103,7 +103,7 @@ void PDR::createProcedureAstConnections(string procName, ProcNode* previousProc)
 	ProcTable* procTable = ProcTable::getInstance();
 
 	Procedure* currentProcedure = checkAndAddToProcTable(procName);
-	ProcNode* currentProcedureNode = currentProcedure->getTNodeRef();
+	ProcNode* currentProcedureNode = (ProcNode*)currentProcedure->getTNodeRef();
 
 	linkPreviousProc(currentProcedureNode, previousProc);
 
