@@ -21,7 +21,9 @@ private:
 	int nestingLevel;
 	PDR* parsedDataReceiver;
 	int stmtCount;
+	//all procedures that were defined in the program
 	vector<string> existingProcedures;
+	//all procedures that were called in the program
 	vector<string> calledProcedures;
 
 	string sanitise(string str);
@@ -29,7 +31,6 @@ private:
 	void getNextToken();
 	string getWord();
 	string getName();
-	//string getFactor();
 	queue<string> getExpression();
 	void throwException(int);
 
@@ -47,9 +48,6 @@ private:
 	void validateCallStmts();
 	void endParse();
 	string generateErrorMessage(int lineNumber);
-	
-	//void parseFactor(string, queue<string>&);
-	//void parseSymbol(string, queue<string>&, stack<string>&);
 };
 
 namespace ParserConstants {
