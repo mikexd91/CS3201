@@ -24,6 +24,7 @@ public:
 
 	ProcedureTable::iterator getIterator();					// gets iterator to proc table
 	ProcedureTable::iterator getEnd();						// gets iterator to end of proc table
+	Procedure* getProcObj(string procName);					// gets the proc obj by proc name
 
 	const set<string>& getCalls(const string &procName);	// gets set of procedures called by procName
 	const set<string>& getModifies(const string &procName);// gets set of variables modified by procName

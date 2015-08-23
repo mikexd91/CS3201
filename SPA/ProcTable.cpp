@@ -37,6 +37,18 @@ ProcTable::ProcedureTable::iterator ProcTable::getEnd() {
 	return tableIter;
 }
 
+// gets the proc obj by proc name
+Procedure* ProcTable::getProcObj(string procName) {
+	ProcTableIterator iter = table.find(procName);
+
+	// if not found
+	if(iter == table.end()) {
+		return NULL;
+	} else {
+		return iter->second;
+	}
+}
+
 // gets set of procedures called by procName
 const set<string>& ProcTable::getCalls(const string &procName) {
 	Procedure* proc = table.find(procName)->second;
