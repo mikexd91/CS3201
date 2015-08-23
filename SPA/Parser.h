@@ -14,12 +14,15 @@ public:
 
 private:
 
+	string currentProcName;
 	string nextToken;
 	vector<string> tokens;
 	vector<string>::iterator iter;
 	int nestingLevel;
 	PDR* parsedDataReceiver;
 	int stmtCount;
+	vector<string> existingProcedures;
+	vector<string> calledProcedures;
 
 	string sanitise(string str);
 	void match(string token);
@@ -35,11 +38,13 @@ private:
 	void stmtLst();
 	void stmt();
 	void assign();
+	void call();
 	void parseWhile();
 	void parseIfBlock();
 	void parseIf();
 	void parseThen();
 	void parseElse();
+	void validateCallStmts();
 	void endParse();
 	string generateErrorMessage(int lineNumber);
 	
