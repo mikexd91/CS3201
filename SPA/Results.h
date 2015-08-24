@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
-#include <vector>
-#include <set>
+#include <unordered_set>
 #include <unordered_map>
 
 using namespace std;
@@ -9,6 +8,9 @@ using namespace std;
 class Results
 {
 public:
+	typedef unordered_set<unordered_map<string, string>>* ResultsTable;
+	typedef unordered_map<string, string> ResultsRow;
+	
 	Results(void);
 	~Results(void);
 
@@ -16,37 +18,29 @@ public:
 	void setClausePass();
 	void resetClausePass();
 
+	// checks if syn exist in resultsTable
 	bool hasResults(string syn);
 
-	vector<unordered_map<string, string>>* selectMultiSyn(vector<string> synList); // we are using database query language as a guide, hence select instead of get
-	vector<string>* selectSyn(string syn);
-	vector<unordered_map<string, string>>* selectSynWhere(string syn, string val, vector<unordered_map<string, string>> results);
+	// we are using database query language as a guide, hence select instead of get
 	
-	// Insert will help create the synonym and add results to it
-	bool insertMultiResult(unordered_map<string, string> results);
+	// for clauses with 2 or more synonyms
+	ResultsTable selectMultiSyn(unordered_set<string> synList); 
+	// for clauses with 1 synonym
+	unordered_set<string>* selectSyn(string syn);
+	
+	// for clauses with 2 or more synonyms
+	bool insertMultiResult(ResultsRow results);
+	// for clauses with 1 synonym
 	bool insertResult(string syn, string value);
-	bool pushChanges();
+	// called after all results have been inserted. push tells me what to delete
+	bool push();
 
-	bool delMultiResult(unordered_map<string, string> results);
-	bool delResult(string syn, string value);
+	// Testing
+	int getResultsTableSize();
 
 private:
-	static bool clausePassed;
-	static bool insertBufferFlag;
-	static bool delBufferFlag;
-
-	vector<unordered_map<string, string>> resultsTable;
-	set<unordered_map<string, string>> insertStack;
-	set<unordered_map<string, string>> delStack;
-
-	bool isResultsTableEmpty();
-	void setInsertBufferFlag();
-	void resetInsertBufferFlag();
-	void setDelBufferFlag();
-	void resetDelBufferFlag();
-	bool pushInsertResults();
-	bool pushDelResults();
-
-	unordered_map<string, string> getSynResults(unordered_map<string, string> row, vector<string> synList);
+	bool clausePassed;
+	ResultsTable resultsTable;
+	
 };
 
