@@ -47,14 +47,13 @@ vector<string> QueryParser::split(string s, char delim, vector<string>* elems) {
     return *elems;
 }
 
-queue<string> QueryParser::queueBuilder(string input, char delim){
-	queue<string> elems;
-	stringstream ss(input);
-	string item;
-	while (getline(ss, item, delim)){
-		elems.push(item);
+//TODO: CHECK COMPATIBILITY WITH PATTERN AND CLAUSE PARSING
+queue<string> QueryParser::queueBuilder(vector<string> in){
+	queue<string> out;
+	for (size_t i=0; i<in.size(); i++){
+		out.push(in.at(i));
 	}
-	return elems;
+	return out;
 }
 
 string QueryParser::queueToString(queue<string> input){
@@ -519,3 +518,8 @@ Query QueryParser::parseQuery(string input){
 	return *output;
 }
 
+vector<string> QueryParser::splitByDelims(string in){
+	string delims("(,)\"+-*");
+	vector<string> out;
+	boost::split(out, in, boost::is_any_of(delims));
+}
