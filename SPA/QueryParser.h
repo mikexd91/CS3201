@@ -33,7 +33,8 @@ public:
 	static string getClauseString(string);
 	static Clause* createCorrectClause(string);
 	static vector<string> splitByDelims(string);
-	
+	static void unexpectedEndCheck(queue<string>);
+
 	static void parseDeclarations(Query*, vector<string>);
 	static void parseSelectSynonyms(Query*, queue<string>);
 	static void parseClause(Query*, queue<string>);
