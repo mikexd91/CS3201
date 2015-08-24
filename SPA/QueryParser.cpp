@@ -244,6 +244,12 @@ void QueryParser::parseDeclarations(Query* query, vector<string> list){
 	}
 }
 
+void QueryParser::unexpectedEndCheck(queue<string> in){
+	if (in.empty()){
+		throw UnexpectedEndException();
+	}
+}
+
 void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string first = Utils::getWordAndPop(line);
@@ -274,24 +280,21 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 	}
 }
 
+//TODO: UPDATE PARSE CLAUSE WITH NEW QUEUE (DONE, UNIT TESTING)
 void QueryParser::parseClause(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
-	string current = Utils::getWordAndPop(line);
-	if (line.empty()){
-		throw UnexpectedEndException();
-	}
-	string next = line.front();
-	if (!contains(next, ")")){
-		throw InvalidArgumentException();
-	}
+	string clauseType = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
 	Clause* newClause;
-	int startIndex = current.find_first_of("(");
-	int endIndex = current.find_first_of(",");
-	string clauseType = current.substr(0, startIndex);
 	newClause = createCorrectClause(clauseType);
-	string firstArg = current.substr(startIndex+1, endIndex-startIndex-1);
-	int last_index = next.find_first_of(")");
-	string secondArg = next.substr(0,  last_index);
+	
+	string openParen = Utils::getWordAndPop(line);
+	if (openParen != "("){
+		throw InvalidSyntaxException();
+	}
+	unexpectedEndCheck(line);
+
+	string firstArg = Utils::getWordAndPop(line);
 	if (decList.find(firstArg) == decList.end()){
 		if (!Utils::isValidConstant(firstArg)){
 			if (!contains(firstArg, "\"")){
@@ -322,7 +325,15 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 		newClause->setFirstArgFixed(false);
 		newClause->setFirstArgType(firstArgType);
 	}
+	unexpectedEndCheck(line);
 
+	string comma = Utils::getWordAndPop(line);
+	if (comma != ","){
+		throw InvalidSyntaxException();
+	}
+	unexpectedEndCheck(line);
+	
+	string secondArg = Utils::getWordAndPop(line);
 	if (decList.find(secondArg) == decList.end()){
 		if (!Utils::isValidConstant(secondArg)){
 			if (!contains(secondArg, "\"")){
@@ -352,10 +363,18 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 		newClause->setSecondArgFixed(false);
 		newClause->setSecondArgType(secondArgType);
 	}
+	unexpectedEndCheck(line);
+
+	string closeParen = Utils::getWordAndPop(line);
+	if (closeParen != ")"){
+		throw InvalidSyntaxException();
+	}
+
 	query->addClause(newClause);
-	line.pop();
 }
 
+//TODO UPDATE WITH NEW QUEUE
+//PARSE BRACKETS, COMMAS, OPERATORS, UNDERSCORE AND INVERTED COMMAS AS INDIVIDUAL TOKENS
 void QueryParser::parsePattern(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string current = Utils::getWordAndPop(line);
@@ -489,7 +508,7 @@ Query QueryParser::parseQuery(string input){
 	vector<string> splitBySC = tokeniser(input, ';');
 	int numDeclarations = splitBySC.size() - 1;
 	string selectStatement = splitBySC.at(splitBySC.size()-1);
-	queue<string> selectQueue = queueBuilder(selectStatement, ' ');
+	queue<string> selectQueue = queueBuilder(splitByDelims(selectStatement));
 	splitBySC.pop_back();
 	parseDeclarations(output, splitBySC);
 	while(!selectQueue.empty()){
@@ -519,7 +538,7 @@ Query QueryParser::parseQuery(string input){
 }
 
 vector<string> QueryParser::splitByDelims(string in){
-	string delims("(,)\"+-*");
+	string delims("(,)\"_+-*");
 	vector<string> out;
 	boost::split(out, in, boost::is_any_of(delims));
 }
