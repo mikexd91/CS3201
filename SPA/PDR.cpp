@@ -98,14 +98,7 @@ void PDR::addChildToParentStmtLstNode(TNode* childNode) {
 }
 
 void PDR::processAssignStmt(ParsedData data) {
-    if(currNestingLevel > data.getNestingLevel()) {
-        int diffNestingLevel = currNestingLevel - data.getNestingLevel();
-        for(int i = 0; i < diffNestingLevel; i++) {
-            stmtParentNumStack.pop();
-            nodeStack.pop();
-        }
-        currNestingLevel = data.getNestingLevel();
-    }
+	checkAndModifyNestingLevel(data);
 
     set<string> modifies;
     set<string> uses;
@@ -148,13 +141,7 @@ void PDR::processAssignStmt(ParsedData data) {
 }
 
 void PDR::processWhileStmt(ParsedData data) {
-    if(currNestingLevel > data.getNestingLevel()) {
-        int diffNestingLevel = currNestingLevel - data.getNestingLevel();
-        for(int i = 0; i < diffNestingLevel; i++) {
-            stmtParentNumStack.pop();
-            nodeStack.pop();
-        }
-    }
+	checkAndModifyNestingLevel(data);
 
 	set<string> uses;
 	uses.insert(data.getWhileVar());
@@ -219,7 +206,6 @@ void PDR::checkAndModifyNestingLevel(ParsedData data) {
 }
 
 void PDR::processProcedureStmt(ParsedData data) {
-    // New Procedure
     for(int i = 0; i < currNestingLevel - data.getNestingLevel(); i++) {
         nodeStack.pop();
     }
@@ -332,6 +318,44 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
 	}
 
 	return result;
+}
+
+void PDR::addUseToCurrentProcedure(string useVar) {
+	set<string> usesSet = currentProcedure->getUses();
+	usesSet.insert(useVar);
+	currentProcedure->setUses(usesSet);
+
+	addUsesToCalledBy(useVar);
+}
+
+void PDR::addModifyToCurrentProcedure(string modifyVar) {
+	set<string> modifiesSet = currentProcedure->getModifies();
+	modifiesSet.insert(modifyVar);
+	currentProcedure->setModifies(modifiesSet);
+
+	addModifiesToCalledBy(modifyVar);
+}
+
+void PDR::addUsesToCalledBy(string useVar) {
+	set<Procedure*> currentProcedureCalledBy = currentProcedure->getCalledBy();
+	set<Procedure*>::iterator iter;
+	for(iter = currentProcedureCalledBy.begin(); iter != currentProcedureCalledBy.end(); iter++) {
+		Procedure* calledByProcedure = iter;
+		set<string> calledByUses = calledByProcedure->getUses();
+		calledByUses.insert(useVar);
+		calledByProcedure->setUses(calledByUses);
+	}
+}
+
+void PDR::addModifiesToCalledBy(string modifyVar) {
+	set<Procedure*> currentProcedureCalledBy = currentProcedure->getCalledBy();
+	set<Procedure*>::iterator iter;
+	for(iter = currentProcedureCalledBy.begin(); iter != currentProcedureCalledBy.end(); iter++) {
+		Procedure* calledByProcedure = iter;
+		set<string> calledByModifies = calledByProcedure->getModifies();
+		calledByModifies.insert(modifyVar);
+		calledByProcedure->setUses(calledByModifies);
+	}
 }
 
 void PDR::addParentSet(set<string> setToBeAdded, Flag statusFlag) {
