@@ -113,6 +113,7 @@ void PDR::processAssignStmt(ParsedData data) {
     VarNode* modifiesVar = new VarNode(data.getAssignVar());
     assignNode->linkVarNode(modifiesVar);
     addToVarTable(modifiesVar, MODIFIES);
+    addModifyToCurrentProcedure(data.getAssignVar());
 
     // Populating the StmtTable
     StmtTable* stmtTable = StmtTable::getInstance();
@@ -155,6 +156,7 @@ void PDR::processWhileStmt(ParsedData data) {
     whileNode->linkStmtLstNode(stmtLst);
 
 	addToVarTable(whileVar, USES);
+	addUseToCurrentProcedure(data.getWhileVar());
 
     nodeStack.push(stmtLst);
     currNestingLevel = data.getNestingLevel() + 1;
@@ -280,6 +282,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
 			VarNode* var = new VarNode(exp);
 			addToVarTable(var, USES);
 			usesSet.insert(exp);
+			addUseToCurrentProcedure(exp);
 			return var;
 		}
 	}
@@ -307,6 +310,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
 				rpnNodeStack.push(var);
 				usesSet.insert(exp);
 				addToVarTable(var, USES);
+				addUseToCurrentProcedure(exp);
 			}
 		}
 	}

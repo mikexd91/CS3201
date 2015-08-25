@@ -75,7 +75,6 @@ private:
 	void addChildToParentStmtLstNode(TNode*);
 
 	// Populating the procedures with the necessary uses/modifies
-	void addToCurrentProcedureSet(string, Flag);
 	void addUseToCurrentProcedure(string);
 	void addModifyToCurrentProcedure(string);
 	void addUsesToCalledBy(string);
