@@ -161,5 +161,37 @@ void PDRTest::testNestingLevel() {
 	pdr->processParsedData(callStmt);
 
 	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 1);
+}
 
+void PDRTest::testProcUsesAndModifies1() {
+	ParsedData procedure1 = ParsedData(ParsedData::PROCEDURE, 0);
+	procedure1.setProcName("proc1");
+	pdr->processParsedData(procedure1);
+
+	ParsedData assignStmt1 = ParsedData(ParsedData::ASSIGNMENT, 1);
+	assignStmt1.setAssignVar("x");
+	queue<string> expressionQueue1;
+	expressionQueue1.push("2");
+	assignStmt1.setAssignExpression(expressionQueue1);
+	pdr->processParsedData(assignStmt1);
+
+	set<string> modifiesSet1;
+	modifiesSet1.insert("x");
+	CPPUNIT_ASSERT(pdr->getCurrentProcedure()->getModifies() == modifiesSet1);
+	CPPUNIT_ASSERT(pdr->getCurrentProcedure()->getUses().empty());
+
+	ParsedData assignStmt2 = ParsedData(ParsedData::ASSIGNMENT, 1);
+	assignStmt2.setAssignVar("y");
+	queue<string> expressionQueue2;
+	expressionQueue2.push("x");
+	assignStmt2.setAssignExpression(expressionQueue2);
+	pdr->processParsedData(assignStmt2);
+
+	string modifies2[] = {"x", "y"};
+	set<string> modifiesSet2(modifies2, modifies2 + 2);
+	CPPUNIT_ASSERT(pdr->getCurrentProcedure()->getModifies() == modifiesSet2);
+
+	string uses2[] = {"x"};
+	set<string> usesSet2(uses2, uses2 + 1);
+	CPPUNIT_ASSERT(pdr->getCurrentProcedure()->getUses() == usesSet2);
 }

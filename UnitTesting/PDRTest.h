@@ -27,4 +27,5 @@ public:
 	void testMultipleProcs1();
 	void testMultipleProcs2();
 	void testNestingLevel();
+	void testProcUsesAndModifies1();
 };

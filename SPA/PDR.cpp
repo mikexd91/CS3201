@@ -344,7 +344,7 @@ void PDR::addUsesToCalledBy(string useVar) {
 	set<Procedure*> currentProcedureCalledBy = currentProcedure->getCalledBy();
 	set<Procedure*>::iterator iter;
 	for(iter = currentProcedureCalledBy.begin(); iter != currentProcedureCalledBy.end(); iter++) {
-		Procedure* calledByProcedure = iter;
+		Procedure* calledByProcedure = *iter;
 		set<string> calledByUses = calledByProcedure->getUses();
 		calledByUses.insert(useVar);
 		calledByProcedure->setUses(calledByUses);
@@ -355,7 +355,7 @@ void PDR::addModifiesToCalledBy(string modifyVar) {
 	set<Procedure*> currentProcedureCalledBy = currentProcedure->getCalledBy();
 	set<Procedure*>::iterator iter;
 	for(iter = currentProcedureCalledBy.begin(); iter != currentProcedureCalledBy.end(); iter++) {
-		Procedure* calledByProcedure = iter;
+		Procedure* calledByProcedure = *iter;
 		set<string> calledByModifies = calledByProcedure->getModifies();
 		calledByModifies.insert(modifyVar);
 		calledByProcedure->setUses(calledByModifies);
