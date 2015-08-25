@@ -73,6 +73,12 @@ private:
 	void addToConstTable(TNode*);
 	void addCallToCurrentProcedure(Procedure*);
 	void addChildToParentStmtLstNode(TNode*);
+
+	// Populating the procedures with the necessary uses/modifies
+	void addUseToCurrentProcedure(string);
+	void addModifyToCurrentProcedure(string);
+	void addUsesToCalledBy(string);
+	void addModifiesToCalledBy(string);
     
 	void createFollowsLinks(StmtNode*, Statement*);
 	void createCurrentProcedureLinks(ProcNode*, Procedure*);

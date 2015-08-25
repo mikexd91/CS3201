@@ -19,6 +19,10 @@ class TestOne : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testConstTable );
 	CPPUNIT_TEST( testCallsAST );
 	CPPUNIT_TEST( testCallsPKB );
+	CPPUNIT_TEST( testProcedureUses );
+	CPPUNIT_TEST( testProcedureModifies );
+	CPPUNIT_TEST( testNestedProceduresUses );
+	CPPUNIT_TEST( testNestedProceduresModifies );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -44,4 +48,9 @@ public:
 
 	void testCallsAST();
 	void testCallsPKB();
+
+	void testProcedureUses();
+	void testProcedureModifies();
+	void testNestedProceduresUses();
+	void testNestedProceduresModifies();
 };

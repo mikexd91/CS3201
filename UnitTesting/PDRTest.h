@@ -6,13 +6,15 @@
 
 class PDRTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( PDRTest );
-	CPPUNIT_TEST( testProcessProc );
-	CPPUNIT_TEST( testProcessAssign );
-	CPPUNIT_TEST( testProcessWhile );
-	CPPUNIT_TEST( testProcessCallStmts1 );
-	CPPUNIT_TEST( testMultipleProcs1 );
-	CPPUNIT_TEST( testMultipleProcs2 );
-	CPPUNIT_TEST( testNestingLevel );
+	//CPPUNIT_TEST( testProcessProc );
+	//CPPUNIT_TEST( testProcessAssign );
+	//CPPUNIT_TEST( testProcessWhile );
+	//CPPUNIT_TEST( testProcessCallStmts1 );
+	//CPPUNIT_TEST( testMultipleProcs1 );
+	//CPPUNIT_TEST( testMultipleProcs2 );
+	//CPPUNIT_TEST( testNestingLevel );
+	CPPUNIT_TEST( testProcUsesAndModifies1 );
+	CPPUNIT_TEST( testProcUsesAndModifiesCalledBy );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -27,4 +29,7 @@ public:
 	void testMultipleProcs1();
 	void testMultipleProcs2();
 	void testNestingLevel();
+	void testProcUsesAndModifies1();
+	void testProcUsesAndModifiesCalledBy();
+	void testUsesAndModifiesProcNest();
 };
