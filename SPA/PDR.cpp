@@ -358,7 +358,7 @@ void PDR::addModifiesToCalledBy(string modifyVar) {
 		Procedure* calledByProcedure = *iter;
 		set<string> calledByModifies = calledByProcedure->getModifies();
 		calledByModifies.insert(modifyVar);
-		calledByProcedure->setUses(calledByModifies);
+		calledByProcedure->setModifies(calledByModifies);
 	}
 }
 

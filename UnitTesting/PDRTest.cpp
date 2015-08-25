@@ -195,3 +195,44 @@ void PDRTest::testProcUsesAndModifies1() {
 	set<string> usesSet2(uses2, uses2 + 1);
 	CPPUNIT_ASSERT(pdr->getCurrentProcedure()->getUses() == usesSet2);
 }
+
+// for testing modifies and uses from calls
+void PDRTest::testProcUsesAndModifiesCalledBy() {
+	ParsedData procedure1 = ParsedData(ParsedData::PROCEDURE, 0);
+	procedure1.setProcName("proc1");
+	pdr->processParsedData(procedure1);
+
+	ParsedData call = ParsedData(ParsedData::CALL, 1);
+	call.setProcName("proc2");
+	pdr->processParsedData(call);
+
+	ParsedData procedure2 = ParsedData(ParsedData::PROCEDURE, 0);
+	procedure2.setProcName("proc2");
+	pdr->processParsedData(procedure2);
+
+	ParsedData assign1 = ParsedData(ParsedData::ASSIGNMENT, 1);
+	assign1.setAssignVar("x");
+	queue<string> expQueue1;
+	expQueue1.push("2");
+	assign1.setAssignExpression(expQueue1);
+	pdr->processParsedData(assign1);
+	
+	ParsedData assign2 = ParsedData(ParsedData::ASSIGNMENT, 1);
+	assign2.setAssignVar("y");
+	queue<string> expQueue2;
+	expQueue2.push("x");
+	assign2.setAssignExpression(expQueue2);
+	pdr->processParsedData(assign2);
+
+	set<Procedure*> calledBy = pdr->getCurrentProcedure()->getCalledBy();
+	set<Procedure*>::iterator iter;
+	string modifies[] = {"x", "y"};
+	string uses[] = {"x"};
+	set<string> modifiesSet(modifies, modifies + 2);
+	set<string> usesSet(uses, uses + 1);
+	for(iter = calledBy.begin(); iter != calledBy.end(); iter++) {
+		Procedure* calledByProc = *iter;
+		CPPUNIT_ASSERT(calledByProc->getModifies() == modifiesSet);
+		CPPUNIT_ASSERT(calledByProc->getUses() == usesSet);
+	}
+}

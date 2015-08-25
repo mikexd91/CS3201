@@ -127,7 +127,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AssgNodeTest.cpp" />
+<!--     <ClCompile Include="AssgNodeTest.cpp" />
     <ClCompile Include="ASTTest.cpp" />
     <ClCompile Include="CallNodeTest.cpp" />
     <ClCompile Include="ConstNodeTest.cpp" />
@@ -141,25 +141,25 @@
     <ClCompile Include="ParserTest.cpp" />
     <ClCompile Include="ParentStarClauseTest.cpp" />
     <ClCompile Include="PatternAssgClauseTest.cpp" />
-    <ClCompile Include="PatternAssgTest.cpp" />
+    <ClCompile Include="PatternAssgTest.cpp" /> -->
     <ClCompile Include="PDRTest.cpp" />
-    <ClCompile Include="ProcNodeTest.cpp" />
+<!--     <ClCompile Include="ProcNodeTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
     <ClCompile Include="QueryEvaluatorTest.cpp" />
     <ClCompile Include="QueryParserTest.cpp" />
-    <ClCompile Include="ResultsTest.cpp" />
+    <ClCompile Include="ResultsTest.cpp" /> -->
     <ClCompile Include="source\AllUnitTest.cpp" />
-    <ClCompile Include="source\ProcTableTest.cpp" />
+<!--     <ClCompile Include="source\ProcTableTest.cpp" />
     <ClCompile Include="source\StmtTableTest.cpp" />
     <ClCompile Include="source\TNodeTest.cpp" />
     <ClCompile Include="StmtLstNodeTest.cpp" />
     <ClCompile Include="UsesClauseTest.cpp" />
     <ClCompile Include="VarNodeTest.cpp" />
     <ClCompile Include="VarTableTest.cpp" />
-    <ClCompile Include="WhileNodeTest.cpp" />
+    <ClCompile Include="WhileNodeTest.cpp" /> -->
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AssgNodeTest.h" />
+<!--     <ClInclude Include="AssgNodeTest.h" />
     <ClInclude Include="ASTTest.h" />
     <ClInclude Include="CallNodeTest.h" />
     <ClInclude Include="ConstNodeTest.h" />
@@ -173,9 +173,9 @@
     <ClInclude Include="ParserTest.h" />
     <ClInclude Include="ParentStarClauseTest.h" />
     <ClInclude Include="PatternAssgClauseTest.h" />
-    <ClInclude Include="PatternAssgTest.h" />
+    <ClInclude Include="PatternAssgTest.h" /> -->
     <ClInclude Include="PDRTest.h" />
-    <ClInclude Include="ProcNodeTest.h" />
+<!--     <ClInclude Include="ProcNodeTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
     <ClInclude Include="QueryEvaluatorTest.h" />
     <ClInclude Include="QueryParserTest.h" />
@@ -187,7 +187,7 @@
     <ClInclude Include="UsesClauseTest.h" />
     <ClInclude Include="VarNodeTest.h" />
     <ClInclude Include="VarTableTest.h" />
-    <ClInclude Include="WhileNodeTest.h" />
+    <ClInclude Include="WhileNodeTest.h" /> -->
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
