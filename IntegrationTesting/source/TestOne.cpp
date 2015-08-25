@@ -442,3 +442,57 @@ void TestOne::testCallsPKB() {
 	calls.insert(procedure2);
 	CPPUNIT_ASSERT(procedure1->getCalls() == calls);
 }
+
+void TestOne::testProcedureUses() {
+	parser.parse("procedure proc1 { x = 2; y = x; } procedure proc2{ z = 3; y = 1; x = z + y;}");
+
+	Procedure* procedure = procTable->getProcObj("proc1");
+	string uses[] = {"x"};
+	set<string> usesSet(uses, uses + 1);
+	CPPUNIT_ASSERT(procedure->getUses() == usesSet);
+
+	Procedure* procedure2 = procTable->getProcObj("proc2");
+	string uses2[] = {"z", "y"};
+	set<string> usesSet2(uses2, uses2 + 2);
+	CPPUNIT_ASSERT(procedure2->getUses() == usesSet2);
+}
+
+void TestOne::testProcedureModifies() {
+	parser.parse("procedure proc1 {a = 3; b = a + 4;} procedure proc2 {x = 4; y = 2; z = x + y;}");
+
+	Procedure* procedure1 = procTable->getProcObj("proc1");
+	string modifies1[] = {"a", "b"};
+	set<string> modifiesSet1(modifies1, modifies1 + 2);
+	CPPUNIT_ASSERT(procedure1->getModifies() == modifiesSet1);
+
+	Procedure* procedure2 = procTable->getProcObj("proc2");
+	string modifies2[] = {"x", "y", "z"};
+	set<string> modifiesSet2(modifies2, modifies2 + 3);
+	CPPUNIT_ASSERT(procedure2->getModifies() == modifiesSet2);
+}
+
+void TestOne::testNestedProceduresUses() {
+	parser.parse("procedure proc1 {call proc2;} procedure proc2 {x = 2; while x {y = 2;}}");
+
+	Procedure* procedure1 = procTable->getProcObj("proc1");
+	string uses[] = {"x"};
+	set<string> usesSet(uses, uses + 1);
+	CPPUNIT_ASSERT(procedure1->getUses() == usesSet);
+
+	Procedure* procedure2 = procTable->getProcObj("proc2");
+	CPPUNIT_ASSERT(procedure2->getUses() == usesSet);
+}
+
+void TestOne::testNestedProceduresModifies() {
+	parser.parse("procedure proc1 { a = 2; call proc2;} procedure proc2 {x = 2; z = x; y = x + z;}");
+
+	Procedure* procedure1 = procTable->getProcObj("proc1");
+	string modifies[] = {"a", "x", "z", "y"};
+	set<string> modifiesSet(modifies, modifies + 4);
+	CPPUNIT_ASSERT(procedure1->getModifies() == modifiesSet);
+
+	Procedure* procedure2 = procTable->getProcObj("proc2");
+	string modifies2[] = {"x", "z", "y"};
+	set<string> modifiesSet2(modifies2, modifies2 + 3);
+	CPPUNIT_ASSERT(procedure2->getModifies() == modifiesSet2);
+}
