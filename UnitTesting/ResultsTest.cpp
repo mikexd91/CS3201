@@ -8,6 +8,15 @@ using namespace std;
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ResultsTest );
 
+void ResultsTest::testHasResults() {
+	Results obj = Results();
+	CPPUNIT_ASSERT(obj.test() == true);
+	//CPPUNIT_ASSERT(obj.test2() == true);
+	CPPUNIT_ASSERT(obj.getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(obj.hasResults("a") == true);
+}
+
+/*
 void ResultsTest::testCluasePass() {
 	Results obj = Results();
 	// isClausePass is false by default
@@ -28,10 +37,9 @@ void ResultsTest::testHasResults() {
 	CPPUNIT_ASSERT(obj.hasResults("a") == false);
 	CPPUNIT_ASSERT(obj.hasResults("1") == false);
 
-	/* hasResults will be tested  for results in 
-	insertResult and insertMultiResult */
+	
 }
-
+*/
 /*
 testInsertMultiResult will be used by clauses with more than 1 synonym,
 however, the clauses used will be fixed. 
@@ -39,6 +47,7 @@ For instance, if the 3 clauses are a, b, c. Future inserts within a
 clause will be limited to synonym a, b, c.
 e.g. Clause(a, b) or Clause a(b, c)
 */
+/*
 void ResultsTest::testInsertMultiResult() {
 	// test result obj as it is created
 	
@@ -142,11 +151,11 @@ void ResultsTest::testInsertMultiResult() {
 	CPPUNIT_ASSERT(obj4.insertMultiResult(resultSet4) == true);
 	CPPUNIT_ASSERT(obj4.pushChanges() == true);
 	CPPUNIT_ASSERT(obj4.getResultsTableSize() == 6);
-
+	*/
 	/* facilitate results obj being passed to each clause.
 		test result obj if it retains previous values.
 	*/
-
+/*
 	Results obj = Results();
 	// test repeated insertions, 2 synonyms at once
 	set<unordered_map<string, string>> setA;
@@ -204,12 +213,13 @@ void ResultsTest::testInsertMultiResult() {
 	CPPUNIT_ASSERT(obj.hasResults("penang") == true);
 
 }
-
+*/
 /*
 insertResult will be used by clauses with 1 synonym,
 e.g. Clause(1, a) or Clause (_, b)
 Hence, within a clause, only 1 synonym will be added at a time.
 */
+/*
 void ResultsTest::testInsertResult() {
 	// test results obj as it is created
 	
@@ -263,10 +273,11 @@ void ResultsTest::testInsertResult() {
 	CPPUNIT_ASSERT(obj5.insertResult("", "a") == false);
 	CPPUNIT_ASSERT(obj5.pushChanges() == false);
 	CPPUNIT_ASSERT(obj5.getResultsTableSize() == 0);
-
+	*/
 	/* facilitate results obj being passed to each clause.
 		test result obj if it retains previous values.
 	*/
+/*
 	Results obj = Results();
 	// test insertion 1 synonym and 1 value
 	CPPUNIT_ASSERT(obj.insertResult("a", "99") == true);
@@ -298,13 +309,14 @@ void ResultsTest::testInsertResult() {
 	CPPUNIT_ASSERT(obj.hasResults("2NE1") == true);
 	CPPUNIT_ASSERT(obj.getResultsTableSize() == 3);
 }
+*/
 
-void ResultsTest::testInsertResultWhere() {
+//void ResultsTest::testInsertResultWhere() {
 	/* facilitate results obj being passed to each clause.
 		test result obj if it retains previous values.
 	*/
 	
-	Results obj1 = Results();
+	//Results obj1 = Results();
 	/* test insertion of synonym c in the case of 1 common
 	synonym. Eg. clause(a,b) and clause(b,c) where resultsTable
 	already contain synonym a and b.
@@ -317,6 +329,7 @@ void ResultsTest::testInsertResultWhere() {
 	*/
 
 	// Setup of resultsTable
+/*
 	set<unordered_map<string, string>> resultSet1;
 	unordered_map<string, string> resultsList1;
 									// (a, b)
@@ -367,7 +380,8 @@ void ResultsTest::testInsertResultWhere() {
 	// End of setup
 
 }
-
+*/
+/*
 void ResultsTest::testSelectMultiSyn() {
 	//CPPUNIT_ASSERT(r5.getSinglesResults() == r6.getSinglesResults());
 }
@@ -391,3 +405,4 @@ void ResultsTest::testDelMultiResult() {
 void ResultsTest::testDelResult() {
 	//CPPUNIT_ASSERT(r5.getSinglesResults() == r6.getSinglesResults());
 }
+*/
