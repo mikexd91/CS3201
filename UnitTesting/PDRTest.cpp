@@ -236,3 +236,40 @@ void PDRTest::testProcUsesAndModifiesCalledBy() {
 		CPPUNIT_ASSERT(calledByProc->getUses() == usesSet);
 	}
 }
+
+void PDRTest::testProcessIf() {
+	ParsedData procedure = ParsedData(ParsedData::PROCEDURE, 0);
+	procedure.setProcName("proc");
+	pdr->processParsedData(procedure);
+
+	ParsedData assign1 = ParsedData(ParsedData::ASSIGNMENT, 1);
+	assign1.setAssignVar("x");
+	queue<string> expressionQueue;
+	expressionQueue.push("2");
+	assign1.setAssignExpression(expressionQueue);
+	pdr->processParsedData(assign1);
+
+	ParsedData ifStmt = ParsedData(ParsedData::IF, 1);
+	ifStmt.setIfVar("x");
+	pdr->processParsedData(ifStmt);
+	IfNode* parentIfNode = (IfNode*)pdr->getNodeStack().top()->getParent();
+	CPPUNIT_ASSERT(parentIfNode->getNodeType() == NodeType::IF_STMT_);
+	CPPUNIT_ASSERT(parentIfNode->getLeftSibling()->getNodeType() == NodeType::ASSIGN_STMT_);
+	CPPUNIT_ASSERT(parentIfNode->getVarNode()->getName() == "x");
+
+	ParsedData assign2 = ParsedData(ParsedData::ASSIGNMENT, 2);
+	assign2.setAssignVar("y");
+	assign2.setAssignExpression(expressionQueue);
+	pdr->processParsedData(assign2);
+
+	ParsedData elseStmt = ParsedData(ParsedData::ELSE, 1);
+	pdr->processParsedData(elseStmt);
+	CPPUNIT_ASSERT(pdr->getCurrStmtNumber() == 3);
+	CPPUNIT_ASSERT(pdr->getParentNumStack().top() == 2);
+
+	ParsedData assign3 = ParsedData(ParsedData::ASSIGNMENT, 2);
+	assign3.setAssignVar("z");
+	assign3.setAssignExpression(expressionQueue);
+	pdr->processParsedData(assign3);
+
+}
