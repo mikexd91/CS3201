@@ -109,20 +109,33 @@ void Results::combineWithRestrictions() {
 }
 
 void Results::combineNewSyns() {
-	Row resultsRow;
-	Row synRow;
-	string key;
-	string value;
-
-	for (unordered_set<Row*>::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
-		resultsRow = *(*i);
+	if (resultsTable.empty()) {
+		//TODO: abstract into another method, since it's duplicated in the else
 		for (unordered_set<Row*>::iterator j = multiInsertSet.begin(); j != multiInsertSet.end(); ++j) {
-			synRow = *(*j);
+			Row* resultsRow = new Row();
+			Row synRow = *(*j);
 			for (unordered_map<string, string>::iterator k = synRow.begin(); k != synRow.end(); ++k) {
-				key = k->first;
-				value = k->second;
-				resultsRow[key] = value;
-				resultsTableTemp.insert(&resultsRow);
+				string key = k->first;
+				string value = k->second;
+				(*resultsRow)[key] = value;
+			}
+			resultsTableTemp.insert(resultsRow);
+		}
+	} else {
+		Row resultsRow;
+		Row synRow;
+		string key;
+		string value;
+		for (unordered_set<Row*>::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
+			resultsRow = *(*i);
+			for (unordered_set<Row*>::iterator j = multiInsertSet.begin(); j != multiInsertSet.end(); ++j) {
+				synRow = *(*j);
+				for (unordered_map<string, string>::iterator k = synRow.begin(); k != synRow.end(); ++k) {
+					key = k->first;
+					value = k->second;
+					resultsRow[key] = value;
+					resultsTableTemp.insert(&resultsRow);
+				}
 			}
 		}
 	}
@@ -143,6 +156,7 @@ int Results::getCategory() {
 		}
 	}
 
+	//TODO: use enum
 	if (numSynNotInResultsTable == 0) {
 		return 0;
 	} else if (numSynNotInResultsTable == synListSize) {
@@ -163,7 +177,7 @@ void Results::pushSingleSet() {
 			key = j->first;
 			value = j->second;
 			(*row)[key] = value;
-			resultsTable.insert(row);
+			resultsTableTemp.insert(row);
 		}
 	} else {
 		for (unordered_set<Row*>::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
