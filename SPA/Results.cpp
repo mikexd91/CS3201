@@ -181,6 +181,8 @@ void Results::pushSingleSet() {
 		}
 	} else {
 		for (unordered_set<Row*>::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
+			//TODO: Scenario where one needs to duplicate the row to add new synonym
+			//e.g.: <a:2, b:3> existing, we want to add s: 2 and s: 3, need to duplicate <a: 2, b: 3>
 			Row row = *(*i);
 			for (set<pair<string, string>>::iterator j = singleInsertSet.begin(); j != singleInsertSet.end(); ++j) {
 				key = j->first;
@@ -392,7 +394,7 @@ int Results::getResultsTableSize() {
 }
 
 //For testing
-/**
+
 int main() {
 
 	Results r = Results();
@@ -403,6 +405,9 @@ int main() {
 	(*row)["b"] = "3";
 	r.insertMultiResult(row);
 	r.push();
+	r.insertResult("s", "2");
+	r.insertResult("s", "3");
+	r.push();
 	unordered_set<string> test = r.selectSyn("s");
 }
-**/
+
