@@ -8,6 +8,40 @@ using namespace std;
 
 class Results
 {
+public:
+	typedef unordered_map<string, string> Row;
+	typedef unordered_set<unordered_map<string, string>*> ResultsTable;
+	Results(void);
+	~Results(void); // how to clear all results, especially resultsTable.
+	bool test();
+	bool test2();
+	bool moveResultsToSet();
+	bool isClausePass();
+	void setClausePass();
+	void resetClausePass();
+
+	// checks if syn exist in resultsTable
+	bool hasResults(string syn);
+
+	// we are using database query language as a guide, hence select instead of get
+	
+	// for clauses with 2 or more synonyms
+	ResultsTable selectMultiSyn(unordered_set<string> synList); 
+	// for clauses with 1 synonym
+	unordered_set<string> selectSyn(string syn);
+	
+	// for clauses with 2 or more synonyms
+	bool insertMultiResult(Row* results);
+	// for clauses with 1 synonym
+	bool insertResult(string syn, string value);
+	// called after all results have been inserted. push tells me what to delete
+	bool push();
+
+	// Testing
+	int getResultsTableSize();
+
+
+
 private:
 	/*
 	struct Row {
@@ -18,8 +52,7 @@ private:
 		unordered_set<Row*> element;
 	};
 	*/
-	typedef unordered_map<string, string> Row;
-	typedef unordered_set<unordered_map<string, string>*> ResultsTable;
+
 	/*
 	ResTb testResultsTable;
 	ResTb testResultsTableTemp;
@@ -45,35 +78,4 @@ private:
 	void combineNewSyns();
 	void fillConstrainAndToAddSynSet();
 	void addToResults(Row synRow, Row resultsRow);
-
-public:
-	Results(void);
-	~Results(void); // how to clear all results, especially resultsTable.
-	bool test();
-	bool test2();
-	bool moveResultsToSet();
-	bool isClausePass();
-	void setClausePass();
-	void resetClausePass();
-
-	// checks if syn exist in resultsTable
-	bool hasResults(string syn);
-
-	// we are using database query language as a guide, hence select instead of get
-	
-	// for clauses with 2 or more synonyms
-	ResultsTable selectMultiSyn(unordered_set<string> synList); 
-	// for clauses with 1 synonym
-	unordered_set<string*> selectSyn(string syn);
-	
-	// for clauses with 2 or more synonyms
-	bool insertMultiResult(Row results);
-	// for clauses with 1 synonym
-	bool insertResult(string syn, string value);
-	// called after all results have been inserted. push tells me what to delete
-	bool push();
-
-	// Testing
-	int getResultsTableSize();
 };
-

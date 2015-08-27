@@ -148,40 +148,51 @@ int Results::getCategory() {
 	} else if (numSynNotInResultsTable == synListSize) {
 		return 2;
 	} else {
-		return 3;
+		return 1;
 	}
 }
 
 void Results::pushSingleSet() {
-	Row row;
 	string key;
 	string value;
 
-	for (unordered_set<Row*>::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
-		row = *(*i);
+	if (resultsTable.empty()) {
+		//initialise new rows
 		for (set<pair<string, string>>::iterator j = singleInsertSet.begin(); j != singleInsertSet.end(); ++j) {
+			Row* row = new Row();
 			key = j->first;
 			value = j->second;
-			if (hasResults(key)) {
-				if (isSynMatch(key, value, row)) {
+			(*row)[key] = value;
+			resultsTable.insert(row);
+		}
+	} else {
+		for (unordered_set<Row*>::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
+			Row row = *(*i);
+			for (set<pair<string, string>>::iterator j = singleInsertSet.begin(); j != singleInsertSet.end(); ++j) {
+				key = j->first;
+				value = j->second;
+				if (hasResults(key)) {
+					if (isSynMatch(key, value, row)) {
+						resultsTableTemp.insert(&row);
+					} 
+				} else {
+					row[key] = value;
 					resultsTableTemp.insert(&row);
-				} 
-			} else {
-				row[key] = value;
-				resultsTableTemp.insert(&row);
+				}
 			}
 		}
-	}
 
-	resultsTable.clear();
-	resultsTable = resultsTableTemp;
-	resultsTableTemp.clear();
+		resultsTable.clear();
+		resultsTable = resultsTableTemp;
+		resultsTableTemp.clear();
+	}
 }
 
 void Results::pushMultiSet() {
 	int category = getCategory();
 	string categoryArr[] = {"know all", "know some", "know none"};
 	
+	//TODO: add category if there is no result in the table at all (empty table)
 	switch (category) {
 		case 0: 
 			filterNonResults();
@@ -218,10 +229,8 @@ bool Results::moveResultsToSet() {
 bool Results::test() {
 	resultsTable = ResultsTable();
 	Row* row = new Row();
-	row["a"] = "99";
-	row["b"] = "lol";
-	resultsTable.insert(&row);
-	/*
+	(*row)["a"] = "99";
+	resultsTable.insert(row);
 	if (resultsTable.size() > 0) {
 		ResultsTable::iterator iter = resultsTable.begin();
 		Row row1 = *(*iter);
@@ -231,7 +240,6 @@ bool Results::test() {
 		}
 		
 	}
-	*/
 	return true;
 }
 
@@ -279,32 +287,14 @@ void Results::resetClauseFlags() {
 
 // checks if syn exist in resultsTable
 bool Results::hasResults(string syn) {
-	/*
-	unordered_map<string, string>::iterator rowIter;
-	string value;
-	Row row;
-	*/
-	if (resultsTable.size() > 0) {
-		ResultsTable::iterator iter = resultsTable.begin();
-		Row* row1 = *iter;
-		string value = row1->begin()->second;
-		cout  << value;
-		if (value.length() > 0) {
-			return true;
-		}
-		
-	}
-	/*
 	if (resultsTable.size() > 0) {
 		unordered_set<Row*>::iterator iter = resultsTable.begin();
-		row = *(*iter);
-		value = row[syn];
+		Row row = *(*iter);
+		string value = row[syn];
 		if (value.length() > 0) {
 			return true;
-		}
-		
+		}	
 	}
-	*/
 	return false;
 }
 
@@ -332,8 +322,8 @@ Results::ResultsTable Results::selectMultiSyn(unordered_set<string> synList) {
 }
 	
 // for clauses with 1 synonym
-unordered_set<string*> Results::selectSyn(string syn) {
-	unordered_set<string*> rtnSet = unordered_set<string*>();
+unordered_set<string> Results::selectSyn(string syn) {
+	unordered_set<string> rtnSet = unordered_set<string>();
 	
 	if (resultsTable.size() > 0 && syn.length() > 0) {
 		Row results;
@@ -342,18 +332,17 @@ unordered_set<string*> Results::selectSyn(string syn) {
 		for (unordered_set<Row*>::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
 			results = *(*i);
 			value = results[syn];
-			rtnSet.insert(&value);
+			rtnSet.insert(value);
 		}
 		
 	}
-	
 	return rtnSet;
 }
 	
 // for clauses with 2 or more synonyms
-bool Results::insertMultiResult(Row results) {
-	if (results.size() > 0) {
-		multiInsertSet.insert(&results);
+bool Results::insertMultiResult(Row* results) {
+	if ((*results).size() > 0) {
+		multiInsertSet.insert(results);
 		multiInsertFlag = true;
 		return true;
 	}
@@ -387,3 +376,19 @@ bool Results::push() {
 int Results::getResultsTableSize() {
 	return resultsTable.size();
 }
+
+//For testing
+/**
+int main() {
+
+	Results r = Results();
+	//r.insertResult("s", "2");
+	//r.insertResult("s", "3");
+	Results::Row* row = new Results::Row();
+	(*row)["a"] = "2";
+	(*row)["b"] = "3";
+	r.insertMultiResult(row);
+	r.push();
+	unordered_set<string> test = r.selectSyn("s");
+}
+**/
