@@ -14,19 +14,20 @@ public:
 	~PatternAssgClause(void);
 	
 	string getExpression();
-	Results evaluate();
+	Results evaluate(Results*);
 	bool isValid();
 
 	void setExpression(string expr);
 
 private:
-	Results evaluateVarWildExprWild(vector<int>& assgNums);
-	Results evaulateVarWildExpr(vector<int>& assgNums, string expr);
-	Results evaluateVarFixedExprWild(vector<int>& assgNums);
-	Results evaluateVarFixedExpr(vector<int>& assgNums, string expr);
-	Results evaluateVarExprWild(vector<int>& assgNums, vector<string>& varNames);
-	Results evaluateVarExpr(vector<int>& assgNums, vector<string>& varNames, string expr);
+	Results* evaluateVarWildExprWild(vector<int>& assgNums, Results*);
+	Results evaulateVarWildExpr(vector<int>& assgNums, string expr, Results);
+	Results evaluateVarFixedExprWild(vector<int>& assgNums, Results);
+	Results evaluateVarFixedExpr(vector<int>& assgNums, string expr, Results);
+	Results evaluateVarExprWild(vector<int>& assgNums, vector<string>& varNames, Results);
+	Results evaluateVarExpr(vector<int>& assgNums, vector<string>& varNames, string expr, Results);
 
+	vector<int> getAssgNums(Results, string);
 	bool matchExpr(AssgNode* assg, string expr);
 	bool matchVar(AssgNode* assg, string var);
 	

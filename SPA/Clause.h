@@ -50,7 +50,7 @@ public:
 	bool getFirstArgFixed();
 	bool getSecondArgFixed();
 
-	virtual Results evaluate()=0; 
+	virtual Results evaluate(Results*)=0; 
 	virtual bool isValid()=0;
 	
 };
