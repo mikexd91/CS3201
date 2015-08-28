@@ -135,13 +135,12 @@ void Results::combineNewSyns() {
 		resultsRow = *(*i);
 		for (unordered_set<Row*>::iterator j = multiInsertSet.begin(); j != multiInsertSet.end(); ++j) {
 			synRow = *(*j);
-			Row* newRow = getDuplicateRow(resultsRow);
 			for (unordered_map<string, string>::iterator k = synRow.begin(); k != synRow.end(); ++k) {
 				key = k->first;
 				value = k->second;
-				(*newRow)[key] = value;
+				resultsRow[key] = value;
+				resultsTableTemp.insert(&resultsRow);
 			}
-			resultsTableTemp.insert(newRow);
 		}
 	}
 }
