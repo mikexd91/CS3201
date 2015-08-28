@@ -206,7 +206,25 @@ Clause* QueryParser::createCorrectClause(string type){
 		return clause;		
 	} else if (type == stringconst::TYPE_USES){
 		UsesClause* clause = new UsesClause();
-		return clause;		
+		return clause;
+	/*INSERT WHEN CLAUSES ARE DONE
+	} else if (type == stringconst::TYPE_CALLS){
+		CallsClause* clause = new CallsClause();
+		return clause;
+	} else if (type == stringconst::TYPE_NEXT){
+		NextClause* clause = new NextClause();
+		return clause;
+	} else if (type == stringconst::TYPE_AFFECTS){
+		AffectsClause* clause = new AffectsClause();
+		return clause;
+	} else if (type == stringconst::TYPE_NEXT_STAR){
+		NextStarClause* clause = new NextStarClause();
+		return clause;
+	} else if (type == stringconst::TYPE_AFFECTS_STAR){
+		AffectsStarClause* clause = new AffectsStarClause();
+		return clause;
+	}
+	*/ 
 	} else {
 		throw UnexpectedClauseException();
 	}
@@ -286,9 +304,11 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 	string clauseType = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
 	Clause* newClause;
+	cout << clauseType << "\n";
 	newClause = createCorrectClause(clauseType);
 	
 	string openParen = Utils::getWordAndPop(line);
+	cout << openParen << " check unit test " ;
 	if (openParen != "("){
 		throw InvalidSyntaxException();
 	}
@@ -624,8 +644,9 @@ Query QueryParser::parseQuery(string input){
 	return *output;
 }
 
+//SPLIT FUNCTION ERROR, FIND WAY TO ADD SPECIAL CHARACTERS BACK IN
 vector<string> QueryParser::splitByDelims(string in){
-	string delims("(,)\"_+-*");
+	string delims("(,)\"_+-* ");
 	vector<string> out;
 	boost::split(out, in, boost::is_any_of(delims));
 	return out;
