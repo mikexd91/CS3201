@@ -496,3 +496,56 @@ void TestOne::testNestedProceduresModifies() {
 	set<string> modifiesSet2(modifies2, modifies2 + 3);
 	CPPUNIT_ASSERT(procedure2->getModifies() == modifiesSet2);
 }
+
+void TestOne::testIfStatement() {
+	parser.parse("procedure proc { a = 2; if a then {y = 2;} else { z = 3; } }");
+
+	Statement* ifStmt = stmtTable1->getStmtObj(2);
+	CPPUNIT_ASSERT(ifStmt->getType() == NodeType::IF_STMT_);
+	
+	string ifUses[] = {"a"};
+	set<string> ifUsesSet(ifUses, ifUses + 1);
+	CPPUNIT_ASSERT(ifStmt->getUses() == ifUsesSet);
+
+	string ifModifies[] = {"y", "z"};
+	set<string> ifModifiesSet(ifModifies, ifModifies + 2);
+	CPPUNIT_ASSERT(ifStmt->getModifies() == ifModifiesSet);
+
+	Procedure* proc = procTable->getProcObj("proc");
+	CPPUNIT_ASSERT(proc->getUses() == ifUsesSet);
+
+	string procModifies[] = {"a", "y", "z"};
+	set<string> procModifiesSet(procModifies, procModifies + 3);
+	CPPUNIT_ASSERT(proc->getModifies() == procModifiesSet);
+
+	CPPUNIT_ASSERT(ifStmt->getFollowsBefore() == 1);
+
+	Statement* secondAssign = stmtTable1->getStmtObj(3);
+	CPPUNIT_ASSERT(secondAssign->getParent() == 2);
+	CPPUNIT_ASSERT(secondAssign->getFollowsAfter() == -1);
+	CPPUNIT_ASSERT(secondAssign->getFollowsBefore() == -1);
+
+	Statement* thirdAssign = stmtTable1->getStmtObj(4);
+	CPPUNIT_ASSERT(thirdAssign->getParent() == 2);
+	CPPUNIT_ASSERT(thirdAssign->getFollowsBefore() == -1);
+	CPPUNIT_ASSERT(thirdAssign->getFollowsAfter() == -1);
+}
+
+void TestOne::testNestedIfStatement() {
+	parser.parse("procedure proc { a = 1; if a then { b = 2; if b then {c = 3;} else {d = 4;}} else {e = 5;}}");
+	
+	Statement* firstIf = stmtTable1->getStmtObj(2);
+	Statement* secondIf = stmtTable1->getStmtObj(4);
+	CPPUNIT_ASSERT(secondIf->getParent() == 2);
+
+	TNode* firstIfNode = firstIf->getTNodeRef();
+	TNode* secondIfNode = secondIf->getTNodeRef();
+	CPPUNIT_ASSERT(secondIfNode->getParent()->getParent() == firstIfNode);
+	
+	string firstModifies[] = {"b", "c", "d", "e"};
+	string secondModifies[] = {"c", "d"};
+	set<string> firstModSet(firstModifies, firstModifies + 4);
+	set<string> secondModSet(secondModifies, secondModifies + 2);
+	CPPUNIT_ASSERT(firstIf->getModifies() == firstModSet);
+	CPPUNIT_ASSERT(secondIf->getModifies() == secondModSet);
+}

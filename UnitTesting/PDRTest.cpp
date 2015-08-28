@@ -272,4 +272,10 @@ void PDRTest::testProcessIf() {
 	assign3.setAssignExpression(expressionQueue);
 	pdr->processParsedData(assign3);
 
+	CPPUNIT_ASSERT(parentIfNode->getElseStmtLstNode()->getChildren().size() == 1);
+	
+	vector<TNode*> children = parentIfNode->getElseStmtLstNode()->getChildren();
+	TNode* assignChild = children[0];
+	CPPUNIT_ASSERT(assignChild->getNodeType() == NodeType::ASSIGN_STMT_);
+	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 2);
 }

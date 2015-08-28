@@ -198,6 +198,11 @@ void PDR::processElseStmt(ParsedData data) {
 	// TODO
 	// remove the then stmtLstNode
 	nodeStack.pop();
+	if(data.getNestingLevel() < currNestingLevel) {
+		for(int i = 0; i < currNestingLevel - data.getNestingLevel() - 1; i++) {
+			stmtParentNumStack.pop();
+		}
+	}
 
 	int ifParentStmtNum = stmtParentNumStack.top();
 	StmtTable* stmtTable = StmtTable::getInstance();
@@ -205,10 +210,10 @@ void PDR::processElseStmt(ParsedData data) {
 	IfNode* ifParentNode = (IfNode*)ifParentStmt->getTNodeRef();
 
 	// Linking the AST
-	StmtLstNode* elseStmtLst = new StmtLstNode();
-	ifParentNode->linkElseStmtLstNode(elseStmtLst);
+	StmtLstNode* elseStmtLstNode = new StmtLstNode();
+	ifParentNode->linkElseStmtLstNode(elseStmtLstNode);
 
-	nodeStack.push(elseStmtLst);
+	nodeStack.push(elseStmtLstNode);
 	currNestingLevel = data.getNestingLevel() + 1;
 }
 
