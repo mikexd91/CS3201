@@ -182,8 +182,6 @@ void Results::pushSingleSet() {
 		}
 	} else {
 		for (unordered_set<Row*>::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
-			//TODO: Scenario where one needs to duplicate the row to add new synonym
-			//e.g.: <a:2, b:3> existing, we want to add s: 2 and s: 3, need to duplicate <a: 2, b: 3>
 			Row row = *(*i);
 			for (set<pair<string, string>>::iterator j = singleInsertSet.begin(); j != singleInsertSet.end(); ++j) {
 				key = j->first;
@@ -193,8 +191,17 @@ void Results::pushSingleSet() {
 						resultsTableTemp.insert(&row);
 					} 
 				} else {
-					row[key] = value;
-					resultsTableTemp.insert(&row);
+					//synonym is not present in the row yet. 
+					Row* newRow = new Row(); 
+					(*newRow)[key] = value;
+					//Scenario where one needs to duplicate the row to add new synonym
+					//e.g.: <a:2, b:3> existing, we want to add s: 2 and s: 3, need to duplicate <a: 2, b: 3>
+					for (Row::iterator k = row.begin(); k != row.end(); ++k) {
+						string existingKey = k->first;
+						string existingValue = k -> second;
+						(*newRow)[existingKey] = existingValue;
+					}
+					resultsTableTemp.insert(newRow);
 				}
 			}
 		}
