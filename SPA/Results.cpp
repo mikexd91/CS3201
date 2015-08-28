@@ -188,8 +188,6 @@ void Results::pushSingleSet() {
 				value = j->second;
 				if (hasResults(key)) {
 					if (isSynMatch(key, value, *row)) {
-						//Row* newRow = getDuplicateRow(row);
-						//resultsTableTemp.insert(newRow);
 						resultsTableTemp.insert(row);
 					} 
 				} else {
