@@ -1,52 +1,79 @@
 #pragma once
 #include <string>
-#include <vector>
+#include <unordered_set>
+#include <unordered_map>
 #include <set>
-#include "StringPair.h"
 
 using namespace std;
 
 class Results
 {
+private:
+	/*
+	struct Row {
+		unordered_map<string, string> element;
+	};
+
+	struct ResultsTable {
+		unordered_set<Row*> element;
+	};
+	*/
+	typedef unordered_map<string, string> Row;
+	typedef unordered_set<unordered_map<string, string>*> ResultsTable;
+	/*
+	ResTb testResultsTable;
+	ResTb testResultsTableTemp;
+	*/
+	bool clausePassed;
+	bool singleInsertFlag;
+	bool multiInsertFlag;
+	ResultsTable resultsTable;
+	ResultsTable resultsTableTemp;
+	ResultsTable multiInsertSet;
+	set<pair<string, string>> singleInsertSet;
+	set<string> constrainSyn;
+	set<string> toAddSyn;
+
+	void pushSingleSet();
+	void pushMultiSet();
+	void resetClauseFlags();
+	bool isSynMatch(string key, string value, Row row);
+	bool isConstrainFulfilled(Row synRow, Row resultsRow);
+	int getCategory();
+	void filterNonResults();
+	void combineWithRestrictions();
+	void combineNewSyns();
+	void fillConstrainAndToAddSynSet();
+	void addToResults(Row synRow, Row resultsRow);
+
 public:
 	Results(void);
-	~Results(void);
+	~Results(void); // how to clear all results, especially resultsTable.
+	bool test();
+	bool test2();
+	bool moveResultsToSet();
+	bool isClausePass();
+	void setClausePass();
+	void resetClausePass();
 
-	void setClausePassed(bool passed);			// clause is true if it contains at least 1 result for unfixed arg or returns true for boolean
-	void setFirstClauseSyn(string s1);
-	void setSecondClauseSyn(string s2);
-	void setNumOfSyn(int n);
-	void addSingleResult(string s);
-	void addPairResult(string s1, string s2);
-	void setSingleResult(vector<string>& v);
-	void setPairResult(vector<pair<string, string>>& v);
+	// checks if syn exist in resultsTable
+	bool hasResults(string syn);
 
-	bool isClausePassed();
-	bool usesSyn(string syn);
+	// we are using database query language as a guide, hence select instead of get
+	
+	// for clauses with 2 or more synonyms
+	ResultsTable selectMultiSyn(unordered_set<string> synList); 
+	// for clauses with 1 synonym
+	unordered_set<string*> selectSyn(string syn);
+	
+	// for clauses with 2 or more synonyms
+	bool insertMultiResult(Row results);
+	// for clauses with 1 synonym
+	bool insertResult(string syn, string value);
+	// called after all results have been inserted. push tells me what to delete
+	bool push();
 
-	string getFirstClauseSyn();
-	string getSecondClauseSyn();
-	vector<string> getSinglesResults();
-	vector<pair<string, string>> getPairResults();
-	set<string> getSelectSynResult(string syn);
-	int getNumOfSyn();
-	void getIntersect(Results &res);		// Mutates the obj that called this method.
-											// if no intercept found, object results will be empty
-private:
-
-	void getSingleIntercept(Results &res1, Results &res2);
-	void getSinglePairIntercept(Results &res1, Results &res2);
-	void getPairIntercept(Results &res1, Results &res2);
-
-	bool clausePassed;
-	string firstClauseSyn;
-	string secondClauseSyn;
-	int numOfSyn;
-
-	vector<pair<string, string>> pairResults;
-	vector<string> singleResults;
-
-	set<StringPair> pairSet;
-	set<string> singleSet;
+	// Testing
+	int getResultsTableSize();
 };
 
