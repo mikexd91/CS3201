@@ -322,11 +322,8 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 	string clauseType = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
 	Clause* newClause;
-	cout << clauseType << "\n";
 	newClause = createCorrectClause(clauseType);
-	
 	string openParen = Utils::getWordAndPop(line);
-	cout << openParen << " check unit test " ;
 	if (openParen != "("){
 		throw InvalidSyntaxException();
 	}
@@ -339,7 +336,6 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 				if (firstArg != stringconst::STRING_EMPTY){
 					throw MissingDeclarationException();
 				} else {
-					//cout << "im a new " << newClause->getClauseType() << endl;
 					newClause->setFirstArg(firstArg);
 					newClause->setFirstArgFixed(false);
 					newClause->setFirstArgType(stringconst::ARG_GENERIC);
@@ -403,6 +399,7 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 	}
 	unexpectedEndCheck(line);
 
+	//error here, check the queue
 	string closeParen = Utils::getWordAndPop(line);
 	if (closeParen != ")"){
 		throw InvalidSyntaxException();
