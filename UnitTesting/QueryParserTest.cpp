@@ -83,8 +83,7 @@ void QueryParserTest::testSelect(){
 	CPPUNIT_ASSERT(decs.at("a") == stringconst::ARG_STATEMENT);
 
 	string const USER_INPUT2 = "Select a";
-	vector<string> ui_2 = QueryParser::tokeniser(USER_INPUT2, ' ');
-	queue<string> line = QueryParser::queueBuilder(ui_2);
+	queue<string> line = QueryParser::queueBuilder(USER_INPUT2);
 
 	QueryParser::parseSelectSynonyms(result, line);
 
@@ -104,10 +103,10 @@ void QueryParserTest::testClause(){
 	vector<string> DEC_LIST = QueryParser::tokeniser(DEC_LINE, ';');
 	QueryParser::parseDeclarations(ASSERTION, DEC_LIST);
 
-	queue<string> SEL_Q = QueryParser::queueBuilder(QueryParser::splitByDelims(SEL_LINE));
+	queue<string> SEL_Q = QueryParser::queueBuilder(SEL_LINE);
 	QueryParser::parseSelectSynonyms(ASSERTION, SEL_Q);
 	
-	queue<string> CLS_Q = QueryParser::queueBuilder(QueryParser::splitByDelims(CLS_LINE));
+	queue<string> CLS_Q = QueryParser::queueBuilder(CLS_LINE);
 	QueryParser::parseClause(ASSERTION, CLS_Q);
 	
 	unordered_map<string, string> dec = ASSERTION->getDeclarationList();
@@ -140,10 +139,10 @@ void QueryParserTest::testPattern(){
 	vector<string> DEC_LIST = QueryParser::tokeniser(DECLARATION, ';');
 	QueryParser::parseDeclarations(ASSERTION, DEC_LIST);
 
-	queue<string> SEL_Q = QueryParser::queueBuilder(QueryParser::splitByDelims(SELECT));
+	queue<string> SEL_Q = QueryParser::queueBuilder(SELECT);
 	QueryParser::parseSelectSynonyms(ASSERTION, SEL_Q);
 
-	queue<string> PAT_Q = QueryParser::queueBuilder(QueryParser::splitByDelims(PATTERN));
+	queue<string> PAT_Q = QueryParser::queueBuilder(PATTERN);
 	QueryParser::parsePattern(ASSERTION, PAT_Q);
 	
 	Clause* c = ASSERTION->getClauseList().at(0);
@@ -152,8 +151,7 @@ void QueryParserTest::testPattern(){
 	CPPUNIT_ASSERT(EXPR == stringconst::STRING_EMPTY);
 	//fix pattern parsing other expressions.
 	string token = "a(v, _\"";
-	vector<string> tkn = QueryParser::tokeniser(token, ' ');
-	queue<string> q = QueryParser::queueBuilder(tkn);
+	queue<string> q = QueryParser::queueBuilder(token);
 	string one = Utils::getWordAndPop(q);
 	string two = Utils::getWordAndPop(q);
 	CPPUNIT_ASSERT(! (!contains(two, "_") || !contains(two, "\"")));

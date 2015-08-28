@@ -48,10 +48,28 @@ vector<string> QueryParser::split(string s, char delim, vector<string>* elems) {
 }
 
 //TODO: CHECK COMPATIBILITY WITH PATTERN AND CLAUSE PARSING
-queue<string> QueryParser::queueBuilder(vector<string> in){
+queue<string> QueryParser::queueBuilder(string in){
 	queue<string> out;
-	for (size_t i=0; i<in.size(); i++){
-		out.push(in.at(i));
+	vector<string> temp;
+	vector<string> outHolder;
+	temp = QueryParser::tokeniser(in, ' ');
+	outHolder = QueryParser::splitByDelims(temp, "(");
+	temp = outHolder;
+	outHolder = QueryParser::splitByDelims(temp, ")");
+	temp = outHolder;
+	outHolder = QueryParser::splitByDelims(temp, ",");
+	temp = outHolder;
+	outHolder = QueryParser::splitByDelims(temp, "\"");
+	temp = outHolder;
+	outHolder = QueryParser::splitByDelims(temp, "+");
+	temp = outHolder;
+	outHolder = QueryParser::splitByDelims(temp, "-");
+	temp = outHolder;
+	outHolder = QueryParser::splitByDelims(temp, "*");
+	temp = outHolder;
+	outHolder = QueryParser::splitByDelims(temp, "-");
+	for (size_t i=0; i<outHolder.size(); i++){
+		out.push(outHolder.at(i));
 	}
 	return out;
 }
@@ -615,7 +633,7 @@ Query QueryParser::parseQuery(string input){
 	vector<string> splitBySC = tokeniser(input, ';');
 	int numDeclarations = splitBySC.size() - 1;
 	string selectStatement = splitBySC.at(splitBySC.size()-1);
-	queue<string> selectQueue = queueBuilder(splitByDelims(selectStatement));
+	queue<string> selectQueue = queueBuilder(selectStatement);
 	splitBySC.pop_back();
 	parseDeclarations(output, splitBySC);
 	while(!selectQueue.empty()){
@@ -644,10 +662,20 @@ Query QueryParser::parseQuery(string input){
 	return *output;
 }
 
-//SPLIT FUNCTION ERROR, FIND WAY TO ADD SPECIAL CHARACTERS BACK IN
-vector<string> QueryParser::splitByDelims(string in){
-	string delims("(,)\"_+-* ");
+vector<string> QueryParser::splitByDelims(vector<string> in, string delim){
 	vector<string> out;
-	boost::split(out, in, boost::is_any_of(delims));
+	for (size_t i = 0; i < in.size(); i++){
+		string current = in.at(i);
+		size_t pos = current.find_first_of(delim);
+		while (pos != std::string::npos){
+			string before = current.substr(0, pos);
+			out.push_back(before);
+			out.push_back(delim);
+			string after = current.substr(pos+1);
+			current = after;
+			pos = current.find_first_of(delim);			
+		}
+		out.push_back(current);
+	}
 	return out;
 }
