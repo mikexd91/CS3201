@@ -135,12 +135,13 @@ void Results::combineNewSyns() {
 		resultsRow = *(*i);
 		for (unordered_set<Row*>::iterator j = multiInsertSet.begin(); j != multiInsertSet.end(); ++j) {
 			synRow = *(*j);
+			Row* newRow = getDuplicateRow(resultsRow);
 			for (unordered_map<string, string>::iterator k = synRow.begin(); k != synRow.end(); ++k) {
 				key = k->first;
 				value = k->second;
-				resultsRow[key] = value;
-				resultsTableTemp.insert(&resultsRow);
+				(*newRow)[key] = value;
 			}
+			resultsTableTemp.insert(newRow);
 		}
 	}
 }
@@ -177,7 +178,7 @@ void Results::pushSingleSet() {
 	string value;
 
 	if (resultsTable.empty()) {
-		//initialise new rows
+		//TESTED
 		for (set<pair<string, string>>::iterator j = singleInsertSet.begin(); j != singleInsertSet.end(); ++j) {
 			Row* row = new Row();
 			key = j->first;
@@ -186,6 +187,7 @@ void Results::pushSingleSet() {
 			resultsTableTemp.insert(row);
 		}
 	} else {
+		//TESTED
 		for (unordered_set<Row*>::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
 			Row* row = *i;
 			for (set<pair<string, string>>::iterator j = singleInsertSet.begin(); j != singleInsertSet.end(); ++j) {
@@ -229,15 +231,18 @@ void Results::pushMultiSet() {
 	
 	switch (category) {
 		case ResultsConstants::BOTH_IN_TABLE: 
+			//TESTED
 			filterNonResults();
 			break;
 		case ResultsConstants::ONE_IN_TABLE:
 			combineWithRestrictions();
 			break;
 		case ResultsConstants::NONE_IN_TABLE:
+			//TESTED
 			combineNewSyns();
 			break;
 		case ResultsConstants::EMPTY_TABLE:
+			//TESTED
 			createNewRows();
 			break;
 		default:
@@ -458,11 +463,15 @@ int main() {
 	r.insertMultiResult(row4);
 	r.insertMultiResult(row5);
 	r.push();
-	//Test elimination of results for multi-syn
+	//Test duplication of results for multi-syn
 	Results::Row* row6 = new Results::Row();
 	(*row6)["c"] = "2";
 	(*row6)["d"] = "4";
+	Results::Row* row7 = new Results::Row();
+	(*row7)["c"] = "5";
+	(*row7)["d"] = "6";
 	r.insertMultiResult(row6);
+	r.insertMultiResult(row7);
 	r.push();
 	unordered_set<string> test = r.selectSyn("s");
 }
