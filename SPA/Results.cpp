@@ -59,7 +59,7 @@ void Results::fillConstrainAndToAddSynSet() {
 }
 
 void Results::filterNonResults() {
-	Row resultsRow;
+	Row* resultsRow;
 	Row synRow;
 	int count = 0;
 	int size;
@@ -67,7 +67,7 @@ void Results::filterNonResults() {
 	string value;
 
 	for (unordered_set<Row*>::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
-		resultsRow = *(*i);
+		resultsRow = *i;
 		for (unordered_set<Row*>::iterator j = multiInsertSet.begin(); j != multiInsertSet.end(); ++j) {
 			synRow = *(*j);
 			size = synRow.size();
@@ -75,14 +75,14 @@ void Results::filterNonResults() {
 				// check if syn matches in resultsRow
 				key = k->first;
 				value = k->second;
-				if (isSynMatch(key, value, resultsRow)) {
+				if (isSynMatch(key, value, *resultsRow)) {
 					count++;
 				}
 			}
 			
 			//check if matches number == j.size
 			if (count == size) {
-				resultsTableTemp.insert(&resultsRow);
+				resultsTableTemp.insert(resultsRow);
 			}
 		}
 	}
@@ -284,7 +284,8 @@ bool Results::test2() {
 
 Results::Results(void)
 {
-	clausePassed = false;
+	//will be set to false by the Results class if no result is inserted by the clause
+	clausePassed = true;
 	singleInsertFlag = false;
 	multiInsertFlag = false;
 
@@ -303,12 +304,8 @@ Results::~Results(void)
 bool Results::isClausePass() {
 	return clausePassed;
 }
-
-void Results::setClausePass() {
-	clausePassed = true;
-}
 	
-void Results::resetClausePass() {
+void Results::setClauseFail() {
 	clausePassed = false;
 }
 
@@ -401,6 +398,9 @@ bool Results::push() {
 		resetClauseFlags();
 		return true;
 	} else {
+		//no result is inserted -> clause returned null
+		resultsTable.clear();
+		setClauseFail();
 		return false;
 	}
 }
@@ -416,6 +416,7 @@ int main() {
 	Results r = Results();
 	//r.insertResult("s", "2");
 	//r.insertResult("s", "3");
+	//Test initalising results row with multi-syn
 	Results::Row* row = new Results::Row();
 	(*row)["a"] = "2";
 	(*row)["b"] = "3";
@@ -425,10 +426,18 @@ int main() {
 	r.insertMultiResult(row);
 	r.insertMultiResult(row2);
 	r.push();
+	//Test appending results to rows (need to duplicate)
 	r.insertResult("s", "2");
 	r.insertResult("s", "3");
 	r.push();
+	//Test elimination of results
 	r.insertResult("b", "3");
+	r.push();
+	//Test elimination of results for multi-syn
+	Results::Row* row3 = new Results::Row();
+	(*row3)["a"] = "2";
+	(*row3)["b"] = "4";
+	r.insertMultiResult(row3);
 	r.push();
 	unordered_set<string> test = r.selectSyn("s");
 }
