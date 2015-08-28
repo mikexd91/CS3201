@@ -6,6 +6,15 @@
 
 using namespace std;
 
+namespace ResultsConstants {
+	const enum Category {
+		EMPTY_TABLE = 0,
+		BOTH_IN_TABLE = 1,
+		ONE_IN_TABLE = 2,
+		NONE_IN_TABLE = 3
+	};
+}
+
 class Results
 {
 public:
@@ -72,10 +81,13 @@ private:
 	void resetClauseFlags();
 	bool isSynMatch(string key, string value, Row row);
 	bool isConstrainFulfilled(Row synRow, Row resultsRow);
-	int getCategory();
+	ResultsConstants::Category getCategory();
 	void filterNonResults();
 	void combineWithRestrictions();
 	void combineNewSyns();
+	void createNewRows();
 	void fillConstrainAndToAddSynSet();
 	void addToResults(Row synRow, Row resultsRow);
 };
+
+

@@ -108,45 +108,47 @@ void Results::combineWithRestrictions() {
 	}
 }
 
-void Results::combineNewSyns() {
-	if (resultsTable.empty()) {
-		//TODO: abstract into another method, since it's duplicated in the else
-		for (unordered_set<Row*>::iterator j = multiInsertSet.begin(); j != multiInsertSet.end(); ++j) {
-			Row* resultsRow = new Row();
-			Row synRow = *(*j);
-			for (unordered_map<string, string>::iterator k = synRow.begin(); k != synRow.end(); ++k) {
-				string key = k->first;
-				string value = k->second;
-				(*resultsRow)[key] = value;
-			}
-			resultsTableTemp.insert(resultsRow);
+void Results::createNewRows() {
+	for (unordered_set<Row*>::iterator j = multiInsertSet.begin(); j != multiInsertSet.end(); ++j) {
+		Row* resultsRow = new Row();
+		Row synRow = *(*j);
+		for (unordered_map<string, string>::iterator k = synRow.begin(); k != synRow.end(); ++k) {
+			string key = k->first;
+			string value = k->second;
+			(*resultsRow)[key] = value;
 		}
-	} else {
-		Row resultsRow;
-		Row synRow;
-		string key;
-		string value;
-		for (unordered_set<Row*>::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
-			resultsRow = *(*i);
-			for (unordered_set<Row*>::iterator j = multiInsertSet.begin(); j != multiInsertSet.end(); ++j) {
-				synRow = *(*j);
-				for (unordered_map<string, string>::iterator k = synRow.begin(); k != synRow.end(); ++k) {
-					key = k->first;
-					value = k->second;
-					resultsRow[key] = value;
-					resultsTableTemp.insert(&resultsRow);
-				}
+		resultsTableTemp.insert(resultsRow);
+	}
+}
+
+void Results::combineNewSyns() {
+	Row resultsRow;
+	Row synRow;
+	string key;
+	string value;
+	for (unordered_set<Row*>::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
+		resultsRow = *(*i);
+		for (unordered_set<Row*>::iterator j = multiInsertSet.begin(); j != multiInsertSet.end(); ++j) {
+			synRow = *(*j);
+			for (unordered_map<string, string>::iterator k = synRow.begin(); k != synRow.end(); ++k) {
+				key = k->first;
+				value = k->second;
+				resultsRow[key] = value;
+				resultsTableTemp.insert(&resultsRow);
 			}
 		}
 	}
 }
 
-int Results::getCategory() {
+ResultsConstants::Category Results::getCategory() {
 	unordered_set<Row*>::iterator iter = multiInsertSet.begin();
 	Row firstRow = *(*iter);
 	string synonym;
 	int synListSize = firstRow.size();
 	int numSynNotInResultsTable = 0;
+	if(resultsTable.empty()) {
+		return ResultsConstants::EMPTY_TABLE;
+	}
 
 	for (unordered_map<string, string>::iterator i = firstRow.begin(); i != firstRow.end(); ++i) {
 		synonym = i->first;
@@ -156,13 +158,12 @@ int Results::getCategory() {
 		}
 	}
 
-	//TODO: use enum
 	if (numSynNotInResultsTable == 0) {
-		return 0;
+		return ResultsConstants::BOTH_IN_TABLE;
 	} else if (numSynNotInResultsTable == synListSize) {
-		return 2;
+		return ResultsConstants::NONE_IN_TABLE;
 	} else {
-		return 1;
+		return ResultsConstants::ONE_IN_TABLE;
 	}
 }
 
@@ -205,19 +206,21 @@ void Results::pushSingleSet() {
 }
 
 void Results::pushMultiSet() {
-	int category = getCategory();
+	ResultsConstants::Category category = getCategory();
 	string categoryArr[] = {"know all", "know some", "know none"};
 	
-	//TODO: add category if there is no result in the table at all (empty table)
 	switch (category) {
-		case 0: 
+		case ResultsConstants::BOTH_IN_TABLE: 
 			filterNonResults();
 			break;
-		case 1:
+		case ResultsConstants::ONE_IN_TABLE:
 			combineWithRestrictions();
 			break;
-		case 2:
+		case ResultsConstants::NONE_IN_TABLE:
 			combineNewSyns();
+			break;
+		case ResultsConstants::EMPTY_TABLE:
+			createNewRows();
 			break;
 		default:
 			// category returned does not match any of the above
@@ -403,7 +406,11 @@ int main() {
 	Results::Row* row = new Results::Row();
 	(*row)["a"] = "2";
 	(*row)["b"] = "3";
+	Results::Row* row2 = new Results::Row();
+	(*row2)["a"] = "2";
+	(*row2)["b"] = "4";
 	r.insertMultiResult(row);
+	r.insertMultiResult(row2);
 	r.push();
 	r.insertResult("s", "2");
 	r.insertResult("s", "3");
