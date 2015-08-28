@@ -26,8 +26,6 @@ public:
 	bool test2();
 	bool moveResultsToSet();
 	bool isClausePass();
-	void setClausePass();
-	void resetClausePass();
 
 	// checks if syn exist in resultsTable
 	bool hasResults(string syn);
@@ -66,6 +64,8 @@ private:
 	ResTb testResultsTable;
 	ResTb testResultsTableTemp;
 	*/
+
+	//to indicate to the query evaluator that the clause failed
 	bool clausePassed;
 	bool singleInsertFlag;
 	bool multiInsertFlag;
@@ -88,6 +88,7 @@ private:
 	void createNewRows();
 	void fillConstrainAndToAddSynSet();
 	void addToResults(Row synRow, Row resultsRow);
+	void setClauseFail();
 	Row* getDuplicateRow(Row row);
 };
 

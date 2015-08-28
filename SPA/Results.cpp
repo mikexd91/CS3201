@@ -284,7 +284,8 @@ bool Results::test2() {
 
 Results::Results(void)
 {
-	clausePassed = false;
+	//will be set to false by the Results class if no result is inserted by the clause
+	clausePassed = true;
 	singleInsertFlag = false;
 	multiInsertFlag = false;
 
@@ -303,12 +304,8 @@ Results::~Results(void)
 bool Results::isClausePass() {
 	return clausePassed;
 }
-
-void Results::setClausePass() {
-	clausePassed = true;
-}
 	
-void Results::resetClausePass() {
+void Results::setClauseFail() {
 	clausePassed = false;
 }
 
@@ -401,6 +398,9 @@ bool Results::push() {
 		resetClauseFlags();
 		return true;
 	} else {
+		//no result is inserted -> clause returned null
+		resultsTable.clear();
+		setClauseFail();
 		return false;
 	}
 }
