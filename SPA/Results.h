@@ -88,6 +88,7 @@ private:
 	void createNewRows();
 	void fillConstrainAndToAddSynSet();
 	void addToResults(Row synRow, Row resultsRow);
+	Row* getDuplicateRow(Row row);
 };
 
 
