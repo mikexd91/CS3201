@@ -40,7 +40,6 @@ public:
 	static void parseClause(Query*, queue<string>);
 	static void parsePattern(Query*, queue<string>);
 
-
 	static Query parseQuery(string);
 };
 

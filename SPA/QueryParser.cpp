@@ -377,7 +377,93 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 //PARSE BRACKETS, COMMAS, OPERATORS, UNDERSCORE AND INVERTED COMMAS AS INDIVIDUAL TOKENS
 void QueryParser::parsePattern(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
+	
+	string wordPattern = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+
+	string synonym = Utils::getWordAndPop(line);
+	if (decList.find(synonym) == decList.end() || decList.at(synonym) != stringconst::ARG_ASSIGN){
+		throw InvalidDeclarationException();
+	}
+	unexpectedEndCheck(line);
+
+	string openParen = Utils::getWordAndPop(line);
+	if (openParen != "("){
+		throw InvalidSyntaxException();
+	}
+	unexpectedEndCheck(line);
+
+	string var;
+	string underscore1 = line.front();
+	if (underscore1 == "_"){
+		var = underscore1;
+	} else {
+		while (line.front() != ","){
+			string varParts = line.front();
+			if (varParts == "_"){
+				throw InvalidSyntaxException();
+			} else {
+				var = varParts;
+				Utils::getWordAndPop(line);
+			}
+		}
+	}
+
+	string comma = Utils::getWordAndPop(line);
+	if (comma != ","){
+		throw InvalidSyntaxException();
+	}
+	unexpectedEndCheck(line);
+
+	string underscoreFirst = Utils::getWordAndPop(line);
+	if (underscoreFirst != "_"){
+		throw InvalidSyntaxException();
+	}
+	unexpectedEndCheck(line);
+
+	string openExpr = Utils::getWordAndPop(line);
+	if (openExpr != "\""){
+		throw InvalidSyntaxException();
+	}
+	unexpectedEndCheck(line);
+
 	string current = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	queue<string> asdf;
+	if (current == "\""){
+		throw InvalidClauseException();
+	} else {
+		while (current != "\"" && !line.empty()){
+			asdf.push(current);
+			current = Utils::getWordAndPop(line);
+		}
+		if (current != "\""){
+			throw InvalidSyntaxException();
+		}
+		if (line.empty()){
+			throw UnexpectedEndException();
+		}
+		unexpectedEndCheck(line);
+	}
+
+	string underscoreLast = Utils::getWordAndPop(line);
+	if (underscoreLast != "_"){
+		throw InvalidSyntaxException();
+	}
+	unexpectedEndCheck(line);
+
+	string closeExpr = Utils::getWordAndPop(line);
+	if (closeExpr != ")"){
+		throw InvalidSyntaxException();
+	}
+
+	ExpressionParser exprP;
+	queue<string> postASDF = exprP.getRPN(asdf);
+	string expression = "_\"" + queueToString(postASDF) + "\"_";
+
+	PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expression);
+	query->addClause(newClause);
+	/*
 	if (line.empty()){
 		throw UnexpectedEndException();
 	}
@@ -501,6 +587,7 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 		//TOKEN CONTAINS ONLY )
 		Utils::getWordAndPop(line);
 	}
+	*/
 } 
 
 Query QueryParser::parseQuery(string input){
@@ -541,4 +628,5 @@ vector<string> QueryParser::splitByDelims(string in){
 	string delims("(,)\"_+-*");
 	vector<string> out;
 	boost::split(out, in, boost::is_any_of(delims));
+	return out;
 }
