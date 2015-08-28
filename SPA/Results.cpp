@@ -59,30 +59,35 @@ void Results::fillConstrainAndToAddSynSet() {
 }
 
 void Results::filterNonResults() {
+	//existing row in results table
 	Row* resultsRow;
+	//row from clause
 	Row synRow;
-	int count = 0;
-	int size;
 	string key;
 	string value;
-
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 	for (unordered_set<Row*>::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
 		resultsRow = *i;
 		for (unordered_set<Row*>::iterator j = multiInsertSet.begin(); j != multiInsertSet.end(); ++j) {
+			bool toInsert = true;
 			synRow = *(*j);
-			size = synRow.size();
 			for (unordered_map<string, string>::iterator k = synRow.begin(); k != synRow.end(); ++k) {
 				// check if syn matches in resultsRow
 				key = k->first;
 				value = k->second;
-				if (isSynMatch(key, value, *resultsRow)) {
-					count++;
+				//if the current result does not match the one provided by the clause (e.g. a =2 in current table and a = 3 from clause) 
+				//we know that we should not add the resultsRow in for this iteration (we shouldn't add a=2,b=3 in for a=3,b=3 for an example)
+				//so we do not need to continue checking for the rest of the the other synonyms in that set (like c and so on)
+				if (!isSynMatch(key, value, *resultsRow)) {
+					toInsert = false;
+					break;
 				}
 			}
-			
-			//check if matches number == j.size
-			if (count == size) {
+			//if we have already inserted the row once
+			//we do not need to check if it matches the other results given from the clause
+			if (toInsert) {
 				resultsTableTemp.insert(resultsRow);
+				break;
 			}
 		}
 	}
@@ -130,12 +135,13 @@ void Results::combineNewSyns() {
 		resultsRow = *(*i);
 		for (unordered_set<Row*>::iterator j = multiInsertSet.begin(); j != multiInsertSet.end(); ++j) {
 			synRow = *(*j);
+			Row* newRow = getDuplicateRow(resultsRow);
 			for (unordered_map<string, string>::iterator k = synRow.begin(); k != synRow.end(); ++k) {
 				key = k->first;
 				value = k->second;
-				resultsRow[key] = value;
-				resultsTableTemp.insert(&resultsRow);
+				(*newRow)[key] = value;
 			}
+			resultsTableTemp.insert(newRow);
 		}
 	}
 }
@@ -420,24 +426,44 @@ int main() {
 	Results::Row* row = new Results::Row();
 	(*row)["a"] = "2";
 	(*row)["b"] = "3";
+	Results::Row* row1 = new Results::Row();
+	(*row1)["a"] = "1";
+	(*row1)["b"] = "3";
 	Results::Row* row2 = new Results::Row();
-	(*row2)["a"] = "2";
-	(*row2)["b"] = "4";
+	(*row2)["a"] = "3";
+	(*row2)["b"] = "3";
+	Results::Row* row3 = new Results::Row();
+	(*row3)["a"] = "2";
+	(*row3)["b"] = "4";
 	r.insertMultiResult(row);
+	r.insertMultiResult(row1);
 	r.insertMultiResult(row2);
+	r.insertMultiResult(row3);
 	r.push();
 	//Test appending results to rows (need to duplicate)
 	r.insertResult("s", "2");
 	r.insertResult("s", "3");
 	r.push();
+	/**
 	//Test elimination of results
 	r.insertResult("b", "3");
 	r.push();
+	**/
 	//Test elimination of results for multi-syn
-	Results::Row* row3 = new Results::Row();
-	(*row3)["a"] = "2";
-	(*row3)["b"] = "4";
-	r.insertMultiResult(row3);
+	Results::Row* row4 = new Results::Row();
+	(*row4)["a"] = "2";
+	(*row4)["b"] = "3";
+	Results::Row* row5 = new Results::Row();
+	(*row5)["a"] = "1";
+	(*row5)["b"] = "3";
+	r.insertMultiResult(row4);
+	r.insertMultiResult(row5);
+	r.push();
+	//Test elimination of results for multi-syn
+	Results::Row* row6 = new Results::Row();
+	(*row6)["c"] = "2";
+	(*row6)["d"] = "4";
+	r.insertMultiResult(row6);
 	r.push();
 	unordered_set<string> test = r.selectSyn("s");
 }
