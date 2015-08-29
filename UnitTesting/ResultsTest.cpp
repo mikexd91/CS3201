@@ -687,6 +687,18 @@ void ResultsTest::testSelectMultiSyn() {
 	CPPUNIT_ASSERT(obj3.isClausePass() == true);
 	CPPUNIT_ASSERT(obj3.hasResults("feeling") == true);
 	CPPUNIT_ASSERT(obj3.hasResults("money") == true);
+	
+	// DUPLICATES FOUND
+	/*
+	delete this after testing
+	cout << resTable3.size() << endl;
+	for (unordered_set<unordered_map<string, string>*>::iterator i = resTable3.begin(); i != resTable3.end(); ++i) {
+		unordered_map<string, string> row = *(*i);
+		for (unordered_map<string, string>::iterator j = row.begin(); j != row.end(); ++j) {
+			cout << "syn: " << j->first << ", value: " << j->second << endl;
+		}
+	}
+	*/
 	CPPUNIT_ASSERT(resTable3.size() == 20);
 
 	// Test 2 - getting the common synonym whos
@@ -899,9 +911,10 @@ void ResultsTest::testSelectMultiSyn() {
 	CPPUNIT_ASSERT(obj5.hasResults("clock") == true);
 	CPPUNIT_ASSERT(resTable5a.size() == 24);
 
-	(*row5)["uk"] = "clothes";
-	(*row5)["clock"] = "5";
-	obj5.insertMultiResult(row5);
+	unordered_map<string, string>* row5_15 = new unordered_map<string, string>();
+	(*row5_15)["uk"] = "clothes";
+	(*row5_15)["clock"] = "5";
+	obj5.insertMultiResult(row5_15);
 	obj5.push();
 	
 	unordered_set<string> synList5b = unordered_set<string>();
