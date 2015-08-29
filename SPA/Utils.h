@@ -7,21 +7,22 @@
 #include <set>
 
 #include "Statement.h"
+#include "boost/assign.hpp"
+#include "boost/unordered_map.hpp"
 
 class Utils
 {
 public:
 	
 	static std::string sanitise(string str);
-	static vector<string> explode(const string&, const string, const char[7]);
-	static queue<string> getRPN(queue<string>);
+	static vector<string> explode(const string&, const string, const vector<char>);
 	static string getWordAndPop(queue<string>&);
-	static void parseFactor(string, queue<string>&);
-	static void parseSymbol(string, queue<string>&, stack<string>&);
 	static bool isValidFactor(string);
-	static bool isValidSymbol(string);
+	static bool isValidOperator(string);
 	static bool isValidName(string);
 	static bool isValidConstant(string);
+	static bool isOpenBracket(string);
+	static bool isCloseBracket(string);
 	static bool isSameType(string, NodeType);
 	static string convertNodeTypeToArgType(NodeType);
 	static NodeType convertArgTypeToNodeType(string);
@@ -34,6 +35,7 @@ namespace UtilsConstants {
 	//const string DELIM_STRING = " ;={}";
 	//const char DELIMITERS[] = { ';', '=', '{', '}' };
 	const char SANITISED_CHARS[] = { '\t', '\n' };
+	const boost::unordered_map<std::string, int> OPERATOR_PRIORITIES = boost::assign::map_list_of ("+", 2) ("-", 2) ("*", 3);
 };
 
 namespace stringconst{

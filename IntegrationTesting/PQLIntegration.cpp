@@ -32,6 +32,7 @@ void PQLIntegration::setUp() {
 			}
 			b=5;		//7
 			j=2+3+4;	//8
+			z=(10+11)*12	//9
 		}	
 	}
 	*/
@@ -106,6 +107,22 @@ void PQLIntegration::setUp() {
 	assg6->linkVarNode(j6);
 	assg6->linkExprNode(plus2_1);
 	procsl->linkStmtNode(assg6);
+
+	//z=(10+11)*12
+	AssgNode* assg7 = new AssgNode(9);
+	VarNode* j7 = new VarNode("z");
+	OpNode* plus3_1 = new OpNode("+");
+	ConstNode* c10 = new ConstNode("10");
+	ConstNode* c11 = new ConstNode("11");
+	OpNode* multiply = new OpNode("*");
+	ConstNode* c12 = new ConstNode("12");
+	plus3_1->linkRightNode(c11);
+	plus3_1->linkLeftNode(c10);
+	multiply->linkRightNode(c12);
+	multiply->linkLeftNode(plus3_1);
+	assg7->linkVarNode(j7);
+	assg7->linkExprNode(multiply);
+	procsl->linkStmtNode(assg7);
 
 	ast->addProcNode(proc);
 
@@ -213,6 +230,17 @@ void PQLIntegration::setUp() {
 	stmt8->setParent(2);
 	stable->addStmt(stmt8);
 
+	Statement* stmt9 = new Statement();
+	stmt9->setStmtNum(9);
+	stmt9->setType(ASSIGN_STMT_);
+	set<string> mods9 = set<string>();
+	mods9.emplace("z");
+	stmt9->setModifies(mods9);
+	stmt9->setFollowsBefore(8);
+	stmt9->setTNodeRef(assg7);
+	stmt9->setParent(2);
+	stable->addStmt(stmt8);
+
 	// to set up the vartable manually
 	VarTable* vtable = VarTable::getInstance();
 
@@ -288,6 +316,24 @@ void PQLIntegration::setUp() {
 	const5->addTNodeRef(c5);
 	const5->setConstName("5");
 	ctable->addConst(const5);
+	
+	Constant* const10 = new Constant();
+	const10->addAppearsIn(9);
+	const10->addTNodeRef(c10);
+	const10->setConstName("10");
+	ctable->addConst(const10);
+
+	Constant* const11 = new Constant();
+	const11->addAppearsIn(9);
+	const11->addTNodeRef(c11);
+	const11->setConstName("11");
+	ctable->addConst(const11);
+	
+	Constant* const12 = new Constant();
+	const12->addAppearsIn(9);
+	const12->addTNodeRef(c12);
+	const12->setConstName("12");
+	ctable->addConst(const12);
 }
 
 void PQLIntegration::tearDown() {
@@ -467,6 +513,12 @@ void PQLIntegration::testSelectModifiesPattern() {
 	set<string> r2;
 	r2 = pcc->parse(QUERY_STRING2);
 	CPPUNIT_ASSERT(1 == r2.size());
+
+	//TODO: fix parsing of brackets in query parser
+	string QUERY_STRING3 = "assign a; variable v; Select a such that Modifies(a, v) pattern a(v, _\"( 10 + 11 ) * 12\"_)";
+	set<string> r3;
+	r3 = pcc->parse(QUERY_STRING3);
+	//CPPUNIT_ASSERT(1 == r3.size());
 }
 
 void PQLIntegration::testSelectFollowsPattern() {
@@ -494,7 +546,7 @@ void PQLIntegration::testSelectConstant() {
 	PQLController* pcc = new PQLController();
 	set<string> r;
 	r = pcc->parse(QUERY_STRING);
-	CPPUNIT_ASSERT(5 == r.size());
+	CPPUNIT_ASSERT(8 == r.size());
 
 	string QUERY_STRING_2 = "constant c; assign a; Select c such that Follows(a, 1)";
 	set<string> r2;
@@ -510,7 +562,7 @@ void PQLIntegration::testSelectProgLine() {
 	CPPUNIT_ASSERT(1 == r.size());
 	CPPUNIT_ASSERT(r.find("2") != r.end());
 
-	string QUERY_STRING_2 = "prog_line p; Select p such that Follows(8, p)";
+	string QUERY_STRING_2 = "prog_line p; Select p such that Follows(9, p)";
 	set<string> r2;
 	r2 = pcc->parse(QUERY_STRING_2);
 	CPPUNIT_ASSERT(0 == r2.size());

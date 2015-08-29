@@ -14,6 +14,7 @@
 #include "UsesClause.h"
 #include "PatternAssgClause.h"
 #include "boost/unordered_map.hpp"
+#include "ExpressionParser.h"
 #include <queue>
 #include <string>
 #include <vector>
@@ -452,7 +453,8 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 			} else {
 				string exprPart = subsequent.substr(spos + 1, epos - spos - 1);
 				queue<string> expression = exprBuilder(exprPart);
-				queue<string> exprRPN = Utils::getRPN(expression);
+				ExpressionParser expressionParser;
+				queue<string> exprRPN = expressionParser.getRPN(expression);
 				string expr = "_\"" + queueToString(exprRPN) + "\"_";
 				PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expr);
 				newClause->setVarFixed(varFixed);
@@ -470,7 +472,8 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 			ss << " " << exprPart;
 			string expressionS = ss.str();
 			queue<string> expressionQ = exprBuilder(expressionS);
-			queue<string> exprRPN = Utils::getRPN(expressionQ);
+			ExpressionParser expressionParser;
+			queue<string> exprRPN = expressionParser.getRPN(expressionQ);
 			string expr = "_\"" + queueToString(exprRPN) + "\"_";
 			PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expr);
 			newClause->setVarFixed(varFixed);

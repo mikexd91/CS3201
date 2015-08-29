@@ -7,6 +7,7 @@
 #include <queue>
 #include <stack>
 
+
 #include "InvalidExpressionException.h"
 #include "StmtTable.h"
 
@@ -25,11 +26,7 @@ string Utils::sanitise(string str) {
 //delim_string contains all of the delimiters, including those that should not be in the final token list. 
 //delimiters consists of characters that should be included in the final vector, but should be delimited and separated accordingly
 //this means that delim_string should be a superset of delimiters
-vector<string> Utils::explode(const string &str, const string delim_string, const char delimiters[7] ) {
-	char delimitersToUse[7]; 
-	for (int i = 0; i < 7; i++) {
-		delimitersToUse[i] = delimiters[i];
-	}
+vector<string> Utils::explode(const string &str, const string delim_string, const vector<char> delimiters) {
 
 	vector<string> elems;
 	int pos;
@@ -40,37 +37,12 @@ vector<string> Utils::explode(const string &str, const string delim_string, cons
 			elems.push_back(str.substr(prev, pos - prev));
 		}
 		//if it is a delimiter that should be included (aka all delimiters but spaces)
-		if (find(begin(delimitersToUse), end(delimitersToUse), str[pos]) != end(delimitersToUse)) {
+		if (find(begin(delimiters), end(delimiters), str[pos]) != end(delimiters)) {
 			elems.push_back(string(1, str[pos]));
 		}
 		prev = pos + 1;
 	}
 	return elems;
-}
-
-//takes in a queue of assignment expression, with every word and symbol separated.
-//e.g. a+b+c -> ["a", "+", "b", "+", "c"]
-//returns another queue of the assignment expression in its RPN format
-//e.g. a+b+c-> ["a",  "b", "+", "c" "+", ]
-queue<string> Utils::getRPN(queue<string> originalExpression) {
-	stack<string> operationStack;
-	queue<string> expressionQueue;
-	//using Shunting-yard algorithm
-	string word;
-	int count = 0;
-	word = getWordAndPop(originalExpression);
-	parseFactor(word, expressionQueue);
-	while (!originalExpression.empty()) {
-		word = getWordAndPop(originalExpression);
-		parseSymbol(word, expressionQueue, operationStack);
-		word = getWordAndPop(originalExpression);
-		parseFactor(word, expressionQueue);
-	}
-	while (!operationStack.empty()) {
-		expressionQueue.push(operationStack.top());
-		operationStack.pop();
-	}
-	return expressionQueue;
 }
 
 //checks that the queue is not empty, then gets the next element of the queue and pop the head
@@ -81,31 +53,6 @@ string Utils::getWordAndPop(queue<string> &originalExpression) {
 		string word = originalExpression.front();
 		originalExpression.pop();
 		return word;
-	}
-}
-
-//Needed for generating RPN. Checks the symbol.
-//It also adds the past symbols to the expression queue (if needed) and current symbol to the operation stack
-void Utils::parseSymbol(string word, queue<string> &expressionQueue, stack<string> &operationStack) {
-	//if top of stack is *, all other operation (+-*) are lower or equal, so just add top to output queue
-	//if top of stack is + or -, only add top to output queue if word is + or -
-	if (isValidSymbol(word)) {
-		while (!operationStack.empty() && !(operationStack.top() != "*" && word == "*")) {
-			expressionQueue.push(operationStack.top());
-			operationStack.pop();
-		}
-		operationStack.push(word);
-	} else {
-		throw InvalidExpressionException("Invalid Expression!");
-	}
-}
-
-//Needed for generating RPN. Checks and adds the factor to the expression queue.
-void Utils::parseFactor(string word, queue<string> &expressionQueue) {
-	if (isValidFactor(word)) {
-		expressionQueue.push(word);
-	} else {
-		throw InvalidExpressionException("Invalid Expression!");
 	}
 }
 
@@ -138,10 +85,18 @@ bool Utils::isValidFactor(string factor) {
 	return isValidConstant(factor) || isValidName(factor);
 }
 
-//Check if a string is a valid symbol
-bool Utils::isValidSymbol(string symbol) {
-	return symbol == "+" || symbol == "-" || symbol == "*";
+bool Utils::isValidOperator(string symbol) {
+	return UtilsConstants::OPERATOR_PRIORITIES.find(symbol) != UtilsConstants::OPERATOR_PRIORITIES.end();
 }
+
+bool Utils::isOpenBracket(string symbol) {
+	return symbol == "(";
+}
+
+bool Utils::isCloseBracket(string symbol) {
+	return symbol == ")";
+}
+
 
 //Checks if the arg type and statement type are matching
 bool Utils::isSameType(string argType, NodeType stmt) {
