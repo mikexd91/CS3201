@@ -98,7 +98,6 @@ vector<string> QueryParser::tokeniser(string input, char delim){
 	while (pos != string::npos){
 		if (pos == 0){
 			string temp = input.substr(1);
-			cout << "{" << input << "}" << "[" << temp << "]";
 			input = temp;
 			pos = temp.find_first_of(delim);
 		} else {
