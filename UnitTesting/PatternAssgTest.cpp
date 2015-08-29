@@ -22,6 +22,9 @@ void PatternAssgTest::setUp() {
 	Follows(1, 2) == true;
 	*/
 
+	//Another test didn't clear the table >:(
+	StmtTable::getInstance()->clearTable();
+
 	// to set up the ast manually
 	AST* ast = AST::getInstance();
 
