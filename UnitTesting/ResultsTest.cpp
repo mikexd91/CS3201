@@ -585,7 +585,7 @@ void ResultsTest::testSelectMultiSyn() {
 	unordered_set<string> synList1 = unordered_set<string>();
 	synList1.insert("animals");
 	synList1.insert("money");
-	unordered_set<unordered_map<string, string>*> resTable1 = obj1.selectMultiSyn(synList1);
+	Results::ResultsTable resTable1 = obj1.selectMultiSyn(synList1);
 	
 	CPPUNIT_ASSERT(obj1.isClausePass() == true);
 	CPPUNIT_ASSERT(obj1.hasResults("animals") == true);
@@ -605,17 +605,12 @@ void ResultsTest::testSelectMultiSyn() {
 	// (mouse, 1), (tiger, 2), (rabbit, 5)
 	// (feeling, exercise): (happy, 9), (happy, 10), (exceited, 10), (loving, 10),
 	// (loving, 10), (angry, 1), (bored, 2)
-		/**
+
 	Results obj3 = Results();
 	unordered_map<string, string>* row3_1 = new unordered_map<string, string>();
 	(*row3_1)["animals"] = "tiger";
 	(*row3_1)["money"] = "1";
 	obj3.insertMultiResult(row3_1);
-
-	unordered_map<string, string>* row3_2 = new unordered_map<string, string>();
-	(*row3_2)["animals"] = "tiger";
-	(*row3_2)["money"] = "1";
-	obj3.insertMultiResult(row3_2);
 
 	unordered_map<string, string>* row3_2 = new unordered_map<string, string>();
 	(*row3_2)["animals"] = "rabbit";
@@ -688,24 +683,13 @@ void ResultsTest::testSelectMultiSyn() {
 	unordered_set<string> synList3 = unordered_set<string>();
 	synList3.insert("feeling");
 	synList3.insert("money");
-	unordered_set<unordered_map<string, string>*> resTable3 = obj3.selectMultiSyn(synList3);
+	Results::ResultsTable resTable3 = obj3.selectMultiSyn(synList3);
 
 	CPPUNIT_ASSERT(obj3.isClausePass() == true);
 	CPPUNIT_ASSERT(obj3.hasResults("feeling") == true);
 	CPPUNIT_ASSERT(obj3.hasResults("money") == true);
-	**/
-	// DUPLICATES FOUND
-	/*
-	delete this after testing
-	cout << resTable3.size() << endl;
-	for (unordered_set<unordered_map<string, string>*>::iterator i = resTable3.begin(); i != resTable3.end(); ++i) {
-		unordered_map<string, string> row = *(*i);
-		for (unordered_map<string, string>::iterator j = row.begin(); j != row.end(); ++j) {
-			cout << "syn: " << j->first << ", value: " << j->second << endl;
-		}
-	}
-	*/
-	//CPPUNIT_ASSERT(resTable3.size() == 20);
+
+	CPPUNIT_ASSERT(resTable3.size() == 20);
 
 	// Test 2 - getting the common synonym whos
 	// results was reduced
@@ -715,9 +699,9 @@ void ResultsTest::testSelectMultiSyn() {
 	// ocbc and dbs, dbs and kpmg
 	// (ocbc, dbs): (lao,1), (tao,1), (bao,1), (cao,5)
 	// (bao,5), (tao,5), (lao,9), (cao,10), (bao,11)
-	// (dbs, kpmg): (1,north), (1,south), (1,east), (1,west),
-	// (1,gold), (1,silver), (1,bronze), (1,noprize), (1,center)
-	/**
+	// (dbs, kpmg): (1,north), (1,south), (1,east), (1,west), (1, center)
+	//  (10, gold), (10, silver), (10, bronze), (10, noprize)
+	
 	Results obj4 = Results();
 	unordered_map<string, string>* row4_1 = new unordered_map<string, string>();
 	(*row4_1)["ocbc"] = "lao";
@@ -814,25 +798,17 @@ void ResultsTest::testSelectMultiSyn() {
 	unordered_set<string> synList4 = unordered_set<string>();
 	synList4.insert("dbs");
 	synList4.insert("ocbc");
-	unordered_set<unordered_map<string, string>*> resTable4 = obj4.selectMultiSyn(synList4);
-
-	for (unordered_set<unordered_map<string, string>*>::iterator i = resTable4.begin(); i != resTable4.end(); ++i) {
-		unordered_map<string, string> row = *(*i);
-		for (unordered_map<string, string>::iterator j = row.begin(); j != row.end(); ++j) {
-			string blah = j -> first;
-			string wee = j -> second;
-			cout << "syn: " << j->first << ", value: " << j->second << endl;
-		}
-	}
+	Results::ResultsTable resTable4 = obj4.selectMultiSyn(synList4);
 
 	CPPUNIT_ASSERT(obj4.isClausePass() == true);
 	CPPUNIT_ASSERT(obj4.hasResults("dbs") == true);
 	CPPUNIT_ASSERT(obj4.hasResults("ocbc") == true);
 
 	int size = resTable4.size();
-	//CPPUNIT_ASSERT(resTable4.size() == 3);
-	//CPPUNIT_ASSERT(obj4.getResultsTableSize() == 27);
-	
+	CPPUNIT_ASSERT(resTable4.size() == 4);
+	// 5 for lao, tao, bao and 4 for cao
+	CPPUNIT_ASSERT(obj4.getResultsTableSize() == 19);
+
 
 	// Test 3 - getting the synonyms whos
 	// results were affected by the combining of additional results
@@ -922,12 +898,13 @@ void ResultsTest::testSelectMultiSyn() {
 	unordered_set<string> synList5a = unordered_set<string>();
 	synList5a.insert("uk");
 	synList5a.insert("clock");
-	unordered_set<unordered_map<string, string>*> resTable5a = obj5.selectMultiSyn(synList5a);
+	Results::ResultsTable resTable5a = obj5.selectMultiSyn(synList5a);
 
 	CPPUNIT_ASSERT(obj5.isClausePass() == true);
 	CPPUNIT_ASSERT(obj5.hasResults("uk") == true);
 	CPPUNIT_ASSERT(obj5.hasResults("clock") == true);
-	CPPUNIT_ASSERT(resTable5a.size() == 24);
+	//4 unique uk multiply by 5 unique clock
+	CPPUNIT_ASSERT(resTable5a.size() == 20);
 
 	unordered_map<string, string>* row5_15 = new unordered_map<string, string>();
 	(*row5_15)["uk"] = "clothes";
@@ -938,11 +915,11 @@ void ResultsTest::testSelectMultiSyn() {
 	unordered_set<string> synList5b = unordered_set<string>();
 	synList5b.insert("uk");
 	synList5b.insert("clock");
-	unordered_set<unordered_map<string, string>*> resTable5b = obj5.selectMultiSyn(synList5b);
+	Results::ResultsTable resTable5b = obj5.selectMultiSyn(synList5b);
 
 	CPPUNIT_ASSERT(obj5.isClausePass() == true);
 	CPPUNIT_ASSERT(obj5.hasResults("uk") == true);
 	CPPUNIT_ASSERT(obj5.hasResults("clock") == true);
-	CPPUNIT_ASSERT(resTable5b.size() == 9);
-	**/
+	//cos only uk: clothes and clock: 5 can exist
+	CPPUNIT_ASSERT(resTable5b.size() == 1);
 }
