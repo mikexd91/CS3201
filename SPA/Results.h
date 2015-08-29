@@ -89,6 +89,7 @@ private:
 	void fillConstrainAndToAddSynSet();
 	void addToResults(Row synRow, Row resultsRow);
 	void setClauseFail();
+	void setClausePass();
 	Row* getDuplicateRow(Row row);
 };
 

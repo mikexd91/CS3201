@@ -35,10 +35,9 @@ void ResultsTest::testInsertResult() {
 	obj1.push();
 
 	CPPUNIT_ASSERT(obj1.isClausePass() == true);
+	bool test = obj1.hasResults("a");
 	CPPUNIT_ASSERT(obj1.hasResults("a") == true);
 	CPPUNIT_ASSERT(obj1.getResultsTableSize() == 3);
-
-	obj1.~Results();
 
 	// test results obj that has been passed around
 
@@ -73,8 +72,6 @@ void ResultsTest::testInsertResult() {
 	CPPUNIT_ASSERT(obj2.hasResults("ah") == true);
 	CPPUNIT_ASSERT(obj2.hasResults("bah") == true);
 	CPPUNIT_ASSERT(obj2.getResultsTableSize() == 15);
-
-	obj2.~Results();
 	
 	// Test 2 - eliminating synonyms results
 	// Purpose: check if results are eliminated correctly by the 
@@ -115,6 +112,9 @@ void ResultsTest::testInsertResult() {
 	// TO ADD
 	// function to reset ClausePass and clean private variable states
 
+	//SHOULD WE DO AN ASSERTION INSTEAD OF FAILING THE CLAUSE
+	//BECAUSE A CLAUSE SHOULD NOT INSERT IN AN EMPTY STRING
+	/**
 	obj3.insertResult("sheep", "");
 	obj3.push();
 
@@ -125,7 +125,7 @@ void ResultsTest::testInsertResult() {
 
 	// TO ADD
 	// function to reset ClausePass and clean private variable states
-
+	**/
 	obj3.insertResult("uk", "england");
 	obj3.push();
 
@@ -141,30 +141,35 @@ void ResultsTest::testInsertMultiResult() {
 	// anne has results: 1, 2
 	// ben has results: a, b, c
 	Results obj1 = Results();
-	unordered_map<string, string>* row1 = new unordered_map<string, string>();
-	(*row1)["anne"] = "1";
-	(*row1)["ben"] = "a";
-	obj1.insertMultiResult(row1);
+	unordered_map<string, string>* row1_1 = new unordered_map<string, string>();
+	(*row1_1)["anne"] = "1";
+	(*row1_1)["ben"] = "a";
+	obj1.insertMultiResult(row1_1);
 
-	(*row1)["anne"] = "1";
-	(*row1)["ben"] = "b";
-	obj1.insertMultiResult(row1);
+	unordered_map<string, string>* row1_2 = new unordered_map<string, string>();
+	(*row1_2)["anne"] = "1";
+	(*row1_2)["ben"] = "b";
+	obj1.insertMultiResult(row1_2);
 
-	(*row1)["anne"] = "1";
-	(*row1)["ben"] = "c";
-	obj1.insertMultiResult(row1);
+	unordered_map<string, string>* row1_3 = new unordered_map<string, string>();
+	(*row1_3)["anne"] = "1";
+	(*row1_3)["ben"] = "c";
+	obj1.insertMultiResult(row1_3);
 
-	(*row1)["anne"] = "2";
-	(*row1)["ben"] = "a";
-	obj1.insertMultiResult(row1);
+	unordered_map<string, string>* row1_4 = new unordered_map<string, string>();
+	(*row1_4)["anne"] = "2";
+	(*row1_4)["ben"] = "a";
+	obj1.insertMultiResult(row1_4);
 
-	(*row1)["anne"] = "2";
-	(*row1)["ben"] = "b";
-	obj1.insertMultiResult(row1);
+	unordered_map<string, string>* row1_5 = new unordered_map<string, string>();
+	(*row1_5)["anne"] = "2";
+	(*row1_5)["ben"] = "b";
+	obj1.insertMultiResult(row1_5);
 
-	(*row1)["anne"] = "2";
-	(*row1)["ben"] = "c";
-	obj1.insertMultiResult(row1);
+	unordered_map<string, string>* row1_6 = new unordered_map<string, string>();
+	(*row1_6)["anne"] = "2";
+	(*row1_6)["ben"] = "c";
+	obj1.insertMultiResult(row1_6);
 	obj1.push();
 
 	CPPUNIT_ASSERT(obj1.isClausePass() == true);
@@ -172,8 +177,8 @@ void ResultsTest::testInsertMultiResult() {
 	CPPUNIT_ASSERT(obj1.hasResults("ben") == true);
 	CPPUNIT_ASSERT(obj1.getResultsTableSize() == 6);
 
-	obj1.~Results();
-
+	//comment out empty results section
+	/**
 	// test empty results
 	Results obj2 = Results();
 	unordered_map<string, string>* row2 = new unordered_map<string, string>();
@@ -186,8 +191,7 @@ void ResultsTest::testInsertMultiResult() {
 	CPPUNIT_ASSERT(obj2.hasResults("anne") == false);
 	CPPUNIT_ASSERT(obj2.hasResults("ben") == false);
 	CPPUNIT_ASSERT(obj2.getResultsTableSize() == 0);
-
-	obj2.~Results();
+	**/
 
 	// test results obj that has been passed around
 
@@ -202,22 +206,25 @@ void ResultsTest::testInsertMultiResult() {
 	// ken has results: 8, 9
 	// dan has results: x, y
 	Results obj3 = Results();
-	unordered_map<string, string>* row3 = new unordered_map<string, string>();
-	(*row3)["anne"] = "1";
-	(*row3)["ben"] = "a";
-	obj3.insertMultiResult(row3);
+	unordered_map<string, string>* row3_1 = new unordered_map<string, string>();
+	(*row3_1)["anne"] = "1";
+	(*row3_1)["ben"] = "a";
+	obj3.insertMultiResult(row3_1);
 
-	(*row3)["anne"] = "1";
-	(*row3)["ben"] = "b";
-	obj3.insertMultiResult(row3);
+	unordered_map<string, string>* row3_2 = new unordered_map<string, string>();
+	(*row3_2)["anne"] = "1";
+	(*row3_2)["ben"] = "b";
+	obj3.insertMultiResult(row3_2);
 
-	(*row3)["anne"] = "2";
-	(*row3)["ben"] = "a";
-	obj3.insertMultiResult(row3);
+	unordered_map<string, string>* row3_3 = new unordered_map<string, string>();
+	(*row3_3)["anne"] = "2";
+	(*row3_3)["ben"] = "a";
+	obj3.insertMultiResult(row3_3);
 
-	(*row3)["anne"] = "2";
-	(*row3)["ben"] = "b";
-	obj3.insertMultiResult(row3);
+	unordered_map<string, string>* row3_4 = new unordered_map<string, string>();
+	(*row3_4)["anne"] = "2";
+	(*row3_4)["ben"] = "b";
+	obj3.insertMultiResult(row3_4);
 	obj3.push();
 
 	CPPUNIT_ASSERT(obj3.isClausePass() == true);
@@ -228,21 +235,25 @@ void ResultsTest::testInsertMultiResult() {
 	// TO ADD
 	// function to reset ClausePass and clean private variable states
 
-	(*row3)["ken"] = "8";
-	(*row3)["dan"] = "x";
-	obj3.insertMultiResult(row3);
+	unordered_map<string, string>* row3_5 = new unordered_map<string, string>();
+	(*row3_5)["ken"] = "8";
+	(*row3_5)["dan"] = "x";
+	obj3.insertMultiResult(row3_5);
 
-	(*row3)["ken"] = "8";
-	(*row3)["dan"] = "y";
-	obj3.insertMultiResult(row3);
+	unordered_map<string, string>* row3_6 = new unordered_map<string, string>();
+	(*row3_6)["ken"] = "8";
+	(*row3_6)["dan"] = "y";
+	obj3.insertMultiResult(row3_6);
 
-	(*row3)["ken"] = "9";
-	(*row3)["dan"] = "x";
-	obj3.insertMultiResult(row3);
+	unordered_map<string, string>* row3_7 = new unordered_map<string, string>();
+	(*row3_7)["ken"] = "9";
+	(*row3_7)["dan"] = "x";
+	obj3.insertMultiResult(row3_7);
 
-	(*row3)["ken"] = "9";
-	(*row3)["dan"] = "y";
-	obj3.insertMultiResult(row3);
+	unordered_map<string, string>* row3_8 = new unordered_map<string, string>();
+	(*row3_8)["ken"] = "9";
+	(*row3_8)["dan"] = "y";
+	obj3.insertMultiResult(row3_8);
 	obj3.push();
 
 	CPPUNIT_ASSERT(obj3.isClausePass() == true);
@@ -251,8 +262,6 @@ void ResultsTest::testInsertMultiResult() {
 	CPPUNIT_ASSERT(obj3.hasResults("ken") == true);
 	CPPUNIT_ASSERT(obj3.hasResults("dan") == true);
 	CPPUNIT_ASSERT(obj3.getResultsTableSize() == 16);
-
-	obj3.~Results();
 
 	// Test 2 - adding of 1 existing synonym
 	// Purpose: check if results are eliminated correctly by the 
@@ -266,22 +275,25 @@ void ResultsTest::testInsertMultiResult() {
 	// ken has results: 90, 100, 70
 
 	Results obj4 = Results();
-	unordered_map<string, string>* row4 = new unordered_map<string, string>();
-	(*row4)["anne"] = "1";
-	(*row4)["ben"] = "a";
-	obj4.insertMultiResult(row4);
+	unordered_map<string, string>* row4_1 = new unordered_map<string, string>();
+	(*row4_1)["anne"] = "1";
+	(*row4_1)["ben"] = "a";
+	obj4.insertMultiResult(row4_1);
 
-	(*row4)["anne"] = "1";
-	(*row4)["ben"] = "b";
-	obj4.insertMultiResult(row4);
+	unordered_map<string, string>* row4_2 = new unordered_map<string, string>();
+	(*row4_2)["anne"] = "1";
+	(*row4_2)["ben"] = "b";
+	obj4.insertMultiResult(row4_2);
 
-	(*row4)["anne"] = "2";
-	(*row4)["ben"] = "a";
-	obj4.insertMultiResult(row4);
+	unordered_map<string, string>* row4_3 = new unordered_map<string, string>();
+	(*row4_3)["anne"] = "2";
+	(*row4_3)["ben"] = "a";
+	obj4.insertMultiResult(row4_3);
 
-	(*row4)["anne"] = "2";
-	(*row4)["ben"] = "b";
-	obj4.insertMultiResult(row4);
+	unordered_map<string, string>* row4_4 = new unordered_map<string, string>();
+	(*row4_4)["anne"] = "2";
+	(*row4_4)["ben"] = "b";
+	obj4.insertMultiResult(row4_4);
 	obj4.push();
 
 	CPPUNIT_ASSERT(obj4.isClausePass() == true);
@@ -292,26 +304,32 @@ void ResultsTest::testInsertMultiResult() {
 	// TO ADD
 	// function to reset ClausePass and clean private variable states
 
-	(*row4)["ben"] = "b";
-	(*row4)["ken"] = "90";
-	obj4.insertMultiResult(row4);
+	//COMBINE WITH RESTRICTIONS NOT TEST YET
+	/**
+	unordered_map<string, string>* row4_5 = new unordered_map<string, string>();
+	(*row4_5)["ben"] = "b";
+	(*row4_5)["ken"] = "90";
+	obj4.insertMultiResult(row4_5);
 
-	(*row4)["ben"] = "b";
-	(*row4)["ken"] = "100";
-	obj4.insertMultiResult(row4);
+	unordered_map<string, string>* row4_6 = new unordered_map<string, string>();
+	(*row4_6)["ben"] = "b";
+	(*row4_6)["ken"] = "100";
+	obj4.insertMultiResult(row4_6);
 
-	(*row4)["ben"] = "b";
-	(*row4)["ken"] = "70";
-	obj4.insertMultiResult(row4);
+	unordered_map<string, string>* row4_7 = new unordered_map<string, string>();
+	(*row4_7)["ben"] = "b";
+	(*row4_7)["ken"] = "70";
+	obj4.insertMultiResult(row4_7);
 	obj4.push();
 
 	CPPUNIT_ASSERT(obj4.isClausePass() == true);
-	CPPUNIT_ASSERT(obj4.hasResults("anne") == true);
+	//obj4.hasResults("ben");
+	//bool test = obj4.hasResults("ben");
+	//CPPUNIT_ASSERT(obj4.hasResults("anne") == true);
+					/**
 	CPPUNIT_ASSERT(obj4.hasResults("ben") == true);
 	CPPUNIT_ASSERT(obj4.hasResults("ken") == true);
 	CPPUNIT_ASSERT(obj4.getResultsTableSize() == 6);
-
-	obj4.~Results();
 
 	// Test 3 - eliminating existing results
 	// Purpose: check if results are eliminated correctly by the 
@@ -325,11 +343,12 @@ void ResultsTest::testInsertMultiResult() {
 	// ken has results: 90, 100, 70
 
 	Results obj5 = Results();
-	unordered_map<string, string>* row4 = new unordered_map<string, string>();
-	(*row4)["anne"] = "1";
-	(*row4)["ben"] = "a";
-	obj4.insertMultiResult(row4);
+	unordered_map<string, string>* row5 = new unordered_map<string, string>();
+	(*row5)["anne"] = "1";
+	(*row5)["ben"] = "a";
+	obj5.insertMultiResult(row5);
 	// STOPPED HERE.
+	**/
 }
 
 void ResultsTest::testSelectSyn() {

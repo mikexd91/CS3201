@@ -207,12 +207,11 @@ void Results::pushSingleSet() {
 				}
 			}
 		}
-
-		resultsTable.clear();
-		resultsTable = resultsTableTemp;
-		resultsTableTemp.clear();
-		singleInsertSet.clear();
 	}
+	resultsTable.clear();
+	resultsTable = resultsTableTemp;
+	resultsTableTemp.clear();
+	singleInsertSet.clear();
 }
 
 Results::Row* Results::getDuplicateRow(Row row) {
@@ -294,8 +293,7 @@ bool Results::test2() {
 
 Results::Results(void)
 {
-	//will be set to false by the Results class if no result is inserted by the clause
-	clausePassed = true;
+	clausePassed = false;
 	singleInsertFlag = false;
 	multiInsertFlag = false;
 
@@ -315,6 +313,10 @@ bool Results::isClausePass() {
 	return clausePassed;
 }
 	
+void Results::setClausePass() {
+	clausePassed = true;
+}
+
 void Results::setClauseFail() {
 	clausePassed = false;
 }
@@ -400,17 +402,19 @@ bool Results::insertResult(string syn, string value) {
 // called after all results have been inserted. push tells me what to delete
 bool Results::push() {
 	if (singleInsertFlag) {
+		setClausePass();
 		pushSingleSet();
 		resetClauseFlags();
 		return true;
 	} else if (multiInsertFlag) {
+		setClausePass();
 		pushMultiSet();
 		resetClauseFlags();
 		return true;
 	} else {
 		//no result is inserted -> clause returned null
-		resultsTable.clear();
 		setClauseFail();
+		resultsTable.clear();
 		return false;
 	}
 }
@@ -420,7 +424,7 @@ int Results::getResultsTableSize() {
 }
 
 //For testing
-
+/**
 int main() {
 
 	Results r = Results();
@@ -448,11 +452,13 @@ int main() {
 	r.insertResult("s", "2");
 	r.insertResult("s", "3");
 	r.push();
+	**/
 	/**
 	//Test elimination of results
 	r.insertResult("b", "3");
 	r.push();
 	**/
+/**
 	//Test elimination of results for multi-syn
 	Results::Row* row4 = new Results::Row();
 	(*row4)["a"] = "2";
@@ -474,5 +480,8 @@ int main() {
 	r.insertMultiResult(row7);
 	r.push();
 	unordered_set<string> test = r.selectSyn("s");
+
 }
+
+**/
 
