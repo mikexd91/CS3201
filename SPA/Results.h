@@ -1,11 +1,12 @@
 #pragma once
 #include <string>
-#include <unordered_set>
 #include "boost/unordered_map.hpp"
+#include "boost/unordered_set.hpp"
 #include <set>
 
 using namespace std;
 using boost::unordered_map;
+using boost::unordered_set;
 
 namespace ResultsConstants {
 	const enum Category {
