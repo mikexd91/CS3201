@@ -1,10 +1,11 @@
 #pragma once
 #include <string>
 #include <unordered_set>
-#include <unordered_map>
+#include "boost/unordered_map.hpp"
 #include <set>
 
 using namespace std;
+using boost::unordered_map;
 
 namespace ResultsConstants {
 	const enum Category {
@@ -89,6 +90,7 @@ private:
 	void fillConstrainAndToAddSynSet();
 	void addToResults(Row synRow, Row resultsRow);
 	void setClauseFail();
+	void setClausePass();
 	Row* getDuplicateRow(Row row);
 };
 

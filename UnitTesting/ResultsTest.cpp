@@ -10,399 +10,348 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ResultsTest );
 
 void ResultsTest::testHasResults() {
 	Results obj = Results();
-	CPPUNIT_ASSERT(obj.test() == true);
-	//CPPUNIT_ASSERT(obj.test2() == true);
-	CPPUNIT_ASSERT(obj.getResultsTableSize() == 1);
-	CPPUNIT_ASSERT(obj.hasResults("a") == true);
-}
-
-/*
-void ResultsTest::testCluasePass() {
-	Results obj = Results();
-	// isClausePass is false by default
-	CPPUNIT_ASSERT(obj.isClausePass() == false);
-	
-	// isCluasePass is set to true
-	obj.setClausePass();
-	CPPUNIT_ASSERT(obj.isClausePass() == true);
-
-	// isClausePass is set reset back to default
-	obj.resetClausePass();
-	CPPUNIT_ASSERT(obj.isClausePass() == false);
-}
-
-void ResultsTest::testHasResults() {
-	Results obj = Results();
 	// results obj has no results immediately after creation
 	CPPUNIT_ASSERT(obj.hasResults("a") == false);
 	CPPUNIT_ASSERT(obj.hasResults("1") == false);
-
-	
 }
-*/
-/*
-testInsertMultiResult will be used by clauses with more than 1 synonym,
-however, the clauses used will be fixed. 
-For instance, if the 3 clauses are a, b, c. Future inserts within a
-clause will be limited to synonym a, b, c.
-e.g. Clause(a, b) or Clause a(b, c)
-*/
-/*
+
+void ResultsTest::testIsClausePass() {
+	Results obj = Results();
+	// isClausePass is false by default
+	CPPUNIT_ASSERT(obj.isClausePass() == false);
+
+	// isClausePass will be set to true during insert
+	// hence it will be tested again in insert
+}
+
+void ResultsTest::testInsertResult() {
+	// test result obj as it is created
+
+	Results obj1 = Results();
+	// Inserting results for 1 synonym a
+	obj1.insertResult("a", "1");
+	obj1.insertResult("a", "2");
+	obj1.insertResult("a", "3");
+	obj1.push();
+
+	CPPUNIT_ASSERT(obj1.isClausePass() == true);
+	bool test = obj1.hasResults("a");
+	CPPUNIT_ASSERT(obj1.hasResults("a") == true);
+	CPPUNIT_ASSERT(obj1.getResultsTableSize() == 3);
+
+	// test results obj that has been passed around
+
+	// Test 1 - adding of 2 separate synonyms
+	// Purpose: check if results are combined correctly by the 
+	// number of rows
+	// Insert Synonym ah with results 1,1,2,3,4,5 (check for duplicates)
+	// Insert Synonym bah with results darkChocolate,milkChocolate,whiteChocolate
+	
+	Results obj2 = Results();
+	obj2.insertResult("ah", "1");
+	obj2.insertResult("ah", "2");
+	obj2.insertResult("ah", "1");
+	obj2.insertResult("ah", "3");
+	obj2.insertResult("ah", "4");
+	obj2.insertResult("ah", "5");
+	obj2.push();
+
+	CPPUNIT_ASSERT(obj2.isClausePass() == true);
+	CPPUNIT_ASSERT(obj2.hasResults("ah") == true);
+	CPPUNIT_ASSERT(obj2.getResultsTableSize() == 5);
+	
+	// TO ADD
+	// function to reset ClausePass and clean private variable states
+
+	obj2.insertResult("bah", "darkChocolate");
+	obj2.insertResult("bah", "milkChocolate");
+	obj2.insertResult("bah", "whiteChocolate");
+	obj2.push();
+
+	CPPUNIT_ASSERT(obj2.isClausePass() == true);
+	CPPUNIT_ASSERT(obj2.hasResults("ah") == true);
+	CPPUNIT_ASSERT(obj2.hasResults("bah") == true);
+	CPPUNIT_ASSERT(obj2.getResultsTableSize() == 15);
+	
+	// Test 2 - eliminating synonyms results
+	// Purpose: check if results are eliminated correctly by the 
+	// number of rows and synonyms remaining
+	// Insert synonym uk with results england, scotland, finland, 
+	// soland, sweden, arkland, borderland, wasteland
+	// Insert synonym uk with results england, scotland, sweden
+	// Insert nothing
+	// Insert england
+
+	Results obj3 = Results();
+	obj3.insertResult("uk", "england");
+	obj3.insertResult("uk", "scotland");
+	obj3.insertResult("uk", "finland");
+	obj3.insertResult("uk", "soland");
+	obj3.insertResult("uk", "sweden");
+	obj3.insertResult("uk", "arkland");
+	obj3.insertResult("uk", "borderland");
+	obj3.insertResult("uk", "wasteland");
+	obj3.push();
+
+	CPPUNIT_ASSERT(obj3.isClausePass() == true);
+	CPPUNIT_ASSERT(obj3.hasResults("uk") == true);
+	CPPUNIT_ASSERT(obj3.getResultsTableSize() == 8);
+
+	// TO ADD
+	// function to reset ClausePass and clean private variable states
+
+	obj3.insertResult("uk", "england");
+	obj3.insertResult("uk", "scotland");
+	obj3.insertResult("uk", "sweden");
+	obj3.push();
+
+	CPPUNIT_ASSERT(obj3.isClausePass() == true);
+	CPPUNIT_ASSERT(obj3.hasResults("uk") == true);
+	CPPUNIT_ASSERT(obj3.getResultsTableSize() == 3);
+
+	// TO ADD
+	// function to reset ClausePass and clean private variable states
+
+	//SHOULD WE DO AN ASSERTION INSTEAD OF FAILING THE CLAUSE
+	//BECAUSE A CLAUSE SHOULD NOT INSERT IN AN EMPTY STRING
+	/**
+	obj3.insertResult("sheep", "");
+	obj3.push();
+
+	CPPUNIT_ASSERT(obj3.isClausePass() == false);
+	CPPUNIT_ASSERT(obj3.hasResults("uk") == true);
+	CPPUNIT_ASSERT(obj3.hasResults("sheep") == false);
+	CPPUNIT_ASSERT(obj3.getResultsTableSize() == 3);
+
+	// TO ADD
+	// function to reset ClausePass and clean private variable states
+	**/
+	obj3.insertResult("uk", "england");
+	obj3.push();
+
+	CPPUNIT_ASSERT(obj3.isClausePass() == true);
+	CPPUNIT_ASSERT(obj3.hasResults("uk") == true);
+	CPPUNIT_ASSERT(obj3.getResultsTableSize() == 1);
+}
+
 void ResultsTest::testInsertMultiResult() {
 	// test result obj as it is created
-	
+
+	// Inserting results for 2 synonyms, anne and ben
+	// anne has results: 1, 2
+	// ben has results: a, b, c
 	Results obj1 = Results();
-	// test 1 time insertion, 3 synonyms at once
-	set<unordered_map<string, string>> resultSet1;
-	unordered_map<string, string> resultsList1;
-	resultsList1["cee"] = "1";
-	resultsList1["jay"] = "2";
-	resultsList1["doubleu"] = "3";
+	unordered_map<string, string>* row1_1 = new unordered_map<string, string>();
+	(*row1_1)["anne"] = "1";
+	(*row1_1)["ben"] = "a";
+	obj1.insertMultiResult(row1_1);
 
-	resultSet1.insert(resultsList1);
+	unordered_map<string, string>* row1_2 = new unordered_map<string, string>();
+	(*row1_2)["anne"] = "1";
+	(*row1_2)["ben"] = "b";
+	obj1.insertMultiResult(row1_2);
 
-	CPPUNIT_ASSERT(obj1.insertMultiResult(resultSet1) == true);
-	CPPUNIT_ASSERT(obj1.hasResults("cee") == false);
-	CPPUNIT_ASSERT(obj1.pushChanges() == true);
-	CPPUNIT_ASSERT(obj1.hasResults("cee") == true);
-	CPPUNIT_ASSERT(obj1.hasResults("jay") == true);
-	CPPUNIT_ASSERT(obj1.hasResults("doubleu") == true);
-	CPPUNIT_ASSERT(obj1.getResultsTableSize() == 1);
+	unordered_map<string, string>* row1_3 = new unordered_map<string, string>();
+	(*row1_3)["anne"] = "1";
+	(*row1_3)["ben"] = "c";
+	obj1.insertMultiResult(row1_3);
 
+	unordered_map<string, string>* row1_4 = new unordered_map<string, string>();
+	(*row1_4)["anne"] = "2";
+	(*row1_4)["ben"] = "a";
+	obj1.insertMultiResult(row1_4);
+
+	unordered_map<string, string>* row1_5 = new unordered_map<string, string>();
+	(*row1_5)["anne"] = "2";
+	(*row1_5)["ben"] = "b";
+	obj1.insertMultiResult(row1_5);
+
+	unordered_map<string, string>* row1_6 = new unordered_map<string, string>();
+	(*row1_6)["anne"] = "2";
+	(*row1_6)["ben"] = "c";
+	obj1.insertMultiResult(row1_6);
+	obj1.push();
+
+	CPPUNIT_ASSERT(obj1.isClausePass() == true);
+	CPPUNIT_ASSERT(obj1.hasResults("anne") == true);
+	CPPUNIT_ASSERT(obj1.hasResults("ben") == true);
+	CPPUNIT_ASSERT(obj1.getResultsTableSize() == 6);
+
+	//comment out empty results section
+	/**
+	// test empty results
 	Results obj2 = Results();
-	// test 1 time insertion, 2 synonyms at once
-	set<unordered_map<string, string>> resultSet2;
-	unordered_map<string, string> resultsList2;
-	resultsList2["manga"] = "com";
-	resultsList2["fox"] = "me";
+	unordered_map<string, string>* row2 = new unordered_map<string, string>();
+	(*row2)["anne"] = "";
+	(*row2)["ben"] = "";
+	obj2.insertMultiResult(row2);
+	obj2.push();
 
-	resultSet2.insert(resultsList2);
+	CPPUNIT_ASSERT(obj2.isClausePass() == false);
+	CPPUNIT_ASSERT(obj2.hasResults("anne") == false);
+	CPPUNIT_ASSERT(obj2.hasResults("ben") == false);
+	CPPUNIT_ASSERT(obj2.getResultsTableSize() == 0);
+	**/
 
-	CPPUNIT_ASSERT(obj2.insertMultiResult(resultSet2) == true);
-	CPPUNIT_ASSERT(obj2.pushChanges() == true);
-	CPPUNIT_ASSERT(obj2.getResultsTableSize() == 1);
-	CPPUNIT_ASSERT(obj2.hasResults("manga") == true);
-	CPPUNIT_ASSERT(obj2.hasResults("fox") == true);
-	
+	// test results obj that has been passed around
+
+	// Test 1 - adding of 4 separate synonyms
+	// Purpose: check if results are combined correctly by the 
+	// number of rows
+	// Inserting results for 4 synonyms, anne,ben,ken,dan
+	// first clause:
+	// anne has results: 1, 2
+	// ben has results: a, b
+	// next clause:
+	// ken has results: 8, 9
+	// dan has results: x, y
 	Results obj3 = Results();
-	// test repeated insertions, 3 synonyms at once
-	set<unordered_map<string, string>> resultSet3;
-	unordered_map<string, string> resultsList3;
-	resultsList3["lsm1301"] = "C";
-	resultsList3["cs3219"] = "C";
-	resultsList3["cs3202"] = "C";
-	
-	resultSet3.insert(resultsList3);
+	unordered_map<string, string>* row3_1 = new unordered_map<string, string>();
+	(*row3_1)["anne"] = "1";
+	(*row3_1)["ben"] = "a";
+	obj3.insertMultiResult(row3_1);
 
-	resultsList3["lsm1301"] = "B";
-	resultsList3["cs3219"] = "B";
-	resultsList3["cs3202"] = "B";
+	unordered_map<string, string>* row3_2 = new unordered_map<string, string>();
+	(*row3_2)["anne"] = "1";
+	(*row3_2)["ben"] = "b";
+	obj3.insertMultiResult(row3_2);
 
-	resultSet3.insert(resultsList3);
+	unordered_map<string, string>* row3_3 = new unordered_map<string, string>();
+	(*row3_3)["anne"] = "2";
+	(*row3_3)["ben"] = "a";
+	obj3.insertMultiResult(row3_3);
 
-	resultsList3["lsm1301"] = "A";
-	resultsList3["cs3219"] = "A";
-	resultsList3["cs3202"] = "A";
+	unordered_map<string, string>* row3_4 = new unordered_map<string, string>();
+	(*row3_4)["anne"] = "2";
+	(*row3_4)["ben"] = "b";
+	obj3.insertMultiResult(row3_4);
+	obj3.push();
 
-	resultSet3.insert(resultsList3);
-	
-	CPPUNIT_ASSERT(obj3.insertMultiResult(resultSet3) == true);
-	CPPUNIT_ASSERT(obj3.pushChanges() == true);
-	CPPUNIT_ASSERT(obj3.getResultsTableSize() == 3);
-	CPPUNIT_ASSERT(obj3.hasResults("lsm1301") == true);
-	CPPUNIT_ASSERT(obj3.hasResults("cs3219") == true);
-	CPPUNIT_ASSERT(obj3.hasResults("cs3202") == true);
+	CPPUNIT_ASSERT(obj3.isClausePass() == true);
+	CPPUNIT_ASSERT(obj3.hasResults("anne") == true);
+	CPPUNIT_ASSERT(obj3.hasResults("ben") == true);
+	CPPUNIT_ASSERT(obj3.getResultsTableSize() == 4);
+
+	// TO ADD
+	// function to reset ClausePass and clean private variable states
+
+	unordered_map<string, string>* row3_5 = new unordered_map<string, string>();
+	(*row3_5)["ken"] = "8";
+	(*row3_5)["dan"] = "x";
+	obj3.insertMultiResult(row3_5);
+
+	unordered_map<string, string>* row3_6 = new unordered_map<string, string>();
+	(*row3_6)["ken"] = "8";
+	(*row3_6)["dan"] = "y";
+	obj3.insertMultiResult(row3_6);
+
+	unordered_map<string, string>* row3_7 = new unordered_map<string, string>();
+	(*row3_7)["ken"] = "9";
+	(*row3_7)["dan"] = "x";
+	obj3.insertMultiResult(row3_7);
+
+	unordered_map<string, string>* row3_8 = new unordered_map<string, string>();
+	(*row3_8)["ken"] = "9";
+	(*row3_8)["dan"] = "y";
+	obj3.insertMultiResult(row3_8);
+	obj3.push();
+
+	CPPUNIT_ASSERT(obj3.isClausePass() == true);
+	CPPUNIT_ASSERT(obj3.hasResults("anne") == true);
+	CPPUNIT_ASSERT(obj3.hasResults("ben") == true);
+	CPPUNIT_ASSERT(obj3.hasResults("ken") == true);
+	CPPUNIT_ASSERT(obj3.hasResults("dan") == true);
+	CPPUNIT_ASSERT(obj3.getResultsTableSize() == 16);
+
+	// Test 2 - adding of 1 existing synonym
+	// Purpose: check if results are eliminated correctly by the 
+	// number of rows
+	// Inserting results for 3 synonyms, anne,ben,ken
+	// first clause:
+	// anne has results: 1, 2
+	// ben has results: a, b
+	// next clause:
+	// ben has results: b
+	// ken has results: 90, 100, 70
 
 	Results obj4 = Results();
-	// test repeated values
-	set<unordered_map<string, string>> resultSet4;
-	unordered_map<string, string> resultsList4;
-									// (a, b)
-	resultsList4["a"] = "1";		
-	resultsList4["b"] = "x";		// (1, x)
+	unordered_map<string, string>* row4_1 = new unordered_map<string, string>();
+	(*row4_1)["anne"] = "1";
+	(*row4_1)["ben"] = "a";
+	obj4.insertMultiResult(row4_1);
 
-	resultSet4.insert(resultsList4);
+	unordered_map<string, string>* row4_2 = new unordered_map<string, string>();
+	(*row4_2)["anne"] = "1";
+	(*row4_2)["ben"] = "b";
+	obj4.insertMultiResult(row4_2);
 
-	resultsList4["a"] = "1";		
-	resultsList4["b"] = "y";		// (1, y)
+	unordered_map<string, string>* row4_3 = new unordered_map<string, string>();
+	(*row4_3)["anne"] = "2";
+	(*row4_3)["ben"] = "a";
+	obj4.insertMultiResult(row4_3);
 
-	resultSet4.insert(resultsList4);
+	unordered_map<string, string>* row4_4 = new unordered_map<string, string>();
+	(*row4_4)["anne"] = "2";
+	(*row4_4)["ben"] = "b";
+	obj4.insertMultiResult(row4_4);
+	obj4.push();
 
-	resultsList4["a"] = "1";		
-	resultsList4["b"] = "z";		// (1, z)
+	CPPUNIT_ASSERT(obj4.isClausePass() == true);
+	CPPUNIT_ASSERT(obj4.hasResults("anne") == true);
+	CPPUNIT_ASSERT(obj4.hasResults("ben") == true);
+	CPPUNIT_ASSERT(obj4.getResultsTableSize() == 4);
 
-	resultSet4.insert(resultsList4);
+	// TO ADD
+	// function to reset ClausePass and clean private variable states
 
-	resultsList4["a"] = "2";		
-	resultsList4["b"] = "x";		// (2, x)
+	//COMBINE WITH RESTRICTIONS NOT TEST YET
+	unordered_map<string, string>* row4_5 = new unordered_map<string, string>();
+	(*row4_5)["ben"] = "b";
+	(*row4_5)["ken"] = "90";
+	obj4.insertMultiResult(row4_5);
 
-	resultSet4.insert(resultsList4);
+	unordered_map<string, string>* row4_6 = new unordered_map<string, string>();
+	(*row4_6)["ben"] = "b";
+	(*row4_6)["ken"] = "100";
+	obj4.insertMultiResult(row4_6);
 
-	resultsList4["a"] = "2";		
-	resultsList4["b"] = "y";		// (2, y)
+	unordered_map<string, string>* row4_7 = new unordered_map<string, string>();
+	(*row4_7)["ben"] = "b";
+	(*row4_7)["ken"] = "70";
+	obj4.insertMultiResult(row4_7);
+	obj4.push();
 
-	resultSet4.insert(resultsList4);
-
-	resultsList4["a"] = "2";		
-	resultsList4["b"] = "z";		// (2, z)
-
-	resultSet4.insert(resultsList4);
-
-	CPPUNIT_ASSERT(obj4.insertMultiResult(resultSet4) == true);
-	CPPUNIT_ASSERT(obj4.pushChanges() == true);
+	bool test = obj4.hasResults("anne");
+	CPPUNIT_ASSERT(obj4.isClausePass() == true);
+	CPPUNIT_ASSERT(obj4.hasResults("anne") == true);
+	CPPUNIT_ASSERT(obj4.hasResults("ben") == true);
+	CPPUNIT_ASSERT(obj4.hasResults("ken") == true);
 	CPPUNIT_ASSERT(obj4.getResultsTableSize() == 6);
-	*/
-	/* facilitate results obj being passed to each clause.
-		test result obj if it retains previous values.
-	*/
-/*
-	Results obj = Results();
-	// test repeated insertions, 2 synonyms at once
-	set<unordered_map<string, string>> setA;
-	unordered_map<string, string> mapA;
-	
-	mapA["budapest"] = "1";
-	mapA["gg"] = "2";
 
-	setA.insert(mapA);
-
-	mapA["budapest"] = "11";
-	mapA["gg"] = "22";
-
-	setA.insert(mapA);
-
-	mapA["budapest"] = "111";
-	mapA["gg"] = "222";
-
-	setA.insert(mapA);
-
-	CPPUNIT_ASSERT(obj.insertMultiResult(setA) == true);
-	CPPUNIT_ASSERT(obj.pushChanges() == true);
-	CPPUNIT_ASSERT(obj.getResultsTableSize() == 3);
-	CPPUNIT_ASSERT(obj.hasResults("budapest") == true);
-	CPPUNIT_ASSERT(obj.hasResults("gg") == true);
-
-	// test repeated insertions, another 2, but different synonyms at once
-	set<unordered_map<string, string>> setB;
-	unordered_map<string, string> mapB;
-
-	mapB["penang"] = "georgeTown";
-	mapB["KL"] = "popiah";
-	mapB["johor"] = "seafood";
-
-	setB.insert(mapB);
-
-	mapB["penang"] = "seaside";
-	mapB["KL"] = "town";
-	mapB["johor"] = "town";
-
-	setB.insert(mapB);
-
-	mapB["penang"] = "wallArt";
-	mapB["KL"] = "streetArt";
-	mapB["johor"] = "noArt";
-
-	setB.insert(mapB);
-
-	CPPUNIT_ASSERT(obj.insertMultiResult(setB) == true);
-	CPPUNIT_ASSERT(obj.pushChanges() == true);
-	CPPUNIT_ASSERT(obj.getResultsTableSize() == 9);
-	CPPUNIT_ASSERT(obj.hasResults("budapest") == true);
-	CPPUNIT_ASSERT(obj.hasResults("gg") == true);
-	CPPUNIT_ASSERT(obj.hasResults("KL") == true);
-	CPPUNIT_ASSERT(obj.hasResults("penang") == true);
-
-}
-*/
-/*
-insertResult will be used by clauses with 1 synonym,
-e.g. Clause(1, a) or Clause (_, b)
-Hence, within a clause, only 1 synonym will be added at a time.
-*/
-/*
-void ResultsTest::testInsertResult() {
-	// test results obj as it is created
-	
-	Results obj1 = Results();
-	// test insertion 1 synonym and 1 value
-	CPPUNIT_ASSERT(obj1.insertResult("a", "99") == true);
-	CPPUNIT_ASSERT(obj1.hasResults("a") == false);
-	CPPUNIT_ASSERT(obj1.pushChanges() == true);
-	CPPUNIT_ASSERT(obj1.hasResults("a") == true);
-	CPPUNIT_ASSERT(obj1.getResultsTableSize() == 1);
-	
-	Results obj2 = Results();
-	// test insertion of 1 synonym and 3 values
-	CPPUNIT_ASSERT(obj2.insertResult("var","pn") == true);
-	CPPUNIT_ASSERT(obj2.insertResult("var", "leon") == true);
-	CPPUNIT_ASSERT(obj2.insertResult("var", "jon") == true);
-
-	CPPUNIT_ASSERT(obj2.hasResults("var") == false);
-	CPPUNIT_ASSERT(obj2.pushChanges() == true);
-	CPPUNIT_ASSERT(obj2.hasResults("var") == true);
-	CPPUNIT_ASSERT(obj2.getResultsTableSize() == 3);
-	
-	Results obj3 = Results();
-	// test insertion of 3 synonyms and 1 value
-	CPPUNIT_ASSERT(obj3.insertResult("GG","711") == true);
-	CPPUNIT_ASSERT(obj3.pushChanges() == true);
-	CPPUNIT_ASSERT(obj3.insertResult("Sistar","711") == true);
-	CPPUNIT_ASSERT(obj3.pushChanges() == true);
-	CPPUNIT_ASSERT(obj3.insertResult("2NE1","711") == true);
-	CPPUNIT_ASSERT(obj3.pushChanges() == true);
-
-	CPPUNIT_ASSERT(obj3.hasResults("GG") == true);
-	CPPUNIT_ASSERT(obj3.hasResults("Sistar") == true);
-	CPPUNIT_ASSERT(obj3.hasResults("2NE1") == true);
-	CPPUNIT_ASSERT(obj3.getResultsTableSize() == 1);
-
-	Results obj4 = Results();
-	// test for duplicates with repeated insertions
-	CPPUNIT_ASSERT(obj4.insertResult("grade", "Aplus") == true);
-	CPPUNIT_ASSERT(obj4.insertResult("grade", "Bplus") == true);
-	CPPUNIT_ASSERT(obj4.insertResult("grade", "Aplus") == true);
-	CPPUNIT_ASSERT(obj4.pushChanges() == true);
-
-	CPPUNIT_ASSERT(obj4.hasResults("grade") == true);
-	CPPUNIT_ASSERT(obj4.getResultsTableSize() == 2);
-
+	// Test 3 - eliminating existing results
+	// Purpose: check if results are eliminated correctly by the 
+	// number of rows
+	// Inserting results for 3 synonyms, anne,ben,ken
+	// first clause:
+	// anne has results: 1, 2
+	// ben has results: a, b
+	// next clause:
+	// ben has results: b
+	// ken has results: 90, 100, 70
+	/**
 	Results obj5 = Results();
-	// test empty insert
-	CPPUNIT_ASSERT(obj5.insertResult("", "") == false);
-	CPPUNIT_ASSERT(obj5.insertResult("a", "") == false);
-	CPPUNIT_ASSERT(obj5.insertResult("", "a") == false);
-	CPPUNIT_ASSERT(obj5.pushChanges() == false);
-	CPPUNIT_ASSERT(obj5.getResultsTableSize() == 0);
-	*/
-	/* facilitate results obj being passed to each clause.
-		test result obj if it retains previous values.
-	*/
-/*
-	Results obj = Results();
-	// test insertion 1 synonym and 1 value
-	CPPUNIT_ASSERT(obj.insertResult("a", "99") == true);
-	CPPUNIT_ASSERT(obj.hasResults("a") == false);
-	CPPUNIT_ASSERT(obj.pushChanges() == true);
-	CPPUNIT_ASSERT(obj.hasResults("a") == true);
-	
-	// test insertion of 1 synonym and 3 values
-	
-	CPPUNIT_ASSERT(obj.insertResult("var","pn") == true);
-	CPPUNIT_ASSERT(obj.insertResult("var", "leon") == true);
-	CPPUNIT_ASSERT(obj.insertResult("var", "jon") == true);
-	
-	CPPUNIT_ASSERT(obj.hasResults("var") == false);
-	CPPUNIT_ASSERT(obj.pushChanges() == true);
-	CPPUNIT_ASSERT(obj.hasResults("var") == true);
-	CPPUNIT_ASSERT(obj.hasResults("a") == true);
-	
-	// test inserton of 3 synonym and 1 value
-	CPPUNIT_ASSERT(obj.insertResult("GG","711") == true);
-	CPPUNIT_ASSERT(obj.pushChanges() == true);
-	CPPUNIT_ASSERT(obj.insertResult("Sistar","711") == true);
-	CPPUNIT_ASSERT(obj.pushChanges() == true);
-	CPPUNIT_ASSERT(obj.insertResult("2NE1","711") == true);
-	CPPUNIT_ASSERT(obj.pushChanges() == true);
-
-	CPPUNIT_ASSERT(obj.hasResults("GG") == true);
-	CPPUNIT_ASSERT(obj.hasResults("Sistar") == true);
-	CPPUNIT_ASSERT(obj.hasResults("2NE1") == true);
-	CPPUNIT_ASSERT(obj.getResultsTableSize() == 3);
-}
-*/
-
-//void ResultsTest::testInsertResultWhere() {
-	/* facilitate results obj being passed to each clause.
-		test result obj if it retains previous values.
-	*/
-	
-	//Results obj1 = Results();
-	/* test insertion of synonym c in the case of 1 common
-	synonym. Eg. clause(a,b) and clause(b,c) where resultsTable
-	already contain synonym a and b.
-
-	clause(a, b)	clause(b, c)
-		(1,2)			(2, 1)
-		(1,3)			(2, 2)
-		(1,4)			(3, 1)
-						(3, 2)
-	*/
-
-	// Setup of resultsTable
-/*
-	set<unordered_map<string, string>> resultSet1;
-	unordered_map<string, string> resultsList1;
-									// (a, b)
-	resultsList1["a"] = "1";		
-	resultsList1["b"] = "2";		// (1, 2)
-
-	resultSet1.insert(resultsList1);
-
-	resultsList1["a"] = "1";		
-	resultsList1["b"] = "3";		// (1, 3)
-
-	resultSet1.insert(resultsList1);
-
-	resultsList1["a"] = "1";		
-	resultsList1["b"] = "4";		// (1, 4)
-
-	resultSet1.insert(resultsList1);
-	CPPUNIT_ASSERT(obj1.insertMultiResult(resultSet1) == true);
-	CPPUNIT_ASSERT(obj1.pushChanges() == true);
-	CPPUNIT_ASSERT(obj1.hasResults("a") == true);
-	CPPUNIT_ASSERT(obj1.hasResults("b") == true);
-	// End of setup
-
-	// Setup of synonym c results
-	resultSet1.clear();
-	resultsList1.clear();
-
-	resultsList1["c"] = "1";		
-	resultSet1.insert(resultsList1);
-
-	resultsList1["c"] = "2";		
-	resultSet1.insert(resultsList1);
-
-	CPPUNIT_ASSERT(obj1.insertResultWhere("b", "2", resultSet1) == true);
-
-	resultsList1["c"] = "1";		
-	resultSet1.insert(resultsList1);
-
-	resultsList1["c"] = "2";		
-	resultSet1.insert(resultsList1);
-
-	CPPUNIT_ASSERT(obj1.insertResultWhere("b", "3", resultSet1) == true);
-	CPPUNIT_ASSERT(obj1.pushChanges() == true);
-	CPPUNIT_ASSERT(obj1.hasResults("a") == true);
-	CPPUNIT_ASSERT(obj1.hasResults("b") == true);
-	CPPUNIT_ASSERT(obj1.hasResults("c") == true);
-	CPPUNIT_ASSERT(obj1.getResultsTableSize() == 4);
-	// End of setup
-
-}
-*/
-/*
-void ResultsTest::testSelectMultiSyn() {
-	//CPPUNIT_ASSERT(r5.getSinglesResults() == r6.getSinglesResults());
+	unordered_map<string, string>* row5 = new unordered_map<string, string>();
+	(*row5)["anne"] = "1";
+	(*row5)["ben"] = "a";
+	obj5.insertMultiResult(row5);
+	// STOPPED HERE.
+	**/
 }
 
 void ResultsTest::testSelectSyn() {
-	//CPPUNIT_ASSERT(r5.getSinglesResults() == r6.getSinglesResults());
+
 }
 
-void ResultsTest::testSelectSynWhere() {
-	//CPPUNIT_ASSERT(r5.getSinglesResults() == r6.getSinglesResults());
-}
+void ResultsTest::testSelectMultiSyn() {
 
-void ResultsTest::testPushChanges() {
-	//CPPUNIT_ASSERT(r5.getSinglesResults() == r6.getSinglesResults());
 }
-
-void ResultsTest::testDelMultiResult() {
-	//CPPUNIT_ASSERT(r5.getSinglesResults() == r6.getSinglesResults());
-}
-
-void ResultsTest::testDelResult() {
-	//CPPUNIT_ASSERT(r5.getSinglesResults() == r6.getSinglesResults());
-}
-*/
