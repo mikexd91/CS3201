@@ -95,7 +95,6 @@ public:
 
 	// Testing
 	int getResultsTableSize();
-	ResultsTable getResultsTable();
 
 
 

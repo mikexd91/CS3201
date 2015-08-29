@@ -424,7 +424,3 @@ bool Results::push() {
 int Results::getResultsTableSize() {
 	return resultsTable.size();
 }
-
-Results::ResultsTable Results::getResultsTable() {
-	return resultsTable;
-}
