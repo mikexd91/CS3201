@@ -346,15 +346,15 @@ Results::ResultsTable Results::selectMultiSyn(unordered_set<string> synList) {
 	if (resultsTable.size() > 0 && synList.size() > 0) {
 		string syn;
 		Row results;
-		Row row;
 		
 		for (unordered_set<Row*>::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
+			Row* row = new Row();
 			for (unordered_set<string>::iterator j = synList.begin(); j != synList.end(); ++j) {
 				syn = *j;
 				results = *(*i);
-				row[syn] = results[syn];
-				rtnTable.insert(&row);
+				(*row)[syn] = results[syn];
 			}
+			rtnTable.insert(row);
 		}
 		
 	}
