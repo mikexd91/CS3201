@@ -29,17 +29,16 @@ bool Results::isConstrainFulfilled(Row synRow, Row resultsRow) {
 }
 
 void Results::addToResults(Row synRow, Row resultsRow) {
-	Row row;
 	string syn;
 	string value;
+	Row *newRow = getDuplicateRow(resultsRow);
 
 	for (set<string>::iterator i = toAddSyn.begin(); i != toAddSyn.end(); ++i) {
-		row = resultsRow;
 		syn = *i;
 		value = synRow[syn];
-		row[syn] = value;
-		resultsTableTemp.insert(&row);
+		(*newRow)[syn] = value;
 	}
+	resultsTableTemp.insert(newRow);
 }
 
 void Results::fillConstrainAndToAddSynSet() {
@@ -234,6 +233,7 @@ void Results::pushMultiSet() {
 			filterNonResults();
 			break;
 		case ResultsConstants::ONE_IN_TABLE:
+			//TESTED
 			combineWithRestrictions();
 			break;
 		case ResultsConstants::NONE_IN_TABLE:

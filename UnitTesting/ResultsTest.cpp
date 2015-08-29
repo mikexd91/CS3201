@@ -305,7 +305,6 @@ void ResultsTest::testInsertMultiResult() {
 	// function to reset ClausePass and clean private variable states
 
 	//COMBINE WITH RESTRICTIONS NOT TEST YET
-	/**
 	unordered_map<string, string>* row4_5 = new unordered_map<string, string>();
 	(*row4_5)["ben"] = "b";
 	(*row4_5)["ken"] = "90";
@@ -322,11 +321,9 @@ void ResultsTest::testInsertMultiResult() {
 	obj4.insertMultiResult(row4_7);
 	obj4.push();
 
+	bool test = obj4.hasResults("anne");
 	CPPUNIT_ASSERT(obj4.isClausePass() == true);
-	//obj4.hasResults("ben");
-	//bool test = obj4.hasResults("ben");
-	//CPPUNIT_ASSERT(obj4.hasResults("anne") == true);
-					/**
+	CPPUNIT_ASSERT(obj4.hasResults("anne") == true);
 	CPPUNIT_ASSERT(obj4.hasResults("ben") == true);
 	CPPUNIT_ASSERT(obj4.hasResults("ken") == true);
 	CPPUNIT_ASSERT(obj4.getResultsTableSize() == 6);
@@ -341,7 +338,7 @@ void ResultsTest::testInsertMultiResult() {
 	// next clause:
 	// ben has results: b
 	// ken has results: 90, 100, 70
-
+	/**
 	Results obj5 = Results();
 	unordered_map<string, string>* row5 = new unordered_map<string, string>();
 	(*row5)["anne"] = "1";
