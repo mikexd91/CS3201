@@ -39,17 +39,7 @@ void QueryParserTest::tearDown(){
 
 CPPUNIT_TEST_SUITE_REGISTRATION( QueryParserTest);
 
-void QueryParserTest::testTokeniser(){
-	string const WORDS = "One two three four five";
-	vector<string> wordList = QueryParser::tokeniser(WORDS, ' ');
-
-	CPPUNIT_ASSERT(wordList.at(0) == "One");
-	CPPUNIT_ASSERT(wordList.at(1) == "two");
-	CPPUNIT_ASSERT(wordList.at(2) == "three");
-	CPPUNIT_ASSERT(wordList.at(3) == "four");
-	CPPUNIT_ASSERT(wordList.at(4) == "five");
-}
-
+/*
 void QueryParserTest::testDeclaration(){
 	
 	/*Query* result = new Query();
@@ -61,7 +51,7 @@ void QueryParserTest::testDeclaration(){
 	boost::unordered_map<string, string> decList = result->getDeclarationList();
 	CPPUNIT_ASSERT(decList.at("a") == stringconst::ARG_ASSIGN);
 	CPPUNIT_ASSERT(decList.at("a1") == stringconst::ARG_ASSIGN);*/
-	
+/*	
 	Query* result2 = new Query();
 	string const USER_INPUT2 = "constant c; prog_line p";
 	
@@ -209,4 +199,34 @@ void QueryParserTest::testParser(){
 	PatternAssgClause* pac2_q1 = dynamic_cast<PatternAssgClause*>(cls_q1.at(2));
 	CPPUNIT_ASSERT(pac2_q1->getExpression() == stringconst::STRING_EMPTY);
 	CPPUNIT_ASSERT(pac2_q1->getSynonym() == "a");*/
+//}
+
+void QueryParserTest::testTokeniser(){
+	string testString = "this is  the   string     to be   split";
+	vector<string> testResult = QueryParser::tokeniser(testString, ' ');
+	for (size_t i = 0; i<testResult.size(); i++){
+		cout << "[" << testResult.at(i) << "]";
+	}
+	CPPUNIT_ASSERT("this" == testResult.at(0));
+	CPPUNIT_ASSERT("is" == testResult.at(1));
+	CPPUNIT_ASSERT("the" == testResult.at(2));
+	CPPUNIT_ASSERT("string" == testResult.at(3));
+	CPPUNIT_ASSERT("to" == testResult.at(4));
+	CPPUNIT_ASSERT("be" == testResult.at(5));
+	CPPUNIT_ASSERT("split" == testResult.at(6));
+}
+
+void QueryParserTest::testQueueBuilder(){
+	string testString = "Select a such that wtf(a,b)";
+	queue<string> testQueue = QueryParser::queueBuilder(testString);
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "Select");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "a");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "such");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "that");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "wtf");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "(");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "a");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == ",");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "b");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == ")");
 }

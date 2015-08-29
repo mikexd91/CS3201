@@ -85,10 +85,31 @@ string QueryParser::queueToString(queue<string> input){
 	return ss.str();
 }
 
+/*
 vector<string> QueryParser::tokeniser(string input, char delim){
 	vector<string>* elems = new vector<string>();
     split(input, delim, elems);
     return *elems;
+}*/
+
+vector<string> QueryParser::tokeniser(string input, char delim){
+	vector<string> elems;
+	size_t pos = input.find_first_of(delim);
+	while (pos != string::npos){
+		if (pos == 0){
+			string temp = input.substr(1);
+			cout << "{" << input << "}" << "[" << temp << "]";
+			input = temp;
+			pos = temp.find_first_of(delim);
+		} else {
+			string s = input.substr(0, pos);
+			elems.push_back(s);
+			input = input.substr(pos + 1);
+			pos = input.find_first_of(delim);
+		}
+	}
+	elems.push_back(input);
+	return elems;
 }
 
 bool QueryParser::containsOperator(string s){
