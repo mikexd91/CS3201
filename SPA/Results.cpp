@@ -47,7 +47,7 @@ void Results::fillConstrainAndToAddSynSet() {
 	Row insertRow = *(*j);
 	string syn;
 
-	for (unordered_map<string, string>::iterator iter = insertRow.begin(); iter != insertRow.end(); ++iter) {
+	for (Row::iterator iter = insertRow.begin(); iter != insertRow.end(); ++iter) {
 		syn = iter->first;
 		if (hasResults(syn)) {
 			constrainSyn.insert(syn);
@@ -70,7 +70,7 @@ void Results::filterNonResults() {
 		for (unordered_set<Row*>::iterator j = multiInsertSet.begin(); j != multiInsertSet.end(); ++j) {
 			bool toInsert = true;
 			synRow = *(*j);
-			for (unordered_map<string, string>::iterator k = synRow.begin(); k != synRow.end(); ++k) {
+			for (Row::iterator k = synRow.begin(); k != synRow.end(); ++k) {
 				// check if syn matches in resultsRow
 				key = k->first;
 				value = k->second;
@@ -116,7 +116,7 @@ void Results::createNewRows() {
 	for (unordered_set<Row*>::iterator j = multiInsertSet.begin(); j != multiInsertSet.end(); ++j) {
 		Row* resultsRow = new Row();
 		Row synRow = *(*j);
-		for (unordered_map<string, string>::iterator k = synRow.begin(); k != synRow.end(); ++k) {
+		for (Row::iterator k = synRow.begin(); k != synRow.end(); ++k) {
 			string key = k->first;
 			string value = k->second;
 			(*resultsRow)[key] = value;
@@ -135,7 +135,7 @@ void Results::combineNewSyns() {
 		for (unordered_set<Row*>::iterator j = multiInsertSet.begin(); j != multiInsertSet.end(); ++j) {
 			synRow = *(*j);
 			Row* newRow = getDuplicateRow(resultsRow);
-			for (unordered_map<string, string>::iterator k = synRow.begin(); k != synRow.end(); ++k) {
+			for (Row::iterator k = synRow.begin(); k != synRow.end(); ++k) {
 				key = k->first;
 				value = k->second;
 				(*newRow)[key] = value;
@@ -155,7 +155,7 @@ ResultsConstants::Category Results::getCategory() {
 		return ResultsConstants::EMPTY_TABLE;
 	}
 
-	for (unordered_map<string, string>::iterator i = firstRow.begin(); i != firstRow.end(); ++i) {
+	for (Row::iterator i = firstRow.begin(); i != firstRow.end(); ++i) {
 		synonym = i->first;
 
 		if (!hasResults(synonym)) {
@@ -339,6 +339,8 @@ bool Results::hasResults(string syn) {
 	return false;
 }
 
+
+
 // for clauses with 2 or more synonyms
 Results::ResultsTable Results::selectMultiSyn(unordered_set<string> synList) {
 	ResultsTable rtnTable = ResultsTable();
@@ -421,4 +423,8 @@ bool Results::push() {
 
 int Results::getResultsTableSize() {
 	return resultsTable.size();
+}
+
+Results::ResultsTable Results::getResultsTable() {
+	return resultsTable;
 }

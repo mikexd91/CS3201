@@ -3,6 +3,7 @@
 #include "boost/unordered_map.hpp"
 #include "boost/unordered_set.hpp"
 #include <set>
+#include <list>
 
 using namespace std;
 using boost::unordered_map;
@@ -21,9 +22,55 @@ class Results
 {
 public:
 	typedef unordered_map<string, string> Row;
-	typedef unordered_set<unordered_map<string, string>*> ResultsTable;
+
+	//hashing function for row in results table
+	struct RowHash {
+		size_t operator()(Row* const& r) const {
+			size_t seed = 0;
+			//first get keys of row
+			list<string> keys;
+			for (unordered_map<string, string>::const_iterator it = (*r).begin(); it != (*r).end(); ++it) {
+				  keys.push_back(it->first);
+			}
+			keys.sort();
+
+			for (list<string>::iterator keyIter = keys.begin(); keyIter != keys.end(); ++keyIter) {
+				string currentKey = *keyIter;
+				//cannot use r[currentKey] as [] operator is a non-const function
+				const string value = (*r)[currentKey];
+				boost::hash_combine(seed, currentKey);
+				boost::hash_combine(seed, value);
+			}
+			return seed;
+		};
+	};
+
+	//equality function for row in results table
+	struct RowEquality {
+		bool operator() (Row* const& r1, Row* const& r2) const {
+			list<string> keys;
+			for (unordered_map<string, string>::const_iterator it = r1->begin(); it != r1->end(); ++it) {
+				  keys.push_back(it->first);
+			}
+			keys.sort();
+
+			for (list<string>::iterator keyIter = keys.begin(); keyIter != keys.end(); ++keyIter) {
+				string currentKey = *keyIter;
+				const string value1 = (*r1)[currentKey];
+				const string value2 = (*r2)[currentKey];
+				if (value1 != value2) {
+					return false;
+				}
+			}
+			return true;
+		};
+	};
+
+	//for storing of rows in results tables
+	typedef unordered_set<Row*, RowHash, RowEquality> ResultsTable;
 	Results(void);
 	~Results(void); // how to clear all results, especially resultsTable.
+
 	bool test();
 	bool test2();
 	bool moveResultsToSet();
@@ -48,6 +95,7 @@ public:
 
 	// Testing
 	int getResultsTableSize();
+	ResultsTable getResultsTable();
 
 
 
