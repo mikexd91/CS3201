@@ -806,6 +806,7 @@ void ResultsTest::testSelectMultiSyn() {
 
 	int size = resTable4.size();
 	CPPUNIT_ASSERT(resTable4.size() == 4);
+	// 5 for lao, tao, bao and 4 for cao
 	CPPUNIT_ASSERT(obj4.getResultsTableSize() == 19);
 
 
