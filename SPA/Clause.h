@@ -52,12 +52,6 @@ protected:
 	virtual unordered_set<unordered_map<string, string>> getAllS1AndS2();
 
 
-	//add rows generated to results table directly
-	virtual void evaluateS1FixedS2Wild(Results::ResultsTable table);
-	virtual void evaluateS1WildS2Fixed(Results::ResultsTable table);
-	virtual void evaluateS1WildS2Wild(Results::ResultsTable table);
-
-
 	
 public:
 	Clause(void);
