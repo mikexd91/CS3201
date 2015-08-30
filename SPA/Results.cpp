@@ -414,10 +414,15 @@ bool Results::push() {
 		resetClauseFlags();
 		return true;
 	} else {
-		//no result is inserted -> clause returned null
-		setClauseFail();
-		resultsTable.clear();
-		return false;
+		//there was no insert
+		//either there was no result returned from the clause, (clause will be false)
+		//or it was just a check (e.g. Parent(1,2)) (clause will be true if check passed, else it will remain false)
+		if (!isClausePass()) {
+			resultsTable.clear();
+			return false;
+		} else {
+			return true;
+		}
 	}
 }
 
