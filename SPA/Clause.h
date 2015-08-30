@@ -87,6 +87,5 @@ public:
 
 	
 	bool evaluate(Results*); 
-	virtual bool isValid()=0;
 	
 };
