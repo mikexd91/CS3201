@@ -31,31 +31,24 @@ protected:
 	string patternArg;
 	Results::ResultsTable table;
 	
-	//to clear table or not
 	//e.g. Parent(string,string)
-	virtual bool evaluateS1FixedS2Fixed(string, string);
+	virtual bool evaluateS1FixedS2Fixed(string, string)=0;
 	//e.g. Parent(_,_)
-	virtual bool evaluateS1GenericS2Generic();
+	virtual bool evaluateS1GenericS2Generic()=0;
 	//e.g. Parent(_,string)
-	virtual bool evaluateS1GenericS2Fixed(string);
+	virtual bool evaluateS1GenericS2Fixed(string)=0;
 	//Parent(string,_)
-	virtual bool evaluateS1FixedS2Generic(string);
+	virtual bool evaluateS1FixedS2Generic(string)=0;
 	//Parent(string,s2)
-	virtual unordered_set<string> getAllS2WithS1Fixed(string);
+	virtual unordered_set<string> getAllS2WithS1Fixed(string)=0;
 	//Parent(_,s2)
-	virtual unordered_set<string> getAllS2();
+	virtual unordered_set<string> getAllS2()=0;
 	//Parent(s1,string)
-	virtual unordered_set<string> getAllS1WithS2Fixed(string);
+	virtual unordered_set<string> getAllS1WithS2Fixed(string)=0;
 	//Parent(s1,__)
-	virtual unordered_set<string> getAllS1();
+	virtual unordered_set<string> getAllS1()=0;
 	//Parent(s1,s2)
-	virtual unordered_set<unordered_map<string, string>> getAllS1AndS2();
-
-
-	//add rows generated to results table directly
-	virtual void evaluateS1FixedS2Wild(Results::ResultsTable table);
-	virtual void evaluateS1WildS2Fixed(Results::ResultsTable table);
-	virtual void evaluateS1WildS2Wild(Results::ResultsTable table);
+	virtual unordered_set<unordered_map<string, string>> getAllS1AndS2()=0;
 
 
 	
