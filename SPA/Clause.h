@@ -1,5 +1,7 @@
 #pragma once
 #include "Results.h"
+#include "StmtTable.h"
+#include "VarTable.h"
 #include <vector>
 #include <string>
 #include <map>
@@ -50,7 +52,11 @@ protected:
 	//Parent(s1,s2)
 	virtual unordered_set<unordered_map<string, string>> getAllS1AndS2()=0;
 
+	bool isValidityCheck();
+	bool isValidStmtNumber(string);
+	bool isValidVariable(string);
 
+	virtual bool childValidityCheck();
 	
 public:
 	Clause(void);

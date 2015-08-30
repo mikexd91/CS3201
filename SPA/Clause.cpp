@@ -6,6 +6,7 @@
 
 using std::map;
 using std::string;
+using namespace stringconst;
 
 Clause::Clause(void){
 	this->firstArgFixed = false;
@@ -71,9 +72,49 @@ bool Clause::getSecondArgFixed(void){
 	return this->secondArgFixed;
 }
 
+bool Clause::isValidityCheck() {
+	bool firstSynValidity = true;
+	bool secondSynValidity = true;
+
+	if(firstArgFixed) {
+		if(firstArgType == ARG_STATEMENT) {
+			firstSynValidity = isValidStmtNumber(firstArg);
+		}
+	}
+
+	if(secondArgFixed) {
+		if(secondArgType == ARG_STATEMENT) {
+			secondSynValidity = isValidStmtNumber(secondArg);
+		} else if(secondArgType == ARG_VARIABLE) {
+			secondSynValidity = isValidVariable(secondArg);
+		}
+	}
+
+	return firstSynValidity && secondSynValidity;
+}
+
+bool isValidStmtNumber(string stmt) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	int stmtNum = atoi(stmt.c_str());
+	return (stmtNum < stmtTable->getAllStmts().size()) || (stmtNum > 0);
+}
+
+bool isValidVariable(string var) {
+	VarTable* varTable = VarTable::getInstance();
+	return varTable->contains(var);
+}
+
 bool Clause::evaluate(Results* res) {
 	//clause is pass at each stage
 	res->setClauseFail();
+	if(!isValidityCheck()) {
+		return false;
+	}
+	
+	if(!childValidityCheck()) {
+		return false;
+	}
+
 	bool isFirstFixed = this->getFirstArgFixed();
 	bool isSecondFixed = this->getSecondArgFixed();
 	string firstArgSyn = this->getFirstArg();
