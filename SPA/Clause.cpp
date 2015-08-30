@@ -19,11 +19,6 @@ Clause::Clause(ClauseType type){
 Clause::~Clause(void){
 }
 
-void Clause::setResultsTable(Results::ResultsTable table) {
-	this->table = table;
-}
-
-
 ClauseType Clause::getClauseType() {
 	return clauseType;
 }

@@ -30,7 +30,7 @@ protected:
 	string secondArgType;
 	string patternArg;
 	Results::ResultsTable table;
-
+	
 	//to clear table or not
 	//e.g. Parent(string,string)
 	virtual bool evaluateS1FixedS2Fixed(string, string);
@@ -63,8 +63,6 @@ public:
 	Clause(void);
 	Clause(ClauseType);
 	~Clause(void);
-
-	void setResultsTable(Results::ResultsTable);
 
 	ClauseType getClauseType();
 	void setFirstArg(string);
