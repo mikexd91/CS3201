@@ -305,6 +305,11 @@ Results::Results(void)
 	toAddSyn = set<string>();
 }
 
+//testing
+Results::ResultsTable Results::getResultsTable() {
+	return resultsTable;
+}
+
 Results::~Results(void)
 {
 }
