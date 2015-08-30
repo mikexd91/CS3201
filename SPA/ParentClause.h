@@ -36,10 +36,7 @@ protected:
 
 
 private:
-	int getParent(int stmtNum);										// gets immdiate parent of stmtNum
-	bool evaluateS1FixedS2Fixed();
-	
-
+	int getParent(int, string);									// gets immdiate parent of stmtNum
 
 	// set<set<int>> getAllParent(int stmtNum1, int stmtNum2);		// gets lists of all possible Parents
 

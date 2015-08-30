@@ -49,7 +49,7 @@ bool ParentClause::evaluateS1GenericS2Generic() {
 
 //e.g. Parent(_,2)
 bool ParentClause::evaluateS1GenericS2Fixed(string s2) {
-	int parentNum = getParent(stoi(s2));
+	int parentNum = getParent(stoi(s2), stringconst::ARG_STATEMENT);
 	return parentNum != -1;
 }
 
@@ -92,15 +92,17 @@ unordered_set<string> ParentClause::getAllS2() {
 			stmtNumSet.insert(boost::lexical_cast<string>(*iter));
 		}
 	}
+
 	return stmtNumSet;
 }
 
 //e.g. Parent(s1,2)
 //get parent of string
 unordered_set<string> ParentClause::getAllS1WithS2Fixed(string s2) {
-	int parentNum = getParent(stoi(s2));
+	int parentNum = getParent(stoi(s2), firstArgType);
 	unordered_set<string> stmtNumSet;
 	if (parentNum != -1) {
+
 		stmtNumSet.insert(boost::lexical_cast<string>(parentNum));
 	}
 	return stmtNumSet;
@@ -120,7 +122,7 @@ bool ParentClause::isParent(string stmt1, string stmt2) {
 	int stmtNum1 = atoi(stmt1.c_str());
 	int stmtNum2 = atoi(stmt2.c_str());
 	int stmt;
-	stmt = getParent(stmtNum2);
+	stmt = getParent(stmtNum2, stringconst::ARG_STATEMENT);
 	return stmt != -1 && stmt == stmtNum1;
 }
 
@@ -141,9 +143,10 @@ set<int> ParentClause::getChildren(int stmtNum, string stmtArgType) {
 	}
 }
 
-int ParentClause::getParent(int stmtNum) {
+int ParentClause::getParent(int stmtNum, string argType) {
+	NodeType nodeType = Utils::convertArgTypeToNodeType(argType);
 	Statement* stmtObj = stmtTable->getStmtObj(stmtNum);
-	if (stmtObj == nullptr) {
+	if (stmtObj == nullptr || (nodeType != NULL_ && stmtObj->getType() != nodeType)) {
 		return -1;
 	} else {
 		int stmt = stmtObj->getParent();
