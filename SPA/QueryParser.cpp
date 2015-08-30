@@ -100,6 +100,9 @@ vector<string> QueryParser::tokeniser(string input, char delim){
 			string temp = input.substr(1);
 			input = temp;
 			pos = temp.find_first_of(delim);
+		} else if (pos == input.length()){
+			elems.push_back(input.substr(0, pos - 1));
+			pos = string::npos;
 		} else {
 			string s = input.substr(0, pos);
 			elems.push_back(s);
@@ -107,7 +110,9 @@ vector<string> QueryParser::tokeniser(string input, char delim){
 			pos = input.find_first_of(delim);
 		}
 	}
-	elems.push_back(input);
+	if (pos == string::npos && !input.empty()){
+		elems.push_back(input);
+	}
 	return elems;
 }
 
@@ -388,6 +393,7 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 	unexpectedEndCheck(line);
 	
 	string secondArg = Utils::getWordAndPop(line);
+	cout << "secondArg=" << secondArg << "|";
 	if (decList.find(secondArg) == decList.end()){
 		if (!Utils::isValidConstant(secondArg)){
 			if (!contains(secondArg, "\"")){
@@ -421,6 +427,7 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 
 	//error here, check the queue
 	string closeParen = Utils::getWordAndPop(line);
+	cout << "[" << closeParen << "]";
 	if (closeParen != ")"){
 		throw InvalidSyntaxException();
 	}
@@ -692,7 +699,9 @@ vector<string> QueryParser::splitByDelims(vector<string> in, string delim){
 			current = after;
 			pos = current.find_first_of(delim);			
 		}
-		out.push_back(current);
+		if (!current.empty()){
+			out.push_back(current);
+		}
 	}
 	return out;
 }
