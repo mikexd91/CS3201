@@ -81,6 +81,12 @@ bool Clause::isBaseValidityCheck() {
 			firstSynValidity = isValidStmtNumber(firstArg);
 		} else if(firstArgType == ARG_PROCEDURE) {
 			firstSynValidity = isValidProcedure(firstArg);
+		} else if(firstArgType == ARG_IF) {
+			firstSynValidity = isValidIf(firstArg);
+		} else if(firstArgType == ARG_WHILE) {
+			firstSynValidity = isValidWhile(firstArg);
+		} else if(firstArgType == ARG_ASSIGN) {
+			firstSynValidity = isValidAssign(firstArg);
 		}
 	}
 
@@ -118,6 +124,24 @@ bool Clause::isValidProcedure(string proc) {
 bool Clause::isValidConstant(string constant) {
 	ConstTable* constTable = ConstTable::getInstance();
 	return constTable->contains(constant);
+}
+
+bool Clause::isValidIf(string ifStr) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	int stmtNum = atoi(ifStr.c_str());
+	return stmtTable->getStmtObj(stmtNum)->getType() == IF_STMT_;
+}
+
+bool Clause::isValidAssign(string assign) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	int stmtNum = atoi(assign.c_str());
+	return stmtTable->getStmtObj(stmtNum)->getType() == ASSIGN_STMT_;
+}
+
+bool Clause::isValidWhile(string whileStr) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	int stmtNum = atoi(whileStr.c_str());
+	return stmtTable->getStmtObj(stmtNum)->getType() == WHILE_STMT_;
 }
 
 bool Clause::evaluate(Results* res) {
