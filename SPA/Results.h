@@ -48,6 +48,9 @@ public:
 	//equality function for row in results table
 	struct RowEquality {
 		bool operator() (Row* const& r1, Row* const& r2) const {
+			if (r1->size() != r2->size()) {
+				return false;
+			}
 			list<string> keys;
 			for (unordered_map<string, string>::const_iterator it = r1->begin(); it != r1->end(); ++it) {
 				  keys.push_back(it->first);

@@ -387,8 +387,10 @@ bool Results::insertMultiResult(Row* results) {
 	if ((*results).size() > 0) {
 		multiInsertSet.insert(results);
 		multiInsertFlag = true;
+		delete results;
 		return true;
 	}
+	delete results;
 	return false;
 }
 // for clauses with 1 synonym
