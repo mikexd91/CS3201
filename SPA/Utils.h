@@ -68,6 +68,7 @@ namespace stringconst{
 	string const ARG_BOOLEAN = "boolean";
 	string const ARG_CONSTANT = "constant";
 	string const ARG_GENERIC = "underscore";
+	string const ARG_PROCEDURE = "procedure";
 
 	const string DELIM_STRING = " ;={}";
 	const char DELIMITERS[] = { ';', '=', '{', '}' };

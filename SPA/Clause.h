@@ -1,5 +1,9 @@
 #pragma once
+#include "ConstTable.h"
+#include "ProcTable.h"
 #include "Results.h"
+#include "StmtTable.h"
+#include "VarTable.h"
 #include <vector>
 #include <string>
 #include <map>
@@ -49,9 +53,18 @@ protected:
 	virtual unordered_set<string> getAllS1()=0;
 	//Parent(s1,s2)
 	virtual unordered_set<unordered_map<string, string>> getAllS1AndS2()=0;
-
-
 	
+	//Check the validity of the specific clause
+	//Substitute the original clause isValid for this one
+	virtual bool isValid();
+	
+private:
+	bool isBaseValidityCheck();
+	bool isValidStmtNumber(string);
+	bool isValidVariable(string);
+	bool isValidProcedure(string);
+	bool isValidConstant(string);
+
 public:
 	Clause(void);
 	Clause(ClauseType);
