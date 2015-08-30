@@ -1,4 +1,6 @@
 #pragma once
+#include "ConstTable.h"
+#include "ProcTable.h"
 #include "Results.h"
 #include "StmtTable.h"
 #include "VarTable.h"
@@ -55,6 +57,8 @@ protected:
 	bool isValidityCheck();
 	bool isValidStmtNumber(string);
 	bool isValidVariable(string);
+	bool isValidProcedure(string);
+	bool isValidConstant(string);
 
 	virtual bool childValidityCheck();
 	

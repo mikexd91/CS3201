@@ -77,31 +77,47 @@ bool Clause::isValidityCheck() {
 	bool secondSynValidity = true;
 
 	if(firstArgFixed) {
-		if(firstArgType == ARG_STATEMENT) {
+		if(firstArgType == ARG_PROGLINE) {
 			firstSynValidity = isValidStmtNumber(firstArg);
+		} else if(firstArgType == ARG_PROCEDURE) {
+			firstSynValidity = isValidProcedure(firstArg);
 		}
 	}
 
 	if(secondArgFixed) {
-		if(secondArgType == ARG_STATEMENT) {
+		if(secondArgType == ARG_PROGLINE) {
 			secondSynValidity = isValidStmtNumber(secondArg);
 		} else if(secondArgType == ARG_VARIABLE) {
 			secondSynValidity = isValidVariable(secondArg);
+		} else if(secondArgType == ARG_PROCEDURE) {
+			secondSynValidity = isValidProcedure(secondArg);
+		} else if(secondArgType == ARG_CONSTANT) {
+			secondSynValidity = isValidConstant(secondArg);
 		}
 	}
 
 	return firstSynValidity && secondSynValidity;
 }
 
-bool isValidStmtNumber(string stmt) {
+bool Clause::isValidStmtNumber(string stmt) {
 	StmtTable* stmtTable = StmtTable::getInstance();
 	int stmtNum = atoi(stmt.c_str());
 	return (stmtNum < stmtTable->getAllStmts().size()) || (stmtNum > 0);
 }
 
-bool isValidVariable(string var) {
+bool Clause::isValidVariable(string var) {
 	VarTable* varTable = VarTable::getInstance();
 	return varTable->contains(var);
+}
+
+bool Clause::isValidProcedure(string proc) {
+	ProcTable* procTable = ProcTable::getInstance();
+	return procTable->contains(proc);
+}
+
+bool Clause::isValidConstant(string constant) {
+	ConstTable* constTable = ConstTable::getInstance();
+	return constTable->contains(constant);
 }
 
 bool Clause::evaluate(Results* res) {
