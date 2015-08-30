@@ -12,6 +12,7 @@ ParentClause::ParentClause(void):Clause(PARENT_){
 ParentClause::~ParentClause(void){
 }
 
+//to add if statements
 bool ParentClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
@@ -19,6 +20,101 @@ bool ParentClause::isValid(void){
 	bool secondArg = (secondType == stringconst::ARG_WHILE) || (secondType == stringconst::ARG_STATEMENT) || (secondType == stringconst::ARG_ASSIGN) || (secondType == stringconst::ARG_PROGLINE) || (secondType == stringconst::ARG_GENERIC);
 	return firstArg && secondArg;
 }
+
+//e.g. Parent(1,2)
+bool ParentClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
+	return isParent(firstArg, secondArg);
+}
+
+//e.g. Parent(_,_)
+bool ParentClause::evaluateS1GenericS2Generic() {
+	//get all while statements
+	set<Statement*> whileStmts = stmtTable->getWhileStmts();
+	//check if while stmt has children
+	for (set<Statement*>::iterator iter = whileStmts.begin(); iter != whileStmts.end(); ++iter) {
+		Statement* whileStmt = *iter;
+		if (!whileStmt->getChildren().empty()) {
+			return true;
+		}
+	}
+	set<Statement*> ifStmts = stmtTable->getIfStmts();
+	for (set<Statement*>::iterator iter = ifStmts.begin(); iter != ifStmts.end(); ++iter) {
+		Statement* ifStmt = *iter;
+		if (!ifStmt->getChildren().empty()) {
+			return true;
+		}
+	}
+	return false;
+}
+
+//e.g. Parent(_,2)
+bool ParentClause::evaluateS1GenericS2Fixed(string s2) {
+	int parentNum = getParent(stoi(s2));
+	return parentNum != -1;
+}
+
+//e.g. Parent(2,_)
+bool ParentClause::evaluateS1FixedS2Generic(string s1){
+	set<int> children =  getChildren(stoi(s1), stringconst::ARG_STATEMENT);
+	return !children.empty();
+}
+
+//e.g. Parent(2, s2)
+unordered_set<string> ParentClause::getAllS2WithS1Fixed(string s1) {
+	string argType = this->secondArgType;
+	set<int> children = getChildren(stoi(s1), argType);
+	unordered_set<string> stmtNumSet;
+	for (set<int>::iterator iter = children.begin(); iter != children.end(); iter++) {
+		stmtNumSet.insert(boost::lexical_cast<string>(*iter));
+	}
+	return stmtNumSet;
+}
+
+//e.g. Parent(_, s2)
+//get all children
+unordered_set<string> ParentClause::getAllS2() {
+	unordered_set<string> stmtNumSet;
+	//get all while statements
+	set<Statement*> whileStmts = stmtTable->getWhileStmts();
+	//check if while stmt has children
+	for (set<Statement*>::iterator iter = whileStmts.begin(); iter != whileStmts.end(); ++iter) {
+		Statement* whileStmt = *iter;
+		set<int> children = getChildren(whileStmt->getStmtNum(), this->secondArgType);
+		for (set<int>::iterator iter = children.begin(); iter != children.end(); iter++) {
+			stmtNumSet.insert(boost::lexical_cast<string>(*iter));
+		}
+	}
+	set<Statement*> ifStmts = stmtTable->getIfStmts();
+	for (set<Statement*>::iterator iter = ifStmts.begin(); iter != ifStmts.end(); ++iter) {
+		Statement* ifStmt = *iter;
+		set<int> children = getChildren(ifStmt->getStmtNum(), this->secondArgType);
+		for (set<int>::iterator iter = children.begin(); iter != children.end(); iter++) {
+			stmtNumSet.insert(boost::lexical_cast<string>(*iter));
+		}
+	}
+	return stmtNumSet;
+}
+
+//e.g. Parent(s1,2)
+//get parent of string
+unordered_set<string> ParentClause::getAllS1WithS2Fixed(string s2) {
+	int parentNum = getParent(stoi(s2));
+	unordered_set<string> stmtNumSet;
+	if (parentNum != -1) {
+		stmtNumSet.insert(boost::lexical_cast<string>(parentNum));
+	}
+	return stmtNumSet;
+}
+
+unordered_set<string> ParentClause::getAllS1() {
+	return unordered_set<string>();
+}
+
+unordered_set<unordered_map<string, string>> ParentClause::getAllS1AndS2() {
+	return unordered_set<unordered_map<string, string>>();
+}
+
+
 
 bool ParentClause::isParent(string stmt1, string stmt2) {
 	int stmtNum1 = atoi(stmt1.c_str());
@@ -28,8 +124,7 @@ bool ParentClause::isParent(string stmt1, string stmt2) {
 	return stmt != -1 && stmt == stmtNum1;
 }
 
-set<int> ParentClause::getChildren(string stmt, string stmtArgType) {
-	int stmtNum = atoi(stmt.c_str());
+set<int> ParentClause::getChildren(int stmtNum, string stmtArgType) {
 	Statement* stmtObj = stmtTable->getStmtObj(stmtNum);
 	if (stmtObj == nullptr) {
 		return set<int>();
@@ -55,6 +150,10 @@ int ParentClause::getParent(int stmtNum) {
 		return stmt;
 	}
 }
+
+
+
+/**
 
 Results* ParentClause::addParentPairToResult(set<Statement*> containerStmts, string firstArgType, string secondArgType) {
 	Results* resultsObj = new Results();
@@ -93,16 +192,9 @@ Results* ParentClause::addParentPairToResult(set<Statement*> containerStmts, str
 	}
 	return resultsObj;
 }
+**/
 
-
-Results* ParentClause::evaluateS1FixedS2Fixed(string firstArgSyn, string secondArgSyn) {
-	Results* resultsObj = new Results();
-	bool isClauseTrue = this->isParent(firstArgSyn, secondArgSyn);
-	resultsObj->setClausePassed(isClauseTrue);
-	resultsObj->setNumOfSyn(0);
-	return resultsObj;
-}
-
+/**
 Results* ParentClause::evaluateS1FixedS2Wild(string firstArgSyn, string secondArgSyn, string secondArgType) {
 	Results* resultsObj = new Results();
 	set<int> children = getChildren(firstArgSyn, secondArgType);
@@ -168,6 +260,7 @@ Results* ParentClause::evaluateS1WildS2Wild(string firstArgSyn, string secondArg
 	return resultsObj;
 }
 
+
 Results ParentClause::evaluate(void) {
 	Results* resultsObj = new Results();
 	bool isFirstFixed = this->getFirstArgFixed();
@@ -189,3 +282,4 @@ Results ParentClause::evaluate(void) {
 	return *resultsObj;
 }
 
+**/

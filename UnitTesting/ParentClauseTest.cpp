@@ -187,6 +187,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ParentClauseTest );
 
 
 void ParentClauseTest::testParentFixedFixedPass() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("1");
 	m1->setFirstArgFixed(true);
@@ -196,12 +197,13 @@ void ParentClauseTest::testParentFixedFixedPass() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	Results r1 = m1->evaluate();
-	r1.isClausePassed();
-	//CPPUNIT_ASSERT(r1.isClausePassed());
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 0);
 }
 
 void ParentClauseTest::testParentFixedFixedFail() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("2");
 	m1->setFirstArgFixed(true);
@@ -211,12 +213,14 @@ void ParentClauseTest::testParentFixedFixedFail() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(!r1.isClausePassed());
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(!result);
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 0);
 
 }
 
 void ParentClauseTest::testParentSynFixedPass() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("s");
 	m1->setFirstArgFixed(false);
@@ -226,14 +230,17 @@ void ParentClauseTest::testParentSynFixedPass() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s");
-	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "3");
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(res.hasResults("s"));
+	unordered_set<string> s = res.selectSyn("s");
+	CPPUNIT_ASSERT(s.size() == 1);
+	CPPUNIT_ASSERT(s.find("3") != s.end());
 }
 
 void ParentClauseTest::testParentSynFixedFail() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("s");
 	m1->setFirstArgFixed(false);
@@ -243,12 +250,13 @@ void ParentClauseTest::testParentSynFixedFail() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(!r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 0);
+	bool result =  m1->evaluate(&res);
+	CPPUNIT_ASSERT(!result);
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 0);
 }
 
 void ParentClauseTest::testParentFixedSynPass() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("1");
 	m1->setFirstArgFixed(true);
@@ -258,16 +266,16 @@ void ParentClauseTest::testParentFixedSynPass() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s");
-	
-	vector<string> results = r1.getSinglesResults();
-	CPPUNIT_ASSERT(results.size() == 2);
-	CPPUNIT_ASSERT(find(results.begin(), results.end(), "2") != results.end());
-	CPPUNIT_ASSERT(find(results.begin(), results.end(), "3") != results.end());
-}
+	bool r1 = m1->evaluate(&res);
+	CPPUNIT_ASSERT(r1);
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 2);
 
+	unordered_set<string> s = res.selectSyn("s");
+	CPPUNIT_ASSERT(s.size() == 2);
+	CPPUNIT_ASSERT(s.find("2") != s.end());
+	CPPUNIT_ASSERT(s.find("3") != s.end());
+}
+/**
 void ParentClauseTest::testParentFixedSynPassWithWhile() {
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("1");
@@ -377,8 +385,6 @@ void ParentClauseTest::testParentSecondUnderscorePass() {
 	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
 	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s2");
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 2);
-	/*CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "1");
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(1) == "3");*/
 }
 
 void ParentClauseTest::testParentBothUnderscorePass() {
@@ -415,3 +421,4 @@ void ParentClauseTest::testParentSynSynPassWithWhile() {
 	pair<string, string> pair0("1","3");
 	CPPUNIT_ASSERT(r1.getPairResults().at(0) == pair0);
 }
+**/
