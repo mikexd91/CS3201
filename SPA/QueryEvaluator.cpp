@@ -5,6 +5,7 @@
 #include "StmtTable.h"
 #include "VarTable.h"
 #include "ConstTable.h"
+#include "boost/unordered_set.hpp"
 
 #include <boost\foreach.hpp>
 #include <vector>
@@ -21,6 +22,7 @@ QueryEvaluator::~QueryEvaluator(void)
 {
 }
 
+/*
 set<string> QueryEvaluator::getAllSynValues(vector<StringPair> selectList) {
 	StringPair syn = selectList.at(0);
 	string synType = syn.getSecond();
@@ -98,184 +100,105 @@ set<string> QueryEvaluator::getAllSynValues(vector<StringPair> selectList) {
 	
 }
 
-// return the NUMBER of times syn appear in both obj1 and obj2
-int QueryEvaluator::getNumOfRepeatingSyn(Results obj1, Results obj2) {
-	int numSynObj1 = obj1.getNumOfSyn();
-	int numSynObj2 = obj2.getNumOfSyn();
+*/
 
-	if (numSynObj1 == 2 && numSynObj2 == 1) {
-		int countr = getNumOfRepeatingSyn(obj2, obj1);
-		return countr;
-	}
-	
-	string firstSyn;
-	string secondSyn;
-	string thirdSyn;
-	string forthSyn;
-	int count = 0;
-
-	if (numSynObj1 == 1 && numSynObj2 == 1) {
-		firstSyn = obj1.getFirstClauseSyn();
-		secondSyn = obj2.getFirstClauseSyn();
-		if (firstSyn == secondSyn) {
-			count++;
-		} 
-		return count;
-	}
-
-	if (numSynObj1 == 1 && numSynObj2 == 2) {
-		firstSyn = obj1.getFirstClauseSyn();
-		secondSyn = obj2.getFirstClauseSyn();
-		thirdSyn = obj2.getSecondClauseSyn();
-
-		if (firstSyn == secondSyn) {
-			count++;
-		}
-
-		if (firstSyn == thirdSyn) {
-			count++;
-		}
-		return count;
-	}
-
-	if (numSynObj1 == 2 && numSynObj2 == 2) {
-		firstSyn = obj1.getFirstClauseSyn();
-		secondSyn = obj1.getSecondClauseSyn();
-		thirdSyn = obj2.getFirstClauseSyn();
-		forthSyn = obj2.getSecondClauseSyn();
-
-		if (firstSyn == thirdSyn) {
-			count++;
-		}
-
-		if (secondSyn == thirdSyn) {
-			count++;
-		}
-
-		if (secondSyn == forthSyn) {
-			count++;
-		}
-		return count;
-	}
-
-	return count;
-}
-
-set<string> QueryEvaluator::evaluateOneClause(Results res, vector<StringPair> selectList) {
-	string syn = selectList.at(0).getFirst();
-
-	if (res.usesSyn(syn) && res.isClausePassed()) {
-
-		set<string> result = res.getSelectSynResult(syn);
-		return result;
-	}
-
-	if (!res.usesSyn(syn) && res.isClausePassed()) {
-
-		set<string> result = getAllSynValues(selectList);
-		return result;
-	}
-
-	return set<string>();
-	
-}
-
-set<string> QueryEvaluator::evaluateManyClause(vector<Results> resultList, vector<StringPair> selectList) {
-	Results obj1 = resultList.at(0);
-	Results obj2 = resultList.at(1);
-	int numRepeatingSyn = getNumOfRepeatingSyn(obj1, obj2);
-	string syn = selectList.at(0).getFirst();
-	
-	switch (numRepeatingSyn) {
-		case 0 : 
-			if (obj1.isClausePassed() && obj2.isClausePassed()) {
-				if (obj1.usesSyn(syn)) {
-					set<string> result = obj1.getSelectSynResult(syn);
-					return result;
-				}
-
-				if (obj2.usesSyn(syn)) {
-					set<string> result = obj2.getSelectSynResult(syn);
-					return result;
-				}
-
-				if (!obj1.usesSyn(syn) && !obj2.usesSyn(syn)) {
-					set<string> result = getAllSynValues(selectList);
-					return result;
-				}
-			}
-			return set<string>();
-
-		case 1 :
-			if (obj1.isClausePassed() && obj2.isClausePassed()) {
-				obj1.getIntersect(obj2);
-
-				if (obj1.usesSyn(syn)) {
-					set<string> result = obj1.getSelectSynResult(syn);
-					return result;
-				}
-
-				if (obj2.usesSyn(syn)) {
-					set<string> result = obj2.getSelectSynResult(syn);
-					return result;
-				}
-
-				if (!obj1.usesSyn(syn) && !obj2.usesSyn(syn)) {
-					set<string> result = getAllSynValues(selectList);
-					return result;
-				}
-
-			}
-			return set<string>();
-
-		case 2 :
-			if (obj1.isClausePassed() && obj2.isClausePassed()) {
-				obj1.getIntersect(obj2);
-
-				if (obj1.usesSyn(syn)) {
-					set<string> result = obj1.getSelectSynResult(syn);
-					return result;
-				
-				} else {
-					set<string> result = getAllSynValues(selectList);
-					return result;
-				}
-				
-			}
-			return set<string>();
-
-		default :
-			return set<string>();
-	}
-	
-}
-
-set<string> QueryEvaluator::evaluateQuery(Query q) {
+/*
+1) checks if clauseList is empty
+2a) empty clauseList, return all values in selectList
+2b) clauseList is not empty, create a new Results obj and pass obj into clause.evaluate
+3) after each clause, check if clausePass == true. if clausePass == true, continue.
+if clausePass == false, stop and return empty set<string>
+4) get select synonym from results obj 
+5) return set<string>
+*/
+Results* QueryEvaluator::evaluateQuery(Query q) {
+	Results *obj = new Results();
 	vector<Clause*> clauseList = q.getClauseList();
 	vector<StringPair> selectList = q.getSelectList();
-	
+
 	if (clauseList.empty()) {
-		set<string> result = getAllSynValues(selectList);
-		return result;
+		getValuesFromTables(selectList, *obj);
+		return obj;
 
 	} else {
-		vector<Results> resultsList;
+		
+		for (vector<Clause*>::iterator i = clauseList.begin(); i != clauseList.end(); ++i) {
+			(*i)->evaluate(*obj);
 
-		for (vector<Clause*>::iterator iter = clauseList.begin() ; iter != clauseList.end(); iter++) {
-			Clause* c = *iter;
-			Results res = c->evaluate();
-			resultsList.push_back(res);
+			if (!obj->isClausePass()) {
+				return NULL;
+			} else {
+				// requires results to provide a method to reset clausePass to fail
+			}
 		}
 
-		if (resultsList.size() == 1) {
-			Results resultObj= resultsList.front();
-			set<string> result = evaluateOneClause(resultObj, selectList);
-			return result;
+		Results* processedObj = getValuesFromResult(selectList, *obj);
+		delete obj;
+		return processedObj;
+	}
+}
 
-		} else {
-			set<string> result = evaluateManyClause(resultsList, selectList);
-			return result;
-		}
+// 1) for each synonym in selectList, it will get values of the synonym type
+// 2) values will be inserted into results obj with insertSyn
+void QueryEvaluator::getValuesFromTables(vector<StringPair> selectList,  Results &obj) {
+	
+}
+
+// 1. check which synonym in selectList are not in results table
+// 2. getValuesFromTables for 1.
+// 3. get selectList synonyms from resultsTable
+// 4. put results from 3. into a new results obj
+// 5. return obj in 4.
+Results* QueryEvaluator::getValuesFromResult(vector<StringPair> selectList, Results &obj) {
+	vector<StringPair> synToAddToResults = getSynonymNotInResult(selectList, obj);
+	if (synToAddToResults.size() > 0) {
+		getValuesFromTables(synToAddToResults, obj);
 	}
 	
+	unordered_set<string> synList = vectorToSet(selectList);
+	Results::ResultsTable res = obj.selectMultiSyn(synList);
+	Results* processedRes = new Results();
+	insertProcessResults(res, *processedRes);
+
+	return processedRes;
+}
+
+vector<StringPair> QueryEvaluator::getSynonymNotInResult(vector<StringPair> selectList,  Results &obj) {
+	vector<StringPair> synNotInResults = vector<StringPair>();
+	StringPair p;
+	string synonym;
+	
+	for (vector<StringPair>::iterator i = selectList.begin(); i != selectList.end(); ++i) {
+		p = *i;
+		synonym = p.getFirst();
+		if (!obj.hasResults(synonym)) {
+			synNotInResults.push_back(p);
+		}
+	}
+	return synNotInResults;
+}
+
+unordered_set<string> QueryEvaluator::vectorToSet(vector<StringPair> selectList) {
+	unordered_set<string> synList = unordered_set<string>();
+	string syn;
+
+	for (vector<StringPair>::iterator i = selectList.begin(); i != selectList.end(); ++i) {
+		syn = i->getFirst();
+		synList.insert(syn);
+	}
+	return synList;
+}
+
+void insertProcessResults(Results::ResultsTable resultsTble, Results &obj) {
+	Results::Row resTbleRow;
+	for (Results::ResultsTable::iterator i = resultsTble.begin(); i != resultsTble.end(); ++i) {
+		Results::Row* newRow = new Results::Row();
+		resTbleRow = *(*i);
+		for (Results::Row::iterator j = resTbleRow.begin(); j != resTbleRow.end(); ++j) {
+			string key = j->first;
+			string value = j->second;
+			(*newRow)[key] = value;
+		}
+		obj.insertMultiResult(newRow);
+	}
 }
