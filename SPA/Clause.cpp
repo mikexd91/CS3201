@@ -6,6 +6,7 @@
 
 using std::map;
 using std::string;
+using namespace stringconst;
 
 Clause::Clause(void){
 	this->firstArgFixed = false;
@@ -71,9 +72,65 @@ bool Clause::getSecondArgFixed(void){
 	return this->secondArgFixed;
 }
 
+bool Clause::isBaseValidityCheck() {
+	bool firstSynValidity = true;
+	bool secondSynValidity = true;
+
+	if(firstArgFixed) {
+		if(firstArgType == ARG_PROGLINE) {
+			firstSynValidity = isValidStmtNumber(firstArg);
+		} else if(firstArgType == ARG_PROCEDURE) {
+			firstSynValidity = isValidProcedure(firstArg);
+		}
+	}
+
+	if(secondArgFixed) {
+		if(secondArgType == ARG_PROGLINE) {
+			secondSynValidity = isValidStmtNumber(secondArg);
+		} else if(secondArgType == ARG_VARIABLE) {
+			secondSynValidity = isValidVariable(secondArg);
+		} else if(secondArgType == ARG_PROCEDURE) {
+			secondSynValidity = isValidProcedure(secondArg);
+		} else if(secondArgType == ARG_CONSTANT) {
+			secondSynValidity = isValidConstant(secondArg);
+		}
+	}
+
+	return firstSynValidity && secondSynValidity;
+}
+
+bool Clause::isValidStmtNumber(string stmt) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	int stmtNum = atoi(stmt.c_str());
+	return (stmtNum < stmtTable->getAllStmts().size()) || (stmtNum > 0);
+}
+
+bool Clause::isValidVariable(string var) {
+	VarTable* varTable = VarTable::getInstance();
+	return varTable->contains(var);
+}
+
+bool Clause::isValidProcedure(string proc) {
+	ProcTable* procTable = ProcTable::getInstance();
+	return procTable->contains(proc);
+}
+
+bool Clause::isValidConstant(string constant) {
+	ConstTable* constTable = ConstTable::getInstance();
+	return constTable->contains(constant);
+}
+
 bool Clause::evaluate(Results* res) {
 	//clause is pass at each stage
 	res->setClauseFail();
+	if(!isBaseValidityCheck()) {
+		return false;
+	}
+	
+	if(!isValid()) {
+		return false;
+	}
+
 	bool isFirstFixed = this->getFirstArgFixed();
 	bool isSecondFixed = this->getSecondArgFixed();
 	string firstArgSyn = this->getFirstArg();
