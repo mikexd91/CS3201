@@ -53,15 +53,18 @@ protected:
 	virtual unordered_set<string> getAllS1()=0;
 	//Parent(s1,s2)
 	virtual unordered_set<unordered_map<string, string>> getAllS1AndS2()=0;
-
-	bool isValidityCheck();
+	
+	//Check the validity of the specific clause
+	//Substitute the original clause isValid for this one
+	virtual bool isValid();
+	
+private:
+	bool isBaseValidityCheck();
 	bool isValidStmtNumber(string);
 	bool isValidVariable(string);
 	bool isValidProcedure(string);
 	bool isValidConstant(string);
 
-	virtual bool childValidityCheck();
-	
 public:
 	Clause(void);
 	Clause(ClauseType);

@@ -72,7 +72,7 @@ bool Clause::getSecondArgFixed(void){
 	return this->secondArgFixed;
 }
 
-bool Clause::isValidityCheck() {
+bool Clause::isBaseValidityCheck() {
 	bool firstSynValidity = true;
 	bool secondSynValidity = true;
 
@@ -123,11 +123,11 @@ bool Clause::isValidConstant(string constant) {
 bool Clause::evaluate(Results* res) {
 	//clause is pass at each stage
 	res->setClauseFail();
-	if(!isValidityCheck()) {
+	if(!isBaseValidityCheck()) {
 		return false;
 	}
 	
-	if(!childValidityCheck()) {
+	if(!isValid()) {
 		return false;
 	}
 
