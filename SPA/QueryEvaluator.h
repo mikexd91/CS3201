@@ -11,14 +11,14 @@ using boost::unordered_set;
 class QueryEvaluator
 {
 private:
-	// get values from tables and store values in results obj
-	void getValuesFromTables(vector<StringPair> selectList, Results &result); 
+	void insertProcessResults(Results::ResultsTable resultsTble, Results &obj);
+	vector<StringPair> getSynonymNotInResult(vector<StringPair> selectList,  Results &obj);
+	unordered_set<string> vectorToSet(vector<StringPair> selectList);
 
 	// get values from results obj and create a new results obj with values of synonyms in selectList
 	Results* getValuesFromResult(vector<StringPair> selectList, Results &result); 
-
-	vector<StringPair> getSynonymNotInResult(vector<StringPair> selectList,  Results &obj);
-	unordered_set<string> vectorToSet(vector<StringPair> selectList);
+	// get values from tables and store values in results obj
+	void getValuesFromTables(vector<StringPair> selectList, Results &result); 
 
 public:
 	QueryEvaluator(void);

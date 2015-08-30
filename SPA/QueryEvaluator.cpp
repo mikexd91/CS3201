@@ -123,12 +123,12 @@ Results* QueryEvaluator::evaluateQuery(Query q) {
 	} else {
 		
 		for (vector<Clause*>::iterator i = clauseList.begin(); i != clauseList.end(); ++i) {
-			(*i)->evaluate(*obj);
+			(*i)->evaluate(obj);
 
 			if (!obj->isClausePass()) {
 				return NULL;
 			} else {
-				// requires results to provide a method to reset clausePass to fail
+				obj->setClauseFail();
 			}
 		}
 
@@ -189,7 +189,7 @@ unordered_set<string> QueryEvaluator::vectorToSet(vector<StringPair> selectList)
 	return synList;
 }
 
-void insertProcessResults(Results::ResultsTable resultsTble, Results &obj) {
+void QueryEvaluator::insertProcessResults(Results::ResultsTable resultsTble, Results &obj) {
 	Results::Row resTbleRow;
 	for (Results::ResultsTable::iterator i = resultsTble.begin(); i != resultsTble.end(); ++i) {
 		Results::Row* newRow = new Results::Row();
