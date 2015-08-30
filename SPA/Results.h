@@ -95,9 +95,12 @@ public:
 	bool insertResult(string syn, string value);
 	// called after all results have been inserted. push tells me what to delete
 	bool push();
+	void setClauseFail();
+	void setClausePass();
 
 	// Testing
 	int getResultsTableSize();
+
 
 
 
@@ -140,8 +143,6 @@ private:
 	void createNewRows();
 	void fillConstrainAndToAddSynSet();
 	void addToResults(Row synRow, Row resultsRow);
-	void setClauseFail();
-	void setClausePass();
 	Row* getDuplicateRow(Row row);
 };
 
