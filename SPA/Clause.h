@@ -57,14 +57,16 @@ protected:
 	
 	//Check the validity of the specific clause
 	//Substitute the original clause isValid for this one
-	virtual bool isValid()=0;
-	
+	virtual bool isValid(void)=0;
 private:
 	bool isBaseValidityCheck();
 	bool isValidStmtNumber(string);
 	bool isValidVariable(string);
 	bool isValidProcedure(string);
 	bool isValidConstant(string);
+	bool isValidIf(string);
+	bool isValidAssign(string);
+	bool isValidWhile(string);
 
 public:
 	Clause(void);

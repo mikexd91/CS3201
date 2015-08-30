@@ -59,6 +59,8 @@ namespace stringconst{
 	string const TYPE_PATTERN = "pattern";
 	string const TYPE_FOLLOWS_STAR = "Follows*";
 	string const TYPE_PARENT_STAR = "Parent*";
+	string const TYPE_CALLS = "Calls";
+	string const TYPE_CALLS_STAR = "Calls*";
 
 	string const ARG_WHILE = "while";
 	string const ARG_STATEMENT = "stmt";
@@ -69,6 +71,7 @@ namespace stringconst{
 	string const ARG_CONSTANT = "constant";
 	string const ARG_GENERIC = "underscore";
 	string const ARG_PROCEDURE = "procedure";
+	string const ARG_IF = "if";
 
 	const string DELIM_STRING = " ;={}";
 	const char DELIMITERS[] = { ';', '=', '{', '}' };
