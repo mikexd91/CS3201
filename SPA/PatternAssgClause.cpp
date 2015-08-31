@@ -157,24 +157,42 @@ unordered_set<string> PatternAssgClause::getAllS2() {
 //e.g. Pattern a("a", ?)
 unordered_set<string> PatternAssgClause::getAllS1WithS2Fixed(string a) {
 	// TODO
+	// choices:
+	//	var fixed expr wild
+	//	var fixed expr fixed
+	if (isExprWild()) {
+		//evaluateVarFixedExprWild(assgNums);
+	}
 	return unordered_set<string>();
 }
 
 //e.g. Pattern a(_, ?)
 unordered_set<string> PatternAssgClause::getAllS1() {
 	// TODO
-	return unordered_set<string>();
+	// choices:
+	//	var wild expr wild
+	//	var wild expr fixed
+	unordered_set<string> resultsSet = unordered_set<string>();
+	// get all the assg stmt nums
+	vector<int> assgNums = getAssgNums(*res, synonym);
+	if (isExprWild()) {
+		evaluateVarWildExprWild(assgNums, resultsSet);
+	}
+	return resultsSet;
 }
 
 //e.g. Pattern a(a, ?)
 Results::ResultsTable* PatternAssgClause::getAllS1AndS2() {
 	// TODO
+	// choices:
+	//	var syn expr wild
+	//	var syn expr fixed
 	return nullptr;
 }
 // ---- end new stuff --------------------------
 
 
-Results* PatternAssgClause::evaluateVarWildExprWild(vector<int>& assgNums, Results* res) {
+void PatternAssgClause::evaluateVarWildExprWild(vector<int>& assgNums, unordered_set<string> resultsSet) {
 	// return all assg stmts because they match _ _
 	cout << "im here";
 	
@@ -183,11 +201,8 @@ Results* PatternAssgClause::evaluateVarWildExprWild(vector<int>& assgNums, Resul
 		long long stmtNum = assgNums.at(i);
 		cout << stmtNum;
 		string stmtNumStr = to_string(stmtNum);
-		res->insertResult(getSynonym(), stmtNumStr);
+		resultsSet->insert(stmtNumStr);
 	}
-
-	res->push();
-	return res;
 }
 
 Results PatternAssgClause::evaulateVarWildExpr(vector<int>& assgNums, string expr, Results res) {

@@ -14,7 +14,6 @@ public:
 	~PatternAssgClause(void);
 	
 	string getExpression();
-	//Results evaluate(Results*);
 	bool isValid();
 
 	void setExpression(string expr);
@@ -43,7 +42,7 @@ protected:
 	
 private:
 	// ---- old stuff
-	Results* evaluateVarWildExprWild(vector<int>& assgNums, Results*);
+	void evaluateVarWildExprWild(vector<int>&, unordered_set<string>);
 	Results evaulateVarWildExpr(vector<int>& assgNums, string expr, Results);
 	Results evaluateVarFixedExprWild(vector<int>& assgNums, Results);
 	Results evaluateVarFixedExpr(vector<int>& assgNums, string expr, Results);
@@ -54,6 +53,9 @@ private:
 	vector<int> getAssgNums(Results, string);
 	bool matchExpr(AssgNode* assg, string expr);
 	bool matchVar(AssgNode* assg, string var);
+
+	bool isExprWild();
+	bool isVarWild();
 	
 	string _expr;
 };
