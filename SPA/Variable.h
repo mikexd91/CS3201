@@ -17,7 +17,9 @@ public:
 	// getters
 	string getName();
 	unordered_set<int>& getUsedByStmts();
+	unordered_set<string>& getUsedByStmtsAsString();
 	unordered_set<int>& getModifiedByStmts();
+	unordered_set<string>& getModifiedByStmtsAsString();
 	unordered_set<string>& getUsedByProc();
 	unordered_set<string>& getModifiedByProc();
 	unordered_set<TNode*>& getTNodes();
@@ -33,6 +35,8 @@ private:
 	string _name;
 	unordered_set<int> _usedBy;
 	unordered_set<int> _modifiedBy;
+	unordered_set<string> _usedByAsString;
+	unordered_set<string> _modifiedByAsString;
 	unordered_set<string> _usedByProc;
 	unordered_set<string> _modifiedByProc;
 	unordered_set<TNode*> _nodes;
