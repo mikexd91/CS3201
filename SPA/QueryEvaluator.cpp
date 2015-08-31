@@ -115,13 +115,11 @@ Results* QueryEvaluator::evaluateQuery(Query q) {
 	Results *obj = new Results();
 	vector<Clause*> clauseList = q.getClauseList();
 	vector<StringPair> selectList = q.getSelectList();
-
 	if (clauseList.empty()) {
 		getValuesFromTables(selectList, *obj);
 		return obj;
 
 	} else {
-		
 		for (vector<Clause*>::iterator i = clauseList.begin(); i != clauseList.end(); ++i) {
 			(*i)->evaluate(obj);
 
@@ -131,7 +129,6 @@ Results* QueryEvaluator::evaluateQuery(Query q) {
 				obj->setClauseFail();
 			}
 		}
-
 		Results* processedObj = getValuesFromResult(selectList, *obj);
 		delete obj;
 		return processedObj;
