@@ -1,5 +1,7 @@
 #include "Variable.h"
+#include <boost\lexical_cast.hpp>
 
+using namespace boost;
 
 Variable::Variable(const string& varName) {
 	this->_name = varName;
@@ -15,8 +17,16 @@ unordered_set<int>& Variable::getUsedByStmts() {
 	return this->_usedBy;
 }
 
+unordered_set<string>&  Variable::getUsedByStmtsAsString() {
+	return this->_usedByAsString;
+}
+
 unordered_set<int>& Variable::getModifiedByStmts() {
 	return this->_modifiedBy;
+}
+
+unordered_set<string>& Variable::getModifiedByStmtsAsString() {
+	return this->_modifiedByAsString;
 }
 
 unordered_set<string>& Variable::getUsedByProc() {
@@ -33,10 +43,12 @@ unordered_set<TNode*>& Variable::getTNodes() {
 
 void Variable::addUsingStmt(int stmt) {
 	this->_usedBy.insert(stmt);
+	this->_usedByAsString.insert(lexical_cast<string>(stmt));
 }
 
 void Variable::addModifyingStmt(int stmt) {
 	this->_modifiedBy.insert(stmt);
+	this->_modifiedByAsString.insert(lexical_cast<string>(stmt));
 }
 
 void Variable::addUsingProc(string proc) {
