@@ -107,7 +107,7 @@ bool Clause::isBaseValidityCheck() {
 
 bool Clause::isValidStmtNumber(string stmt) {
 	StmtTable* stmtTable = StmtTable::getInstance();
-	int stmtNum = atoi(stmt.c_str());
+	size_t stmtNum = atoi(stmt.c_str());
 	return (stmtNum < stmtTable->getAllStmts().size()) || (stmtNum > 0);
 }
 
