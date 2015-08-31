@@ -83,6 +83,9 @@ private:
 	void addModifyToCurrentProcedure(string);
 	void addUsesToCalledBy(string);
 	void addModifiesToCalledBy(string);
+
+	void addUseProcToVarTable(set<string>);
+	void addModifyProcToVarTable(string);
     
 	void createFollowsLinks(StmtNode*, Statement*);
 	void createCurrentProcedureLinks(ProcNode*, Procedure*);
