@@ -36,15 +36,56 @@ bool ModifiesClause::evaluateS1FixedS2Fixed(string firstSyn, string secSyn) {
 	return false;
 }
 
-bool ModifiesClause::isProcedureModifies(string proc, string var) {
+bool ModifiesClause::evaluateS1GenericS2Generic() {
+	return false;
+}
 
+bool ModifiesClause::evaluateS1GenericS2Fixed(string str) {
+	return false;
+}
+
+bool ModifiesClause::evaluateS1FixedS2Generic(string str) {
+	return false;
+}
+
+unordered_set<string> ModifiesClause::getAllS2WithS1Fixed(string str) {
+	unordered_set<string> results;
+
+	return results;
+}
+
+unordered_set<string> ModifiesClause::getAllS2() {
+	unordered_set<string> results;
+
+	return results;
+}
+
+unordered_set<string> ModifiesClause::getAllS1WithS2Fixed(string str) {
+	unordered_set<string> results;
+
+	return results;
+}
+
+unordered_set<string> ModifiesClause::getAllS1() {
+	unordered_set<string> results;
+
+	return results;
+}
+
+unordered_set<unordered_map<string, string>> getAllS1AndS2() {
+	unordered_set<unordered_map<string, string>> results;
+	return results;
+}
+
+bool ModifiesClause::isProcedureModifies(string proc, string var) {
+	return false;
 }
 
 bool ModifiesClause::isStmtModifies(int stmtNum, string var) {
 	StmtTable* stmtTable = StmtTable::getInstance();
 	Statement* stmt = stmtTable->getStmtObj(stmtNum);
 	
-	set<string> modifiesSet = stmt->getModifies();
+	unordered_set<string> modifiesSet = stmt->getModifies();
 	return modifiesSet.find(var) != modifiesSet.end();
 }
 
