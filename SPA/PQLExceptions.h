@@ -50,3 +50,9 @@ struct InvalidClauseException : public exception{
 		return "Clause: Invalid parameters";
 	}
 };
+
+struct InvalidSyntaxException : public exception{
+	const char* what() const throw(){
+		return "Clause: Invalid syntax";
+	}
+};
