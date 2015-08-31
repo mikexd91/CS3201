@@ -3,8 +3,10 @@
 #include <string>
 #include "TNode.h"
 #include <set>
+#include <boost\unordered_set.hpp>
 
 using namespace std;
+using boost::unordered_set;
 
 class Variable {
 public:
@@ -14,11 +16,11 @@ public:
 
 	// getters
 	string getName();
-	set<int>& getUsedByStmts();
-	set<int>& getModifiedByStmts();
-	set<string>& getUsedByProc();
-	set<string>& getModifiedByProc();
-	set<TNode*>& getTNodes();
+	unordered_set<int>& getUsedByStmts();
+	unordered_set<int>& getModifiedByStmts();
+	unordered_set<string>& getUsedByProc();
+	unordered_set<string>& getModifiedByProc();
+	unordered_set<TNode*>& getTNodes();
 
 	// setters
 	void addUsingStmt(int stmt);
@@ -29,10 +31,10 @@ public:
 
 private:
 	string _name;
-	set<int> _usedBy;
-	set<int> _modifiedBy;
-	set<string> _usedByProc;
-	set<string> _modifiedByProc;
-	set<TNode*> _nodes;
+	unordered_set<int> _usedBy;
+	unordered_set<int> _modifiedBy;
+	unordered_set<string> _usedByProc;
+	unordered_set<string> _modifiedByProc;
+	unordered_set<TNode*> _nodes;
 };
 

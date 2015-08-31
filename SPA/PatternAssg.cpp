@@ -32,7 +32,7 @@ bool PatternAssg::matchVar(string var) {
 	for (iter = assgStmts.begin(); iter != assgStmts.end(); iter++) {
 		Statement* assg = *iter;
 		if (assg->getStmtNum() == _stmtNum) {
-			set<string> uses = assg->getModifies();
+			unordered_set<string> uses = assg->getModifies();
 			if (uses.find(var) != uses.end()) {
 				return true;
 			} else {
@@ -54,7 +54,7 @@ bool PatternAssg::match(string var, string expr) {
 	for (iter = assgStmts.begin(); iter != assgStmts.end(); iter++) {
 		Statement* assg = *iter;
 		if (assg->getStmtNum() == _stmtNum) {
-			set<string> uses = assg->getModifies();
+			unordered_set<string> uses = assg->getModifies();
 			if (uses.find(var) != uses.end()) {
 				return matchExpr((AssgNode*)(assg->getTNodeRef()), expr);
 				//return false;
