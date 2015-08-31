@@ -117,48 +117,58 @@ bool PatternAssgClause::isValid() {
 // generic == underscore
 // fixed == "1"
 // allS1 == synonym
-//e.g. Parent(string,string)
+
+//e.g. Pattern "a"("a", ?)
 bool PatternAssgClause::evaluateS1FixedS2Fixed(string a, string b) {
+	// always return false because s1 cannot be fixed!
 	return false;
 }
 
-//e.g. Parent(_,_)
+//e.g. Pattern _(_, ?)
 bool PatternAssgClause::evaluateS1GenericS2Generic() {
+	// always return false because s1 cannot be generic!
 	return false;
 }
 
-//e.g. Parent(_,string)
+//e.g. Pattern _("a", ?)
 bool PatternAssgClause::evaluateS1GenericS2Fixed(string a) {
+	// always return false because s1 cannot be generic!
 	return false;
 }
 
-//Parent(string,_)
+//e.g. Pattern "a"(_, ?)
 bool PatternAssgClause::evaluateS1FixedS2Generic(string a) {
+	// always return false because s1 cannot be fixed!
 	return false;
 }
 
-//Parent(string,s2)
+//e.g. Pattern "a"(a, ?)
 unordered_set<string> PatternAssgClause::getAllS2WithS1Fixed(string a) {
+	// always return empty set because s1 cannot be fixed!
 	return unordered_set<string>();
 }
 
-//Parent(_,s2)
+//e.g. Pattern _(a, ?)
 unordered_set<string> PatternAssgClause::getAllS2() {
+	// always return empty set because s1 cannot be underscore!
 	return unordered_set<string>();
 }
 
-//Parent(s1,string)
+//e.g. Pattern a("a", ?)
 unordered_set<string> PatternAssgClause::getAllS1WithS2Fixed(string a) {
+	// TODO
 	return unordered_set<string>();
 }
 
-//Parent(s1,__)
+//e.g. Pattern a(_, ?)
 unordered_set<string> PatternAssgClause::getAllS1() {
+	// TODO
 	return unordered_set<string>();
 }
 
-//Parent(s1,s2)
+//e.g. Pattern a(a, ?)
 Results::ResultsTable* PatternAssgClause::getAllS1AndS2() {
+	// TODO
 	return nullptr;
 }
 // ---- end new stuff --------------------------
