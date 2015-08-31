@@ -187,6 +187,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ParentClauseTest );
 
 
 void ParentClauseTest::testParentFixedFixedPass() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("1");
 	m1->setFirstArgFixed(true);
@@ -196,12 +197,13 @@ void ParentClauseTest::testParentFixedFixedPass() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	Results r1 = m1->evaluate();
-	r1.isClausePassed();
-	//CPPUNIT_ASSERT(r1.isClausePassed());
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 0);
 }
 
 void ParentClauseTest::testParentFixedFixedFail() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("2");
 	m1->setFirstArgFixed(true);
@@ -211,12 +213,14 @@ void ParentClauseTest::testParentFixedFixedFail() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(!r1.isClausePassed());
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(!result);
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 0);
 
 }
 
 void ParentClauseTest::testParentSynFixedPass() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("s");
 	m1->setFirstArgFixed(false);
@@ -226,14 +230,17 @@ void ParentClauseTest::testParentSynFixedPass() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s");
-	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "3");
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(res.hasResults("s"));
+	unordered_set<string> s = res.selectSyn("s");
+	CPPUNIT_ASSERT(s.size() == 1);
+	CPPUNIT_ASSERT(s.find("3") != s.end());
 }
 
 void ParentClauseTest::testParentSynFixedFail() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("s");
 	m1->setFirstArgFixed(false);
@@ -243,12 +250,13 @@ void ParentClauseTest::testParentSynFixedFail() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(!r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 0);
+	bool result =  m1->evaluate(&res);
+	CPPUNIT_ASSERT(!result);
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 0);
 }
 
 void ParentClauseTest::testParentFixedSynPass() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("1");
 	m1->setFirstArgFixed(true);
@@ -258,17 +266,18 @@ void ParentClauseTest::testParentFixedSynPass() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s");
-	
-	vector<string> results = r1.getSinglesResults();
-	CPPUNIT_ASSERT(results.size() == 2);
-	CPPUNIT_ASSERT(find(results.begin(), results.end(), "2") != results.end());
-	CPPUNIT_ASSERT(find(results.begin(), results.end(), "3") != results.end());
+	bool r1 = m1->evaluate(&res);
+	CPPUNIT_ASSERT(r1);
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 2);
+
+	unordered_set<string> s = res.selectSyn("s");
+	CPPUNIT_ASSERT(s.size() == 2);
+	CPPUNIT_ASSERT(s.find("2") != s.end());
+	CPPUNIT_ASSERT(s.find("3") != s.end());
 }
 
 void ParentClauseTest::testParentFixedSynPassWithWhile() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("1");
 	m1->setFirstArgFixed(true);
@@ -278,15 +287,16 @@ void ParentClauseTest::testParentFixedSynPassWithWhile() {
 	m1->setSecondArgType(ARG_WHILE);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "w");
-	vector<string> results = r1.getSinglesResults();
-	CPPUNIT_ASSERT(results.size() == 1);
-	CPPUNIT_ASSERT(find(results.begin(), results.end(), "3") != results.end());
+	CPPUNIT_ASSERT(m1->evaluate(&res));
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 1);
+	unordered_set<string> s = res.selectSyn("w");
+	CPPUNIT_ASSERT(s.size() == 1);
+	CPPUNIT_ASSERT(s.find("3") != s.end());
 }
 
+
 void ParentClauseTest::testParentFixedSynFail() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("2");
 	m1->setFirstArgFixed(true);
@@ -296,11 +306,14 @@ void ParentClauseTest::testParentFixedSynFail() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(!r1.isClausePassed());
+	bool r1 = m1->evaluate(&res);
+	CPPUNIT_ASSERT(!r1);
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 0);
 }
 
+
 void ParentClauseTest::testParentFixedSynFailWithWhile() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("4");
 	m1->setFirstArgFixed(true);
@@ -310,11 +323,14 @@ void ParentClauseTest::testParentFixedSynFailWithWhile() {
 	m1->setSecondArgType(ARG_WHILE);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(!r1.isClausePassed());
+	bool r1 = m1->evaluate(&res);
+	CPPUNIT_ASSERT(!r1);
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 0);
 }
 
+
 void ParentClauseTest::testParentSynSynPass() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("s1");
 	m1->setFirstArgFixed(false);
@@ -323,24 +339,47 @@ void ParentClauseTest::testParentSynSynPass() {
 	m1->setSecondArgFixed(false);
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
-
-	Results r1 = m1->evaluate();
-	vector<pair<string, string>> resultVector = r1.getPairResults();
-	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s1");
-	CPPUNIT_ASSERT(r1.getSecondClauseSyn() == "s2");
-	CPPUNIT_ASSERT(resultVector.size() == 4);
-	pair<string, string> pair0("1","2");
-	pair<string, string> pair1("1","3");
-	pair<string, string> pair2("3","4");
-	pair<string, string> pair3("3","5");
-	CPPUNIT_ASSERT(find(resultVector.begin(), resultVector.end(), pair0) != resultVector.end());
-	CPPUNIT_ASSERT(find(resultVector.begin(), resultVector.end(), pair1) != resultVector.end());
-	CPPUNIT_ASSERT(find(resultVector.begin(), resultVector.end(), pair2) != resultVector.end());
-	CPPUNIT_ASSERT(find(resultVector.begin(), resultVector.end(), pair3) != resultVector.end());
+	CPPUNIT_ASSERT(m1->evaluate(&res));
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 4);
+	CPPUNIT_ASSERT(res.hasResults("s1"));
+	CPPUNIT_ASSERT(res.hasResults("s2"));
+	unordered_set<string> syns;
+	syns.insert("s1");
+	syns.insert("s2");
+	//TODO: change this monstrosity
+	//we want to check if the row exists, and also prevent duplicates from happening
+	bool row1Appeared = false;
+	bool row2Appeared = false;
+	bool row3Appeared = false;
+	bool row4Appeared = false;
+	Results::ResultsTable pairTable = res.selectMultiSyn(syns);
+	for (Results::ResultsTable::iterator i = pairTable.begin(); i != pairTable.end(); ++i) {
+		Results::Row row = *(*i);
+		bool isRow1 = row["s1"] == "1" && row["s2"] == "2" && !row1Appeared;
+		bool isRow2 = row["s1"] == "1" && row["s2"] == "3" && !row2Appeared;
+		bool isRow3 = row["s1"] == "3" && row["s2"] == "4" && !row3Appeared;
+		bool isRow4 = row["s1"] == "3" && row["s2"] == "5" && !row4Appeared;
+		if (isRow1) {
+			row1Appeared = true;
+			CPPUNIT_ASSERT(true);
+		} else if (isRow2) {
+			row2Appeared = true;
+			CPPUNIT_ASSERT(true);
+		} else if (isRow3) {
+			row3Appeared = true;
+			CPPUNIT_ASSERT(true);
+		} else if (isRow4) {
+			row4Appeared = true;
+			CPPUNIT_ASSERT(true);
+		} else {
+			CPPUNIT_ASSERT(false);
+		}
+	}
 }
 
+
 void ParentClauseTest::testParentFirstUnderscorePass() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("_");
 	m1->setFirstArgFixed(false);
@@ -350,19 +389,19 @@ void ParentClauseTest::testParentFirstUnderscorePass() {
 	m1->setSecondArgType(ARG_STATEMENT);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
-	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 4);
-	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s2");
-	vector<string> results = r1.getSinglesResults();
-	CPPUNIT_ASSERT(find(results.begin(), results.end(), "2") != results.end());
-	CPPUNIT_ASSERT(find(results.begin(), results.end(), "3") != results.end());
-	CPPUNIT_ASSERT(find(results.begin(), results.end(), "4") != results.end());
-	CPPUNIT_ASSERT(find(results.begin(), results.end(), "5") != results.end());
+	CPPUNIT_ASSERT(m1->evaluate(&res));
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 4);
+	unordered_set<string> s = res.selectSyn("s2");
+	CPPUNIT_ASSERT(s.size() == 4);
+	CPPUNIT_ASSERT(s.find("2") != s.end());
+	CPPUNIT_ASSERT(s.find("3") != s.end());
+	CPPUNIT_ASSERT(s.find("4") != s.end());
+	CPPUNIT_ASSERT(s.find("5") != s.end());
+
 }
 
 void ParentClauseTest::testParentSecondUnderscorePass() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("s2");
 	m1->setFirstArgFixed(false);
@@ -372,16 +411,16 @@ void ParentClauseTest::testParentSecondUnderscorePass() {
 	m1->setSecondArgType(ARG_GENERIC);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getNumOfSyn() == 1);
-	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s2");
-	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 2);
-	/*CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "1");
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(1) == "3");*/
+	CPPUNIT_ASSERT(m1->evaluate(&res));
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 2);
+	unordered_set<string> s = res.selectSyn("s2");
+	CPPUNIT_ASSERT(s.size() == 2);
+	CPPUNIT_ASSERT(s.find("1") != s.end());
+	CPPUNIT_ASSERT(s.find("3") != s.end());
 }
 
 void ParentClauseTest::testParentBothUnderscorePass() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("_");
 	m1->setFirstArgFixed(false);
@@ -391,13 +430,13 @@ void ParentClauseTest::testParentBothUnderscorePass() {
 	m1->setSecondArgType(ARG_GENERIC);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getNumOfSyn() == 0);
+	CPPUNIT_ASSERT(m1->evaluate(&res));
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 0);
 }
 
 
 void ParentClauseTest::testParentSynSynPassWithWhile() {
+	Results res = Results();
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("s1");
 	m1->setFirstArgFixed(false);
@@ -407,11 +446,14 @@ void ParentClauseTest::testParentSynSynPassWithWhile() {
 	m1->setSecondArgType(ARG_WHILE);
 	CPPUNIT_ASSERT(m1->isValid());
 
-	Results r1 = m1->evaluate();
-	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getPairResults().size() == 1);
-	CPPUNIT_ASSERT(r1.getFirstClauseSyn() == "s1");
-	CPPUNIT_ASSERT(r1.getSecondClauseSyn() == "s2");
-	pair<string, string> pair0("1","3");
-	CPPUNIT_ASSERT(r1.getPairResults().at(0) == pair0);
+	CPPUNIT_ASSERT(m1->evaluate(&res));
+	CPPUNIT_ASSERT(res.getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(res.hasResults("s1"));
+	CPPUNIT_ASSERT(res.hasResults("s2"));
+	unordered_set<string> syns;
+	syns.insert("s1");
+	syns.insert("s2");
+	Results::ResultsTable pairTable = res.selectMultiSyn(syns);
+	Results::Row row = *(*pairTable.begin());
+	CPPUNIT_ASSERT(row["s1"] == "1" && row["s2"] == "3");
 }
