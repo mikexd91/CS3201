@@ -7,6 +7,7 @@
 #include "../SPA/OpNode.h"
 #include "../SPA/StmtTable.h"
 #include "../SPA/VarTable.h"
+#include "boost/foreach.hpp"
 
 #include <iostream>
 #include <string>
@@ -139,17 +140,19 @@ void PatternAssgClauseTest::evaluateVarWildExprWild() {
 	CPPUNIT_ASSERT(p1->isValid());
 
 	Results *res = new Results();
-	Results r1 = p1->evaluate(res);
+	CPPUNIT_ASSERT(p1->evaluate(res));
 	string syn1 = "a";
 
 	//cout << r1.getFirstClauseSyn() << endl;
 	//CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.hasResults(syn1));
-	CPPUNIT_ASSERT(r1.selectSyn(syn1).size() == 3);
+	cout << 0;
+	CPPUNIT_ASSERT(res->hasResults(syn1));
+	cout << 1;
+	CPPUNIT_ASSERT(res->selectSyn(syn1).size() == 3);
 	
-	unordered_set<string> v = r1.selectSyn(syn1);
-	for (int j = 0; j < v.size(); j++) {
-		//cout << v.at(j) << endl;
+	unordered_set<string> v = res->selectSyn(syn1);
+	BOOST_FOREACH(auto i, v) {
+		cout << i;
 	}
 
 	return;

@@ -54,63 +54,115 @@ bool PatternAssgClause::isValid() {
 	return valid;
 }
 
-Results PatternAssgClause::evaluate(Results* res) {
-	// get the synonym to get stmt num of
-	string synonym = getSynonym();
-	unordered_set<string> synValues = res->selectSyn(synonym);
+//Results PatternAssgClause::evaluate(Results* res) {
+//	// get the synonym to get stmt num of
+//	string synonym = getSynonym();
+//	unordered_set<string> synValues = res->selectSyn(synonym);
+//
+//	// get all the assg stmt nums
+//	vector<int> assgNums = getAssgNums(*res, synonym);
+//
+//	VarTable* vtable = VarTable::getInstance();
+//	vector<string> varNames = *vtable->getAllVarNames();
+//
+//	// var:wildcard
+//		// expr:wildcard => return all a
+//		// expr:notwild => return all a that match expr
+//
+//	// var:fixed
+//		// expr:wildcard => return a using var
+//		// expr:notwild	=> return a using var that match expr
+//
+//	// var:syn
+//		// expr:wildcard => return for each
+//		// expr:notwild
+//
+//	bool exprWildcard = getExpression() == stringconst::STRING_EMPTY;
+//	bool varWildcard = getVar() == stringconst::STRING_EMPTY;
+//	bool varFixed = getVarFixed();
+//
+//	/*cout << getExpression() << endl;
+//	cout << getVar() << endl;
+//	cout << getVarFixed() << endl;*/
+//
+//	if (varWildcard) {
+//		if (exprWildcard) {
+//			//cout << "varwildexprwild" << endl;
+//			return *evaluateVarWildExprWild(assgNums, res);
+//		} else {
+//			//cout << "varwildexpr" << endl;
+//			return evaulateVarWildExpr(assgNums, getExpression(), *res);
+//		}
+//	} else if (varFixed) {
+//		if (exprWildcard) {
+//			//cout << "varfixedexprwild" << endl;
+//			return evaluateVarFixedExprWild(assgNums, *res);
+//		} else {
+//			//cout << "varfixedexpr" << endl;
+//			return evaluateVarFixedExpr(assgNums, getExpression(), *res);
+//		}
+//	} else {
+//		if (exprWildcard) {
+//			//cout << "varexprwild" << endl;
+//			return evaluateVarExprWild(assgNums, varNames, *res);
+//		} else {
+//			//cout << "varexpr" << endl;
+//			return evaluateVarExpr(assgNums, varNames, getExpression(), *res);
+//		}
+//	}
+//}
 
-	// get all the assg stmt nums
-	vector<int> assgNums = getAssgNums(*res, synonym);
 
-	VarTable* vtable = VarTable::getInstance();
-	vector<string> varNames = *vtable->getAllVarNames();
-
-	// var:wildcard
-		// expr:wildcard => return all a
-		// expr:notwild => return all a that match expr
-
-	// var:fixed
-		// expr:wildcard => return a using var
-		// expr:notwild	=> return a using var that match expr
-
-	// var:syn
-		// expr:wildcard => return for each
-		// expr:notwild
-
-	bool exprWildcard = getExpression() == stringconst::STRING_EMPTY;
-	bool varWildcard = getVar() == stringconst::STRING_EMPTY;
-	bool varFixed = getVarFixed();
-
-	/*cout << getExpression() << endl;
-	cout << getVar() << endl;
-	cout << getVarFixed() << endl;*/
-
-	if (varWildcard) {
-		if (exprWildcard) {
-			//cout << "varwildexprwild" << endl;
-			return *evaluateVarWildExprWild(assgNums, res);
-		} else {
-			//cout << "varwildexpr" << endl;
-			return evaulateVarWildExpr(assgNums, getExpression(), *res);
-		}
-	} else if (varFixed) {
-		if (exprWildcard) {
-			//cout << "varfixedexprwild" << endl;
-			return evaluateVarFixedExprWild(assgNums, *res);
-		} else {
-			//cout << "varfixedexpr" << endl;
-			return evaluateVarFixedExpr(assgNums, getExpression(), *res);
-		}
-	} else {
-		if (exprWildcard) {
-			//cout << "varexprwild" << endl;
-			return evaluateVarExprWild(assgNums, varNames, *res);
-		} else {
-			//cout << "varexpr" << endl;
-			return evaluateVarExpr(assgNums, varNames, getExpression(), *res);
-		}
-	}
+// ---- new stuff -----------------------------
+// generic == underscore
+// fixed == "1"
+// allS1 == synonym
+//e.g. Parent(string,string)
+bool PatternAssgClause::evaluateS1FixedS2Fixed(string a, string b) {
+	return false;
 }
+
+//e.g. Parent(_,_)
+bool PatternAssgClause::evaluateS1GenericS2Generic() {
+	return false;
+}
+
+//e.g. Parent(_,string)
+bool PatternAssgClause::evaluateS1GenericS2Fixed(string a) {
+	return false;
+}
+
+//Parent(string,_)
+bool PatternAssgClause::evaluateS1FixedS2Generic(string a) {
+	return false;
+}
+
+//Parent(string,s2)
+unordered_set<string> PatternAssgClause::getAllS2WithS1Fixed(string a) {
+	return unordered_set<string>();
+}
+
+//Parent(_,s2)
+unordered_set<string> PatternAssgClause::getAllS2() {
+	return unordered_set<string>();
+}
+
+//Parent(s1,string)
+unordered_set<string> PatternAssgClause::getAllS1WithS2Fixed(string a) {
+	return unordered_set<string>();
+}
+
+//Parent(s1,__)
+unordered_set<string> PatternAssgClause::getAllS1() {
+	return unordered_set<string>();
+}
+
+//Parent(s1,s2)
+Results::ResultsTable* PatternAssgClause::getAllS1AndS2() {
+	return nullptr;
+}
+// ---- end new stuff --------------------------
+
 
 Results* PatternAssgClause::evaluateVarWildExprWild(vector<int>& assgNums, Results* res) {
 	// return all assg stmts because they match _ _
@@ -207,7 +259,7 @@ Results PatternAssgClause::evaluateVarExprWild(vector<int>& assgNums, vector<str
 			if (matchVar(assgNode, var)) {
 				string stmtNumStr = lexical_cast<string>(stmtNum);
 				// TODO add pair result;
-				std::unordered_map<string, string>* pair = new std::unordered_map<string, string>();
+				unordered_map<string, string>* pair = new unordered_map<string, string>();
 				(*pair)[getSynonym()] = stmtNumStr;
 				(*pair)[getVar()] = var;
 				res.insertMultiResult(pair);
@@ -237,7 +289,7 @@ Results PatternAssgClause::evaluateVarExpr(vector<int>& assgNums, vector<string>
 			if (matchVar(assgNode, var) && matchExpr(assgNode, getExpression())) {
 				string stmtNumStr = lexical_cast<string>(stmtNum);
 				// TODO add pair result;
-				std::unordered_map<string, string>* pair = new std::unordered_map<string, string>();
+				unordered_map<string, string>* pair = new unordered_map<string, string>();
 				(*pair)[getSynonym()] = stmtNumStr;
 				(*pair)[getVar()] = var;
 				res.insertMultiResult(pair);
