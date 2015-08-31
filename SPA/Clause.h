@@ -54,10 +54,6 @@ protected:
 	//Parent(s1,s2)
 	virtual unordered_set<unordered_map<string, string>> getAllS1AndS2()=0;
 	
-	//Check the validity of the specific clause
-	//Substitute the original clause isValid for this one
-	virtual bool isValid(void)=0;
-	
 private:
 	bool isBaseValidityCheck();
 	bool isValidStmtNumber(string);
@@ -90,4 +86,8 @@ public:
 
 	
 	bool evaluate(Results*); 
+
+	//Check the validity of the specific clause
+	//Substitute the original clause isValid for this one
+	virtual bool isValid(void)=0;
 };
