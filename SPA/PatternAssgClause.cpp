@@ -44,7 +44,15 @@ string PatternAssgClause::getExpression() {
 }
 
 void PatternAssgClause::setExpression(string expr) {
-	_expr = expr;
+	_expr = expr; 
+}
+
+bool PatternAssgClause::isExprWild() {
+	return getExpression() == stringconst::STRING_EMPTY;
+}
+
+bool PatternAssgClause::isVarWild() {
+	return getVar() == stringconst::STRING_EMPTY;
 }
 
 bool PatternAssgClause::isValid() {
@@ -174,7 +182,7 @@ unordered_set<string> PatternAssgClause::getAllS1() {
 	//	var wild expr fixed
 	unordered_set<string> resultsSet = unordered_set<string>();
 	// get all the assg stmt nums
-	vector<int> assgNums = getAssgNums(*res, synonym);
+	vector<int> assgNums = vector<int>();//getAssgNums(res, synonym);
 	if (isExprWild()) {
 		evaluateVarWildExprWild(assgNums, resultsSet);
 	}
@@ -201,7 +209,7 @@ void PatternAssgClause::evaluateVarWildExprWild(vector<int>& assgNums, unordered
 		long long stmtNum = assgNums.at(i);
 		cout << stmtNum;
 		string stmtNumStr = to_string(stmtNum);
-		resultsSet->insert(stmtNumStr);
+		resultsSet.insert(stmtNumStr);
 	}
 }
 
