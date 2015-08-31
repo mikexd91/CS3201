@@ -36,6 +36,12 @@ void PDR::processParsedData(ParsedData data) {
         case ParsedData::ASSIGNMENT:
             processAssignStmt(data);
             break;
+        case ParsedData::IF:
+        	processIfStmt(data);
+        	break;
+        case ParsedData::ELSE:
+        	processElseStmt(data);
+        	break;
         case ParsedData::WHILE:
             processWhileStmt(data);
             break;
@@ -98,14 +104,7 @@ void PDR::addChildToParentStmtLstNode(TNode* childNode) {
 }
 
 void PDR::processAssignStmt(ParsedData data) {
-    if(currNestingLevel > data.getNestingLevel()) {
-        int diffNestingLevel = currNestingLevel - data.getNestingLevel();
-        for(int i = 0; i < diffNestingLevel; i++) {
-            stmtParentNumStack.pop();
-            nodeStack.pop();
-        }
-        currNestingLevel = data.getNestingLevel();
-    }
+	checkAndModifyNestingLevel(data);
 
     set<string> modifies;
     set<string> uses;
@@ -120,6 +119,10 @@ void PDR::processAssignStmt(ParsedData data) {
     VarNode* modifiesVar = new VarNode(data.getAssignVar());
     assignNode->linkVarNode(modifiesVar);
     addToVarTable(modifiesVar, MODIFIES);
+    addModifyToCurrentProcedure(data.getAssignVar());
+
+	addUseProcToVarTable(uses);
+	addModifyProcToVarTable(data.getAssignVar());
 
     // Populating the StmtTable
     StmtTable* stmtTable = StmtTable::getInstance();
@@ -147,14 +150,78 @@ void PDR::processAssignStmt(ParsedData data) {
     stmtTable->addStmt(stmt);
 }
 
+void PDR::processIfStmt(ParsedData data) {
+	// TODO
+	checkAndModifyNestingLevel(data);
+
+	IfNode* ifNode = new IfNode(++stmtCounter);
+	StmtLstNode* thenStmtLst = new StmtLstNode();
+
+	// Link the ast
+	addChildToParentStmtLstNode(ifNode);
+	VarNode* ifVar = new VarNode(data.getIfVar());
+	ifNode->linkVarNode(ifVar);
+	ifNode->linkThenStmtLstNode(thenStmtLst);
+	
+	set<string> uses;
+	uses.insert(data.getIfVar());
+	addToVarTable(ifVar, USES);
+	addUseToCurrentProcedure(data.getIfVar());
+	addUseProcToVarTable(uses);
+
+	nodeStack.push(thenStmtLst);
+	currNestingLevel = data.getNestingLevel() + 1;
+
+	// Populating StmtTable
+	StmtTable* stmtTable = StmtTable::getInstance();
+	Statement* ifStmt = new Statement();
+	ifStmt->setType(NodeType::IF_STMT_);
+	ifStmt->setStmtNum(stmtCounter);
+	ifStmt->setTNodeRef(ifNode);
+	ifStmt->setUses(uses);
+
+	createFollowsLinks(ifNode, ifStmt);
+
+	if(!stmtParentNumStack.empty()) {
+		int parentStmtNum = stmtParentNumStack.top();
+		ifStmt->setParent(parentStmtNum);
+		Statement* parentStmt = stmtTable->getStmtObj(parentStmtNum);
+		set<int> children = parentStmt->getChildren();
+		children.insert(ifNode->getStmtNum());
+		parentStmt->setChildren(children);
+
+		addParentSet(uses, USES);
+	}
+
+	stmtParentNumStack.push(stmtCounter);
+	stmtTable->addStmt(ifStmt);
+}
+
+void PDR::processElseStmt(ParsedData data) {
+	// TODO
+	// remove the then stmtLstNode
+	nodeStack.pop();
+	if(data.getNestingLevel() < currNestingLevel) {
+		for(int i = 0; i < currNestingLevel - data.getNestingLevel() - 1; i++) {
+			stmtParentNumStack.pop();
+		}
+	}
+
+	int ifParentStmtNum = stmtParentNumStack.top();
+	StmtTable* stmtTable = StmtTable::getInstance();
+	Statement* ifParentStmt = stmtTable->getStmtObj(ifParentStmtNum);
+	IfNode* ifParentNode = (IfNode*)ifParentStmt->getTNodeRef();
+
+	// Linking the AST
+	StmtLstNode* elseStmtLstNode = new StmtLstNode();
+	ifParentNode->linkElseStmtLstNode(elseStmtLstNode);
+
+	nodeStack.push(elseStmtLstNode);
+	currNestingLevel = data.getNestingLevel() + 1;
+}
+
 void PDR::processWhileStmt(ParsedData data) {
-    if(currNestingLevel > data.getNestingLevel()) {
-        int diffNestingLevel = currNestingLevel - data.getNestingLevel();
-        for(int i = 0; i < diffNestingLevel; i++) {
-            stmtParentNumStack.pop();
-            nodeStack.pop();
-        }
-    }
+	checkAndModifyNestingLevel(data);
 
 	set<string> uses;
 	uses.insert(data.getWhileVar());
@@ -168,6 +235,8 @@ void PDR::processWhileStmt(ParsedData data) {
     whileNode->linkStmtLstNode(stmtLst);
 
 	addToVarTable(whileVar, USES);
+	addUseToCurrentProcedure(data.getWhileVar());
+	addUseProcToVarTable(uses);
 
     nodeStack.push(stmtLst);
     currNestingLevel = data.getNestingLevel() + 1;
@@ -197,6 +266,23 @@ void PDR::processWhileStmt(ParsedData data) {
 	stmtTable->addStmt(whileStmt);
 }
 
+void PDR::addUseProcToVarTable(set<string> uses) {
+	VarTable* varTable = VarTable::getInstance();
+	set<string>::iterator iter;
+
+	for(iter = uses.begin(); iter != uses.end(); iter++) {
+		string var = *iter;
+		Variable* varObj = varTable->getVariable(var);
+		varObj->addUsingProc(currentProcedure->getProcName());
+	}
+}
+
+void PDR::addModifyProcToVarTable(string var) {
+	VarTable* varTable = VarTable::getInstance();
+	Variable* varObj = varTable->getVariable(var);
+	varObj->addModifyingProc(currentProcedure->getProcName());
+}
+
 void PDR::addCallToCurrentProcedure(Procedure* calledProcedure) {
 	set<Procedure*> currentProcedureCalls = currentProcedure->getCalls();
 	currentProcedureCalls.insert(calledProcedure);
@@ -219,7 +305,6 @@ void PDR::checkAndModifyNestingLevel(ParsedData data) {
 }
 
 void PDR::processProcedureStmt(ParsedData data) {
-    // New Procedure
     for(int i = 0; i < currNestingLevel - data.getNestingLevel(); i++) {
         nodeStack.pop();
     }
@@ -294,6 +379,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
 			VarNode* var = new VarNode(exp);
 			addToVarTable(var, USES);
 			usesSet.insert(exp);
+			addUseToCurrentProcedure(exp);
 			return var;
 		}
 	}
@@ -321,6 +407,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
 				rpnNodeStack.push(var);
 				usesSet.insert(exp);
 				addToVarTable(var, USES);
+				addUseToCurrentProcedure(exp);
 			}
 		}
 	}
@@ -332,6 +419,44 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
 	}
 
 	return result;
+}
+
+void PDR::addUseToCurrentProcedure(string useVar) {
+	set<string> usesSet = currentProcedure->getUses();
+	usesSet.insert(useVar);
+	currentProcedure->setUses(usesSet);
+
+	addUsesToCalledBy(useVar);
+}
+
+void PDR::addModifyToCurrentProcedure(string modifyVar) {
+	set<string> modifiesSet = currentProcedure->getModifies();
+	modifiesSet.insert(modifyVar);
+	currentProcedure->setModifies(modifiesSet);
+
+	addModifiesToCalledBy(modifyVar);
+}
+
+void PDR::addUsesToCalledBy(string useVar) {
+	set<Procedure*> currentProcedureCalledBy = currentProcedure->getCalledBy();
+	set<Procedure*>::iterator iter;
+	for(iter = currentProcedureCalledBy.begin(); iter != currentProcedureCalledBy.end(); iter++) {
+		Procedure* calledByProcedure = *iter;
+		set<string> calledByUses = calledByProcedure->getUses();
+		calledByUses.insert(useVar);
+		calledByProcedure->setUses(calledByUses);
+	}
+}
+
+void PDR::addModifiesToCalledBy(string modifyVar) {
+	set<Procedure*> currentProcedureCalledBy = currentProcedure->getCalledBy();
+	set<Procedure*>::iterator iter;
+	for(iter = currentProcedureCalledBy.begin(); iter != currentProcedureCalledBy.end(); iter++) {
+		Procedure* calledByProcedure = *iter;
+		set<string> calledByModifies = calledByProcedure->getModifies();
+		calledByModifies.insert(modifyVar);
+		calledByProcedure->setModifies(calledByModifies);
+	}
 }
 
 void PDR::addParentSet(set<string> setToBeAdded, Flag statusFlag) {
@@ -451,4 +576,8 @@ stack<TNode*> PDR::getNodeStack() {
 
 Procedure* PDR::getCurrentProcedure() {
 	return currentProcedure;
+}
+
+stack<int> PDR::getParentNumStack() {
+	return stmtParentNumStack;
 }

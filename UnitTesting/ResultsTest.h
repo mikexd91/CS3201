@@ -7,17 +7,21 @@ using namespace std;
 
 class ResultsTest: public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( ResultsTest );
-	CPPUNIT_TEST( testSingleGetIntercept );
-	CPPUNIT_TEST( testSinglePairGetIntercept );
-	CPPUNIT_TEST( testPairGetIntercept );
+	CPPUNIT_TEST( testHasResults );
+	CPPUNIT_TEST( testIsClausePass );
+	CPPUNIT_TEST( testInsertResult );
+	CPPUNIT_TEST( testInsertMultiResult );
+	CPPUNIT_TEST( testSelectSyn );
+	CPPUNIT_TEST( testSelectMultiSyn );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
-	// Testing of intercept will be done
-	// It will be split into the following methods:
-
-	void testSingleGetIntercept();
-	void testSinglePairGetIntercept();
-	void testPairGetIntercept();
+	void testHasResults();
+	void testIsClausePass();
+	void testInsertResult();
+	void testInsertMultiResult();
+	void testSelectSyn();
+	void testSelectMultiSyn();
+	
 };
 

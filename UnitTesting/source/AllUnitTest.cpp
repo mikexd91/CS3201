@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 // Get the top level suite from the registry
 
 CppUnit::TestSuite *unitSuite = new CppUnit::TestSuite( "PKB Unit Tests" );
-
+/*
 //Front End
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("PDRTest").makeTest());
 
@@ -36,6 +36,9 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ProcTableTest").ma
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("FollowsClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("FollowsStarClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("UsesClauseTest").makeTest());
+*/
+// PQL Evaluator
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ResultsTest").makeTest());
 
 CppUnit::TestFactoryRegistry::getRegistry().addTestToSuite(unitSuite);
 CppUnit::TextUi::TestRunner runner;
