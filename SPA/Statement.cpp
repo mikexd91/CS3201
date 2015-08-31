@@ -123,11 +123,11 @@ void Statement::setTNodeRef(TNode *ref) {
 	GNodeRef = ref;
 } */
 
-void Statement::setUses(const set<string> &useSet) {
+void Statement::setUses(const unordered_set<string> &useSet) {
 	uses = useSet;
 }
 
-void Statement::setModifies(const set<string> &modifiesSet) {
+void Statement::setModifies(const unordered_set<string> &modifiesSet) {
 	modifies = modifiesSet;
 }
 
@@ -143,7 +143,7 @@ void Statement::setCalls(string procName) {
 	this->calls = procName;
 }
 
-void Statement::setChildren(const set<int> &childrenSet) {
+void Statement::setChildren(const unordered_set<int> &childrenSet) {
 	children = childrenSet;
 }
 

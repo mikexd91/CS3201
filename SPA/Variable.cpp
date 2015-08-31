@@ -3,31 +3,31 @@
 
 Variable::Variable(const string& varName) {
 	this->_name = varName;
-	_usedBy = *new set<int>();
-	_modifiedBy = *new set<int>();
+	_usedBy = *new unordered_set<int>();
+	_modifiedBy = *new unordered_set<int>();
 }
 
 string Variable::getName() {
 	return this->_name;
 }
 
-set<int>& Variable::getUsedByStmts() {
+unordered_set<int>& Variable::getUsedByStmts() {
 	return this->_usedBy;
 }
 
-set<int>& Variable::getModifiedByStmts() {
+unordered_set<int>& Variable::getModifiedByStmts() {
 	return this->_modifiedBy;
 }
 
-set<string>& Variable::getUsedByProc() {
+unordered_set<string>& Variable::getUsedByProc() {
 	return this->_usedByProc;
 }
 
-set<string>& Variable::getModifiedByProc() {
+unordered_set<string>& Variable::getModifiedByProc() {
 	return this->_modifiedByProc;
 }
 
-set<TNode*>& Variable::getTNodes() {
+unordered_set<TNode*>& Variable::getTNodes() {
 	return this->_nodes;
 }
 

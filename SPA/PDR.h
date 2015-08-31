@@ -1,6 +1,7 @@
 
 #include <stack>
 #include <queue>
+#include <boost\unordered_set.hpp>
 
 #ifndef PDR_HEADER
 #define PDR_HEADER
@@ -29,6 +30,7 @@
 #include "ConstTable.h"
 
 using namespace std;
+using boost::unordered_set;
 
 class PDR {
 	
@@ -69,8 +71,8 @@ private:
     void processEndProgram();
 	
     void addToStmtTable(Statement*);
-    void addToCurrProc(set<string>, Flag);
-    void addParentSet(set<string>, Flag);
+    void addToCurrProc(unordered_set<string>, Flag);
+    void addParentSet(unordered_set<string>, Flag);
     void addToVarTable(TNode*, Flag);
 	void addToConstTable(TNode*);
 	void addCallToCurrentProcedure(Procedure*);
@@ -93,7 +95,7 @@ private:
 	ProcNode* retrievePreviousProc();
 
 
-    TNode* breakDownAssignExpression(ParsedData, set<string>&);
+    TNode* breakDownAssignExpression(ParsedData, unordered_set<string>&);
     
     bool isInteger(string);
 

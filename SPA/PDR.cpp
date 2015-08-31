@@ -106,8 +106,8 @@ void PDR::addChildToParentStmtLstNode(TNode* childNode) {
 void PDR::processAssignStmt(ParsedData data) {
 	checkAndModifyNestingLevel(data);
 
-    set<string> modifies;
-    set<string> uses;
+    unordered_set<string> modifies;
+    unordered_set<string> uses;
     AssgNode* assignNode = new AssgNode(++stmtCounter);
     TNode* assignExpChild = breakDownAssignExpression(data, uses);
 	
@@ -120,9 +120,6 @@ void PDR::processAssignStmt(ParsedData data) {
     assignNode->linkVarNode(modifiesVar);
     addToVarTable(modifiesVar, MODIFIES);
     addModifyToCurrentProcedure(data.getAssignVar());
-
-	addUseProcToVarTable(uses);
-	addModifyProcToVarTable(data.getAssignVar());
 
     // Populating the StmtTable
     StmtTable* stmtTable = StmtTable::getInstance();
@@ -139,7 +136,7 @@ void PDR::processAssignStmt(ParsedData data) {
         int parentStmtNum = stmtParentNumStack.top();
         stmt->setParent(parentStmtNum);
 		Statement* parentStmt = stmtTable->getStmtObj(parentStmtNum);
-		set<int> children = parentStmt->getChildren();
+		unordered_set<int> children = parentStmt->getChildren();
 		children.insert(assignNode->getStmtNum());
 		parentStmt->setChildren(children);
 
@@ -162,12 +159,9 @@ void PDR::processIfStmt(ParsedData data) {
 	VarNode* ifVar = new VarNode(data.getIfVar());
 	ifNode->linkVarNode(ifVar);
 	ifNode->linkThenStmtLstNode(thenStmtLst);
-	
-	set<string> uses;
-	uses.insert(data.getIfVar());
+
 	addToVarTable(ifVar, USES);
 	addUseToCurrentProcedure(data.getIfVar());
-	addUseProcToVarTable(uses);
 
 	nodeStack.push(thenStmtLst);
 	currNestingLevel = data.getNestingLevel() + 1;
@@ -178,6 +172,9 @@ void PDR::processIfStmt(ParsedData data) {
 	ifStmt->setType(NodeType::IF_STMT_);
 	ifStmt->setStmtNum(stmtCounter);
 	ifStmt->setTNodeRef(ifNode);
+
+	unordered_set<string> uses;
+	uses.insert(data.getIfVar());
 	ifStmt->setUses(uses);
 
 	createFollowsLinks(ifNode, ifStmt);
@@ -186,7 +183,7 @@ void PDR::processIfStmt(ParsedData data) {
 		int parentStmtNum = stmtParentNumStack.top();
 		ifStmt->setParent(parentStmtNum);
 		Statement* parentStmt = stmtTable->getStmtObj(parentStmtNum);
-		set<int> children = parentStmt->getChildren();
+		unordered_set<int> children = parentStmt->getChildren();
 		children.insert(ifNode->getStmtNum());
 		parentStmt->setChildren(children);
 
@@ -223,7 +220,7 @@ void PDR::processElseStmt(ParsedData data) {
 void PDR::processWhileStmt(ParsedData data) {
 	checkAndModifyNestingLevel(data);
 
-	set<string> uses;
+	unordered_set<string> uses;
 	uses.insert(data.getWhileVar());
     WhileNode* whileNode = new WhileNode(++stmtCounter);
     StmtLstNode* stmtLst = new StmtLstNode();
@@ -236,7 +233,6 @@ void PDR::processWhileStmt(ParsedData data) {
 
 	addToVarTable(whileVar, USES);
 	addUseToCurrentProcedure(data.getWhileVar());
-	addUseProcToVarTable(uses);
 
     nodeStack.push(stmtLst);
     currNestingLevel = data.getNestingLevel() + 1;
@@ -255,7 +251,7 @@ void PDR::processWhileStmt(ParsedData data) {
         int parentStmtNum = stmtParentNumStack.top();
         whileStmt->setParent(parentStmtNum);
 		Statement* parentStmt = stmtTable->getStmtObj(parentStmtNum);
-		set<int> children = parentStmt->getChildren();
+		unordered_set<int> children = parentStmt->getChildren();
 		children.insert(whileNode->getStmtNum());
 		parentStmt->setChildren(children);
 
@@ -266,29 +262,12 @@ void PDR::processWhileStmt(ParsedData data) {
 	stmtTable->addStmt(whileStmt);
 }
 
-void PDR::addUseProcToVarTable(set<string> uses) {
-	VarTable* varTable = VarTable::getInstance();
-	set<string>::iterator iter;
-
-	for(iter = uses.begin(); iter != uses.end(); iter++) {
-		string var = *iter;
-		Variable* varObj = varTable->getVariable(var);
-		varObj->addUsingProc(currentProcedure->getProcName());
-	}
-}
-
-void PDR::addModifyProcToVarTable(string var) {
-	VarTable* varTable = VarTable::getInstance();
-	Variable* varObj = varTable->getVariable(var);
-	varObj->addModifyingProc(currentProcedure->getProcName());
-}
-
 void PDR::addCallToCurrentProcedure(Procedure* calledProcedure) {
-	set<Procedure*> currentProcedureCalls = currentProcedure->getCalls();
+	unordered_set<Procedure*> currentProcedureCalls = currentProcedure->getCalls();
 	currentProcedureCalls.insert(calledProcedure);
 	currentProcedure->setCalls(currentProcedureCalls);
 
-	set<Procedure*> calledProcedureCalledBy = calledProcedure->getCalledBy();
+	unordered_set<Procedure*> calledProcedureCalledBy = calledProcedure->getCalledBy();
 	calledProcedureCalledBy.insert(currentProcedure);
 	calledProcedure->setCalledBy(calledProcedureCalledBy);
 }
@@ -362,7 +341,7 @@ Procedure* PDR::checkAndAddToProcTable(string procedureName) {
 	return procedure;
 }
 
-TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
+TNode* PDR::breakDownAssignExpression(ParsedData data, unordered_set<string>& usesSet) {
 	queue<string> expression = data.getAssignExpression();
 	stack<TNode*> rpnNodeStack;
 	int numExp = expression.size();
@@ -422,7 +401,7 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, set<string>& usesSet) {
 }
 
 void PDR::addUseToCurrentProcedure(string useVar) {
-	set<string> usesSet = currentProcedure->getUses();
+	unordered_set<string> usesSet = currentProcedure->getUses();
 	usesSet.insert(useVar);
 	currentProcedure->setUses(usesSet);
 
@@ -430,7 +409,7 @@ void PDR::addUseToCurrentProcedure(string useVar) {
 }
 
 void PDR::addModifyToCurrentProcedure(string modifyVar) {
-	set<string> modifiesSet = currentProcedure->getModifies();
+	unordered_set<string> modifiesSet = currentProcedure->getModifies();
 	modifiesSet.insert(modifyVar);
 	currentProcedure->setModifies(modifiesSet);
 
@@ -438,36 +417,36 @@ void PDR::addModifyToCurrentProcedure(string modifyVar) {
 }
 
 void PDR::addUsesToCalledBy(string useVar) {
-	set<Procedure*> currentProcedureCalledBy = currentProcedure->getCalledBy();
-	set<Procedure*>::iterator iter;
+	unordered_set<Procedure*> currentProcedureCalledBy = currentProcedure->getCalledBy();
+	unordered_set<Procedure*>::iterator iter;
 	for(iter = currentProcedureCalledBy.begin(); iter != currentProcedureCalledBy.end(); iter++) {
 		Procedure* calledByProcedure = *iter;
-		set<string> calledByUses = calledByProcedure->getUses();
+		unordered_set<string> calledByUses = calledByProcedure->getUses();
 		calledByUses.insert(useVar);
 		calledByProcedure->setUses(calledByUses);
 	}
 }
 
 void PDR::addModifiesToCalledBy(string modifyVar) {
-	set<Procedure*> currentProcedureCalledBy = currentProcedure->getCalledBy();
-	set<Procedure*>::iterator iter;
+	unordered_set<Procedure*> currentProcedureCalledBy = currentProcedure->getCalledBy();
+	unordered_set<Procedure*>::iterator iter;
 	for(iter = currentProcedureCalledBy.begin(); iter != currentProcedureCalledBy.end(); iter++) {
 		Procedure* calledByProcedure = *iter;
-		set<string> calledByModifies = calledByProcedure->getModifies();
+		unordered_set<string> calledByModifies = calledByProcedure->getModifies();
 		calledByModifies.insert(modifyVar);
 		calledByProcedure->setModifies(calledByModifies);
 	}
 }
 
-void PDR::addParentSet(set<string> setToBeAdded, Flag statusFlag) {
+void PDR::addParentSet(unordered_set<string> setToBeAdded, Flag statusFlag) {
 	StmtTable* stmtTable = StmtTable::getInstance();
 	VarTable* varTable = VarTable::getInstance();
 	stack<int> holdingStack;
 
 	while(!stmtParentNumStack.empty()) {
 		Statement* parent = stmtTable->getStmtObj(stmtParentNumStack.top());
-		set<string> stmtSet;
-		set<string>::iterator iter;
+		unordered_set<string> stmtSet;
+		unordered_set<string>::iterator iter;
 
 		if(statusFlag == USES) {
 			stmtSet = parent->getUses();
