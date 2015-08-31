@@ -261,6 +261,9 @@ void TestOne::testMultipleProcAST() {
 	ProcNode* proc1 = ast->getProcNode("proc1");
 	ProcNode* proc2 = ast->getProcNode("proc2");
 	ProcNode* proc3 = ast->getProcNode("proc3");
+
+	CPPUNIT_ASSERT(proc1->getRightSibling() == proc2);
+	CPPUNIT_ASSERT(proc2->getRightSibling() == proc3);
 }
 
 void TestOne::testFollows() {
@@ -387,4 +390,162 @@ void TestOne::testConstTable() {
 	string secCombi[2] = {"3", "2"};
 
 	CPPUNIT_ASSERT(combi == firstCombi || secCombi);
+}
+
+void TestOne::testCallsAST() {
+	parser.parse("procedure proc1{call proc2;} procedure proc2{x = 2;}");
+
+	CPPUNIT_ASSERT(procTable->contains("proc1"));
+	CPPUNIT_ASSERT(procTable->contains("proc2"));
+
+	ProcNode* proc1Node = ast->getProcNode("proc1");
+	vector<TNode*> proc1Children = proc1Node->getChildren();
+	TNode* proc1StmtLstNode = proc1Children[0];
+
+	vector<TNode*> stmtLstNodeChildren = proc1StmtLstNode->getChildren();
+	CPPUNIT_ASSERT(stmtLstNodeChildren.size() == 1);
+
+	TNode* call1Node = stmtLstNodeChildren[0];
+	CPPUNIT_ASSERT(call1Node->getNodeType() == NodeType::CALL_STMT_);
+	CPPUNIT_ASSERT(call1Node->getName() == "proc2");
+
+	ProcNode* proc2Node = ast->getProcNode("proc2");
+	vector<TNode*> proc2Children = proc2Node->getChildren();
+	TNode* proc2StmtLstNode = proc2Children[0];
+
+	vector<TNode*> stmtLstNode2Children = proc2StmtLstNode->getChildren();
+	CPPUNIT_ASSERT(stmtLstNode2Children.size() == 1);
+	
+	TNode* assignNode = stmtLstNode2Children[0];
+	CPPUNIT_ASSERT(assignNode->getNodeType() == NodeType::ASSIGN_STMT_);
+	CPPUNIT_ASSERT(assignNode->getChildren().size() == 2);
+}
+
+void TestOne::testCallsPKB() {
+	parser.parse("procedure proc1{call proc2;} procedure proc2{x = 2;}");
+
+	Statement* stmt1 = stmtTable1->getStmtObj(1);
+	CPPUNIT_ASSERT(stmt1->getType() == NodeType::CALL_STMT_);
+	CPPUNIT_ASSERT(stmt1->getCalls() == "proc2");
+
+	Statement* stmt2 = stmtTable1->getStmtObj(2);
+	CPPUNIT_ASSERT(stmt2->getType() == NodeType::ASSIGN_STMT_);
+
+	Procedure* procedure1 = procTable->getProcObj("proc1");
+	Procedure* procedure2 = procTable->getProcObj("proc2");
+	
+	set<Procedure*> calledBy;
+	calledBy.insert(procedure1);
+	CPPUNIT_ASSERT(procedure2->getCalledBy() == calledBy);
+
+	set<Procedure*> calls;
+	calls.insert(procedure2);
+	CPPUNIT_ASSERT(procedure1->getCalls() == calls);
+}
+
+void TestOne::testProcedureUses() {
+	parser.parse("procedure proc1 { x = 2; y = x; } procedure proc2{ z = 3; y = 1; x = z + y;}");
+
+	Procedure* procedure = procTable->getProcObj("proc1");
+	string uses[] = {"x"};
+	set<string> usesSet(uses, uses + 1);
+	CPPUNIT_ASSERT(procedure->getUses() == usesSet);
+
+	Procedure* procedure2 = procTable->getProcObj("proc2");
+	string uses2[] = {"z", "y"};
+	set<string> usesSet2(uses2, uses2 + 2);
+	CPPUNIT_ASSERT(procedure2->getUses() == usesSet2);
+}
+
+void TestOne::testProcedureModifies() {
+	parser.parse("procedure proc1 {a = 3; b = a + 4;} procedure proc2 {x = 4; y = 2; z = x + y;}");
+
+	Procedure* procedure1 = procTable->getProcObj("proc1");
+	string modifies1[] = {"a", "b"};
+	set<string> modifiesSet1(modifies1, modifies1 + 2);
+	CPPUNIT_ASSERT(procedure1->getModifies() == modifiesSet1);
+
+	Procedure* procedure2 = procTable->getProcObj("proc2");
+	string modifies2[] = {"x", "y", "z"};
+	set<string> modifiesSet2(modifies2, modifies2 + 3);
+	CPPUNIT_ASSERT(procedure2->getModifies() == modifiesSet2);
+}
+
+void TestOne::testNestedProceduresUses() {
+	parser.parse("procedure proc1 {call proc2;} procedure proc2 {x = 2; while x {y = 2;}}");
+
+	Procedure* procedure1 = procTable->getProcObj("proc1");
+	string uses[] = {"x"};
+	set<string> usesSet(uses, uses + 1);
+	CPPUNIT_ASSERT(procedure1->getUses() == usesSet);
+
+	Procedure* procedure2 = procTable->getProcObj("proc2");
+	CPPUNIT_ASSERT(procedure2->getUses() == usesSet);
+}
+
+void TestOne::testNestedProceduresModifies() {
+	parser.parse("procedure proc1 { a = 2; call proc2;} procedure proc2 {x = 2; z = x; y = x + z;}");
+
+	Procedure* procedure1 = procTable->getProcObj("proc1");
+	string modifies[] = {"a", "x", "z", "y"};
+	set<string> modifiesSet(modifies, modifies + 4);
+	CPPUNIT_ASSERT(procedure1->getModifies() == modifiesSet);
+
+	Procedure* procedure2 = procTable->getProcObj("proc2");
+	string modifies2[] = {"x", "z", "y"};
+	set<string> modifiesSet2(modifies2, modifies2 + 3);
+	CPPUNIT_ASSERT(procedure2->getModifies() == modifiesSet2);
+}
+
+void TestOne::testIfStatement() {
+	parser.parse("procedure proc { a = 2; if a then {y = 2;} else { z = 3; } }");
+
+	Statement* ifStmt = stmtTable1->getStmtObj(2);
+	CPPUNIT_ASSERT(ifStmt->getType() == NodeType::IF_STMT_);
+	
+	string ifUses[] = {"a"};
+	set<string> ifUsesSet(ifUses, ifUses + 1);
+	CPPUNIT_ASSERT(ifStmt->getUses() == ifUsesSet);
+
+	string ifModifies[] = {"y", "z"};
+	set<string> ifModifiesSet(ifModifies, ifModifies + 2);
+	CPPUNIT_ASSERT(ifStmt->getModifies() == ifModifiesSet);
+
+	Procedure* proc = procTable->getProcObj("proc");
+	CPPUNIT_ASSERT(proc->getUses() == ifUsesSet);
+
+	string procModifies[] = {"a", "y", "z"};
+	set<string> procModifiesSet(procModifies, procModifies + 3);
+	CPPUNIT_ASSERT(proc->getModifies() == procModifiesSet);
+
+	CPPUNIT_ASSERT(ifStmt->getFollowsBefore() == 1);
+
+	Statement* secondAssign = stmtTable1->getStmtObj(3);
+	CPPUNIT_ASSERT(secondAssign->getParent() == 2);
+	CPPUNIT_ASSERT(secondAssign->getFollowsAfter() == -1);
+	CPPUNIT_ASSERT(secondAssign->getFollowsBefore() == -1);
+
+	Statement* thirdAssign = stmtTable1->getStmtObj(4);
+	CPPUNIT_ASSERT(thirdAssign->getParent() == 2);
+	CPPUNIT_ASSERT(thirdAssign->getFollowsBefore() == -1);
+	CPPUNIT_ASSERT(thirdAssign->getFollowsAfter() == -1);
+}
+
+void TestOne::testNestedIfStatement() {
+	parser.parse("procedure proc { a = 1; if a then { b = 2; if b then {c = 3;} else {d = 4;}} else {e = 5;}}");
+	
+	Statement* firstIf = stmtTable1->getStmtObj(2);
+	Statement* secondIf = stmtTable1->getStmtObj(4);
+	CPPUNIT_ASSERT(secondIf->getParent() == 2);
+
+	TNode* firstIfNode = firstIf->getTNodeRef();
+	TNode* secondIfNode = secondIf->getTNodeRef();
+	CPPUNIT_ASSERT(secondIfNode->getParent()->getParent() == firstIfNode);
+	
+	string firstModifies[] = {"b", "c", "d", "e"};
+	string secondModifies[] = {"c", "d"};
+	set<string> firstModSet(firstModifies, firstModifies + 4);
+	set<string> secondModSet(secondModifies, secondModifies + 2);
+	CPPUNIT_ASSERT(firstIf->getModifies() == firstModSet);
+	CPPUNIT_ASSERT(secondIf->getModifies() == secondModSet);
 }

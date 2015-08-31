@@ -28,6 +28,7 @@ void Parser::parse(string content) {
 	tokens = Utils::explode(content, ParserConstants::DELIM_STRING, ParserConstants::DELIMITERS);
 	iter = tokens.begin();
 	program();
+	validateCallStmts();
 	endParse();
 }
 
@@ -88,9 +89,15 @@ void Parser::program() {
 void Parser::procedure() {
 	match("procedure");
 	string procName = getName();
+	if (find(existingProcedures.begin(), existingProcedures.end(), procName) != existingProcedures.end()) {
+			//same procedure is defined twice
+			throwException(stmtCount);
+	}
+	currentProcName = procName;
 	ParsedData procedure = ParsedData(ParsedData::PROCEDURE, this->nestingLevel);
 	procedure.setProcName(procName);
 	parsedDataReceiver->processParsedData(procedure);
+	existingProcedures.push_back(procName);
 	match("{");
 	stmtLst();
 	match("}");
@@ -114,6 +121,8 @@ void Parser::stmt() {
 		parseWhile();
 	} else if (nextToken == "if") {
 		parseIfBlock();
+	} else if (nextToken == "call") {
+		call();
 	} else {
 		assign(); 
 	}
@@ -127,7 +136,6 @@ void Parser::assign() {
 	assignment.setAssignExpression(getExpression());
 	parsedDataReceiver->processParsedData(assignment);
 }
-
 
 /**
 Sample parsing of expression
@@ -154,6 +162,20 @@ queue<string> Parser::getExpression() {
 	} catch (InvalidExpressionException) {
 		throwException(stmtCount);
 	}
+}
+
+void Parser::call() {
+	match("call");
+	string procName = getName();
+	//check that the procedure does not call itself
+	if (currentProcName == procName) {
+		throwException(stmtCount);
+	}
+	ParsedData callStmt = ParsedData(ParsedData::CALL, this->nestingLevel);
+	callStmt.setProcName(procName);
+	parsedDataReceiver->processParsedData(callStmt);
+	calledProcedures.push_back(procName);
+	match(";");
 }
 
 void Parser::parseWhile() {
@@ -195,6 +217,16 @@ void Parser::parseElse() {
 	match ("{");
 	stmtLst();
 	match("}");
+}
+
+//checked that all the called procedures exist as procedures
+void Parser::validateCallStmts() {
+	for (vector<string>::iterator iter = calledProcedures.begin(); iter != calledProcedures.end(); iter++) {
+		string calledProcedure = *iter;
+		if (find(existingProcedures.begin(), existingProcedures.end(), calledProcedure) == existingProcedures.end()) {
+			throwException(stmtCount);
+		}
+	}
 }
 
 void Parser::endParse() {

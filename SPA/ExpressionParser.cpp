@@ -15,10 +15,10 @@ queue<string> ExpressionParser::getRPN(queue<string> expr) {
 		if (Utils::isValidFactor(word) && (previousWord.empty() || Utils::isOpenBracket(previousWord) || Utils::isValidOperator(previousWord))) {
 			//factor either appears at the start of the expression, or it follows an open bracket or operator
 			parseFactor();
-		} else if (Utils::isOpenBracket(word) && (previousWord.empty() || Utils::isValidOperator(previousWord))) {
+		} else if (Utils::isOpenBracket(word) && (previousWord.empty() || Utils::isValidOperator(previousWord) || Utils::isOpenBracket(previousWord))) {
 			//open bracket either appears at the start of the expression, or it follows an operator
 			parseOpenBracket();
-		} else if (Utils::isCloseBracket(word) && Utils::isValidFactor(previousWord)) {
+		} else if (Utils::isCloseBracket(word) && (Utils::isValidFactor(previousWord) || Utils::isCloseBracket(previousWord))) {
 			//close bracket follows a valid factor
 			parseCloseBracket();
 		} else if (Utils::isValidOperator(word) && (Utils::isValidFactor(previousWord) || Utils::isCloseBracket(previousWord))) {
