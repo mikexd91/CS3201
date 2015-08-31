@@ -549,3 +549,67 @@ void TestOne::testNestedIfStatement() {
 	CPPUNIT_ASSERT(firstIf->getModifies() == firstModSet);
 	CPPUNIT_ASSERT(secondIf->getModifies() == secondModSet);
 }
+
+void TestOne::testUsingProc() {
+	parser.parse("procedure proc { x = 2; while x{ y = x;} if y then {z = y;} else {z = x;}}");
+
+	Variable* varX = varTable1->getVariable("x");
+	Variable* varY = varTable1->getVariable("y");
+	Variable* varZ = varTable1->getVariable("z");
+
+	string proc[] = {"proc"};
+	set<string> procSet(proc, proc + 1);
+	CPPUNIT_ASSERT(varX->getUsedByProc() == procSet);
+	CPPUNIT_ASSERT(varY->getUsedByProc() == procSet);
+	CPPUNIT_ASSERT(varZ->getUsedByProc().empty());
+}
+
+void TestOne::testModifyingProc() {
+	parser.parse("procedure proc { while x {y = 3; while y{z = 2; while z{x = z;}}} }");
+
+	Variable* varX = varTable1->getVariable("x");
+	Variable* varY = varTable1->getVariable("y");
+	Variable* varZ = varTable1->getVariable("z");	
+
+	string proc[] = {"proc"};
+	set<string> procSet(proc, proc + 1);
+	CPPUNIT_ASSERT(varX->getModifiedByProc() == procSet);
+	CPPUNIT_ASSERT(varY->getModifiedByProc() == procSet);
+	CPPUNIT_ASSERT(varZ->getModifiedByProc() == procSet);
+}
+
+void TestOne::testUsingMultipleProc() {
+	parser.parse("procedure proc1 {while  y{x = 2; y = x;} } procedure proc2 {x = 3; y = x;}");
+
+	Variable* varX = varTable1->getVariable("x");
+	Variable* varY = varTable1->getVariable("y");
+
+	string proc1[] = {"proc1"};
+	string proc2[] = {"proc1", "proc2"};
+	set<string> procSet1(proc1, proc1 + 1);
+	set<string> procSet2(proc2, proc2 + 2);
+	CPPUNIT_ASSERT(varX->getUsedByProc() == procSet2);
+	CPPUNIT_ASSERT(varY->getUsedByProc() == procSet1);
+}
+
+void TestOne::testModifyingMultipleProc() {
+	parser.parse("procedure proc1 { x = 3;} procedure proc2 { y = 4;} procedure proc3 {x = 4; if a then {w = 3;} else {z = 4;}}");
+
+	Variable* varW = varTable1->getVariable("w");
+	Variable* varX = varTable1->getVariable("x");
+	Variable* varY = varTable1->getVariable("y");
+	Variable* varZ = varTable1->getVariable("z");	
+
+	string first[] = {"proc2"};
+	set<string> firstSet(first, first + 1);
+	CPPUNIT_ASSERT(varY->getModifiedByProc() == firstSet);
+
+	string second[] = {"proc1", "proc3"};
+	set<string> secondSet(second, second + 2);
+	CPPUNIT_ASSERT(varX->getModifiedByProc() == secondSet);
+
+	string third[] = {"proc3"};
+	set<string> thirdSet(third, third + 1);
+	CPPUNIT_ASSERT(varW->getModifiedByProc() == thirdSet);
+	CPPUNIT_ASSERT(varZ->getModifiedByProc() == thirdSet);
+}

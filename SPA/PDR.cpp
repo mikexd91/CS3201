@@ -121,6 +121,9 @@ void PDR::processAssignStmt(ParsedData data) {
     addToVarTable(modifiesVar, MODIFIES);
     addModifyToCurrentProcedure(data.getAssignVar());
 
+	addUseProcToVarTable(uses);
+	addModifyProcToVarTable(data.getAssignVar());
+
     // Populating the StmtTable
     StmtTable* stmtTable = StmtTable::getInstance();
     Statement* stmt = new Statement();
@@ -159,9 +162,12 @@ void PDR::processIfStmt(ParsedData data) {
 	VarNode* ifVar = new VarNode(data.getIfVar());
 	ifNode->linkVarNode(ifVar);
 	ifNode->linkThenStmtLstNode(thenStmtLst);
-
+	
+	set<string> uses;
+	uses.insert(data.getIfVar());
 	addToVarTable(ifVar, USES);
 	addUseToCurrentProcedure(data.getIfVar());
+	addUseProcToVarTable(uses);
 
 	nodeStack.push(thenStmtLst);
 	currNestingLevel = data.getNestingLevel() + 1;
@@ -172,9 +178,6 @@ void PDR::processIfStmt(ParsedData data) {
 	ifStmt->setType(NodeType::IF_STMT_);
 	ifStmt->setStmtNum(stmtCounter);
 	ifStmt->setTNodeRef(ifNode);
-
-	set<string> uses;
-	uses.insert(data.getIfVar());
 	ifStmt->setUses(uses);
 
 	createFollowsLinks(ifNode, ifStmt);
@@ -233,6 +236,7 @@ void PDR::processWhileStmt(ParsedData data) {
 
 	addToVarTable(whileVar, USES);
 	addUseToCurrentProcedure(data.getWhileVar());
+	addUseProcToVarTable(uses);
 
     nodeStack.push(stmtLst);
     currNestingLevel = data.getNestingLevel() + 1;
@@ -260,6 +264,23 @@ void PDR::processWhileStmt(ParsedData data) {
 
 	stmtParentNumStack.push(stmtCounter);
 	stmtTable->addStmt(whileStmt);
+}
+
+void PDR::addUseProcToVarTable(set<string> uses) {
+	VarTable* varTable = VarTable::getInstance();
+	set<string>::iterator iter;
+
+	for(iter = uses.begin(); iter != uses.end(); iter++) {
+		string var = *iter;
+		Variable* varObj = varTable->getVariable(var);
+		varObj->addUsingProc(currentProcedure->getProcName());
+	}
+}
+
+void PDR::addModifyProcToVarTable(string var) {
+	VarTable* varTable = VarTable::getInstance();
+	Variable* varObj = varTable->getVariable(var);
+	varObj->addModifyingProc(currentProcedure->getProcName());
 }
 
 void PDR::addCallToCurrentProcedure(Procedure* calledProcedure) {
