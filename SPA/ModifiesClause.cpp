@@ -34,7 +34,7 @@ bool ModifiesClause::evaluateS1FixedS2Fixed(string s1, string s2) {
 	// Modifies can only take in a fixed proc or a fixed stmt number as the first arg
 	if(firstArgType == ARG_PROCEDURE) {
 		return isProcedureModifies(s1, s2);
-	} else if(firstArgType == ARG_PROGLINE) {
+	} else {
 		return isStmtModifies(atoi(s1.c_str()), s2);
 	}
 	
@@ -237,11 +237,13 @@ Results::ResultsTable* ModifiesClause::getAllS1AndS2() {
 }
 
 bool ModifiesClause::isProcedureModifies(string proc, string var) {
-	return false;
+	Procedure* procedure = procTable->getProcObj(proc);
+
+	unordered_set<string> modifiesSet = procedure->getModifies();
+	return modifiesSet.find(var) != modifiesSet.end();
 }
 
 bool ModifiesClause::isStmtModifies(int stmtNum, string var) {
-	StmtTable* stmtTable = StmtTable::getInstance();
 	Statement* stmt = stmtTable->getStmtObj(stmtNum);
 	
 	unordered_set<string> modifiesSet = stmt->getModifies();
