@@ -16,7 +16,7 @@ class ParentClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testParentSynSynPass );
 	CPPUNIT_TEST( testParentSynSynPassWithWhile );
 	CPPUNIT_TEST( testParentFirstUnderscorePass );
-	//CPPUNIT_TEST( testParentSecondUnderscorePass );
+	CPPUNIT_TEST( testParentSecondUnderscorePass );
 	CPPUNIT_TEST( testParentBothUnderscorePass );
 	CPPUNIT_TEST_SUITE_END();
 
