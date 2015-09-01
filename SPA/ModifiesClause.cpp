@@ -22,7 +22,7 @@ ModifiesClause::~ModifiesClause(void){
 
 bool ModifiesClause::isValid(void) {
 	bool isValidFirstArg = (firstArgType == ARG_GENERIC) || (firstArgType == ARG_STATEMENT) 
-		|| (firstArgType == ARG_ASSIGN) || (firstArgType == ARG_PROCEDURE)
+		|| (firstArgType == ARG_ASSIGN) || (firstArgType == ARG_PROCEDURE) || (firstArgType == ARG_IF)
 		|| (firstArgType == ARG_WHILE) || (firstArgType == ARG_PROGLINE);
 	bool isValidSecondArg = (secondArgType == ARG_GENERIC) || (secondArgType == ARG_VARIABLE);
 
@@ -132,38 +132,42 @@ unordered_set<string> ModifiesClause::getAllS2() {
 unordered_set<string> ModifiesClause::getAllS1WithS2Fixed(string s2) {
 	unordered_set<string> results;
 	Variable* var = varTable->getVariable(s2);
-	unordered_set<string> setToBeAdded;
 
 	if(firstArgType == ARG_PROCEDURE) {
-		setToBeAdded = var->getModifiedByProc();
+		results = var->getModifiedByProc();
 	} else if(firstArgType == ARG_IF) {
 		unordered_set<Statement*> ifStmts = stmtTable->getIfStmts();
 		for(auto i = ifStmts.begin(); i != ifStmts.end(); i++) {
 			if(isStmtModifies((*i)->getStmtNum(), s2)) {
-				setToBeAdded.insert(boost::lexical_cast<string>((*i)->getStmtNum()));
+				results.insert(boost::lexical_cast<string>((*i)->getStmtNum()));
 			}
 		}
 	} else if(firstArgType == ARG_WHILE) {
 		unordered_set<Statement*> whileStmts = stmtTable->getWhileStmts();
 		for(auto i = whileStmts.begin(); i != whileStmts.end(); i++) {
 			if(isStmtModifies((*i)->getStmtNum(), s2)) {
-				setToBeAdded.insert(boost::lexical_cast<string>((*i)
+				results.insert(boost::lexical_cast<string>((*i)->getStmtNum()));
 			}
 		}
 	} else if(firstArgType == ARG_PROGLINE) {
-
+		results = var->getUsedByStmtsAsString();
 	}
-	
+
 	return results;
 }
 
+// Modifies(p, _) or Modifies(if, _) or Modifies(w, _) or Modifies(s, _)
 unordered_set<string> ModifiesClause::getAllS1() {
 	unordered_set<string> results;
 
+	if(firstArgType == ARG_PROCEDURE) {
+		
+	}
+
 	return results;
 }
 
-unordered_set<unordered_map<string, string>> getAllS1AndS2() {
+unordered_set<unordered_map<string, string>> ModifiesClause::getAllS1AndS2() {
 	unordered_set<unordered_map<string, string>> results;
 	return results;
 }
