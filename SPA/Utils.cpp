@@ -139,10 +139,10 @@ NodeType Utils::convertArgTypeToNodeType(string stmtType) {
 
 
 //filters the set to retrieve the statement of the specified type
-set<int> Utils::filterStatements(set<int> stmtSet, NodeType type) {
+unordered_set<int> Utils::filterStatements(unordered_set<int> stmtSet, NodeType type) {
 	StmtTable * stmtTable = StmtTable::getInstance();
-	set<int>::iterator it;
-	set<int> finalValue;
+	unordered_set<int>::iterator it;
+	unordered_set<int> finalValue;
 	for (it = stmtSet.begin(); it != stmtSet.end(); ++it) {
 		Statement* currentStmt = stmtTable->getStmtObj(*it);
 		if (currentStmt->getType() == type) {

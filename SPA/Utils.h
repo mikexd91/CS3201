@@ -26,7 +26,7 @@ public:
 	static bool isSameType(string, NodeType);
 	static string convertNodeTypeToArgType(NodeType);
 	static NodeType convertArgTypeToNodeType(string);
-	static set<int> filterStatements(set<int>, NodeType);
+	static unordered_set<int> filterStatements(unordered_set<int>, NodeType);
 	static void removeVectorDupes(vector<string> &vec);
 	static void removeVectorDupes(vector<pair<string,string>> &vec);
 };
