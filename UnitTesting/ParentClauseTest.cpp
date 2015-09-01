@@ -92,11 +92,11 @@ void ParentClauseTest::setUp() {
 	stmt1->setStmtNum(1);
 	stmt1->setType(WHILE_STMT_);
 	string modifiesArray1[] = {"k", "i", "j"};
-	set<string> mods1(modifiesArray1, modifiesArray1 + 3);
+	unordered_set<string> mods1(modifiesArray1, modifiesArray1 + 3);
 	stmt1->setModifies(mods1);
 	stmt1->setTNodeRef(while1);
 	int children1[] = {2, 3};
-	stmt1->setChildren(set<int>(children1, children1+2));
+	stmt1->setChildren(unordered_set<int>(children1, children1+2));
 	stable->addStmt(stmt1);
 
 	Statement* stmt2 = new Statement();
@@ -104,7 +104,7 @@ void ParentClauseTest::setUp() {
 	stmt2->setType(ASSIGN_STMT_);
 	stmt2->setFollowsAfter(3);
 	string kvar = "k";
-	set<string> mods2 = set<string>();
+	unordered_set<string> mods2 = unordered_set<string>();
 	mods2.emplace(kvar);
 	stmt2->setModifies(mods2);
 	stmt2->setTNodeRef(assg1);
@@ -116,12 +116,12 @@ void ParentClauseTest::setUp() {
 	stmt3->setType(WHILE_STMT_);
 	stmt3->setFollowsBefore(2);
 	string modifiesArray3[] = {"i", "j"};
-	set<string> mods3(modifiesArray1, modifiesArray1 + 2);
+	unordered_set<string> mods3(modifiesArray1, modifiesArray1 + 2);
 	stmt3->setModifies(mods3);
 	stmt3->setTNodeRef(assg3);
 	stmt3->setParent(1);
 	int children3[] = {4, 5};
-	stmt3->setChildren(set<int>(children3, children3+2));
+	stmt3->setChildren(unordered_set<int>(children3, children3+2));
 	stable->addStmt(stmt3);
 
 	Statement* stmt4 = new Statement();
@@ -129,7 +129,7 @@ void ParentClauseTest::setUp() {
 	stmt4->setType(ASSIGN_STMT_);
 	stmt4->setFollowsAfter(5);
 	string ivar = "i";
-	set<string> mods4 = set<string>();
+	unordered_set<string> mods4 = unordered_set<string>();
 	mods4.emplace(ivar);
 	stmt4->setModifies(mods4);
 	stmt4->setTNodeRef(assg2);
@@ -141,7 +141,7 @@ void ParentClauseTest::setUp() {
 	stmt5->setType(ASSIGN_STMT_);
 	stmt5->setFollowsBefore(4);
 	string jvar = "j";
-	set<string> mods5 = set<string>();
+	unordered_set<string> mods5 = unordered_set<string>();
 	mods5.emplace(jvar);
 	stmt5->setModifies(mods5);
 	stmt5->setTNodeRef(assg3);
