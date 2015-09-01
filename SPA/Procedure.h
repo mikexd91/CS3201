@@ -2,6 +2,9 @@
 
 #include <set>
 #include "TNode.h"
+#include <boost\unordered_set.hpp>
+
+using boost::unordered_set;
 
 /*
 // -------------------------- Procedure --------------------------- 
@@ -22,10 +25,10 @@ class Procedure {
 public:
 
 	// TYPEDEF
-	typedef set<string> UsesSet;
-	typedef set<string> ModifiesSet;
-	typedef set<Procedure*> CallsSet;
-	typedef set<Procedure*> CalledBySet;
+	typedef unordered_set<string> UsesSet;
+	typedef unordered_set<string> ModifiesSet;
+	typedef unordered_set<Procedure*> CallsSet;
+	typedef unordered_set<Procedure*> CalledBySet;
 
 	// CONSTRUCTOR
 	Procedure();
@@ -43,10 +46,10 @@ public:
 	// SETTERS
 	void setProcName(const string &name);
 	void setTNodeRef(TNode *ref);
-	void setUses(const set<string> &useSet);
-	void setModifies(const set<string> &modifiesSet);
-	void setCalls(const set<Procedure*> &callsSet);
-	void setCalledBy(const set<Procedure*> &calledBySet);
+	void setUses(const unordered_set<string> &useSet);
+	void setModifies(const unordered_set<string> &modifiesSet);
+	void setCalls(const unordered_set<Procedure*> &callsSet);
+	void setCalledBy(const unordered_set<Procedure*> &calledBySet);
 
 private:
 	// PRIVATE ATTRIBUTES
@@ -57,6 +60,6 @@ private:
 	UsesSet			uses;
 	ModifiesSet		modifies;
 	CallsSet		calls;
-	CalledBySet	calledBy;
+	CalledBySet		calledBy;
 
 };

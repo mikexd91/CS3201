@@ -23,7 +23,7 @@ public:
 	static queue<string> exprBuilder(string);
 	static string removeSpace(string);
 	static vector<string> split(string, char, vector<string>*);
-	static queue<string> queueBuilder(string, char);
+	static queue<string> queueBuilder(string);
 	static string queueToString(queue<string>);
 	static vector<string> tokeniser(string, char);
 	static bool containsAny(string, vector<string>);
@@ -32,12 +32,13 @@ public:
 	static bool containsKeyword(string);
 	static string getClauseString(string);
 	static Clause* createCorrectClause(string);
-	
+	static vector<string> splitByDelims(vector<string>, string);
+	static void unexpectedEndCheck(queue<string>);
+
 	static void parseDeclarations(Query*, vector<string>);
 	static void parseSelectSynonyms(Query*, queue<string>);
 	static void parseClause(Query*, queue<string>);
 	static void parsePattern(Query*, queue<string>);
-
 
 	static Query parseQuery(string);
 };
