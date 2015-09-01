@@ -2,7 +2,7 @@
 
 #include <set>
 #include "boost/unordered_map.hpp"
-#include <boost/foreach.hpp>
+#include "boost/foreach.hpp"
 #include "Procedure.h"
 #include "ProcTable.h"
 
@@ -47,6 +47,17 @@ Procedure* ProcTable::getProcObj(string procName) {
 	} else {
 		return iter->second;
 	}
+}
+
+// gets all proc obj in the table
+const unordered_set<Procedure*>& ProcTable::getAllProcs() {
+	unordered_set<Procedure*> *procSet = new unordered_set<Procedure*>();
+
+	BOOST_FOREACH(auto p, table) {
+		procSet->emplace(p.second);
+	}
+
+	return *procSet;
 }
 
 // gets set of procedures called by procName

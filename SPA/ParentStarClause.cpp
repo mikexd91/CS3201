@@ -22,6 +22,46 @@ bool ParentStarClause::isValid(void){
 	return (firstArg && secondArg);
 }
 
+
+//e.g. Parent(string,string)
+bool ParentStarClause::evaluateS1FixedS2Fixed(string s1, string s2) {
+	return false;
+};
+//e.g. Parent(_,_)
+bool ParentStarClause::evaluateS1GenericS2Generic() {
+	return false;
+};
+//e.g. Parent(_,string)
+bool ParentStarClause::evaluateS1GenericS2Fixed(string s2){
+	return false;
+};
+//Parent(string,_)
+bool ParentStarClause::evaluateS1FixedS2Generic(string s1) {
+	return false;
+}
+//Parent(string,s2)
+unordered_set<string> ParentStarClause::getAllS2WithS1Fixed(string s1) {
+	return unordered_set<string>();
+}
+//Parent(_,s2)
+unordered_set<string> ParentStarClause::getAllS2() {
+	return unordered_set<string>();
+}
+//Parent(s1,string)
+unordered_set<string> ParentStarClause::getAllS1WithS2Fixed(string s2) {
+	return unordered_set<string>();
+}
+//Parent(s1,__)
+unordered_set<string> ParentStarClause::getAllS1() {
+	return unordered_set<string>();
+}
+//Parent(s1,s2)
+Results::ResultsTable* ParentStarClause::getAllS1AndS2() {
+	return new Results::ResultsTable;
+}
+
+
+/**
 // ONLY EVALUATES PROTOTYPE CASES (dealing with while stmts, if stmts not included)
 Results ParentStarClause::evaluate(void) {
 	// arg properties
@@ -393,3 +433,4 @@ void ParentStarClause::recurParentCheckS1FixedS2Fixed(Results &res, string s1, s
 		}
 	}
 }
+**/
