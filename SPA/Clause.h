@@ -7,7 +7,6 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "Utils.h"
 
 using std::vector;
 using std::map;
@@ -53,7 +52,7 @@ protected:
 	//Parent(s1,__)
 	virtual unordered_set<string> getAllS1()=0;
 	//Parent(s1,s2)
-	virtual unordered_set<unordered_map<string, string>> getAllS1AndS2()=0;
+	virtual Results::ResultsTable* getAllS1AndS2()=0;
 	
 private:
 	bool isBaseValidityCheck();

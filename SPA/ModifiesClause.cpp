@@ -128,47 +128,111 @@ unordered_set<string> ModifiesClause::getAllS2() {
 	return results;
 }
 
-// Modifies(p, "x") or Modifies(if, "x") or Modifies(w, "x") or Modifies(s, "x");
+// Modifies(p, "x") or Modifies(if, "x") or Modifies(w, "x") or Modifies(s, "x") or Modifies(a, "x")
 unordered_set<string> ModifiesClause::getAllS1WithS2Fixed(string s2) {
 	unordered_set<string> results;
 	Variable* var = varTable->getVariable(s2);
 
 	if(firstArgType == ARG_PROCEDURE) {
 		results = var->getModifiedByProc();
-	} else if(firstArgType == ARG_IF) {
-		unordered_set<Statement*> ifStmts = stmtTable->getIfStmts();
-		for(auto i = ifStmts.begin(); i != ifStmts.end(); i++) {
-			if(isStmtModifies((*i)->getStmtNum(), s2)) {
-				results.insert(boost::lexical_cast<string>((*i)->getStmtNum()));
-			}
-		}
-	} else if(firstArgType == ARG_WHILE) {
-		unordered_set<Statement*> whileStmts = stmtTable->getWhileStmts();
-		for(auto i = whileStmts.begin(); i != whileStmts.end(); i++) {
-			if(isStmtModifies((*i)->getStmtNum(), s2)) {
-				results.insert(boost::lexical_cast<string>((*i)->getStmtNum()));
-			}
-		}
 	} else if(firstArgType == ARG_PROGLINE) {
 		results = var->getUsedByStmtsAsString();
-	}
+	} else {
+		unordered_set<Statement*> stmts;
+		if(firstArgType == ARG_IF) {
+			stmts = stmtTable->getIfStmts();
+		} else if(firstArgType == ARG_WHILE) {
+			stmts = stmtTable->getWhileStmts();
+		} else {
+			stmts = stmtTable->getAssgStmts();
+		}
+
+		for(auto i = stmts.begin(); i != stmts.end(); i++) {
+			int stmtNum = (*i)->getStmtNum();
+			if(isStmtModifies(stmtNum, s2)) {
+				results.insert(lexical_cast<string>(stmtNum));
+			}
+		}
+	} 
 
 	return results;
 }
 
-// Modifies(p, _) or Modifies(if, _) or Modifies(w, _) or Modifies(s, _)
+// Modifies(p, _) or Modifies(if, _) or Modifies(w, _) or Modifies(s, _) or Modifies(a, _)
 unordered_set<string> ModifiesClause::getAllS1() {
 	unordered_set<string> results;
 
 	if(firstArgType == ARG_PROCEDURE) {
-		
+		unordered_set<Procedure*> allProc = procTable->getAllProcs();
+		for(auto i = allProc.begin(); i != allProc.end(); i++) {
+			if(!(*i)->getModifies().empty()) {
+				results.insert((*i)->getProcName());
+			}
+		}
+	} else {
+		unordered_set<Statement*> stmts;
+		if(firstArgType == ARG_IF) {
+			stmts = stmtTable->getIfStmts();
+		} else if(firstArgType == ARG_WHILE) {
+			stmts = stmtTable->getWhileStmts();
+		} else if(firstArgType == ARG_ASSIGN) {
+			stmts = stmtTable->getAssgStmts();
+		} else {
+			stmts = stmtTable->getAllStmts();
+		}
+
+		for(auto i = stmts.begin(); i != stmts.end(); i++) {
+			if(!(*i)->getModifies().empty()) {
+				results.insert(lexical_cast<string>((*i)->getStmtNum()));
+			}
+		}
 	}
 
 	return results;
 }
 
-unordered_set<unordered_map<string, string>> ModifiesClause::getAllS1AndS2() {
-	unordered_set<unordered_map<string, string>> results;
+// Modifies(p, v) or Modifies(s, v) or Modifies(if, v) or Modifies(w, v)
+Results::ResultsTable* ModifiesClause::getAllS1AndS2() {
+	Results::ResultsTable* results = new Results::ResultsTable();
+
+	if(firstArgType == ARG_PROCEDURE) {
+		unordered_set<Procedure*> allProc = procTable->getAllProcs();
+		for(auto i = allProc.begin(); i != allProc.end(); i++) {
+			Procedure* proc = *i;
+			unordered_set<string> modifies = proc->getModifies();
+			for(auto j = modifies.begin(); j != modifies.end(); j++) {
+				string var = *j;
+				Results::Row* tuple = new Results::Row();
+				(*tuple)[firstArg] = proc->getProcName();
+				(*tuple)[secondArg] = var;
+				results->insert(tuple);
+			}
+		}
+	} else {
+		unordered_set<Statement*> stmts;
+		if(firstArgType == ARG_IF) {
+			stmts = stmtTable->getIfStmts();
+		} else if(firstArgType == ARG_WHILE) {
+			stmts = stmtTable->getWhileStmts();
+		} else if(firstArgType == ARG_ASSIGN) {
+			stmts = stmtTable->getAssgStmts();
+		} else {
+			stmts = stmtTable->getAllStmts();
+		}
+
+		for(auto i = stmts.begin(); i != stmts.end(); i++) {
+			Statement* statement = *i;
+			unordered_set<string> modifies = statement->getModifies();
+			for(auto j = modifies.begin(); j != modifies.end(); j++) {
+				string var = *j;
+				Results::Row* tuple = new Results::Row();
+				(*tuple)[firstArg] = lexical_cast<string>(statement->getStmtNum());
+				(*tuple)[secondArg] = var;
+				results->insert(tuple);
+			}
+		}
+	}
+
 	return results;
 }
 
@@ -183,237 +247,3 @@ bool ModifiesClause::isStmtModifies(int stmtNum, string var) {
 	unordered_set<string> modifiesSet = stmt->getModifies();
 	return modifiesSet.find(var) != modifiesSet.end();
 }
-
-//bool ModifiesClause::isModifies(int stmtNum, string varName) {
-//	StmtTable* stable = StmtTable::getInstance();
-//	int maxStmts = stable->getAllStmts().size();
-//	if (stmtNum > maxStmts || stmtNum <= 0) {
-//		return false;
-//	} else {
-//		Statement* stmt = stable->getStmtObj(stmtNum);
-//
-//		set<string> mods = stmt->getModifies();
-//
-//		return mods.find(varName) != mods.end();
-//	}
-//}
-//bool ModifiesClause::isStmtFixed() {
-//	return firstArgFixed;
-//}
-//
-//bool ModifiesClause::isVarFixed() {
-//	return secondArgFixed;
-//}
-//
-//string ModifiesClause::getStmt() {
-//	return firstArg;
-//}
-//
-//int ModifiesClause::getStmtNum() {
-//	if (isStmtFixed()) {
-//		return atoi(firstArg.c_str());
-//	} else {
-//		return 0;
-//	}
-//}
-//
-//string ModifiesClause::getVar() {
-//	return secondArg;
-//}
-//
-//string ModifiesClause::getStmtType() {
-//	return firstArgType;
-//}
-//
-//
-//bool ModifiesClause::isValid(void){
-//	string firstType = this->getFirstArgType();
-//	string secondType = this->getSecondArgType();
-//	bool firstArg = (firstType == ARG_GENERIC) || (firstType == ARG_STATEMENT) || (firstType == ARG_ASSIGN) || (firstType == ARG_WHILE) || (firstType == ARG_PROGLINE);
-//	bool secondArg = (secondType == ARG_GENERIC) || (secondType == ARG_VARIABLE);
-//	return (firstArg && secondArg);
-//}
-//
-//Results ModifiesClause::evaluate(void) {
-//
-//	/*
-//
-//	stmt fixed
-//		var fixed == set the result to true if true
-//		var syn == return all var that mod by stmt
-//
-//	stmt syn - can be assg, while, plainstmt
-//		var fixed == return all stmt that mods this var
-//		var syn == return all pair (stmt, var) that mod holds
-//
-//	*/
-//
-//	if (isStmtFixed()) {
-//		if (isVarFixed()) {
-//			return evaluateFixedFixed(getStmtNum(), getVar());
-//		} else {
-//			return evaluateFixedSyn(getStmtNum(), getVar());
-//		}
-//	} else {
-//		if (isVarFixed()) {
-//			return evaluateSynFixed(getStmt(), getVar());
-//		} else {
-//			return evaluateSynSyn(getStmt(), getVar());
-//		}
-//	}
-//}
-//
-//Results ModifiesClause::evaluateFixedFixed(int stmtNum, string varName) {
-//	Results* res = new Results();
-//	res->setClausePassed(isModifies(stmtNum, varName));
-//	res->setNumOfSyn(0);
-//
-//	return *res;
-//}
-//
-//Results ModifiesClause::evaluateFixedSyn(int stmtNum, string var) {
-//	Results* res = new Results();
-//	res->setFirstClauseSyn(var);
-//	if(this->getSecondArgType() != ARG_GENERIC) {
-//		res->setNumOfSyn(1);
-//	} else {
-//		res->setNumOfSyn(0);
-//	}
-//
-//	VarTable* vtable = VarTable::getInstance();
-//	vector<string>* allVarNames = vtable->getAllVarNames();
-//
-//	for (size_t i = 0; i < allVarNames->size(); i++) {
-//		if (isModifies(stmtNum, allVarNames->at(i))) {
-//			res->addSingleResult(allVarNames->at(i));
-//		}
-//	}
-//
-//	res->setClausePassed(res->getSinglesResults().size() > 0);
-//
-//	return *res;
-//}
-//
-//Results ModifiesClause::evaluateSynFixed(string stmt, string varName) {
-//	Results* res = new Results();
-//	res->setFirstClauseSyn(stmt);
-//	if(this->getFirstArgType() != ARG_GENERIC) {
-//		res->setNumOfSyn(1);
-//	} else {
-//		res->setNumOfSyn(0);
-//	}
-//
-//	StmtTable* stable = StmtTable::getInstance();
-//	set<Statement*> allStmt;	
-//	
-//	if (getStmtType() == ARG_ASSIGN) {
-//		allStmt = stable->getAssgStmts();
-//	} else if (getStmtType() == ARG_WHILE) {
-//		allStmt = stable->getWhileStmts();
-//	} else {
-//		allStmt = stable->getAllStmts();
-//	}
-//
-//	BOOST_FOREACH(auto p, allStmt) {
-//		int stmtNum = p->getStmtNum();
-//		if (isModifies(stmtNum, varName)) {
-//			res->addSingleResult(lexical_cast<string>(stmtNum));
-//		}
-//	}
-//
-//	res->setClausePassed(res->getSinglesResults().size() > 0);
-//
-//	return *res;
-//}
-//
-//Results ModifiesClause::evaluateSynSyn(string stmt, string var) {
-//	bool isFirstGeneric = getStmtType() == ARG_GENERIC;
-//	bool isSecondGeneric = getSecondArgType() == ARG_GENERIC;
-//	bool isBothGeneric = isFirstGeneric && isSecondGeneric;
-//
-//	Results* res = new Results();
-//	res->setNumOfSyn(0);
-//	if (isBothGeneric) {
-//		res->setNumOfSyn(0);
-//	} else if (isFirstGeneric) {
-//		res->setFirstClauseSyn(stmt);
-//		res->setNumOfSyn(1);
-//	} else if (isSecondGeneric) {
-//		res->setFirstClauseSyn(var);
-//		res->setNumOfSyn(1);
-//	} else {
-//		res->setFirstClauseSyn(stmt);
-//		res->setSecondClauseSyn(var);
-//		res->setNumOfSyn(2);
-//	}
-//
-//	StmtTable* stable = StmtTable::getInstance();
-//	set<Statement*> allStmt;
-//	
-//	VarTable* vtable = VarTable::getInstance();
-//	vector<string>* allVarNames = vtable->getAllVarNames();
-//	
-//	if (getStmtType() == ARG_ASSIGN) {
-//		allStmt = stable->getAssgStmts();
-//	} else if (getStmtType() == ARG_WHILE) {
-//		allStmt = stable->getWhileStmts();
-//	} else {
-//		allStmt = stable->getAllStmts();
-//	}
-//
-//	set<string>* singles = new set<string>();
-//	set<pair<string, string>>* pairs = new set<pair<string, string>>();
-//
-//	BOOST_FOREACH(auto p, allStmt) {
-//		int stmtNum = p->getStmtNum();
-//
-//		//BOOST_FOREACH(string varName, allVarNames) {
-//		for (size_t i = 0; i < allVarNames->size(); i++) {
-//			string varName = allVarNames->at(i);
-//			if (isModifies(stmtNum, varName)) {
-//				if (isBothGeneric) {
-//					pair<string, string> pr = pair<string, string>(lexical_cast<string>(stmtNum), lexical_cast<string>(varName));
-//					pairs->emplace(pr);
-//				} else if (isFirstGeneric) {
-//					singles->emplace(lexical_cast<string>(stmtNum));
-//				} else if (isSecondGeneric) {
-//					singles->emplace(lexical_cast<string>(varName));
-//				} else {
-//					pair<string, string> pr = pair<string, string>(lexical_cast<string>(stmtNum), lexical_cast<string>(varName));
-//					pairs->emplace(pr);
-//				}
-//			}
-//		}
-//	}
-//
-//	// transfer from set to vector
-//	if (isBothGeneric) {
-//		transferPairsToResult(pairs, res);
-//	} else if (isFirstGeneric) {
-//		transferSinglesToResult(singles, res);
-//	} else if (isSecondGeneric) {
-//		transferSinglesToResult(singles, res);
-//	} else {
-//		transferPairsToResult(pairs, res);
-//	}
-//
-//	return *res;
-//}
-//
-
-//
-//void ModifiesClause::transferSinglesToResult(set<string>* singles, Results* res) {
-//	
-//	BOOST_FOREACH(auto p, *singles) {
-//		res->addSingleResult(p);
-//	}
-//	res->setClausePassed(res->getSinglesResults().size() > 0);
-//}
-//
-//void ModifiesClause::transferPairsToResult(set<pair<string, string>>* pairs, Results* res) {
-//	
-//	BOOST_FOREACH(auto p, *pairs) {
-//		res->addPairResult(p.first, p.second);
-//	}
-//	res->setClausePassed(res->getPairResults().size() > 0);
-//}
