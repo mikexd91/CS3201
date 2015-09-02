@@ -5,9 +5,38 @@
 
 class ModifiesClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( ModifiesClauseTest );
-	//CPPUNIT_TEST( testFixedFixedStmtPass );
+
+	CPPUNIT_TEST( testFixedFixedStmtPass );
 	CPPUNIT_TEST( testFixedFixedStmtFail );
-	//CPPUNIT_TEST( testFixedFixedProcPass );
+	CPPUNIT_TEST( testFixedFixedProcPass );
+	CPPUNIT_TEST( testFixedFixedProcFail );
+
+	CPPUNIT_TEST( testGenericGenericPass );
+	CPPUNIT_TEST( testGenericFixedPass );
+	CPPUNIT_TEST( testGenericFixedFail );
+
+	CPPUNIT_TEST( testFixedGenericStmtPass );
+	CPPUNIT_TEST( testFixedGenericStmtFail );
+	CPPUNIT_TEST( testFixedGenericProcPass );
+	CPPUNIT_TEST( testFixedGenericProcFail );
+
+	CPPUNIT_TEST( testFixedSynStmtPass );
+	CPPUNIT_TEST( testFixedSynStmtFail );
+	CPPUNIT_TEST( testFixedSynProcPass );
+	CPPUNIT_TEST( testFixedSynProcFail );
+
+	CPPUNIT_TEST ( testGenericSynPass );
+
+	CPPUNIT_TEST( testSynFixedStmtPass );
+	CPPUNIT_TEST( testSynFixedStmtFail );
+	CPPUNIT_TEST( testSynFixedProcPass );
+	CPPUNIT_TEST( testSynFixedProcFail );
+	CPPUNIT_TEST( testSynFixedWhilePass );
+	CPPUNIT_TEST( testSynFixedWhileFail );
+	CPPUNIT_TEST( testSynFixedIfPass );
+	CPPUNIT_TEST( testSynFixedIfFail );
+	CPPUNIT_TEST( testSynFixedAssgPass );
+	CPPUNIT_TEST( testSynFixedAssgFail );
 	
 	CPPUNIT_TEST_SUITE_END();
 
@@ -19,6 +48,38 @@ public:
 	void testFixedFixedStmtFail();
 	void testFixedFixedProcPass();
 	void testFixedFixedProcFail();
+
+	void testGenericGenericPass();
+
+	void testGenericFixedPass();
+	void testGenericFixedFail();
+
+	void testFixedGenericStmtPass();
+	void testFixedGenericStmtFail();
+	void testFixedGenericProcPass();
+	void testFixedGenericProcFail();
+
+	void testFixedSynStmtPass();
+	void testFixedSynStmtFail();
+	void testFixedSynProcPass();
+	void testFixedSynProcFail();
+
+	void testGenericSynPass();
+
+	void testSynFixedStmtPass();
+	void testSynFixedStmtFail();
+	void testSynFixedProcPass();
+	void testSynFixedProcFail();
+	void testSynFixedWhilePass();
+	void testSynFixedWhileFail();
+	void testSynFixedIfPass();
+	void testSynFixedIfFail();
+	void testSynFixedAssgPass();
+	void testSynFixedAssgFail();
+
+	//void test
+
+	//void test
 
 	//void testModifiesFixedFixed();
 	//void testModifiesSynFixed();

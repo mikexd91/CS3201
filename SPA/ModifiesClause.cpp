@@ -73,7 +73,7 @@ bool ModifiesClause::evaluateS1FixedS2Generic(string s1) {
 		if(!proc->getModifies().empty()) {
 			return true;
 		}
-	} else if(firstArgType == ARG_PROGLINE) {
+	} else if(firstArgType == ARG_PROGLINE || firstArgType == ARG_STATEMENT) {
 		Statement* stmt = stmtTable->getStmtObj(atoi(s1.c_str()));
 		if(!stmt->getModifies().empty()) {
 			return true;
@@ -116,12 +116,8 @@ unordered_set<string> ModifiesClause::getAllS2() {
 		unordered_set<string> modifiedByProc = var->getModifiedByProc();
 		unordered_set<int> modifiedByStmt = var->getModifiedByStmts();
 
-		for(auto i = modifiedByProc.begin(); i != modifiedByProc.end(); i++) {
-			results.insert(*i);
-		}
-
-		for(auto j = modifiedByStmt.begin(); j != modifiedByStmt.end(); j++) {
-			results.insert(boost::lexical_cast<string>(*j));
+		if(!modifiedByProc.empty() || !modifiedByStmt.empty()) {
+			results.insert(var->getName());
 		}
 	}
 
@@ -135,8 +131,8 @@ unordered_set<string> ModifiesClause::getAllS1WithS2Fixed(string s2) {
 
 	if(firstArgType == ARG_PROCEDURE) {
 		results = var->getModifiedByProc();
-	} else if(firstArgType == ARG_PROGLINE) {
-		results = var->getUsedByStmtsAsString();
+	} else if(firstArgType == ARG_PROGLINE || firstArgType == ARG_STATEMENT) {
+		results = var->getModifiedByStmtsAsString();
 	} else {
 		unordered_set<Statement*> stmts;
 		if(firstArgType == ARG_IF) {

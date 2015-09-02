@@ -236,6 +236,46 @@ void ModifiesClauseTest::setUp() {
 	stmt7->setTNodeRef(whileNode);
 	stable->addStmt(stmt7);
 
+	Statement* stmt8 = new Statement();
+	stmt8->setStmtNum(8);
+	stmt8->setType(ASSIGN_STMT_);
+	unordered_set<string> mods8;
+	mods8.emplace(xvar);
+	stmt8->setModifies(mods8);
+	stmt8->setTNodeRef(assg8);
+	stable->addStmt(stmt8);
+
+	Statement* stmt9 = new Statement();
+	stmt9->setStmtNum(9);
+	stmt9->setType(IF_STMT_);
+	stmt9->setFollowsBefore(7);
+	unordered_set<string> mods9;
+	mods9.emplace("z");
+	mods9.emplace("y");
+	unordered_set<string> uses9;
+	uses9.emplace("w");
+	stmt9->setModifies(mods9);
+	stmt9->setUses(uses9);
+	stable->addStmt(stmt9);
+
+	Statement* stmt10 = new Statement();
+	stmt10->setStmtNum(10);
+	stmt10->setType(ASSIGN_STMT_);
+	unordered_set<string> mods10;
+	mods10.insert("z");
+	stmt10->setModifies(mods10);
+	stmt10->setTNodeRef(assg10);
+	stable->addStmt(stmt10);
+
+	Statement* stmt11 = new Statement();
+	stmt11->setStmtNum(11);
+	stmt11->setType(ASSIGN_STMT_);
+	unordered_set<string> mods11;
+	mods11.insert("y");
+	stmt11->setModifies(mods11);
+	stmt11->setTNodeRef(assg11);
+	stable->addStmt(stmt11);
+
 	// to set up the vartable manually
 	VarTable* vtable = VarTable::getInstance();
 
@@ -321,7 +361,6 @@ void ModifiesClauseTest::tearDown() {
 CPPUNIT_TEST_SUITE_REGISTRATION( ModifiesClauseTest );
 
 void ModifiesClauseTest::testFixedFixedStmtPass() {
-	// 
 	Results* result = new Results();
 	ModifiesClause* m1 = new ModifiesClause();
 	m1->setFirstArg("1");
@@ -370,215 +409,369 @@ void ModifiesClauseTest::testFixedFixedProcPass() {
 }
 
 void ModifiesClauseTest::testFixedFixedProcFail() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("zumba");
+	mod->setFirstArgFixed(true);
+	mod->setFirstArgType(ARG_PROCEDURE);
+	mod->setSecondArg("a");
+	mod->setSecondArgFixed(true);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
 
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
 }
 
-//void ModifiesClauseTest::testModifiesFixedSyn() {
-//	// pass
-//	ModifiesClause* m1 = new ModifiesClause();
-//	m1->setFirstArg("1");
-//	m1->setFirstArgFixed(true);
-//	m1->setFirstArgType(ARG_STATEMENT);
-//	m1->setSecondArg("f");
-//	m1->setSecondArgFixed(false);
-//	m1->setSecondArgType(ARG_VARIABLE);
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	Results r1 = m1->evaluate();
-//	CPPUNIT_ASSERT(r1.isClausePassed());
-//	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
-//	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "i");
-//
-//	// pass 1, _
-//	m1 = new ModifiesClause();
-//	m1->setFirstArg("1");
-//	m1->setFirstArgFixed(true);
-//	m1->setFirstArgType(ARG_STATEMENT);
-//	m1->setSecondArg("f");
-//	m1->setSecondArgFixed(false);
-//	m1->setSecondArgType(ARG_GENERIC);
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	r1 = m1->evaluate();
-//	CPPUNIT_ASSERT(r1.isClausePassed());
-//	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
-//	//CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "i");
-//
-//	// fail targeting stmt num exceed
-//	ModifiesClause* m2 = new ModifiesClause();
-//	m2->setFirstArg("7");
-//	m2->setFirstArgFixed(true);
-//	m2->setFirstArgType(ARG_WHILE);
-//	m2->setSecondArg("v");
-//	m2->setSecondArgFixed(false);
-//	m2->setSecondArgType(ARG_VARIABLE);
-//	CPPUNIT_ASSERT(m2->isValid());
-//
-//	Results r2 = m2->evaluate();
-//	CPPUNIT_ASSERT(!r2.isClausePassed());
-//}
-//
-//void ModifiesClauseTest::testModifiesSynFixed() {
-//	// pass
-//	ModifiesClause* m1 = new ModifiesClause();
-//	m1->setFirstArg("a");
-//	m1->setFirstArgFixed(false);
-//	m1->setFirstArgType(ARG_ASSIGN);
-//	m1->setSecondArg("i");
-//	m1->setSecondArgFixed(true);
-//	m1->setSecondArgType(ARG_VARIABLE);
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	Results r1 = m1->evaluate();
-//	CPPUNIT_ASSERT(r1.isClausePassed());
-//	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 2); // 1 and 6 mods i
-//	for (int i = 0; i < r1.getSinglesResults().size(); i++) {
-//		if (r1.getSinglesResults().at(i) == "1" 
-//			|| r1.getSinglesResults().at(i) == "6") {
-//			CPPUNIT_ASSERT(true);
-//		} else {
-//			CPPUNIT_ASSERT(false);
-//		}
-//	}
-//
-//	// pass _, "j"
-//	m1 = new ModifiesClause();
-//	m1->setFirstArg("_");
-//	m1->setFirstArgFixed(false);
-//	m1->setFirstArgType(ARG_GENERIC);
-//	m1->setSecondArg("j");
-//	m1->setSecondArgFixed(true);
-//	m1->setSecondArgType(ARG_VARIABLE);
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	r1 = m1->evaluate();
-//	CPPUNIT_ASSERT(r1.isClausePassed());
-//	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
-//	
-//	// fail targeting wrong statement type
-//	ModifiesClause* m2 = new ModifiesClause();
-//	m2->setFirstArg("a");
-//	m2->setFirstArgFixed(false);
-//	m2->setFirstArgType(ARG_WHILE);
-//	m2->setSecondArg("i");
-//	m2->setSecondArgFixed(true);
-//	m2->setSecondArgType(ARG_VARIABLE);
-//	CPPUNIT_ASSERT(m2->isValid());
-//
-//	Results r2 = m2->evaluate();
-//	CPPUNIT_ASSERT(!r2.isClausePassed());
-//
-//	// fail targeting var not exist
-//	ModifiesClause* m3 = new ModifiesClause();
-//	m3->setFirstArg("a");
-//	m3->setFirstArgFixed(false);
-//	m3->setFirstArgType(ARG_STATEMENT);
-//	m3->setSecondArg("q");
-//	m3->setSecondArgFixed(true);
-//	m3->setSecondArgType(ARG_VARIABLE);
-//	CPPUNIT_ASSERT(m3->isValid());
-//
-//	Results r3 = m3->evaluate();
-//	CPPUNIT_ASSERT(!r3.isClausePassed());
-//}
-//
-//void ModifiesClauseTest::testModifiesSynSyn() {
-//	// pass 
-//	ModifiesClause* m1 = new ModifiesClause();
-//	m1->setFirstArg("a");
-//	m1->setFirstArgFixed(false);
-//	m1->setFirstArgType(ARG_ASSIGN);
-//	m1->setSecondArg("i");
-//	m1->setSecondArgFixed(false);
-//	m1->setSecondArgType(ARG_VARIABLE);
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	Results r1 = m1->evaluate();
-//	CPPUNIT_ASSERT(r1.isClausePassed());
-//	CPPUNIT_ASSERT(r1.getNumOfSyn() == 2);
-//	//cout << r1.getPairResults().size()<< endl;
-//	CPPUNIT_ASSERT(r1.getPairResults().size() == 6);
-//
-//	// pass _, _
-//	m1 = new ModifiesClause();
-//	m1->setFirstArg("asd");
-//	m1->setFirstArgFixed(false);
-//	m1->setFirstArgType(ARG_GENERIC);
-//	m1->setSecondArg("j");
-//	m1->setSecondArgFixed(false);
-//	m1->setSecondArgType(ARG_GENERIC);
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	r1 = m1->evaluate();
-//	CPPUNIT_ASSERT(r1.isClausePassed());
-//	CPPUNIT_ASSERT(r1.getNumOfSyn() == 0);
-//	//CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
-//
-//	// fail targeting wrong stmt type
-//	ModifiesClause* m2 = new ModifiesClause();
-//	m2->setFirstArg("a");
-//	m2->setFirstArgFixed(false);
-//	m2->setFirstArgType(ARG_WHILE);
-//	m2->setSecondArg("i");
-//	m2->setSecondArgFixed(false);
-//	m2->setSecondArgType(ARG_VARIABLE);
-//	CPPUNIT_ASSERT(m2->isValid());
-//
-//	Results r2 = m2->evaluate();
-//	CPPUNIT_ASSERT(!r2.isClausePassed());
-//	//CPPUNIT_ASSERT(r1.getPairResults().size() == 6);
-//}
-//
-//void ModifiesClauseTest::testModifiesGenericFixed() {
-//	ModifiesClause* m1 = new ModifiesClause();
-//	m1->setFirstArg("_");
-//	m1->setFirstArgFixed(false);
-//	m1->setFirstArgType(ARG_GENERIC);
-//	m1->setSecondArg("i");
-//	m1->setSecondArgFixed(true);
-//	m1->setSecondArgType(ARG_VARIABLE);
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	Results r1 = m1->evaluate();
-//	CPPUNIT_ASSERT(r1.isClausePassed());
-//	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 2); // 1 and 6 mods i
-//	for (int i = 0; i < r1.getSinglesResults().size(); i++) {
-//		if (r1.getSinglesResults().at(i) == "1" 
-//			|| r1.getSinglesResults().at(i) == "6") {
-//			CPPUNIT_ASSERT(true);
-//		} else {
-//			CPPUNIT_ASSERT(false);
-//		}
-//	}
-//}
-//
-//void ModifiesClauseTest::testModifiesFixedGeneric() {
-//	ModifiesClause* m1 = new ModifiesClause();
-//	m1->setFirstArg("1");
-//	m1->setFirstArgFixed(true);
-//	m1->setFirstArgType(ARG_STATEMENT);
-//	m1->setSecondArg("_");
-//	m1->setSecondArgFixed(false);
-//	m1->setSecondArgType(ARG_GENERIC);
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	Results r1 = m1->evaluate();
-//	CPPUNIT_ASSERT(r1.isClausePassed());
-//	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
-//	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "i");
-//}
-//
-//void ModifiesClauseTest::testModifiesGenericGeneric() {
-//	ModifiesClause* m1 = new ModifiesClause();
-//	m1->setFirstArg("_");
-//	m1->setFirstArgFixed(false);
-//	m1->setFirstArgType(ARG_GENERIC);
-//	m1->setSecondArg("_");
-//	m1->setSecondArgFixed(false);
-//	m1->setSecondArgType(ARG_GENERIC);
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	Results r1 = m1->evaluate();
-//	CPPUNIT_ASSERT(r1.isClausePassed());
-//	CPPUNIT_ASSERT(r1.getPairResults().size() == 6);
-//}
+void ModifiesClauseTest::testGenericGenericPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("_");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_GENERIC);
+	mod->setSecondArg("_");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void ModifiesClauseTest::testGenericFixedPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("_");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_GENERIC);
+	mod->setSecondArg("i");
+	mod->setSecondArgFixed(true);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void ModifiesClauseTest::testGenericFixedFail() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("_");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_GENERIC);
+	mod->setSecondArg("f");
+	mod->setSecondArgFixed(true);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void ModifiesClauseTest::testFixedGenericStmtPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("7");
+	mod->setFirstArgFixed(true);
+	mod->setFirstArgType(ARG_STATEMENT);
+	mod->setSecondArg("_");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void ModifiesClauseTest::testFixedGenericStmtFail() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("15");
+	mod->setFirstArgFixed(true);
+	mod->setFirstArgType(ARG_STATEMENT);
+	mod->setSecondArg("_");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void ModifiesClauseTest::testFixedGenericProcPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("zumba");
+	mod->setFirstArgFixed(true);
+	mod->setFirstArgType(ARG_PROCEDURE);
+	mod->setSecondArg("_");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void ModifiesClauseTest::testFixedGenericProcFail() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("hello");
+	mod->setFirstArgFixed(true);
+	mod->setFirstArgType(ARG_PROCEDURE);
+	mod->setSecondArg("_");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void ModifiesClauseTest::testFixedSynStmtPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("2");
+	mod->setFirstArgFixed(true);
+	mod->setFirstArgType(ARG_STATEMENT);
+	mod->setSecondArg("v");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+}
+
+void ModifiesClauseTest::testFixedSynStmtFail() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("12");
+	mod->setFirstArgFixed(true);
+	mod->setFirstArgType(ARG_STATEMENT);
+	mod->setSecondArg("v");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void ModifiesClauseTest::testFixedSynProcPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("zumba");
+	mod->setFirstArgFixed(true);
+	mod->setFirstArgType(ARG_PROCEDURE);
+	mod->setSecondArg("v");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 7);
+}
+
+void ModifiesClauseTest::testFixedSynProcFail() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("hello");
+	mod->setFirstArgFixed(true);
+	mod->setFirstArgType(ARG_PROCEDURE);
+	mod->setSecondArg("v");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void ModifiesClauseTest::testGenericSynPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("_");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_GENERIC);
+	mod->setSecondArg("v");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 7);
+}
+
+void ModifiesClauseTest::testSynFixedStmtPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("s");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_STATEMENT);
+	mod->setSecondArg("x");
+	mod->setSecondArgFixed(true);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 3);
+}
+
+void ModifiesClauseTest::testSynFixedStmtFail() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("s");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_STATEMENT);
+	mod->setSecondArg("a");
+	mod->setSecondArgFixed(true);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void ModifiesClauseTest::testSynFixedProcPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("p");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_PROCEDURE);
+	mod->setSecondArg("z");
+	mod->setSecondArgFixed(true);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+}
+
+void ModifiesClauseTest::testSynFixedProcFail() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("p");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_PROCEDURE);
+	mod->setSecondArg("l");
+	mod->setSecondArgFixed(true);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void ModifiesClauseTest::testSynFixedWhilePass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("w");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_WHILE);
+	mod->setSecondArg("x");
+	mod->setSecondArgFixed(true);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+}
+
+void ModifiesClauseTest::testSynFixedWhileFail() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("w");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_WHILE);
+	mod->setSecondArg("j");
+	mod->setSecondArgFixed(true);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void ModifiesClauseTest::testSynFixedIfPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("if");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_IF);
+	mod->setSecondArg("z");
+	mod->setSecondArgFixed(true);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+}
+
+void ModifiesClauseTest::testSynFixedIfFail() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("if");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_IF);
+	mod->setSecondArg("a");
+	mod->setSecondArgFixed(true);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void ModifiesClauseTest::testSynFixedAssgPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("a");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_ASSIGN);
+	mod->setSecondArg("x");
+	mod->setSecondArgFixed(true);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 2);
+}
+
+void ModifiesClauseTest::testSynFixedAssgFail() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("s");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_ASSIGN);
+	mod->setSecondArg("a");
+	mod->setSecondArgFixed(true);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
