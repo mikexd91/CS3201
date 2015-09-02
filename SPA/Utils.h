@@ -72,6 +72,7 @@ namespace stringconst{
 	string const ARG_GENERIC = "underscore";
 	string const ARG_PROCEDURE = "procedure";
 	string const ARG_IF = "if";
+	string const ARG_CALL = "call";
 
 	const string DELIM_STRING = " ;={}";
 	const char DELIMITERS[] = { ';', '=', '{', '}' };
