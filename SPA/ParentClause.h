@@ -14,7 +14,7 @@ protected:
 	StmtTable* stmtTable;
 
 	bool isParent(string stmtNum1, string stmtNum2);				// checks if s1 is parent of s2
-	set<int> getChildren(int stmtNum, string stmtArgType);			// gets immediate children of stmtNum
+	Statement::ChildrenSet  getChildren(int stmtNum, string stmtArgType);			// gets immediate children of stmtNum
 	//e.g. Parent(string,string)
 	bool evaluateS1FixedS2Fixed(string, string);
 	//e.g. Parent(_,_)

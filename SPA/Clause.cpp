@@ -107,7 +107,7 @@ bool Clause::isBaseValidityCheck() {
 
 bool Clause::isValidStmtNumber(string stmt) {
 	StmtTable* stmtTable = StmtTable::getInstance();
-	int stmtNum = atoi(stmt.c_str());
+	size_t stmtNum = atoi(stmt.c_str());
 	return (stmtNum < stmtTable->getAllStmts().size()) || (stmtNum > 0);
 }
 
@@ -170,6 +170,16 @@ bool Clause::evaluate(Results* res) {
 		//Parent(_,_)
 		} else if (firstArgType == stringconst::ARG_GENERIC && secondArgType == stringconst::ARG_GENERIC) {
 			if (evaluateS1GenericS2Generic()) {
+				res->setClausePass();
+			}
+		//Parent(_,2)
+		} else if (firstArgType == stringconst::ARG_GENERIC && isSecondFixed) {
+			if (evaluateS1GenericS2Fixed(secondArgSyn)) {
+				res->setClausePass();
+			}
+		//Parent(2,_)
+		} else if (isFirstFixed && secondArgType == stringconst::ARG_GENERIC) {
+			if (evaluateS1FixedS2Generic(firstArgSyn)) {
 				res->setClausePass();
 			}
 		//Parent(2,a) or Parent (_,a)

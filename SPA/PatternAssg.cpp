@@ -2,10 +2,12 @@
 #include <iostream>
 #include <stack>
 #include "OpNode.h"
+#include "boost\unordered_set.hpp"
 //#include "boost/lockfree/stack.hpp"
 
 //using namespace boost;
 //using namespace boost::lockfree;
+using boost::unordered_set;
 using namespace std;
 
 PatternAssg::PatternAssg(int stmtNum) {
@@ -24,13 +26,13 @@ bool PatternAssg::matchVar(string var) {
 	// look for assg stmts with var on the left hand side
 	// basically look for modifies var.
 	StmtTable* stable = StmtTable::getInstance();
-	set<Statement*> assgStmts = stable->getAssgStmts();
+	unordered_set<Statement*> assgStmts = stable->getAssgStmts();
 
-	set<Statement*>::iterator iter;
+	unordered_set<Statement*>::iterator iter;
 	for (iter = assgStmts.begin(); iter != assgStmts.end(); iter++) {
 		Statement* assg = *iter;
 		if (assg->getStmtNum() == _stmtNum) {
-			set<string> uses = assg->getModifies();
+			unordered_set<string> uses = assg->getModifies();
 			if (uses.find(var) != uses.end()) {
 				return true;
 			} else {
@@ -46,13 +48,13 @@ bool PatternAssg::match(string var, string expr) {
 	// find the stmt that match this var
 	// then search its subtree for the expr
 	StmtTable* stable = StmtTable::getInstance();
-	set<Statement*> assgStmts = stable->getAssgStmts();
+	unordered_set<Statement*> assgStmts = stable->getAssgStmts();
 
-	set<Statement*>::iterator iter;
+	unordered_set<Statement*>::iterator iter;
 	for (iter = assgStmts.begin(); iter != assgStmts.end(); iter++) {
 		Statement* assg = *iter;
 		if (assg->getStmtNum() == _stmtNum) {
-			set<string> uses = assg->getModifies();
+			unordered_set<string> uses = assg->getModifies();
 			if (uses.find(var) != uses.end()) {
 				return matchExpr((AssgNode*)(assg->getTNodeRef()), expr);
 				//return false;

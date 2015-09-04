@@ -2,7 +2,7 @@
 
 #include <set>
 #include "boost/unordered_map.hpp"
-#include <boost/foreach.hpp>
+#include "boost/foreach.hpp"
 #include "Procedure.h"
 #include "ProcTable.h"
 
@@ -49,11 +49,22 @@ Procedure* ProcTable::getProcObj(string procName) {
 	}
 }
 
+// gets all proc obj in the table
+const unordered_set<Procedure*>& ProcTable::getAllProcs() {
+	unordered_set<Procedure*> *procSet = new unordered_set<Procedure*>();
+
+	BOOST_FOREACH(auto p, table) {
+		procSet->emplace(p.second);
+	}
+
+	return *procSet;
+}
+
 // gets set of procedures called by procName
-const set<string>& ProcTable::getCalls(const string &procName) {
+const unordered_set<string>& ProcTable::getCalls(const string &procName) {
 	Procedure* proc = table.find(procName)->second;
 
-	set<string>* calls = new set<string>();
+	unordered_set<string>* calls = new unordered_set<string>();
 
 	// get set of procedure call references
 	Procedure::CallsSet procSet = proc->getCalls();
@@ -65,10 +76,10 @@ const set<string>& ProcTable::getCalls(const string &procName) {
 }
 
 // gets set of variables modified by procName
-const set<string>& ProcTable::getModifies(const string &procName) {
+const unordered_set<string>& ProcTable::getModifies(const string &procName) {
 	Procedure* proc = table.find(procName)->second;
 
-	set<string>* modifies = new set<string>();
+	unordered_set<string>* modifies = new unordered_set<string>();
 
 	// get set of procedure call references
 	Procedure::ModifiesSet procSet = proc->getModifies();
@@ -80,10 +91,10 @@ const set<string>& ProcTable::getModifies(const string &procName) {
 }
 
 // gets set of variables used by procName
-const set<string>& ProcTable::getUses(const string &procName) {
+const unordered_set<string>& ProcTable::getUses(const string &procName) {
 	Procedure* proc = table.find(procName)->second;
 
-	set<string>* uses = new set<string>();
+	unordered_set<string>* uses = new unordered_set<string>();
 
 	// get set of procedure call references
 	Procedure::UsesSet procSet = proc->getUses();
