@@ -129,48 +129,48 @@ bool PatternAssgClause::isValid() {
 //e.g. Pattern "a"("a", ?)
 bool PatternAssgClause::evaluateS1FixedS2Fixed(string a, string b) {
 	// always return false because s1 cannot be fixed!
-	cout << "s1fs2f";
+	//cout << "s1fs2f";
 	return false;
 }
 
 //e.g. Pattern _(_, ?)
 bool PatternAssgClause::evaluateS1GenericS2Generic() {
 	// always return false because s1 cannot be generic!
-	cout << "s1gs2g";
+	//cout << "s1gs2g";
 	return false;
 }
 
 //e.g. Pattern _("a", ?)
 bool PatternAssgClause::evaluateS1GenericS2Fixed(string a) {
 	// always return false because s1 cannot be generic!
-	cout << "s1gs2f";
+	//cout << "s1gs2f";
 	return false;
 }
 
 //e.g. Pattern "a"(_, ?)
 bool PatternAssgClause::evaluateS1FixedS2Generic(string a) {
 	// always return false because s1 cannot be fixed!
-	cout << "s1fs2g";
+	//cout << "s1fs2g";
 	return false;
 }
 
 //e.g. Pattern "a"(a, ?)
 unordered_set<string> PatternAssgClause::getAllS2WithS1Fixed(string a) {
 	// always return empty set because s1 cannot be fixed!
-	cout << "s1fs2n";
+	//cout << "s1fs2n";
 	return unordered_set<string>();
 }
 
 //e.g. Pattern _(a, ?)
 unordered_set<string> PatternAssgClause::getAllS2() {
 	// always return empty set because s1 cannot be underscore!
-	cout << "s2n";
+	//cout << "s2n";
 	return unordered_set<string>();
 }
 
 //e.g. Pattern a("a", ?)
 unordered_set<string> PatternAssgClause::getAllS1WithS2Fixed(string var) {
-	cout << "s1ns2f";
+	//cout << "s1ns2f";
 	// TODO
 	// choices:
 	//	var fixed expr wild
@@ -184,7 +184,7 @@ unordered_set<string> PatternAssgClause::getAllS1WithS2Fixed(string var) {
 
 //e.g. Pattern a(_, ?)
 unordered_set<string> PatternAssgClause::getAllS1() {
-	cout << "s1n";
+	//cout << "s1n";
 	// TODO
 	// choices:
 	//	var wild expr wild
@@ -200,7 +200,7 @@ unordered_set<string> PatternAssgClause::getAllS1() {
 
 //e.g. Pattern a(a, ?)
 Results::ResultsTable* PatternAssgClause::getAllS1AndS2() {
-	cout << "s1ns2n";
+	//cout << "s1ns2n";
 	// TODO
 	// choices:
 	//	var syn expr wild

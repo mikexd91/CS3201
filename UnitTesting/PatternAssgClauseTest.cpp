@@ -132,7 +132,7 @@ void PatternAssgClauseTest::tearDown() {
 CPPUNIT_TEST_SUITE_REGISTRATION( PatternAssgClauseTest );
 
 void PatternAssgClauseTest::evaluateVarWildExprWild() {
-	cout << "varwildexprwild";
+	//cout << "varwildexprwild";
 	PatternAssgClause* p1 = new PatternAssgClause("a", "_", "_");
 	p1->setSecondArgFixed(false);
 	p1->setSecondArgType(stringconst::ARG_GENERIC);
@@ -146,15 +146,15 @@ void PatternAssgClauseTest::evaluateVarWildExprWild() {
 	CPPUNIT_ASSERT(r1->selectSyn(syn1).size() == 3);
 	
 	unordered_set<string> v = r1->selectSyn(syn1);
-	BOOST_FOREACH(auto i, v) {
-		cout << i;
-	}
+	//BOOST_FOREACH(auto i, v) {
+	//	cout << i;
+	//}
 
 	return;
 }
 
 void PatternAssgClauseTest::evaulateVarWildExpr() {
-	cout << "varwildexpr";
+	//cout << "varwildexpr";
 	PatternAssgClause* p1 = new PatternAssgClause("a", "_", "_\"1 2 +\"_");
 	p1->setVarType(stringconst::ARG_GENERIC);
 	p1->setVarFixed(false);
@@ -181,7 +181,7 @@ void PatternAssgClauseTest::evaulateVarWildExpr() {
 }
 
 void PatternAssgClauseTest::evaluateVarFixedExprWild() {
-	cout << "varfixedexprwild";
+	//cout << "varfixedexprwild";
 	// pass
 	PatternAssgClause* p1 = new PatternAssgClause("a", "i", "_");
 	p1->setVarType(stringconst::ARG_VARIABLE);
@@ -217,7 +217,7 @@ void PatternAssgClauseTest::evaluateVarFixedExprWild() {
 }
 
 void PatternAssgClauseTest::evaluateVarFixedExpr() {
-	cout << "varfixedexpr";
+	//cout << "varfixedexpr";
 	// pass targeting j = 2+3+4
 	PatternAssgClause* p1 = new PatternAssgClause("a", "j", "_\"2 3 +\"_");
 	p1->setVarType(stringconst::ARG_VARIABLE);
