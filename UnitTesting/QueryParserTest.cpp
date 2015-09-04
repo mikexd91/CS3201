@@ -217,5 +217,5 @@ void QueryParserTest::testParser(){
 
 	PatternAssgClause* pac2_q1 = dynamic_cast<PatternAssgClause*>(cls_q1.at(2));
 	CPPUNIT_ASSERT(pac2_q1->getExpression() == stringconst::STRING_EMPTY);
-	CPPUNIT_ASSERT(pac2_q1->getSynonym() == "a");*
+	CPPUNIT_ASSERT(pac2_q1->getSynonym() == "a");
 }

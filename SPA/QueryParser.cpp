@@ -85,13 +85,6 @@ string QueryParser::queueToString(queue<string> input){
 	return ss.str();
 }
 
-/*
-vector<string> QueryParser::tokeniser(string input, char delim){
-	vector<string>* elems = new vector<string>();
-    split(input, delim, elems);
-    return *elems;
-}*/
-
 vector<string> QueryParser::tokeniser(string input, char delim){
 	vector<string> elems;
 	size_t pos = input.find_first_of(delim);
@@ -676,12 +669,9 @@ Query QueryParser::parseQuery(string input){
 	vector<Clause*> clauseList = output->getClauseList();
 	for (size_t i=0; i<clauseList.size(); i++){
 		Clause* current = clauseList.at(i);
-		if (!current->isValid()){
-			/*cout << current->getClauseType() << endl;
-			cout << current->getFirstArgType() << endl;
-			cout << current->getSecondArgType() << endl;*/
-			throw InvalidClauseException();
-		}
+		//if (!current->isValid()){
+			//throw InvalidClauseException();
+		//}
 	}
 	return *output;
 }

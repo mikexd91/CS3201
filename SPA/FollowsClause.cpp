@@ -1,9 +1,12 @@
 #include "FollowsClause.h"
 #include "Utils.h"
 #include "StmtTable.h"
+#include "boost/unordered_set.hpp"
 #include <string>
 #include <iostream>
 #include <sstream>
+
+using boost::unordered_set;
 
 FollowsClause::FollowsClause(void):Clause(FOLLOWS_){
 }
@@ -102,8 +105,16 @@ bool FollowsClause::isFollows(string stmtNum1, string stmtNum2) {
 bool FollowsClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
-	bool firstArg = (firstType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_ASSIGN) || (firstType == stringconst::ARG_WHILE) || (firstType == stringconst::ARG_PROGLINE) || (firstType == stringconst::ARG_GENERIC);
-	bool secondArg = (secondType == stringconst::ARG_STATEMENT) || (secondType == stringconst::ARG_ASSIGN) || (secondType == stringconst::ARG_WHILE) || (secondType == stringconst::ARG_PROGLINE) || (secondType == stringconst::ARG_GENERIC);
+	bool firstArg = (firstType == stringconst::ARG_STATEMENT) 
+		|| (firstType == stringconst::ARG_ASSIGN) 
+		|| (firstType == stringconst::ARG_WHILE) 
+		|| (firstType == stringconst::ARG_PROGLINE) 
+		|| (firstType == stringconst::ARG_GENERIC);
+	bool secondArg = (secondType == stringconst::ARG_STATEMENT) 
+		|| (secondType == stringconst::ARG_ASSIGN) 
+		|| (secondType == stringconst::ARG_WHILE) 
+		|| (secondType == stringconst::ARG_PROGLINE) 
+		|| (secondType == stringconst::ARG_GENERIC);
 	return (firstArg && secondArg);
 }
 
@@ -128,7 +139,7 @@ void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgT
 					string strStmt1, strStmt2;
 					ss >> strStmt1 >> strStmt2;
 
-					resObj.addPairResult(strStmt1, strStmt2);
+					//resObj.addPairResult(strStmt1, strStmt2);
 				}
 			}
 		}
@@ -152,7 +163,7 @@ void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgT
 					string strStmt1, strStmt2;
 					ss >> strStmt1 >> strStmt2;
 
-					resObj.addPairResult(strStmt1, strStmt2);
+					//resObj.addPairResult(strStmt1, strStmt2);
 				}
 			}
 		}
@@ -178,7 +189,7 @@ void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgT
 					string strStmt1, strStmt2;
 					ss >> strStmt1 >> strStmt2;
 
-					resObj.addPairResult(strStmt1, strStmt2);
+					//resObj.addPairResult(strStmt1, strStmt2);
 				}
 			}
 		}
@@ -187,10 +198,10 @@ void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgT
 		// throw error
 	}
 
-	if (resObj.getPairResults().size() > 0) {
-		resObj.setClausePassed(true);
+	//if (resObj.getPairResults().size() > 0) {
+		//resObj.setClausePassed(true);
 		//resObj.setNumOfSyn(2);
-	}
+	//}
 }
 
 void FollowsClause::followsWithOneUnderscore(string firstArgType, string secondArgType, Results &resObj) {
@@ -225,7 +236,7 @@ void FollowsClause::followsWithOneUnderscore(string firstArgType, string secondA
 				string strStmt2;
 				ss >> strStmt2;
 
-				resObj.addSingleResult(strStmt2);
+				//resObj.addSingleResult(strStmt2);
 			}
 		}
 	}	
@@ -240,6 +251,7 @@ Results FollowsClause::evaluate(void) {
 	string firstArgType = this->getFirstArgType();
 	string secondArgType = this->getSecondArgType();
 
+	/*
 	if (isFirstFixed && isSecondFixed) {
 		bool isClauseTrue = isFollows(firstArgSyn, secondArgSyn);
 		resultsObj->setClausePassed(isClauseTrue);
@@ -302,8 +314,50 @@ Results FollowsClause::evaluate(void) {
 		}
 		return resObj;
 
-	} else {
+	} else {*/
 		// Error
 		return *resultsObj;
-	}
+	//}
+	
+}
+
+bool evaluateS1FixedS2Fixed(string, string){
+	return false;
+}
+//e.g. Parent(_,_)
+bool evaluateS1GenericS2Generic(){
+	return false;
+}
+//e.g. Parent(_,string)
+bool evaluateS1GenericS2Fixed(string){
+	return false;
+}
+//Parent(string,_)
+bool evaluateS1FixedS2Generic(string){
+	return false;
+}
+//Parent(string,s2)
+unordered_set<string> getAllS2WithS1Fixed(string){
+	unordered_set<string> asd;
+	return asd;
+}
+//Parent(_,s2)
+unordered_set<string> getAllS2(){
+	unordered_set<string> asd;
+	return asd;
+}
+//Parent(s1,string)
+unordered_set<string> getAllS1WithS2Fixed(string){
+	unordered_set<string> asd;
+	return asd;
+}
+//Parent(s1,__)
+unordered_set<string> getAllS1(){
+	unordered_set<string> asd;
+	return asd;
+}
+//Parent(s1,s2)
+unordered_set<unordered_map<string, string>> getAllS1AndS2(){
+	unordered_set<string> asd;
+	return asd;
 }
