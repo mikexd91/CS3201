@@ -579,3 +579,16 @@ void ParentClauseTest::testParentCallPass() {
 	Results::Row row = *(*pairTable.begin());
 	CPPUNIT_ASSERT(row["s1"] == "6" && row["c"] == "8");
 }
+
+void ParentClauseTest::testParentSameSyn() {
+	Results res = Results();
+	ParentClause* m1 = new ParentClause();
+	m1->setFirstArg("s");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("s");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_STATEMENT);
+	CPPUNIT_ASSERT(m1->isValid());
+	CPPUNIT_ASSERT(!m1->evaluate(&res));
+}

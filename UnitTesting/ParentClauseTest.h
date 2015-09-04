@@ -20,6 +20,7 @@ class ParentClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testParentSecondUnderscorePass );
 	CPPUNIT_TEST( testParentBothUnderscorePass );
 	CPPUNIT_TEST( testParentCallPass );
+	CPPUNIT_TEST( testParentSameSyn );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,5 +42,6 @@ public:
 	void testParentSecondUnderscorePass();
 	void testParentBothUnderscorePass();
 	void testParentCallPass();
+	void testParentSameSyn();
 };
     

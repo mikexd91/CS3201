@@ -112,15 +112,18 @@ unordered_set<string> ParentClause::getAllS1() {
 //Parent(s1, s2)
 Results::ResultsTable* ParentClause::getAllS1AndS2() {
 	Results::ResultsTable* results = new Results::ResultsTable();
-	//get all while statements
-	if (firstArgType == stringconst::ARG_STATEMENT || firstArgType == stringconst::ARG_WHILE) {
-		unordered_set<Statement*> whileStmts = stmtTable->getWhileStmts();
-		//check if while stmt has children
-		insertParentAndChildrenIntoResult(results, whileStmts);
-	}
-	if (firstArgType == stringconst::ARG_STATEMENT || firstArgType == stringconst::ARG_IF) {
-		unordered_set<Statement*> ifStmts = stmtTable->getIfStmts();
-		insertParentAndChildrenIntoResult(results, ifStmts);
+	//handle case where first and second args are the same -> they should not be
+	if (firstArg != secondArg) {
+		if (firstArgType == stringconst::ARG_STATEMENT || firstArgType == stringconst::ARG_WHILE) {
+			//get all while statements
+			unordered_set<Statement*> whileStmts = stmtTable->getWhileStmts();
+			//check if while stmt has children
+			insertParentAndChildrenIntoResult(results, whileStmts);
+		}
+		if (firstArgType == stringconst::ARG_STATEMENT || firstArgType == stringconst::ARG_IF) {
+			unordered_set<Statement*> ifStmts = stmtTable->getIfStmts();
+			insertParentAndChildrenIntoResult(results, ifStmts);
+		}
 	}
 	return results;
 }
