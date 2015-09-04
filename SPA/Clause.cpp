@@ -107,7 +107,7 @@ bool Clause::isBaseValidityCheck() {
 
 bool Clause::isValidStmtNumber(string stmt) {
 	StmtTable* stmtTable = StmtTable::getInstance();
-	int stmtNum = atoi(stmt.c_str());
+	size_t stmtNum = atoi(stmt.c_str());
 	return (stmtNum < stmtTable->getAllStmts().size()) || (stmtNum > 0);
 }
 
@@ -297,16 +297,16 @@ bool Clause::evaluate(Results* res) {
 			//both absent in table
 			} else {
 				//generate all a1 and a2 values
-				unordered_set<unordered_map<string, string>> firstSecondValues = getAllS1AndS2();
-				for (unordered_set<unordered_map<string, string>>::iterator iter = firstSecondValues.begin();
-					iter != firstSecondValues.end();
+				Results::ResultsTable* firstSecondValues = getAllS1AndS2();
+				for (Results::ResultsTable::iterator iter = firstSecondValues->begin();
+					iter != firstSecondValues->end();
 					++iter) {
-					unordered_map<string, string> currentValues = *iter;
-					unordered_map<string, string>* newRow = new Results::Row();
-					(*newRow)[firstArgSyn] = currentValues[firstArgSyn];
-					(*newRow)[secondArgSyn] = currentValues[secondArgSyn];
-					res->insertMultiResult(newRow);
+					Results::Row* row = *iter;
+					string firstValue = (*row)[firstArgSyn];
+					string secondValue = (*row)[secondArgSyn];
+					res->insertMultiResult(row);
 				}
+				firstSecondValues->clear();
 			}
 		} else {
 			//throw error, all cases should be covered

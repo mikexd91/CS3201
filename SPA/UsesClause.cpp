@@ -2,17 +2,20 @@
 #include "Utils.h"
 #include "StmtTable.h"
 #include "VarTable.h"
+#include "ProcTable.h"
 #include "Results.h"
 
-#include <set>
 #include "boost\lexical_cast.hpp"
+#include "boost\unordered_set.hpp"
 
 using namespace boost;
 using namespace std;
 using namespace stringconst;
+using boost::unordered_set;
 
 StmtTable* stmtTable = StmtTable::getInstance();
 VarTable* varTable = VarTable::getInstance();
+ProcTable* procTable = ProcTable::getInstance();
 
 UsesClause::UsesClause(void):Clause(USES_){
 }
@@ -20,256 +23,175 @@ UsesClause::UsesClause(void):Clause(USES_){
 UsesClause::~UsesClause(void){
 }
 
-bool UsesClause::isValid(void){
-	string firstType = this->getFirstArgType();
+bool UsesClause::isValid(){
+	*string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
 	bool firstArg = (firstType == ARG_GENERIC) 
 		|| (firstType == ARG_STATEMENT) 
 		|| (firstType == ARG_ASSIGN) 
 		|| (firstType == ARG_WHILE) 
-		|| (firstType == ARG_PROGLINE);
+		|| (firstType == ARG_PROGLINE)
+		|| (firstType == ARG_PROCEDURE);
 	bool secondArg = (secondType == ARG_GENERIC) 
 		|| (secondType == ARG_VARIABLE);
-	return (firstArg && secondArg);
+	return (firstArg && secondArg);*/
 }
 
-// ONLY EVALUATES PROTOTYPE CASES (dealing with assg stmts and vars)
-Results UsesClause::evaluate(void) {
-	// arg properties
-	bool firstArgIsFixed = this->getFirstArgFixed();
-	bool secondArgIsFixed = this->getSecondArgFixed();
-	
-	// CASES
-	// Case: Uses(s,v) - stmt wild, var wild
-	if(firstArgIsFixed==false && secondArgIsFixed==false) {
-		return evaluateStmtWildVarWild();
-		
-	// Case: Uses(s,'x') - stmt wild, var fixed
-	} else if(firstArgIsFixed==false && secondArgIsFixed==true) {
-		return evaluateStmtWildVarFixed();
+//e.g. Uses(string,string)
+bool UsesClause::evaluateS1FixedS2Fixed(string s1, string s2) {
 
-	// Case: Uses(1,v) - stmt fixed, var wild
-	} else if(firstArgIsFixed==true && secondArgIsFixed==false) {
-		return evaluateStmtFixedVarWild();
+	// Uses(s,v) - statement uses
+	if(firstArgType==ARG_STATEMENT || firstArgType==ARG_ASSIGN || firstArgType==ARG_WHILE || firstArgType==ARG_PROGLINE) {
+		// get stmt object
+		Statement* stmt = stmtTable.getStmtObj(s1);
 
-	// Case: Uses(1,'x') - stmt fixed, var fixed
-	} else {
-		return evaluateStmtFixedVarFixed();
-	}
-}
-
-
-// PRIVATE FUNCTIONS
-// Case: Uses(s,v) - stmt wild, var wild
-Results UsesClause::evaluateStmtWildVarWild() {
-	Results res = Results();
-	// set synonyms
-	string firstType = this->getFirstArgType();
-	string secondType = this->getSecondArgType();
-	if(firstType==ARG_GENERIC && secondType==ARG_GENERIC) {
-		res.setNumOfSyn(0);
-	} else if(firstType==ARG_GENERIC || secondType==ARG_GENERIC) {
-		res.setNumOfSyn(1);
-		if(firstType!=ARG_GENERIC) {
-			res.setFirstClauseSyn(this->getFirstArg());
-		} else {
-			res.setFirstClauseSyn(this->getSecondArg());
-		}
-	} else {
-		res.setNumOfSyn(2);
-		res.setFirstClauseSyn(this->getFirstArg());
-		res.setSecondClauseSyn(this->getSecondArg());
-	}
-
-	// generate all possible combinations using stmtTable as reference
-	set<Statement*> allStmts = stmtTable->getAllStmts();
-	set<Statement*>::iterator stmtIter;
-	
-	// iterate through stmt table
-	for(stmtIter=allStmts.begin(); stmtIter!=allStmts.end(); stmtIter++) {
-		Statement* currentStmt = *stmtIter;
-
-		// check if current stmt conforms to specific stmt type, if not, skip to next statement
-		if((this->firstArgType!=ARG_GENERIC) && !Utils::isSameType(this->firstArgType, currentStmt->getType())) {
-			continue;
-		}
-		
-		// for each stmt generate result pair for vars that it uses
-		Statement::UsesSet currentUseSet = currentStmt->getUses();
-		Statement::UsesSet::iterator useIter;
-
-		for(useIter=currentUseSet.begin(); useIter!=currentUseSet.end(); useIter++) {
-			string stmtNum = lexical_cast<string>(currentStmt->getStmtNum());
-			string var = *useIter;
-
-			// add results depending on whether generics are present
-			if(firstType == ARG_GENERIC && secondType != ARG_GENERIC) {
-				res.addSingleResult(var);
-			} else if(firstType != ARG_GENERIC && secondType == ARG_GENERIC) {
-				res.addSingleResult(stmtNum);
-			} else if(firstType != ARG_GENERIC && secondType != ARG_GENERIC) {
-				res.addPairResult(stmtNum, var);
-			}
-
-			res.setClausePassed(true);
-		}
-	}
-
-	vector<string> temp1 = res.getSinglesResults();
-	vector<pair<string,string>> temp2 = res.getPairResults();
-	Utils::removeVectorDupes(temp1);
-	Utils::removeVectorDupes(temp2);
-	res.setSingleResult(temp1);
-	res.setPairResult(temp2);
-
-	return res;
-}
-
-// Case: Uses(s,'x') - stmt wild, var fixed
-Results UsesClause::evaluateStmtWildVarFixed() {
-	Results res = Results();
-	// set synonyms
-	if(this->getFirstArgType() == ARG_GENERIC) {
-		res.setNumOfSyn(0);
-	} else {
-		res.setNumOfSyn(1);
-		res.setFirstClauseSyn(this->getFirstArg());
-	}
-
-	// get the fixed var and usedby
-	Variable* fixedVar = varTable->getVariable(this->getSecondArg());
-	set<int>::iterator stmtIter;
-	if(fixedVar == NULL) {
-		res.setClausePassed(false);
-		return res;
-	}
-	set<int> stmtSet = fixedVar->getUsedByStmts();
-
-	// check set for results
-	if(stmtSet.size() != 0) {
-		res.setClausePassed(true);
-
-		if(this->getFirstArgType() != ARG_GENERIC) {
-			for(stmtIter=stmtSet.begin(); stmtIter!=stmtSet.end(); stmtIter++) {
-				Statement* currentStmt = stmtTable->getStmtObj(*stmtIter);
-				// check if current stmt conforms to specific stmt type
-				if((this->firstArgType==ARG_GENERIC) || (Utils::isSameType(this->firstArgType, currentStmt->getType()))) {
-					res.addSingleResult(lexical_cast<string>(*stmtIter));
-				}
-			}
-		}
-	}
-
-	vector<string> temp1 = res.getSinglesResults();
-	vector<pair<string,string>> temp2 = res.getPairResults();
-	Utils::removeVectorDupes(temp1);
-	Utils::removeVectorDupes(temp2);
-	res.setSingleResult(temp1);
-	res.setPairResult(temp2);
-
-	return res;
-}
-
-// Case: Uses(1,v) - stmt fixed, var wild
-Results UsesClause::evaluateStmtFixedVarWild() {
-	Results res = Results();
-	// set synonyms
-	if(this->getSecondArgType() == ARG_GENERIC) {
-		res.setNumOfSyn(0);
-	} else {
-		res.setNumOfSyn(1);
-		res.setFirstClauseSyn(this->getSecondArg());
-	}
-
-	// get relevant stmts
-	string firstArgType = this->getFirstArgType();
-	set<Statement*>::iterator stmtIter;
-	set<Statement*> stmtSet;
-	if(firstArgType == ARG_WHILE) {				// only while stmts
-		stmtSet = stmtTable->getWhileStmts();
-	} else if(firstArgType == ARG_ASSIGN) {		// only assign stmts
-		stmtSet = stmtTable->getAssgStmts();
-	} else {													// all types of stmts
-		stmtSet = stmtTable->getAllStmts();
-	}
-
-	int stmtNum = lexical_cast<int>(this->getFirstArg());
-
-	// check stmts
-	for(stmtIter=stmtSet.begin(); stmtIter!=stmtSet.end(); stmtIter++) {
-		// current stmt
-		Statement* currentStmt = *stmtIter;
-		if(currentStmt->getStmtNum() == stmtNum) {
-			// get set of variables current stmt uses
-			Statement::UsesSet currentUses = currentStmt->getUses();
-
-			// check if stmt uses any variable
-			if(currentUses.size() != 0) {
-				res.setClausePassed(true);
-
-				if(this->getSecondArgType() != ARG_GENERIC) {
-					// add all pairs into results
-					Statement::UsesSet::iterator setIter;
-					for(setIter=currentUses.begin(); setIter!=currentUses.end(); setIter++) {
-						res.addSingleResult(*setIter);
-					}
-				}
-			}
-		}
-	}
-
-	vector<string> temp1 = res.getSinglesResults();
-	vector<pair<string,string>> temp2 = res.getPairResults();
-	Utils::removeVectorDupes(temp1);
-	Utils::removeVectorDupes(temp2);
-	res.setSingleResult(temp1);
-	res.setPairResult(temp2);
-
-	return res;
-}
-
-// Case: Uses(1,'x') - stmt fixed, var fixed
-Results UsesClause::evaluateStmtFixedVarFixed() {
-	Results res = Results();
-	// set synonyms
-	res.setNumOfSyn(0);
-
-	// get relevant stmts
-	string firstArgType = this->getFirstArgType();
-	set<Statement*>::iterator stmtIter;
-	set<Statement*> stmtSet;
-	if(firstArgType == ARG_WHILE) {				// only while stmts
-		stmtSet = stmtTable->getWhileStmts();
-	} else if(firstArgType == ARG_ASSIGN) {		// only assign stmts
-		stmtSet = stmtTable->getAssgStmts();
-	} else {													// all types of stmts
-		stmtSet = stmtTable->getAllStmts();
-	}
-
-	int stmtNum = lexical_cast<int>(this->getFirstArg());
-
-	// check stmts
-	for(stmtIter=stmtSet.begin(); stmtIter!=stmtSet.end(); stmtIter++) {
-		// current stmt
-		Statement* currentStmt = *stmtIter;
-		if(currentStmt->getStmtNum() == stmtNum) {
-			// get set of variables current stmt uses
-			Statement::UsesSet currentUses = currentStmt->getUses();
+		// get set of variables stmt uses
+		Statement::UsesSet stmtUses = stmt->getUses();
 					
-			// checks if current stmt uses variable
-			if(currentUses.find(this->getSecondArg()) != currentUses.end()) {
-				res.setClausePassed(true);
-			}
-			break;
+		// checks if stmt uses variable
+		if(stmtUses.find(s2) != stmtUses.end()) {
+			return true;
+		} else {
+			return false;
+		}
+
+	// Uses(p,v) - procedure uses
+	} else {
+		// get proc object
+		Procedure* proc = procTable.getProcObj(s1);
+
+		// get set of variables proc uses
+		Procedure::UsesSet procUses = proc->getUses();
+
+		// checks if proc uses variable
+		if(procUses.find(s2) != stmtUses.end()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+}
+
+//e.g. Parent(_,_)
+bool UsesClause::evaluateS1GenericS2Generic() {
+
+	// get all variables
+	vector<Variable*>* allVars = varTable.getAllVariables();
+
+	// check if any of variables are being used (by stmt or proc)
+	for(auto i=allVars.begin(); i!=allVars.end(); i++) {
+		unordered_set<int> usedByStmts = i->getUsedByStmts();
+		unordered_set<string> usedByProc = i->getUsedByProc();
+
+		if(!usedByStmts.empty() || !usedByProc.empty()) {
+			return true;
 		}
 	}
 
-	vector<string> temp1 = res.getSinglesResults();
-	vector<pair<string,string>> temp2 = res.getPairResults();
-	Utils::removeVectorDupes(temp1);
-	Utils::removeVectorDupes(temp2);
-	res.setSingleResult(temp1);
-	res.setPairResult(temp2);
-
-	return res;
+	return false;
 }
+
+//e.g. Uses(_,string)
+bool UsesClause::evaluateS1GenericS2Fixed(string s2) {
+	
+	// get var object
+	Variable* var = varTable.getVariable(s2);
+
+	unordered_set<int> usedByStmts = var->getUsedByStmts();
+	unordered_set<string> usedByProc = var->getUsedByProc();
+
+	if(usedByStmts.empty() && usedByProc.empty()) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+//Uses(string,_)
+bool UsesClause::evaluateS1FixedS2Generic(string s1) {
+
+	// Uses(s,v) - statement uses
+	if(firstArgType==ARG_STATEMENT || firstArgType==ARG_ASSIGN || firstArgType==ARG_WHILE || firstArgType==ARG_PROGLINE) {
+		// get stmt object
+		Statement* stmt = stmtTable.getStmtObj(s1);
+
+		// get set of variables stmt uses
+		Statement::UsesSet stmtUses = stmt->getUses();
+					
+		// checks if stmt uses anything
+		return !stmtUses.empty();
+
+	// Uses(p,v) - procedure uses
+	} else {
+		// get proc object
+		Procedure* proc = procTable.getProcObj(s1);
+
+		// get set of variables proc uses
+		Procedure::UsesSet procUses = proc->getUses();
+
+		// checks if proc uses variable
+		return !procUses.empty();
+	}
+}
+
+//Uses(string,s2)
+unordered_set<string> UsesClause::getAllS2WithS1Fixed(string) {
+
+	// Uses(s,v) - statement uses
+	if(firstArgType==ARG_STATEMENT || firstArgType==ARG_ASSIGN || firstArgType==ARG_WHILE || firstArgType==ARG_PROGLINE) {
+		// get stmt object
+		Statement* stmt = stmtTable.getStmtObj(s1);
+
+		// get set of variables stmt uses
+		Statement::UsesSet stmtUses = stmt->getUses();
+					
+		return stmtUses;
+
+	// Uses(p,v) - procedure uses
+	} else {
+		// get proc object
+		Procedure* proc = procTable.getProcObj(s1);
+
+		// get set of variables proc uses
+		Procedure::UsesSet procUses = proc->getUses();
+
+		return procUses;
+	}
+}
+
+//Uses(_,s2)
+unordered_set<string> getAllS2() {
+
+	unordered_set<string> varNames = unordered_set<string>();
+
+	// get all variables
+	vector<Variable*>* varTable.getAllVariables();
+
+	// for each variable, check if it is used by anything
+
+
+
+}
+
+//Uses(s1,string)
+unordered_set<string> getAllS1WithS2Fixed(string) {
+
+	// get var object
+	Variable* var = varTable.getVariable(s2);
+
+	if(firstArgType==ARG_STATEMENT || firstArgType==ARG_ASSIGN || firstArgType==ARG_WHILE || firstArgType==ARG_PROGLINE) {
+		unordered_set<string> usedByStmts = var->getUsedByStmtsAsString();
+		return usedByStmts;
+	} else {
+		unordered_set<string> usedByProc = var->getUsedByProc();
+		return usedByProc;
+	}
+}
+
+
+//Parent(s1,__)
+unordered_set<string> getAllS1();
+
+
+//Parent(s1,s2)
+unordered_set<unordered_map<string, string>> getAllS1AndS2();
