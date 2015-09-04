@@ -42,12 +42,12 @@ protected:
 	
 private:
 	// ---- old stuff
-	void evaluateVarWildExprWild(vector<int>&, unordered_set<string>&);
-	unordered_set<string> evaulateVarWildExpr();
-	Results evaluateVarFixedExprWild(vector<int>& assgNums, Results);
-	Results evaluateVarFixedExpr(vector<int>& assgNums, string expr, Results);
-	Results evaluateVarExprWild(vector<int>& assgNums, vector<string>& varNames, Results);
-	Results evaluateVarExpr(vector<int>& assgNums, vector<string>& varNames, string expr, Results);
+	unordered_set<string> evaluateVarWildExprWild();
+	unordered_set<string> evaulateVarWildExprFixed();
+	unordered_set<string> evaluateVarFixedExprWild();
+	unordered_set<string> evaluateVarFixedExprFixed();
+	Results::ResultsTable* evaluateVarSynExprWild();
+	Results::ResultsTable* evaluateVarSynExprFixed();
 	// ---- end old stuff
 
 	vector<int> getAssgNums(Results, string);

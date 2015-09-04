@@ -56,7 +56,6 @@ bool PatternAssgClause::isVarWild() {
 
 bool PatternAssgClause::isValid() {
 	string varType = this->getVarType();
-	cout << varType;
 	bool checkVar = (varType == stringconst::ARG_VARIABLE)
 		|| (varType == stringconst::ARG_GENERIC);
 	bool valid = checkVar;
@@ -170,18 +169,17 @@ unordered_set<string> PatternAssgClause::getAllS2() {
 }
 
 //e.g. Pattern a("a", ?)
-unordered_set<string> PatternAssgClause::getAllS1WithS2Fixed(string a) {
+unordered_set<string> PatternAssgClause::getAllS1WithS2Fixed(string var) {
 	cout << "s1ns2f";
 	// TODO
 	// choices:
 	//	var fixed expr wild
 	//	var fixed expr fixed
 	if (isExprWild()) {
-		//return evaluateVarFixedExprWild();
+		return evaluateVarFixedExprWild();
 	} else {
-		//evaulateVarWildExpr();
+		return evaluateVarFixedExprFixed();
 	}
-	return unordered_set<string>();
 }
 
 //e.g. Pattern a(_, ?)
@@ -191,20 +189,13 @@ unordered_set<string> PatternAssgClause::getAllS1() {
 	// choices:
 	//	var wild expr wild
 	//	var wild expr fixed
-	// get all the assg stmt nums
-	unordered_set<string> resultsSet = unordered_set<string>();
 	if (isExprWild()) {
 		// varwild exprwild
-		StmtTable* stable = StmtTable::getInstance();
-		unordered_set<Statement*> assgStmts = stable->getAssgStmts();
-		BOOST_FOREACH(Statement* stmt, assgStmts) {
-			resultsSet.insert(boost::lexical_cast<string>(stmt->getStmtNum()));
-		}
+		return evaluateVarWildExprWild();
 	} else {
 		// varwild expr
-		return evaulateVarWildExpr();
+		return evaulateVarWildExprFixed();
 	}
-	return resultsSet;
 }
 
 //e.g. Pattern a(a, ?)
@@ -214,26 +205,33 @@ Results::ResultsTable* PatternAssgClause::getAllS1AndS2() {
 	// choices:
 	//	var syn expr wild
 	//	var syn expr fixed
-	return nullptr;
+	if (isExprWild()) {
+		// varsyn exprwild
+		return evaluateVarSynExprWild();
+	} else {
+		// varsyn exprfixed
+		return evaluateVarSynExprFixed();
+	}
 }
 // ---- end new stuff --------------------------
 
 
-void PatternAssgClause::evaluateVarWildExprWild(vector<int>& assgNums, unordered_set<string>& resultsSet) {
+unordered_set<string> PatternAssgClause::evaluateVarWildExprWild() {
 	// return all assg stmts because they match _ _
-	cout << "im here";
+
+	unordered_set<string> resultsSet = unordered_set<string>();
 	
 	// simply insert all assgs
-	for (size_t i = 0; i < assgNums.size(); i++) {
-		long long stmtNum = assgNums.at(i);
-		cout << stmtNum;
-		string stmtNumStr = to_string(stmtNum);
-		resultsSet.insert(stmtNumStr);
+	StmtTable* stable = StmtTable::getInstance();
+	unordered_set<Statement*> assgStmts = stable->getAssgStmts();
+	BOOST_FOREACH(Statement* stmt, assgStmts) {
+		resultsSet.insert(boost::lexical_cast<string>(stmt->getStmtNum()));
 	}
-	resultsSet;
+
+	return resultsSet;
 }
 
-unordered_set<string> PatternAssgClause::evaulateVarWildExpr() {
+unordered_set<string> PatternAssgClause::evaulateVarWildExprFixed() {
 	// return all a that match expr
 
 	StmtTable* stable = StmtTable::getInstance();
@@ -252,105 +250,102 @@ unordered_set<string> PatternAssgClause::evaulateVarWildExpr() {
 	return resSet;
 }
 
-Results PatternAssgClause::evaluateVarFixedExprWild(vector<int>& assgNums, Results res) {
+unordered_set<string> PatternAssgClause::evaluateVarFixedExprWild() {
 	// return all a using var
 
 	StmtTable* stable = StmtTable::getInstance();
+	unordered_set<Statement*> allAssg = stable->getAssgStmts();
+	unordered_set<string> resSet = unordered_set<string>();
 
 	// go through all assgs
 	// if match expr then insert
-	for (size_t i = 0; i < assgNums.size(); i++) {
-		int stmtNum = assgNums.at(i);
-		Statement* assg = stable->getStmtObj(stmtNum);
+	BOOST_FOREACH(Statement* assg, allAssg) {
 		AssgNode* assgNode = (AssgNode*) assg->getTNodeRef();
 		if (matchVar(assgNode, getVar())) {
-			string stmtNumStr = lexical_cast<string>(stmtNum);
-			res.insertResult(getSynonym(), stmtNumStr);
+			string stmtNumStr = lexical_cast<string>(assg->getStmtNum());
+			resSet.insert(stmtNumStr);
 		}
 	}
-
-	res.push();
-	return res;
+	return resSet;
 }
 
-Results PatternAssgClause::evaluateVarFixedExpr(vector<int>& assgNums, string expr, Results res) {
+unordered_set<string> PatternAssgClause::evaluateVarFixedExprFixed() {
 	// return all a using var that match expr
 
 	StmtTable* stable = StmtTable::getInstance();
+	unordered_set<Statement*> allAssg = stable->getAssgStmts();
+	unordered_set<string> resSet = unordered_set<string>();
 
 	// go through all assgs
 	// if match expr then insert
-	for (size_t i = 0; i < assgNums.size(); i++) {
-		int stmtNum = assgNums.at(i);
-		Statement* assg = stable->getStmtObj(stmtNum);
+	BOOST_FOREACH(Statement* assg, allAssg) {
 		AssgNode* assgNode = (AssgNode*) assg->getTNodeRef();
 		if (matchVar(assgNode, getVar()) && matchExpr(assgNode, getExpression())) {
-			string stmtNumStr = lexical_cast<string>(stmtNum);
-			res.insertResult(getSynonym(), stmtNumStr);
+			string stmtNumStr = lexical_cast<string>(assg->getStmtNum());
+			resSet.insert(stmtNumStr);
 		}
 	}
 
-	res.push();
-	return res;
+	return resSet;
 }
 
-Results PatternAssgClause::evaluateVarExprWild(vector<int>& assgNums, vector<string>& varNames, Results res) {
+Results::ResultsTable* PatternAssgClause::evaluateVarSynExprWild() {
 	// for all a and all var, return <a, var> such that matchvar(a, var)
 
 	StmtTable* stable = StmtTable::getInstance();
+	unordered_set<Statement*> allAssg = stable->getAssgStmts();
+	VarTable* vtable = VarTable::getInstance();
+	vector<string>* varNames = vtable->getAllVarNames();//->getAllVarNames();
+	Results::ResultsTable* res = new Results::ResultsTable();
 
 	// go through all assgs
-	for (size_t i = 0; i < assgNums.size(); i++) {
-		int stmtNum = assgNums.at(i);
-		Statement* assg = stable->getStmtObj(stmtNum);
+	BOOST_FOREACH(Statement* assg, allAssg) {
 		AssgNode* assgNode = (AssgNode*) assg->getTNodeRef();
 		// go through all vars
-		for (size_t j = 0; j < varNames.size(); j++) {
-			string var = varNames.at(j);
+		for (size_t j = 0; j < varNames->size(); j++) {
+			string var = varNames->at(j);
 			if (matchVar(assgNode, var)) {
-				string stmtNumStr = lexical_cast<string>(stmtNum);
+				string stmtNumStr = lexical_cast<string>(assgNode->getStmtNum());
 				// TODO add pair result;
-				unordered_map<string, string>* pair = new unordered_map<string, string>();
+				Results::Row* pair = new Results::Row();
 				(*pair)[getSynonym()] = stmtNumStr;
 				(*pair)[getVar()] = var;
-				res.insertMultiResult(pair);
+				res->insert(pair);
 
 				//res->addPairResult(stmtNumStr, var);
 			}
 		}
 	}
 
-	res.push();
 	return res;
 }
 
-Results PatternAssgClause::evaluateVarExpr(vector<int>& assgNums, vector<string>& varNames, string expr, Results res) {
+Results::ResultsTable* PatternAssgClause::evaluateVarSynExprFixed() {
 	// for all a and all var, return <a, var> such that matchvar(a, var) and matchexpr(a, expr)
 
 	StmtTable* stable = StmtTable::getInstance();
+	unordered_set<Statement*> allAssg = stable->getAssgStmts();
+	VarTable* vtable = VarTable::getInstance();
+	vector<string>* varNames = vtable->getAllVarNames();//->getAllVarNames();
+	Results::ResultsTable* res = new Results::ResultsTable();
 
 	// go through all assgs
-	for (size_t i = 0; i < assgNums.size(); i++) {
-		int stmtNum = assgNums.at(i);
-		Statement* assg = stable->getStmtObj(stmtNum);
+	BOOST_FOREACH(Statement* assg, allAssg) {
 		AssgNode* assgNode = (AssgNode*) assg->getTNodeRef();
 		// go through all vars
-		for (size_t j = 0; j < varNames.size(); j++) {
-			string var = varNames.at(j);
+		for (size_t j = 0; j < varNames->size(); j++) {
+			string var = varNames->at(j);
 			if (matchVar(assgNode, var) && matchExpr(assgNode, getExpression())) {
-				string stmtNumStr = lexical_cast<string>(stmtNum);
+				string stmtNumStr = lexical_cast<string>(assgNode->getStmtNum());
 				// TODO add pair result;
-				unordered_map<string, string>* pair = new unordered_map<string, string>();
+				Results::Row* pair = new Results::Row();
 				(*pair)[getSynonym()] = stmtNumStr;
 				(*pair)[getVar()] = var;
-				res.insertMultiResult(pair);
-
-				//res->addPairResult(stmtNumStr, var);
-			} 
+				res->insert(pair);
+			}
 		}
 	}
 
-	res.push();
 	return res;
 }
 

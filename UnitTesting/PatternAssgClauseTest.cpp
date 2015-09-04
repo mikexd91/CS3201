@@ -159,48 +159,44 @@ void PatternAssgClauseTest::evaulateVarWildExpr() {
 	p1->setVarType(stringconst::ARG_GENERIC);
 	p1->setVarFixed(false);
 	CPPUNIT_ASSERT(p1->isValid());
-	Results* r1 = new Results();
-	CPPUNIT_ASSERT(p1->evaluate(r1));
-	cout << "end evla";
+	Results* res = new Results();
+	CPPUNIT_ASSERT(p1->evaluate(res));
 
 	string syn1 = "a";
 	long long num = 1;
-	CPPUNIT_ASSERT(r1->hasResults(syn1));
-	CPPUNIT_ASSERT(r1->selectSyn(syn1).size() == 1);
-	CPPUNIT_ASSERT(r1->selectSyn(syn1).count("1") == 1);
-
-	//cout << r1.getFirstClauseSyn() << endl;
-	//CPPUNIT_ASSERT(r1.isClausePassed());
-	//CPPUNIT_ASSERT(r1.getFirstClauseSyn() == syn1);
-	//CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
-	//CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == to_string(num));
+	CPPUNIT_ASSERT(res->hasResults(syn1));
+	CPPUNIT_ASSERT(res->selectSyn(syn1).size() == 1);
+	CPPUNIT_ASSERT(res->selectSyn(syn1).count("1") == 1);
 
 	// expr fail
-	PatternAssgClause* p2 = new PatternAssgClause("a");
-	p2->setVar("_");
-	p2->setVarFixed(true);
-	p2->setExpression("_\"3 4 +\"_");
+	PatternAssgClause* p2 = new PatternAssgClause("a", "_", "_\"3 4 +\"_");
+	p2->setVarType(stringconst::ARG_GENERIC);
+	p2->setVarFixed(false);
 	CPPUNIT_ASSERT(p2->isValid());
-
-	//Results r2 = p2->evaluate();
-
-	//CPPUNIT_ASSERT(!r2.isClausePassed());
+	
+	Results* resFail = new Results();
+	CPPUNIT_ASSERT(!p2->evaluate(resFail));
 	
 	return;
 }
 
 void PatternAssgClauseTest::evaluateVarFixedExprWild() {
+	cout << "varfixedexprwild";
 	// pass
-	PatternAssgClause* p1 = new PatternAssgClause("a");
-	p1->setVar("i");
+	PatternAssgClause* p1 = new PatternAssgClause("a", "i", "_");
+	p1->setVarType(stringconst::ARG_VARIABLE);
 	p1->setVarFixed(true);
-	p1->setExpression("_");
 	CPPUNIT_ASSERT(p1->isValid());
 
-	//Results r1 = p1->evaluate();
+	Results* res = new Results();
+	CPPUNIT_ASSERT(p1->evaluate(res));
 	
 	string syn1 = "a";
 	long long num = 1;
+
+	CPPUNIT_ASSERT(res->hasResults(syn1));
+	CPPUNIT_ASSERT(res->selectSyn(syn1).size() == 1);
+	CPPUNIT_ASSERT(res->selectSyn(syn1).count("1") == 1);
 
 	//cout << r1.getFirstClauseSyn() << endl;
 	//CPPUNIT_ASSERT(r1.isClausePassed());
@@ -209,83 +205,81 @@ void PatternAssgClauseTest::evaluateVarFixedExprWild() {
 	//CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == to_string(num));
 
 	// var fail
-	PatternAssgClause* p2 = new PatternAssgClause("a");
-	p2->setVar("x");
+	PatternAssgClause* p2 = new PatternAssgClause("a", "x", "_");
+	p2->setVarType(stringconst::ARG_VARIABLE);
 	p2->setVarFixed(true);
-	p1->setExpression("_");
 	CPPUNIT_ASSERT(p2->isValid());
 
-	//Results r2 = p2->evaluate();
-
-	//CPPUNIT_ASSERT(!r2.isClausePassed());
+	Results* resFail = new Results();
+	CPPUNIT_ASSERT(!p2->evaluate(resFail));
 	
 	return;
 }
 
 void PatternAssgClauseTest::evaluateVarFixedExpr() {
+	cout << "varfixedexpr";
 	// pass targeting j = 2+3+4
-	PatternAssgClause* p1 = new PatternAssgClause("a");
-	p1->setVar("j");
+	PatternAssgClause* p1 = new PatternAssgClause("a", "j", "_\"2 3 +\"_");
+	p1->setVarType(stringconst::ARG_VARIABLE);
 	p1->setVarFixed(true);
-	p1->setExpression("_\"2 3 +\"_");
 	CPPUNIT_ASSERT(p1->isValid());
 
-	//Results r1 = p1->evaluate();
+	Results* res = new Results();
+	CPPUNIT_ASSERT(p1->evaluate(res));
 	
-	string syn1 = "a";
-	long long num = 2;
+	string expectedSyn1 = "a";
+	string expectedNum = "2";
 
-	//cout << r1.getFirstClauseSyn() << endl;
-	//CPPUNIT_ASSERT(r1.isClausePassed());
-	//CPPUNIT_ASSERT(r1.getFirstClauseSyn() == syn1);
-	//CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
-	//CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == to_string(num));
+	CPPUNIT_ASSERT(res->hasResults(expectedSyn1));
+	CPPUNIT_ASSERT(res->selectSyn(expectedSyn1).size() == 1);
+	CPPUNIT_ASSERT(res->selectSyn(expectedSyn1).count(expectedNum) == 1);
 
 	// expr fail targeting j = 2+3+4
-	PatternAssgClause* p2 = new PatternAssgClause("a");
-	p2->setVar("j");
+	PatternAssgClause* p2 = new PatternAssgClause("a", "j", "_\"3 4 +\"_");
+	p2->setVarType(stringconst::ARG_VARIABLE);
 	p2->setVarFixed(true);
-	p2->setExpression("_\"3 4 +\"_");
 	CPPUNIT_ASSERT(p2->isValid());
 
-	//Results r2 = p2->evaluate();
-
-	//CPPUNIT_ASSERT(!r2.isClausePassed());
+	Results* resFail = new Results();
+	CPPUNIT_ASSERT(!p2->evaluate(resFail));
 
 	// var fail
-	PatternAssgClause* p3 = new PatternAssgClause("a");
-	p3->setVar("x");
+	PatternAssgClause* p3 = new PatternAssgClause("a", "x", "_\"1 2 +\"_");
+	p3->setVarType(stringconst::ARG_VARIABLE);
 	p3->setVarFixed(true);
-	p3->setExpression("_\"1 2 +\"_");
 	CPPUNIT_ASSERT(p3->isValid());
 
-	//Results r3 = p3->evaluate();
-
-	//CPPUNIT_ASSERT(!r3.isClausePassed());
+	Results* resFail2 = new Results();
+	CPPUNIT_ASSERT(!p3->evaluate(resFail2));
 
 	return;
 }
 
 void PatternAssgClauseTest::evaluateVarExprWild() {
-	// pass
-	PatternAssgClause* p1 = new PatternAssgClause("a");
-	p1->setVar("v");
+	// pass, pattern a(v, "_");
+	PatternAssgClause* p1 = new PatternAssgClause("a", "v", "_");
+	p1->setVarType(stringconst::ARG_VARIABLE);
 	p1->setVarFixed(false);
 	p1->setExpression("_");
 	CPPUNIT_ASSERT(p1->isValid());
 
-	//Results r1 = p1->evaluate();
+	Results* res = new Results();
+	CPPUNIT_ASSERT(p1->evaluate(res));
 	
-	string syn1 = "a";
-	string syn2 = "v";
-	long long num = 1;
+	string expectedSyn1 = "a";
+	string expectedSyn2 = "v";
+	int expectedSize = 3;
 
-	//cout << r1.getFirstClauseSyn() << endl;
-	//cout << r1.getSecondClauseSyn() << endl;
-	//CPPUNIT_ASSERT(r1.isClausePassed());
-	//CPPUNIT_ASSERT(r1.getFirstClauseSyn() == syn1);
-	//CPPUNIT_ASSERT(r1.getSecondClauseSyn() == syn2);
-	//CPPUNIT_ASSERT(r1.getPairResults().size() == 3);
+	CPPUNIT_ASSERT(res->hasResults(expectedSyn1));
+	CPPUNIT_ASSERT(res->hasResults(expectedSyn2));
+	// HOW TO CHECK THE PAIR RESULTS
+	// 1. make unordered set of the syns you want to check
+	// 2. select them as resultstable and see size
+	unordered_set<string> synList = unordered_set<string>();
+	synList.insert(expectedSyn1);
+	synList.insert(expectedSyn2);
+	Results::ResultsTable multiSynResults = res->selectMultiSyn(synList);
+	CPPUNIT_ASSERT(multiSynResults.size() == expectedSize);
 
 	//cout << "print the thing" << endl;
 	//for (int i = 0; i < r1.getPairResults().size(); i++) {
@@ -307,17 +301,29 @@ void PatternAssgClauseTest::evaluateVarExprWild() {
 
 void PatternAssgClauseTest::evaluateVarExpr() {
 	// pass targeting j = 2+3+4
-	PatternAssgClause* p1 = new PatternAssgClause("a");
-	p1->setVar("v");
+	// pattern a(v, "_2+3+4_");
+	PatternAssgClause* p1 = new PatternAssgClause("a", "v", "_\"2 3 +\"_");
+	p1->setVarType(stringconst::ARG_VARIABLE);
 	p1->setVarFixed(false);
-	p1->setExpression("_\"2 3 +\"_");
 	CPPUNIT_ASSERT(p1->isValid());
 
-	//Results r1 = p1->evaluate();
+	Results* res = new Results();
+	CPPUNIT_ASSERT(p1->evaluate(res));
 	
-	string syn1 = "a";
-	string syn2 = "v";
-	long long num = 2;
+	string expectedSyn1 = "a";
+	string expectedSyn2 = "v";
+	int expectedSize = 1;
+
+	CPPUNIT_ASSERT(res->hasResults(expectedSyn1));
+	CPPUNIT_ASSERT(res->hasResults(expectedSyn2));
+	// HOW TO CHECK THE PAIR RESULTS
+	// 1. make unordered set of the syns you want to check
+	// 2. select them as resultstable and see size
+	unordered_set<string> synList = unordered_set<string>();
+	synList.insert(expectedSyn1);
+	synList.insert(expectedSyn2);
+	Results::ResultsTable multiSynResults = res->selectMultiSyn(synList);
+	CPPUNIT_ASSERT(multiSynResults.size() == expectedSize);
 
 	//cout << r1.getFirstClauseSyn() << endl;
 	//cout << r1.getSecondClauseSyn() << endl;
@@ -329,15 +335,13 @@ void PatternAssgClauseTest::evaluateVarExpr() {
 	//CPPUNIT_ASSERT(r1.getPairResults().at(0).second == "j");
 	
 	// expr fail
-	PatternAssgClause* p2 = new PatternAssgClause("a");
-	p2->setVar("j");
+	PatternAssgClause* p2 = new PatternAssgClause("a", "j", "_\"3 4 +\"_");
+	p2->setVarType(stringconst::ARG_VARIABLE);
 	p2->setVarFixed(false);
-	p2->setExpression("_\"3 4 +\"_");
 	CPPUNIT_ASSERT(p2->isValid());
 
-	//Results r2 = p2->evaluate();
-
-	//CPPUNIT_ASSERT(!r2.isClausePassed());
+	Results* resFail = new Results();
+	CPPUNIT_ASSERT(!p2->evaluate(resFail));
 
 	return;
 }
