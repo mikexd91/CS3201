@@ -42,8 +42,8 @@ protected:
 	
 private:
 	// ---- old stuff
-	void evaluateVarWildExprWild(vector<int>&, unordered_set<string>);
-	Results evaulateVarWildExpr(vector<int>& assgNums, string expr, Results);
+	void evaluateVarWildExprWild(vector<int>&, unordered_set<string>&);
+	unordered_set<string> evaulateVarWildExpr();
 	Results evaluateVarFixedExprWild(vector<int>& assgNums, Results);
 	Results evaluateVarFixedExpr(vector<int>& assgNums, string expr, Results);
 	Results evaluateVarExprWild(vector<int>& assgNums, vector<string>& varNames, Results);

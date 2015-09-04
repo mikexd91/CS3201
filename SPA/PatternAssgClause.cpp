@@ -11,17 +11,18 @@
 #include "boost\algorithm\string.hpp"
 #include "boost\unordered_map.hpp"
 #include "boost\unordered\unordered_map.hpp"
+#include "boost\foreach.hpp"
 
 using namespace stringconst;
 using namespace boost;
 
 PatternAssgClause::PatternAssgClause(const string& syn) 
 	: PatternClause() {
-	firstArgType = ARG_ASSIGN;
+	/*firstArgType = ARG_ASSIGN;
 	firstArg = syn;
 	firstArgFixed = false;
-	secondArgType = ARG_VARIABLE;
-	secondArgFixed = false;
+	secondArgType = ARG_GENERIC;
+	secondArgFixed = false;*/
 } 
 
 PatternAssgClause::PatternAssgClause(const string& syn, const string& var, const string& expr) 
@@ -30,10 +31,8 @@ PatternAssgClause::PatternAssgClause(const string& syn, const string& var, const
 	firstArg = syn;
 	firstArgFixed = false;
 	secondArg = var;
-	secondArgType = ARG_VARIABLE;
-	secondArgFixed = false;
+	// parser must set vartype and varfixed.
 	this->_expr = expr;
-	//cout << "setting " << syn << endl;
 }
 
 PatternAssgClause::~PatternAssgClause(void) {
@@ -52,12 +51,14 @@ bool PatternAssgClause::isExprWild() {
 }
 
 bool PatternAssgClause::isVarWild() {
-	return getVar() == stringconst::STRING_EMPTY;
+	return this->getVarType() == stringconst::ARG_GENERIC;
 }
 
 bool PatternAssgClause::isValid() {
-	string varType = this->getSecondArgType();
-	bool checkVar = (varType == stringconst::ARG_VARIABLE);
+	string varType = this->getVarType();
+	cout << varType;
+	bool checkVar = (varType == stringconst::ARG_VARIABLE)
+		|| (varType == stringconst::ARG_GENERIC);
 	bool valid = checkVar;
 	return valid;
 }
@@ -129,68 +130,86 @@ bool PatternAssgClause::isValid() {
 //e.g. Pattern "a"("a", ?)
 bool PatternAssgClause::evaluateS1FixedS2Fixed(string a, string b) {
 	// always return false because s1 cannot be fixed!
+	cout << "s1fs2f";
 	return false;
 }
 
 //e.g. Pattern _(_, ?)
 bool PatternAssgClause::evaluateS1GenericS2Generic() {
 	// always return false because s1 cannot be generic!
+	cout << "s1gs2g";
 	return false;
 }
 
 //e.g. Pattern _("a", ?)
 bool PatternAssgClause::evaluateS1GenericS2Fixed(string a) {
 	// always return false because s1 cannot be generic!
+	cout << "s1gs2f";
 	return false;
 }
 
 //e.g. Pattern "a"(_, ?)
 bool PatternAssgClause::evaluateS1FixedS2Generic(string a) {
 	// always return false because s1 cannot be fixed!
+	cout << "s1fs2g";
 	return false;
 }
 
 //e.g. Pattern "a"(a, ?)
 unordered_set<string> PatternAssgClause::getAllS2WithS1Fixed(string a) {
 	// always return empty set because s1 cannot be fixed!
+	cout << "s1fs2n";
 	return unordered_set<string>();
 }
 
 //e.g. Pattern _(a, ?)
 unordered_set<string> PatternAssgClause::getAllS2() {
 	// always return empty set because s1 cannot be underscore!
+	cout << "s2n";
 	return unordered_set<string>();
 }
 
 //e.g. Pattern a("a", ?)
 unordered_set<string> PatternAssgClause::getAllS1WithS2Fixed(string a) {
+	cout << "s1ns2f";
 	// TODO
 	// choices:
 	//	var fixed expr wild
 	//	var fixed expr fixed
 	if (isExprWild()) {
-		//evaluateVarFixedExprWild(assgNums);
+		//return evaluateVarFixedExprWild();
+	} else {
+		//evaulateVarWildExpr();
 	}
 	return unordered_set<string>();
 }
 
 //e.g. Pattern a(_, ?)
 unordered_set<string> PatternAssgClause::getAllS1() {
+	cout << "s1n";
 	// TODO
 	// choices:
 	//	var wild expr wild
 	//	var wild expr fixed
-	unordered_set<string> resultsSet = unordered_set<string>();
 	// get all the assg stmt nums
-	vector<int> assgNums = vector<int>();//getAssgNums(res, synonym);
+	unordered_set<string> resultsSet = unordered_set<string>();
 	if (isExprWild()) {
-		evaluateVarWildExprWild(assgNums, resultsSet);
+		// varwild exprwild
+		StmtTable* stable = StmtTable::getInstance();
+		unordered_set<Statement*> assgStmts = stable->getAssgStmts();
+		BOOST_FOREACH(Statement* stmt, assgStmts) {
+			resultsSet.insert(boost::lexical_cast<string>(stmt->getStmtNum()));
+		}
+	} else {
+		// varwild expr
+		return evaulateVarWildExpr();
 	}
 	return resultsSet;
 }
 
 //e.g. Pattern a(a, ?)
 Results::ResultsTable* PatternAssgClause::getAllS1AndS2() {
+	cout << "s1ns2n";
 	// TODO
 	// choices:
 	//	var syn expr wild
@@ -200,7 +219,7 @@ Results::ResultsTable* PatternAssgClause::getAllS1AndS2() {
 // ---- end new stuff --------------------------
 
 
-void PatternAssgClause::evaluateVarWildExprWild(vector<int>& assgNums, unordered_set<string> resultsSet) {
+void PatternAssgClause::evaluateVarWildExprWild(vector<int>& assgNums, unordered_set<string>& resultsSet) {
 	// return all assg stmts because they match _ _
 	cout << "im here";
 	
@@ -211,27 +230,26 @@ void PatternAssgClause::evaluateVarWildExprWild(vector<int>& assgNums, unordered
 		string stmtNumStr = to_string(stmtNum);
 		resultsSet.insert(stmtNumStr);
 	}
+	resultsSet;
 }
 
-Results PatternAssgClause::evaulateVarWildExpr(vector<int>& assgNums, string expr, Results res) {
+unordered_set<string> PatternAssgClause::evaulateVarWildExpr() {
 	// return all a that match expr
 
 	StmtTable* stable = StmtTable::getInstance();
+	unordered_set<Statement*> allAssg = stable->getAssgStmts();
+	unordered_set<string> resSet = unordered_set<string>();
 
 	// go through all assgs
 	// if match expr then insert
-	for (size_t i = 0; i < assgNums.size(); i++) {
-		int stmtNum = assgNums.at(i);
-		Statement* assg = stable->getStmtObj(stmtNum);
+	BOOST_FOREACH(Statement* assg, allAssg) {
 		AssgNode* assgNode = (AssgNode*) assg->getTNodeRef();
 		if (matchExpr(assgNode, getExpression())) {
-			string stmtNumStr = lexical_cast<string>(stmtNum);
-			res.insertResult(getSynonym(), stmtNumStr);
+			string stmtNumStr = lexical_cast<string>(assg->getStmtNum());
+			resSet.insert(stmtNumStr);
 		}
 	}
-
-	res.push();
-	return res;
+	return resSet;
 }
 
 Results PatternAssgClause::evaluateVarFixedExprWild(vector<int>& assgNums, Results res) {
@@ -352,11 +370,10 @@ vector<int> PatternAssgClause::getAssgNums(Results res, string synonym) {
 		cout << "has no results";
 		// get all assignment statements
 		StmtTable* stable = StmtTable::getInstance();
-		set<Statement*> allAssg = stable->getAssgStmts();
+		unordered_set<Statement*> allAssg = stable->getAssgStmts();
 
 		set<Statement*>::iterator assgIter;
-		for (assgIter = allAssg.begin(); assgIter != allAssg.end(); assgIter++) {
-			Statement* assg = *assgIter;
+		BOOST_FOREACH(Statement* assg, allAssg) {
 			assgNums.push_back(assg->getStmtNum());
 		}
 		//debug

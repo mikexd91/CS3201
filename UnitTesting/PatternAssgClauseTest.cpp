@@ -74,7 +74,7 @@ void PatternAssgClauseTest::setUp() {
 	stmt1->setType(ASSIGN_STMT_);
 	stmt1->setFollowsAfter(2);
 	string ivar = "i";
-	set<string> uses1 = set<string>();
+	unordered_set<string> uses1 = unordered_set<string>();
 	uses1.emplace(ivar);
 	stmt1->setModifies(uses1);
 	stmt1->setTNodeRef(assg1);
@@ -86,7 +86,7 @@ void PatternAssgClauseTest::setUp() {
 	stmt2->setFollowsBefore(1);
 	stmt2->setFollowsAfter(3);
 	string jvar = "j";
-	set<string> uses2 = set<string>();
+	unordered_set<string> uses2 = unordered_set<string>();
 	uses2.emplace(jvar);
 	stmt2->setModifies(uses2);
 	stmt2->setTNodeRef(assg2);
@@ -97,7 +97,7 @@ void PatternAssgClauseTest::setUp() {
 	stmt3->setType(ASSIGN_STMT_);
 	stmt3->setFollowsBefore(2);
 	string kvar = "k";
-	set<string> uses3 = set<string>();
+	unordered_set<string> uses3 = unordered_set<string>();
 	uses3.emplace(kvar);
 	stmt3->setModifies(uses3);
 	stmt3->setTNodeRef(assg3);
@@ -132,25 +132,20 @@ void PatternAssgClauseTest::tearDown() {
 CPPUNIT_TEST_SUITE_REGISTRATION( PatternAssgClauseTest );
 
 void PatternAssgClauseTest::evaluateVarWildExprWild() {
-	
-	PatternAssgClause* p1 = new PatternAssgClause("a");
-	p1->setVar("_");
-	p1->setVarFixed(true);
-	p1->setExpression("_");
-	CPPUNIT_ASSERT(p1->isValid());
+	cout << "varwildexprwild";
+	PatternAssgClause* p1 = new PatternAssgClause("a", "_", "_");
+	p1->setSecondArgFixed(false);
+	p1->setSecondArgType(stringconst::ARG_GENERIC);
 
-	Results *res = new Results();
-	CPPUNIT_ASSERT(p1->evaluate(res));
+	CPPUNIT_ASSERT(p1->isValid());
+	Results *r1 = new Results();
+	CPPUNIT_ASSERT(p1->evaluate(r1));
 	string syn1 = "a";
 
-	//cout << r1.getFirstClauseSyn() << endl;
-	//CPPUNIT_ASSERT(r1.isClausePassed());
-	cout << 0;
-	CPPUNIT_ASSERT(res->hasResults(syn1));
-	cout << 1;
-	CPPUNIT_ASSERT(res->selectSyn(syn1).size() == 3);
+	CPPUNIT_ASSERT(r1->hasResults(syn1));
+	CPPUNIT_ASSERT(r1->selectSyn(syn1).size() == 3);
 	
-	unordered_set<string> v = res->selectSyn(syn1);
+	unordered_set<string> v = r1->selectSyn(syn1);
 	BOOST_FOREACH(auto i, v) {
 		cout << i;
 	}
@@ -159,17 +154,20 @@ void PatternAssgClauseTest::evaluateVarWildExprWild() {
 }
 
 void PatternAssgClauseTest::evaulateVarWildExpr() {
-	
-	PatternAssgClause* p1 = new PatternAssgClause("a");
-	p1->setVar("_");
-	p1->setVarFixed(true);
-	p1->setExpression("_\"1 2 +\"_");
+	cout << "varwildexpr";
+	PatternAssgClause* p1 = new PatternAssgClause("a", "_", "_\"1 2 +\"_");
+	p1->setVarType(stringconst::ARG_GENERIC);
+	p1->setVarFixed(false);
 	CPPUNIT_ASSERT(p1->isValid());
+	Results* r1 = new Results();
+	CPPUNIT_ASSERT(p1->evaluate(r1));
+	cout << "end evla";
 
-	//Results r1 = p1->evaluate();
-	
 	string syn1 = "a";
 	long long num = 1;
+	CPPUNIT_ASSERT(r1->hasResults(syn1));
+	CPPUNIT_ASSERT(r1->selectSyn(syn1).size() == 1);
+	CPPUNIT_ASSERT(r1->selectSyn(syn1).count("1") == 1);
 
 	//cout << r1.getFirstClauseSyn() << endl;
 	//CPPUNIT_ASSERT(r1.isClausePassed());
