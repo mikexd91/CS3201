@@ -47,77 +47,77 @@ void TestOne::testAddProc() {
 	
 	Statement* stmt1 = stmtTable1->getStmtObj(1);
 	string initUses1[] = { "x" };
-	set<string> str1(initUses1, initUses1 + 1);
+	unordered_set<string> str1(initUses1, initUses1 + 1);
 	CPPUNIT_ASSERT(stmt1->getModifies() == str1);
 	
 	Statement* stmt2 = stmtTable1->getStmtObj(2);
 	string initModifies2[] = { "y" };
-	set<string> strModifies2(initModifies2, initModifies2 + 1);
+	unordered_set<string> strModifies2(initModifies2, initModifies2 + 1);
 	CPPUNIT_ASSERT(stmt2->getModifies() == strModifies2);
 	string initUses2[] = { "x", "z" };
-	set<string> strUses2(initUses2, initUses2 + 2);
+	unordered_set<string> strUses2(initUses2, initUses2 + 2);
 	CPPUNIT_ASSERT(stmt2->getUses() == strUses2);
 
 	Statement* stmt3 = stmtTable1->getStmtObj(3);
 	string initModifies3[] = { "z" };
-	set<string> strModifies3(initModifies3, initModifies3 + 1);
+	unordered_set<string> strModifies3(initModifies3, initModifies3 + 1);
 	CPPUNIT_ASSERT(stmt3->getModifies() == strModifies3);
 	string initUses3[] = { "x", "y", "z" };
-	set<string> strUses3(initUses3, initUses3 + 3);
+	unordered_set<string> strUses3(initUses3, initUses3 + 3);
 	CPPUNIT_ASSERT(stmt3->getUses() == strUses3);
 
 	Statement* stmt4 = stmtTable1->getStmtObj(4);
 	string initModifies4[] = { "y" };
-	set<string> strModifies4(initModifies4, initModifies4 + 1);
+	unordered_set<string> strModifies4(initModifies4, initModifies4 + 1);
 	//CPPUNIT_ASSERT(stmt4->getModifies() == strModifies4);
 	string initUses4[] = { "x", "i" };
-	set<string> strUses4(initUses4, initUses4 + 1);
+	unordered_set<string> strUses4(initUses4, initUses4 + 1);
 	//CPPUNIT_ASSERT(stmt4->getUses() == strUses4);
 	int initChildren4[] = {5, 6};
-	set<int> setChildren4(initChildren4, initChildren4 + 2);
+	unordered_set<int> setChildren4(initChildren4, initChildren4 + 2);
 	CPPUNIT_ASSERT(stmt4->getChildren() == setChildren4);
 
 	Statement* stmt5 = stmtTable1->getStmtObj(5);
 	string initModifies5[] = { "y" };
-	set<string> strModifies5(initModifies5, initModifies5 + 1);
+	unordered_set<string> strModifies5(initModifies5, initModifies5 + 1);
 	CPPUNIT_ASSERT(stmt5->getModifies() == strModifies5);
 	string initUses5[] = { "x" };
-	set<string> strUses5(initUses5, initUses5 + 1);
+	unordered_set<string> strUses5(initUses5, initUses5 + 1);
 	CPPUNIT_ASSERT(stmt5->getUses() == strUses5);
 	CPPUNIT_ASSERT(stmt5->getParent() == 4);
 	
 	
 	Statement* stmt6 = stmtTable1->getStmtObj(6);
 	string initModifies6[] = { "a" };
-	set<string> strModifies6(initModifies6, initModifies6 + 1);
+	unordered_set<string> strModifies6(initModifies6, initModifies6 + 1);
 	CPPUNIT_ASSERT(stmt6->getModifies() == strModifies6);
 	
 	string initUses6[] = { "a", "b" };
-	set<string> strUses6(initUses6, initUses6 + 2);
+	unordered_set<string> strUses6(initUses6, initUses6 + 2);
 	CPPUNIT_ASSERT(stmt6->getUses() == strUses6);
 	CPPUNIT_ASSERT(stmt6->getParent() == 4);
 
 	Variable* varX = varTable1->getVariable("x");
 	int initXUsedBy[] = {2, 3, 4, 5};
 	int initXModifiedBy[] = {1};
-	set<int> setXUsedBy(initXUsedBy, initXUsedBy + 4);
-	set<int> setXModifiedBy(initXModifiedBy, initXModifiedBy + 1);
+	unordered_set<int> setXUsedBy(initXUsedBy, initXUsedBy + 4);
+	unordered_set<int> setXModifiedBy(initXModifiedBy, initXModifiedBy + 1);
 	CPPUNIT_ASSERT(varX->getUsedByStmts() == setXUsedBy);
 	CPPUNIT_ASSERT(varX->getModifiedByStmts() == setXModifiedBy);
 
 	Variable* varY = varTable1->getVariable("y");
 	int initYUsedBy[] = {3};
 	int initYModifiedBy[] = {2, 4, 5};
-	set<int> setYUsedBy(initYUsedBy, initYUsedBy + 1);
-	set<int> setYModifiedBy(initYModifiedBy, initYModifiedBy + 3);
+	unordered_set<int> setYUsedBy(initYUsedBy, initYUsedBy + 1);
+	unordered_set<int> setYModifiedBy(initYModifiedBy, initYModifiedBy + 3);
 	CPPUNIT_ASSERT(varY->getUsedByStmts() == setYUsedBy);
 	CPPUNIT_ASSERT(varY->getModifiedByStmts() == setYModifiedBy);
 
 	Variable* varZ = varTable1->getVariable("z");
 	int initZUsedBy[] = {2, 3};
 	int initZModifiedBy[] = {3};
-	set<int> setZUsedBy(initZUsedBy, initZUsedBy + 2);
-	set<int> setZModifiedBy(initZModifiedBy, initZModifiedBy + 1);
+	unordered_set<int> setZUsedBy(initZUsedBy, initZUsedBy + 2);
+	unordered_set<int> setZModifiedBy(initZModifiedBy, initZModifiedBy + 1);
 	CPPUNIT_ASSERT(varZ->getUsedByStmts() == setZUsedBy);
 	CPPUNIT_ASSERT(varZ->getModifiedByStmts() == setZModifiedBy);
 }
@@ -133,7 +133,7 @@ void TestOne::testAssign() {
 	Statement* stmt = stmtTable1->getStmtObj(2);
 	
 	string init[] = { "y" };
-	set<string> str(init, init + 1);
+	unordered_set<string> str(init, init + 1);
 	CPPUNIT_ASSERT(stmt->getModifies() == str);
 
 }
@@ -296,11 +296,11 @@ void TestOne::testWhileUses() {
 	Statement* secWhile = stmtTable1->getStmtObj(2);
 	
 	string firstInit[] = {"a", "b", "w", "y"};
-	set<string> firstUses(firstInit, firstInit + 4);
+	unordered_set<string> firstUses(firstInit, firstInit + 4);
 	CPPUNIT_ASSERT(firstWhile->getUses() == firstUses);
 
 	string secInit[] = {"a", "b", "y"};
-	set<string> secUses(secInit, secInit + 3);
+	unordered_set<string> secUses(secInit, secInit + 3);
 	CPPUNIT_ASSERT(secWhile->getUses() == secUses);
 
 }
@@ -315,20 +315,20 @@ void TestOne::testWhileModifies() {
 	Statement* thirdAssg = stmtTable1->getStmtObj(5);
 	
 	string modi[] = {"x", "y", "z"};
-	set<string> modifiesSet(modi, modi + 3);
+	unordered_set<string> modifiesSet(modi, modi + 3);
 	CPPUNIT_ASSERT(firstWhile->getModifies() == modifiesSet);
 	CPPUNIT_ASSERT(secWhile->getModifies() == modifiesSet);
 	
 
-	set<string> firstAssgModSet;
+	unordered_set<string> firstAssgModSet;
 	firstAssgModSet.insert("x");
 	CPPUNIT_ASSERT(firstAssg->getModifies() == firstAssgModSet);
 	
-	set<string> secondAssgModSet;
+	unordered_set<string> secondAssgModSet;
 	secondAssgModSet.insert("y");
 	CPPUNIT_ASSERT(secAssg->getModifies() == secondAssgModSet);
 
-	set<string> thirdAssgModSet;
+	unordered_set<string> thirdAssgModSet;
 	thirdAssgModSet.insert("z");
 	CPPUNIT_ASSERT(thirdAssg->getModifies() == thirdAssgModSet);
 }
@@ -336,10 +336,10 @@ void TestOne::testWhileModifies() {
 void TestOne::testStmtTableAllWhile() {
 	parser.parse("procedure proc3 { while x {} while y{} while z{x = 2; while w {}} }");
 
-	set<Statement*> whileStmts = stmtTable1->getWhileStmts();
+	unordered_set<Statement*> whileStmts = stmtTable1->getWhileStmts();
 	CPPUNIT_ASSERT(whileStmts.size() == 4);
 
-	set<Statement*>::iterator iter;
+	unordered_set<Statement*>::iterator iter;
 
 	for(iter = whileStmts.begin(); iter != whileStmts.end(); iter++) {
 		Statement* stmt = *iter;
@@ -347,25 +347,25 @@ void TestOne::testStmtTableAllWhile() {
 		switch(stmtNum) {
 			case 1: {
 				string arrInit[] = {"x"};
-				set<string> usesSet(arrInit, arrInit + 1);
+				unordered_set<string> usesSet(arrInit, arrInit + 1);
 				CPPUNIT_ASSERT(stmt->getUses() == usesSet);
 				break;
 			}
 			case 2: {
 				string arrInit[] = {"y"};
-				set<string> usesSet(arrInit, arrInit + 1);
+				unordered_set<string> usesSet(arrInit, arrInit + 1);
 				CPPUNIT_ASSERT(stmt->getUses() == usesSet);
 				break;
 			}
 			case 3: {
 				string arrInit[] = {"w", "z"};
-				set<string> usesSet(arrInit, arrInit + 2);
+				unordered_set<string> usesSet(arrInit, arrInit + 2);
 				CPPUNIT_ASSERT(stmt->getUses() == usesSet);
 				break;
 			}
 			case 5: {
 				string arrInit[] = {"w"};
-				set<string> usesSet(arrInit, arrInit + 1);
+				unordered_set<string> usesSet(arrInit, arrInit + 1);
 				stmt->getUses();
 				CPPUNIT_ASSERT(stmt->getUses() == usesSet);
 				break;
@@ -434,11 +434,11 @@ void TestOne::testCallsPKB() {
 	Procedure* procedure1 = procTable->getProcObj("proc1");
 	Procedure* procedure2 = procTable->getProcObj("proc2");
 	
-	set<Procedure*> calledBy;
+	unordered_set<Procedure*> calledBy;
 	calledBy.insert(procedure1);
 	CPPUNIT_ASSERT(procedure2->getCalledBy() == calledBy);
 
-	set<Procedure*> calls;
+	unordered_set<Procedure*> calls;
 	calls.insert(procedure2);
 	CPPUNIT_ASSERT(procedure1->getCalls() == calls);
 }
@@ -448,12 +448,12 @@ void TestOne::testProcedureUses() {
 
 	Procedure* procedure = procTable->getProcObj("proc1");
 	string uses[] = {"x"};
-	set<string> usesSet(uses, uses + 1);
+	unordered_set<string> usesSet(uses, uses + 1);
 	CPPUNIT_ASSERT(procedure->getUses() == usesSet);
 
 	Procedure* procedure2 = procTable->getProcObj("proc2");
 	string uses2[] = {"z", "y"};
-	set<string> usesSet2(uses2, uses2 + 2);
+	unordered_set<string> usesSet2(uses2, uses2 + 2);
 	CPPUNIT_ASSERT(procedure2->getUses() == usesSet2);
 }
 
@@ -462,12 +462,12 @@ void TestOne::testProcedureModifies() {
 
 	Procedure* procedure1 = procTable->getProcObj("proc1");
 	string modifies1[] = {"a", "b"};
-	set<string> modifiesSet1(modifies1, modifies1 + 2);
+	unordered_set<string> modifiesSet1(modifies1, modifies1 + 2);
 	CPPUNIT_ASSERT(procedure1->getModifies() == modifiesSet1);
 
 	Procedure* procedure2 = procTable->getProcObj("proc2");
 	string modifies2[] = {"x", "y", "z"};
-	set<string> modifiesSet2(modifies2, modifies2 + 3);
+	unordered_set<string> modifiesSet2(modifies2, modifies2 + 3);
 	CPPUNIT_ASSERT(procedure2->getModifies() == modifiesSet2);
 }
 
@@ -476,7 +476,7 @@ void TestOne::testNestedProceduresUses() {
 
 	Procedure* procedure1 = procTable->getProcObj("proc1");
 	string uses[] = {"x"};
-	set<string> usesSet(uses, uses + 1);
+	unordered_set<string> usesSet(uses, uses + 1);
 	CPPUNIT_ASSERT(procedure1->getUses() == usesSet);
 
 	Procedure* procedure2 = procTable->getProcObj("proc2");
@@ -488,12 +488,12 @@ void TestOne::testNestedProceduresModifies() {
 
 	Procedure* procedure1 = procTable->getProcObj("proc1");
 	string modifies[] = {"a", "x", "z", "y"};
-	set<string> modifiesSet(modifies, modifies + 4);
+	unordered_set<string> modifiesSet(modifies, modifies + 4);
 	CPPUNIT_ASSERT(procedure1->getModifies() == modifiesSet);
 
 	Procedure* procedure2 = procTable->getProcObj("proc2");
 	string modifies2[] = {"x", "z", "y"};
-	set<string> modifiesSet2(modifies2, modifies2 + 3);
+	unordered_set<string> modifiesSet2(modifies2, modifies2 + 3);
 	CPPUNIT_ASSERT(procedure2->getModifies() == modifiesSet2);
 }
 
@@ -504,18 +504,18 @@ void TestOne::testIfStatement() {
 	CPPUNIT_ASSERT(ifStmt->getType() == NodeType::IF_STMT_);
 	
 	string ifUses[] = {"a"};
-	set<string> ifUsesSet(ifUses, ifUses + 1);
+	unordered_set<string> ifUsesSet(ifUses, ifUses + 1);
 	CPPUNIT_ASSERT(ifStmt->getUses() == ifUsesSet);
 
 	string ifModifies[] = {"y", "z"};
-	set<string> ifModifiesSet(ifModifies, ifModifies + 2);
+	unordered_set<string> ifModifiesSet(ifModifies, ifModifies + 2);
 	CPPUNIT_ASSERT(ifStmt->getModifies() == ifModifiesSet);
 
 	Procedure* proc = procTable->getProcObj("proc");
 	CPPUNIT_ASSERT(proc->getUses() == ifUsesSet);
 
 	string procModifies[] = {"a", "y", "z"};
-	set<string> procModifiesSet(procModifies, procModifies + 3);
+	unordered_set<string> procModifiesSet(procModifies, procModifies + 3);
 	CPPUNIT_ASSERT(proc->getModifies() == procModifiesSet);
 
 	CPPUNIT_ASSERT(ifStmt->getFollowsBefore() == 1);
@@ -544,8 +544,72 @@ void TestOne::testNestedIfStatement() {
 	
 	string firstModifies[] = {"b", "c", "d", "e"};
 	string secondModifies[] = {"c", "d"};
-	set<string> firstModSet(firstModifies, firstModifies + 4);
-	set<string> secondModSet(secondModifies, secondModifies + 2);
+	unordered_set<string> firstModSet(firstModifies, firstModifies + 4);
+	unordered_set<string> secondModSet(secondModifies, secondModifies + 2);
 	CPPUNIT_ASSERT(firstIf->getModifies() == firstModSet);
 	CPPUNIT_ASSERT(secondIf->getModifies() == secondModSet);
+}
+
+void TestOne::testUsingProc() {
+	parser.parse("procedure proc { x = 2; while x{ y = x;} if y then {z = y;} else {z = x;}}");
+
+	Variable* varX = varTable1->getVariable("x");
+	Variable* varY = varTable1->getVariable("y");
+	Variable* varZ = varTable1->getVariable("z");
+
+	string proc[] = {"proc"};
+	unordered_set<string> procSet(proc, proc + 1);
+	CPPUNIT_ASSERT(varX->getUsedByProc() == procSet);
+	CPPUNIT_ASSERT(varY->getUsedByProc() == procSet);
+	CPPUNIT_ASSERT(varZ->getUsedByProc().empty());
+}
+
+void TestOne::testModifyingProc() {
+	parser.parse("procedure proc { while x {y = 3; while y{z = 2; while z{x = z;}}} }");
+
+	Variable* varX = varTable1->getVariable("x");
+	Variable* varY = varTable1->getVariable("y");
+	Variable* varZ = varTable1->getVariable("z");	
+
+	string proc[] = {"proc"};
+	unordered_set<string> procSet(proc, proc + 1);
+	CPPUNIT_ASSERT(varX->getModifiedByProc() == procSet);
+	CPPUNIT_ASSERT(varY->getModifiedByProc() == procSet);
+	CPPUNIT_ASSERT(varZ->getModifiedByProc() == procSet);
+}
+
+void TestOne::testUsingMultipleProc() {
+	parser.parse("procedure proc1 {while  y{x = 2; y = x;} } procedure proc2 {x = 3; y = x;}");
+
+	Variable* varX = varTable1->getVariable("x");
+	Variable* varY = varTable1->getVariable("y");
+
+	string proc1[] = {"proc1"};
+	string proc2[] = {"proc1", "proc2"};
+	unordered_set<string> procSet1(proc1, proc1 + 1);
+	unordered_set<string> procSet2(proc2, proc2 + 2);
+	CPPUNIT_ASSERT(varX->getUsedByProc() == procSet2);
+	CPPUNIT_ASSERT(varY->getUsedByProc() == procSet1);
+}
+
+void TestOne::testModifyingMultipleProc() {
+	parser.parse("procedure proc1 { x = 3;} procedure proc2 { y = 4;} procedure proc3 {x = 4; if a then {w = 3;} else {z = 4;}}");
+
+	Variable* varW = varTable1->getVariable("w");
+	Variable* varX = varTable1->getVariable("x");
+	Variable* varY = varTable1->getVariable("y");
+	Variable* varZ = varTable1->getVariable("z");	
+
+	string first[] = {"proc2"};
+	unordered_set<string> firstSet(first, first + 1);
+	CPPUNIT_ASSERT(varY->getModifiedByProc() == firstSet);
+
+	string second[] = {"proc1", "proc3"};
+	unordered_set<string> secondSet(second, second + 2);
+	CPPUNIT_ASSERT(varX->getModifiedByProc() == secondSet);
+
+	string third[] = {"proc3"};
+	unordered_set<string> thirdSet(third, third + 1);
+	CPPUNIT_ASSERT(varW->getModifiedByProc() == thirdSet);
+	CPPUNIT_ASSERT(varZ->getModifiedByProc() == thirdSet);
 }

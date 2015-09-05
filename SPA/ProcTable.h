@@ -1,7 +1,10 @@
 #pragma once
 
 #include "boost/unordered_map.hpp"
+#include "boost/unordered_set.hpp"
 #include "Procedure.h"
+
+using boost::unordered_set;
 
 class ProcTable {
 	/*
@@ -25,10 +28,11 @@ public:
 	ProcedureTable::iterator getIterator();					// gets iterator to proc table
 	ProcedureTable::iterator getEnd();						// gets iterator to end of proc table
 	Procedure* getProcObj(string procName);					// gets the proc obj by proc name
+	const unordered_set<Procedure*>& getAllProcs();			// gets all proc obj in the table
 
-	const set<string>& getCalls(const string &procName);	// gets set of procedures called by procName
-	const set<string>& getModifies(const string &procName);// gets set of variables modified by procName
-	const set<string>& getUses(const string &procName);	// gets set of variables used by procName
+	const unordered_set<string>& getCalls(const string &procName);		// gets set of procedures called by procName
+	const unordered_set<string>& getModifies(const string &procName);	// gets set of variables modified by procName
+	const unordered_set<string>& getUses(const string &procName);		// gets set of variables used by procName
 
 	// MUTATORS
 	void addProc(Procedure *proc);							// adds proc to table

@@ -6,6 +6,7 @@
 
 using std::map;
 using std::string;
+using namespace stringconst;
 
 Clause::Clause(void){
 	this->firstArgFixed = false;
@@ -71,9 +72,89 @@ bool Clause::getSecondArgFixed(void){
 	return this->secondArgFixed;
 }
 
+bool Clause::isBaseValidityCheck() {
+	bool firstSynValidity = true;
+	bool secondSynValidity = true;
+
+	if(firstArgFixed) {
+		if(firstArgType == ARG_PROGLINE) {
+			firstSynValidity = isValidStmtNumber(firstArg);
+		} else if(firstArgType == ARG_PROCEDURE) {
+			firstSynValidity = isValidProcedure(firstArg);
+		} else if(firstArgType == ARG_IF) {
+			firstSynValidity = isValidIf(firstArg);
+		} else if(firstArgType == ARG_WHILE) {
+			firstSynValidity = isValidWhile(firstArg);
+		} else if(firstArgType == ARG_ASSIGN) {
+			firstSynValidity = isValidAssign(firstArg);
+		}
+	}
+
+	if(secondArgFixed) {
+		if(secondArgType == ARG_PROGLINE) {
+			secondSynValidity = isValidStmtNumber(secondArg);
+		} else if(secondArgType == ARG_VARIABLE) {
+			secondSynValidity = isValidVariable(secondArg);
+		} else if(secondArgType == ARG_PROCEDURE) {
+			secondSynValidity = isValidProcedure(secondArg);
+		} else if(secondArgType == ARG_CONSTANT) {
+			secondSynValidity = isValidConstant(secondArg);
+		}
+	}
+
+	return firstSynValidity && secondSynValidity;
+}
+
+bool Clause::isValidStmtNumber(string stmt) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	size_t stmtNum = atoi(stmt.c_str());
+	return (stmtNum < stmtTable->getAllStmts().size()) || (stmtNum > 0);
+}
+
+bool Clause::isValidVariable(string var) {
+	VarTable* varTable = VarTable::getInstance();
+	return varTable->contains(var);
+}
+
+bool Clause::isValidProcedure(string proc) {
+	ProcTable* procTable = ProcTable::getInstance();
+	return procTable->contains(proc);
+}
+
+bool Clause::isValidConstant(string constant) {
+	ConstTable* constTable = ConstTable::getInstance();
+	return constTable->contains(constant);
+}
+
+bool Clause::isValidIf(string ifStr) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	int stmtNum = atoi(ifStr.c_str());
+	return stmtTable->getStmtObj(stmtNum)->getType() == IF_STMT_;
+}
+
+bool Clause::isValidAssign(string assign) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	int stmtNum = atoi(assign.c_str());
+	return stmtTable->getStmtObj(stmtNum)->getType() == ASSIGN_STMT_;
+}
+
+bool Clause::isValidWhile(string whileStr) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	int stmtNum = atoi(whileStr.c_str());
+	return stmtTable->getStmtObj(stmtNum)->getType() == WHILE_STMT_;
+}
+
 bool Clause::evaluate(Results* res) {
 	//clause is pass at each stage
 	res->setClauseFail();
+	if(!isBaseValidityCheck()) {
+		return false;
+	}
+	
+	if(!isValid()) {
+		return false;
+	}
+
 	bool isFirstFixed = this->getFirstArgFixed();
 	bool isSecondFixed = this->getSecondArgFixed();
 	string firstArgSyn = this->getFirstArg();
@@ -89,6 +170,16 @@ bool Clause::evaluate(Results* res) {
 		//Parent(_,_)
 		} else if (firstArgType == stringconst::ARG_GENERIC && secondArgType == stringconst::ARG_GENERIC) {
 			if (evaluateS1GenericS2Generic()) {
+				res->setClausePass();
+			}
+		//Parent(_,2)
+		} else if (firstArgType == stringconst::ARG_GENERIC && isSecondFixed) {
+			if (evaluateS1GenericS2Fixed(secondArgSyn)) {
+				res->setClausePass();
+			}
+		//Parent(2,_)
+		} else if (isFirstFixed && secondArgType == stringconst::ARG_GENERIC) {
+			if (evaluateS1FixedS2Generic(firstArgSyn)) {
 				res->setClausePass();
 			}
 		//Parent(2,a) or Parent (_,a)
@@ -216,16 +307,16 @@ bool Clause::evaluate(Results* res) {
 			//both absent in table
 			} else {
 				//generate all a1 and a2 values
-				unordered_set<unordered_map<string, string>> firstSecondValues = getAllS1AndS2();
-				for (unordered_set<unordered_map<string, string>>::iterator iter = firstSecondValues.begin();
-					iter != firstSecondValues.end();
+				Results::ResultsTable* firstSecondValues = getAllS1AndS2();
+				for (Results::ResultsTable::iterator iter = firstSecondValues->begin();
+					iter != firstSecondValues->end();
 					++iter) {
-					unordered_map<string, string> currentValues = *iter;
-					unordered_map<string, string>* newRow = new Results::Row();
-					(*newRow)[firstArgSyn] = currentValues[firstArgSyn];
-					(*newRow)[secondArgSyn] = currentValues[secondArgSyn];
-					res->insertMultiResult(newRow);
+					Results::Row* row = *iter;
+					string firstValue = (*row)[firstArgSyn];
+					string secondValue = (*row)[secondArgSyn];
+					res->insertMultiResult(row);
 				}
+				firstSecondValues->clear();
 			}
 		} else {
 			//throw error, all cases should be covered
