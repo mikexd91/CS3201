@@ -39,6 +39,7 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("UsesClauseTest").m
 */
 // PQL Evaluator
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ResultsTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("QueryEvaluatorTest").makeTest());
 
 CppUnit::TestFactoryRegistry::getRegistry().addTestToSuite(unitSuite);
 CppUnit::TextUi::TestRunner runner;
