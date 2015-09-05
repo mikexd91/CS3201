@@ -1,12 +1,18 @@
 #include "FollowsClause.h"
 #include "Utils.h"
 #include "StmtTable.h"
-#include "boost/unordered_set.hpp"
 #include <string>
 #include <iostream>
 #include <sstream>
+#include "boost\lexical_cast.hpp"
+#include "boost\unordered_set.hpp"
+#include "boost\foreach.hpp"
 
+using namespace stringconst;
 using boost::unordered_set;
+using boost::lexical_cast;
+
+StmtTable* stmtTable = StmtTable::getInstance();
 
 FollowsClause::FollowsClause(void):Clause(FOLLOWS_){
 }
@@ -321,43 +327,75 @@ Results FollowsClause::evaluate(void) {
 	
 }
 
-bool evaluateS1FixedS2Fixed(string, string){
-	return false;
+//Follows(1,2)
+bool FollowsClause::evaluateS1FixedS2Fixed(string s1, string s2){
+	bool isClauseTrue = isFollows(s1, s2);
+	return isClauseTrue;
 }
-//e.g. Parent(_,_)
+
+//e.g. Follows(_,_)
 bool evaluateS1GenericS2Generic(){
+	unordered_set<Statement*> stmts = stmtTable->getAllStmts();
+	for (unordered_set<Statement*>::iterator iter = stmts.begin(); iter != stmts.end(); iter++){
+		Statement* current = *iter;
+		int a = current->getFollowsAfter();
+		int b = current->getFollowsBefore();
+		if (a != -1 || b != -1){
+			return true;
+		}
+	}
 	return false;
 }
-//e.g. Parent(_,string)
-bool evaluateS1GenericS2Fixed(string){
-	return false;
+//e.g. Follows(_,2) bool
+bool FollowsClause::evaluateS1GenericS2Fixed(string s2){
+	Statement* stmt = stmtTable->getStmtObj(lexical_cast<int>(s2));
+	int a = stmt->getFollowsBefore();
+	return (a != -1);
 }
-//Parent(string,_)
-bool evaluateS1FixedS2Generic(string){
-	return false;
+//Follows(1,_) bool
+bool FollowsClause::evaluateS1FixedS2Generic(string s1){
+	Statement* stmt = stmtTable->getStmtObj(lexical_cast<int>(s1));
+	int a = stmt->getFollowsAfter();
+	return (a != -1);
 }
-//Parent(string,s2)
-unordered_set<string> getAllS2WithS1Fixed(string){
-	unordered_set<string> asd;
-	return asd;
+//Follows(s1,_)
+unordered_set<string> FollowsClause::getAllS2WithS1Fixed(string s1){
+	Statement* stmt = stmtTable->getStmtObj(lexical_cast<int>(s1));
+	int a = stmt->getFollowsAfter();
+	unordered_set<string> results;
+	results.insert(lexical_cast<string>(a));
+	return results;
 }
 //Parent(_,s2)
+//is this necessary for follows???
+/*
 unordered_set<string> getAllS2(){
 	unordered_set<string> asd;
 	return asd;
 }
-//Parent(s1,string)
-unordered_set<string> getAllS1WithS2Fixed(string){
-	unordered_set<string> asd;
-	return asd;
+*/
+//Follows(_,s2)
+unordered_set<string> FollowsClause::getAllS1WithS2Fixed(string s2){
+	Statement* stmt = stmtTable->getStmtObj(lexical_cast<int>(s2));
+	int a = stmt->getFollowsBefore();
+	unordered_set<string> results;
+	results.insert(lexical_cast<string>(a));
+	return results;
 }
-//Parent(s1,__)
+//Follows(s1,__)
+//is this necessary for follows???
+/*
 unordered_set<string> getAllS1(){
 	unordered_set<string> asd;
 	return asd;
 }
-//Parent(s1,s2)
+*/
+
+//Follows(s1,s2)
+//is this necessary for follows???
+/*
 unordered_set<unordered_map<string, string>> getAllS1AndS2(){
-	unordered_set<string> asd;
+	unordered_set<unordered_map<string, string>> asd;
 	return asd;
 }
+*/
