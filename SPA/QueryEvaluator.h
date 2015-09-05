@@ -29,7 +29,6 @@ private:
 
 	void setClauseList(vector<Clause*> clauseList);
 	void setSelectList(vector<StringPair> selectList);
-	void setCategory(SynListConstants::Category category);
 	void setNotAllSynInClauseFlag();
 	void resetAllSynInClauseFlag();
 
@@ -59,6 +58,8 @@ public:
 
 	// Evaluate all clauses in a query. Return values of the from table of the right type if there are no clauses.
 	Results* evaluateQuery(Query query);
+	// Used by preprocessor to set category of synonyms in selectList
+	void setCategory(SynListConstants::Category category);
 	// Return values to be printed.
 	unordered_set<string> getValuesToPrint(Results* obj, vector<StringPair> selectList); 
 };

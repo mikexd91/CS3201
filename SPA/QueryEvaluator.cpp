@@ -226,6 +226,7 @@ void QueryEvaluator::insertSetValues(string syn, unordered_set<string> values, R
 		string val = *i;
 		obj.insertResult(syn, val);
 	}
+	obj.push();
 }
 
 // modifies results in results object.
