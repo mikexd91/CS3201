@@ -41,6 +41,7 @@
     <ClCompile Include="PatternIfClause.cpp" />
     <ClCompile Include="PatternWhileClause.cpp" />
     <ClCompile Include="PDR.cpp" />
+    <ClCompile Include="PQLController.cpp" />
     <ClCompile Include="Procedure.cpp" />
     <ClCompile Include="ProcNode.cpp" />
     <ClCompile Include="ProcTable.cpp" />
@@ -86,6 +87,7 @@
     <ClInclude Include="PatternIfClause.h" />
     <ClInclude Include="PatternWhileClause.h" />
     <ClInclude Include="PDR.h" />
+    <ClCompile Include="PQLController.h" />
     <ClInclude Include="PQLExceptions.h" />
     <ClInclude Include="Procedure.h" />
     <ClInclude Include="ProcNode.h" />

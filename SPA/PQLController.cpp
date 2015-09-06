@@ -9,54 +9,38 @@ using namespace std;
 
 
 PQLController::PQLController(void) {
+
 }
 
 
 PQLController::~PQLController(void) {
 }
 
-set<string> PQLController::parse(string query) {
+unordered_set<string> PQLController::parse(string query) {
 	// Parse query to query preprocessor (try catch?)
 	// if query is valid, evaluate query with query evaluator
 	// else return none
 	// call query evaluator to format query
 	// display query result
 	try {
-		Query q = *new Query();
-		try {
-			q = QueryParser::parseQuery(query);
-		} catch (exception& e) {
-			cout << "parser not ok" << endl;
-			cout << e.what() << endl;
-			set<string>* empty = new set<string>();
-			return *empty;
-		}
+		Query* q = new Query();
+		q = &QueryParser::parseQuery(query);
 
 		QueryEvaluator* qe = new QueryEvaluator();
-		set<string> results = set<string>();
+		Results* resObj = qe->evaluateQuery(*q);
+		vector<StringPair> selectList = q->getSelectList();
+		unordered_set<string> valueSet = qe->getValuesToPrint(resObj, selectList);
+		
+		delete q;
+		delete resObj;
+		delete qe;
 
-		try {
-			results = qe->evaluateQuery(q);
-		} catch (exception& e) {
+		return valueSet;
+
+		} catch (std::exception& e) {
 			cout << "eval not ok" << endl;
 			cout << e.what() << endl;
-			set<string>* empty = new set<string>();
-			return *empty;
+			unordered_set<string> empty;
+			return empty;
 		}
-
-		postProcess(results);
-
-		return results;
-	} catch (exception& e) {
-		//cout << "omg spoil" << endl;
-		//cout << e.what() << endl;
-		set<string>* empty = new set<string>();
-		return *empty;
-	}
-}
-
-void PQLController::postProcess(set<string>& results) {
-	/*if (results.size() == 0) {
-		results.emplace("none");
-	}*/
 }
