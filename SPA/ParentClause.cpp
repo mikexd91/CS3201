@@ -15,8 +15,8 @@ ParentClause::~ParentClause(void){
 bool ParentClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
-	bool firstArg = (firstType == stringconst::ARG_WHILE) || (firstType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_PROGLINE) || (firstType == stringconst::ARG_GENERIC) || (firstType == stringconst::ARG_IF);
-	bool secondArg = (secondType == stringconst::ARG_WHILE) || (secondType == stringconst::ARG_STATEMENT) || (secondType == stringconst::ARG_ASSIGN) || (secondType == stringconst::ARG_PROGLINE) || (secondType == stringconst::ARG_GENERIC) || (secondType == stringconst::ARG_CALL) || (secondType == stringconst::ARG_IF);
+	bool firstArg = (firstType == stringconst::ARG_WHILE) || (firstType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_PROGLINE) || (firstType == stringconst::ARG_GENERIC) || (firstType == stringconst::ARG_ASSIGN);
+	bool secondArg = (secondType == stringconst::ARG_WHILE) || (secondType == stringconst::ARG_STATEMENT) || (secondType == stringconst::ARG_ASSIGN) || (secondType == stringconst::ARG_PROGLINE) || (secondType == stringconst::ARG_GENERIC);
 	return firstArg && secondArg;
 }
 
@@ -75,10 +75,22 @@ unordered_set<string> ParentClause::getAllS2() {
 	unordered_set<string> stmtNumSet;
 	//get all while statements
 	unordered_set<Statement*> whileStmts = stmtTable->getWhileStmts();
-	unordered_set<Statement*> ifStmts = stmtTable->getIfStmts();
 	//check if while stmt has children
-	insertChildrenIntoStmtNum(stmtNumSet, whileStmts, this->secondArgType);
-	insertChildrenIntoStmtNum(stmtNumSet, ifStmts, this->secondArgType);
+	for (unordered_set<Statement*>::iterator iter = whileStmts.begin(); iter != whileStmts.end(); ++iter) {
+		Statement* whileStmt = *iter;
+		Statement::ChildrenSet children = getChildren(whileStmt->getStmtNum(), this->secondArgType);
+		for (Statement::ChildrenSet ::iterator iter = children.begin(); iter != children.end(); iter++) {
+			stmtNumSet.insert(boost::lexical_cast<string>(*iter));
+		}
+	}
+	unordered_set<Statement*> ifStmts = stmtTable->getIfStmts();
+	for (unordered_set<Statement*>::iterator iter = ifStmts.begin(); iter != ifStmts.end(); ++iter) {
+		Statement* ifStmt = *iter;
+		Statement::ChildrenSet  children = getChildren(ifStmt->getStmtNum(), this->secondArgType);
+		for (Statement::ChildrenSet ::iterator iter = children.begin(); iter != children.end(); iter++) {
+			stmtNumSet.insert(boost::lexical_cast<string>(*iter));
+		}
+	}
 	return stmtNumSet;
 }
 
@@ -100,11 +112,24 @@ unordered_set<string> ParentClause::getAllS1() {
 	//get all while statements
 	if (firstArgType == stringconst::ARG_STATEMENT || firstArgType == stringconst::ARG_WHILE) {
 		unordered_set<Statement*> whileStmts = stmtTable->getWhileStmts();
-		insertParentIntoStmtNum(stmtNumSet, whileStmts, this->firstArgType);
+		//check if while stmt has children
+		for (unordered_set<Statement*>::iterator iter = whileStmts.begin(); iter != whileStmts.end(); ++iter) {
+			Statement* whileStmt = *iter;
+			Statement::ChildrenSet children = getChildren(whileStmt->getStmtNum(), this->secondArgType);
+			if(!children.empty()) {
+				stmtNumSet.insert(boost::lexical_cast<string>(whileStmt->getStmtNum()));
+			}
+		}
 	}
-	if (firstArgType == stringconst::ARG_STATEMENT || firstArgType == stringconst::ARG_IF) {
+	if (firstArgType == stringconst::ARG_STATEMENT) {// || firstArgType == stringconst::ARG_IF) {
 		unordered_set<Statement*>ifStmts = stmtTable->getIfStmts();
-		insertParentIntoStmtNum(stmtNumSet, ifStmts, this->firstArgType);
+		for (unordered_set<Statement*>::iterator iter = ifStmts.begin(); iter != ifStmts.end(); ++iter) {
+			Statement* ifStmt = *iter;
+			Statement::ChildrenSet children = getChildren(ifStmt->getStmtNum(), this->secondArgType);
+			if(!children.empty()) {
+				stmtNumSet.insert(boost::lexical_cast<string>(ifStmt->getStmtNum()));
+			}
+		}
 	}
 	return stmtNumSet;
 }
@@ -113,14 +138,37 @@ unordered_set<string> ParentClause::getAllS1() {
 Results::ResultsTable* ParentClause::getAllS1AndS2() {
 	Results::ResultsTable* results = new Results::ResultsTable();
 	//get all while statements
+
 	if (firstArgType == stringconst::ARG_STATEMENT || firstArgType == stringconst::ARG_WHILE) {
 		unordered_set<Statement*> whileStmts = stmtTable->getWhileStmts();
 		//check if while stmt has children
-		insertParentAndChildrenIntoResult(results, whileStmts);
+			int count = 0;
+		for (unordered_set<Statement*>::iterator iter = whileStmts.begin(); iter != whileStmts.end(); ++iter) {
+			Statement* whileStmt = *iter;
+			Statement::ChildrenSet children = getChildren(whileStmt->getStmtNum(), this->secondArgType);
+			for (Statement::ChildrenSet::iterator iter = children.begin(); iter != children.end(); iter++) {
+				Results::Row* pair = new Results::Row();
+				int child = *iter;
+				int whileStmtNum = whileStmt->getStmtNum();
+				(*pair)[firstArg] = boost::lexical_cast<string>(whileStmt->getStmtNum());
+				(*pair)[secondArg] = boost::lexical_cast<string>(child);
+				results->insert(pair);
+			}
+		}
 	}
-	if (firstArgType == stringconst::ARG_STATEMENT || firstArgType == stringconst::ARG_IF) {
+	if (firstArgType == stringconst::ARG_STATEMENT) {// || firstArgType == stringconst::ARG_IF) {
 		unordered_set<Statement*> ifStmts = stmtTable->getIfStmts();
-		insertParentAndChildrenIntoResult(results, ifStmts);
+		for (unordered_set<Statement*>::iterator iter = ifStmts.begin(); iter != ifStmts.end(); ++iter) {
+			unordered_map<string, string>* pair = new unordered_map<string, string>();
+			Statement* ifStmt = *iter;
+			Statement::ChildrenSet children = getChildren(ifStmt->getStmtNum(), this->secondArgType);
+			for (Statement::ChildrenSet::iterator iter = children.begin(); iter != children.end(); iter++) {
+				int child = *iter;
+				(*pair)[firstArg] = boost::lexical_cast<string>(ifStmt->getStmtNum());
+				(*pair)[secondArg] = boost::lexical_cast<string>(child);
+				results->insert(pair);
+			}
+		}
 	}
 	return results;
 }
@@ -139,7 +187,14 @@ Statement::ChildrenSet ParentClause::getChildren(int stmtNum, string stmtArgType
 		return unordered_set<int>();
 	} else {
 		Statement::ChildrenSet stmtSet = stmtObj->getChildren();
-		return Utils::filterStatements(stmtSet, Utils::convertArgTypeToNodeType(stmtArgType));
+		if (stmtArgType == stringconst::ARG_ASSIGN) {
+			return Utils::filterStatements(stmtSet, ASSIGN_STMT_);
+		} else if (stmtArgType == stringconst::ARG_WHILE ) {
+			return Utils::filterStatements(stmtSet, WHILE_STMT_);
+		} else {
+			//assert(stmtArgType == stringconst::ARG_STATEMENT);
+			return stmtSet;
+		}
 	}
 }
 
@@ -155,40 +210,6 @@ int ParentClause::getParent(int stmtNum, string argType) {
 }
 
 
-void ParentClause::insertParentAndChildrenIntoResult(Results::ResultsTable* results, unordered_set<Statement*> stmts){
-	for (unordered_set<Statement*>::iterator iter = stmts.begin(); iter != stmts.end(); ++iter) {
-			Statement* stmt = *iter;
-			Statement::ChildrenSet children = getChildren(stmt->getStmtNum(), this->secondArgType);
-			for (Statement::ChildrenSet::iterator iter = children.begin(); iter != children.end(); iter++) {
-				Results::Row* pair = new Results::Row();
-				int child = *iter;
-				int stmtNum = stmt->getStmtNum();
-				(*pair)[firstArg] = boost::lexical_cast<string>(stmt->getStmtNum());
-				(*pair)[secondArg] = boost::lexical_cast<string>(child);
-				results->insert(pair);
-			}
-		}
-}
-
-void ParentClause::insertParentIntoStmtNum(unordered_set<string> &stmtNumSet, unordered_set<Statement*> stmts, string argType){
-			for (unordered_set<Statement*>::iterator iter = stmts.begin(); iter != stmts.end(); ++iter) {
-			Statement* stmt = *iter;
-			Statement::ChildrenSet children = getChildren(stmt->getStmtNum(), argType);
-			if(!children.empty()) {
-				stmtNumSet.insert(boost::lexical_cast<string>(stmt->getStmtNum()));
-			}
-		}
-}
-
-void ParentClause::insertChildrenIntoStmtNum(unordered_set<string> &stmtNumSet, unordered_set<Statement*> stmts, string argType){
-	for (unordered_set<Statement*>::iterator iter = stmts.begin(); iter != stmts.end(); ++iter) {
-		Statement* stmt = *iter;
-		Statement::ChildrenSet children = getChildren(stmt->getStmtNum(), argType);
-		for (Statement::ChildrenSet::iterator childIter = children.begin(); childIter != children.end(); childIter++) {
-			stmtNumSet.insert(boost::lexical_cast<string>(*childIter));
-		}
-	}
-}
 
 /**
 
