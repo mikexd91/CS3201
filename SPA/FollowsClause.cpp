@@ -251,6 +251,7 @@ void FollowsClause::followsWithOneUnderscore(string firstArgType, string secondA
 	}	
 }
 */
+/*
 Results FollowsClause::evaluate(void) {
 	Results* resultsObj = new Results();
 	bool isFirstFixed = this->getFirstArgFixed();
@@ -259,7 +260,7 @@ Results FollowsClause::evaluate(void) {
 	string secondArgSyn = this->getSecondArg();
 	string firstArgType = this->getFirstArgType();
 	string secondArgType = this->getSecondArgType();
-
+	*/
 	/*
 	if (isFirstFixed && isSecondFixed) {
 		bool isClauseTrue = isFollows(firstArgSyn, secondArgSyn);
@@ -325,10 +326,10 @@ Results FollowsClause::evaluate(void) {
 
 	} else {*/
 		// Error
-		return *resultsObj;
+		//return *resultsObj;
 	//}
 	
-}
+//}
 
 //Follows(1,2)
 bool FollowsClause::evaluateS1FixedS2Fixed(string s1, string s2){
