@@ -6,13 +6,13 @@
 #include "boost/algorithm/string.hpp"
 #include "Clause.h"
 #include "FollowsClause.h"
-#include "FollowsStarClause.h"
+//#include "FollowsStarClause.h"
 #include "ModifiesClause.h"
 #include "ParentClause.h"
-#include "ParentStarClause.h"
+//#include "ParentStarClause.h"
 #include "PatternClause.h"
 #include "UsesClause.h"
-#include "PatternAssgClause.h"
+//#include "PatternAssgClause.h"
 #include "boost/unordered_map.hpp"
 #include "ExpressionParser.h"
 #include <queue>
@@ -47,7 +47,7 @@ vector<string> QueryParser::split(string s, char delim, vector<string>* elems) {
     return *elems;
 }
 
-//TODO: CHECK COMPATIBILITY WITH PATTERN AND CLAUSE PARSING
+//ADD OPERATORS TO Q: splitByDelims( operator )
 queue<string> QueryParser::queueBuilder(string in){
 	queue<string> out;
 	vector<string> temp;
@@ -68,6 +68,10 @@ queue<string> QueryParser::queueBuilder(string in){
 	outHolder = QueryParser::splitByDelims(temp, "*");
 	temp = outHolder;
 	outHolder = QueryParser::splitByDelims(temp, "-");
+	temp = outHolder;
+	outHolder = QueryParser::splitByDelims(temp, ".");
+	temp = outHolder;
+	outHolder = QueryParser::splitByDelims(temp, "=");
 	for (size_t i=0; i<outHolder.size(); i++){
 		out.push(outHolder.at(i));
 	}
@@ -84,13 +88,6 @@ string QueryParser::queueToString(queue<string> input){
 	}
 	return ss.str();
 }
-
-/*
-vector<string> QueryParser::tokeniser(string input, char delim){
-	vector<string>* elems = new vector<string>();
-    split(input, delim, elems);
-    return *elems;
-}*/
 
 vector<string> QueryParser::tokeniser(string input, char delim){
 	vector<string> elems;
@@ -200,8 +197,8 @@ bool QueryParser::containsClauseType(string s){
 	clauseVector.push_back(stringconst::TYPE_PARENT);
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
 	clauseVector.push_back(stringconst::TYPE_USES);
-	clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
-	clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
+	//clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
+	//clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
 	return containsAny(s, clauseVector);
 }
 
@@ -220,8 +217,8 @@ string QueryParser::getClauseString(string s){
 	clauseVector.push_back(stringconst::TYPE_PARENT);
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
 	clauseVector.push_back(stringconst::TYPE_USES);
-	clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
-	clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
+	//clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
+	//clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
 	for (size_t i=0; i<clauseVector.size(); i++){
 		string current = clauseVector.at(i);
 		if (contains(s, current)){
@@ -232,13 +229,13 @@ string QueryParser::getClauseString(string s){
 }
 
 Clause* QueryParser::createCorrectClause(string type){
-	if (type == stringconst::TYPE_FOLLOWS_STAR){
-		FollowsStarClause* clause = new FollowsStarClause();
-		return clause;		
-	} else if (type == stringconst::TYPE_PARENT_STAR){
+	//if (type == stringconst::TYPE_FOLLOWS_STAR){
+		//FollowsStarClause* clause = new FollowsStarClause();
+		//return clause;		
+	/*} else if (type == stringconst::TYPE_PARENT_STAR){
 		ParentStarClause* clause = new ParentStarClause();
-		return clause;			
-	} else if (type == stringconst::TYPE_FOLLOWS){
+		return clause;
+	} else*/ if (type == stringconst::TYPE_FOLLOWS){
 		FollowsClause* clause = new FollowsClause();
 		return clause;		
 	} else if (type == stringconst::TYPE_PARENT){
@@ -267,7 +264,7 @@ Clause* QueryParser::createCorrectClause(string type){
 		AffectsStarClause* clause = new AffectsStarClause();
 		return clause;
 	}
-	*/ 
+	*/
 	} else {
 		throw UnexpectedClauseException();
 	}
@@ -435,8 +432,38 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 	query->addClause(newClause);
 }
 
-//TODO UPDATE WITH NEW QUEUE
+/*
+void QueryParser::parseWith(Query* query, queue<string> line){
+	unordered_map<string, string> decList = query->getDeclarationList();
+	
+	string wordWith = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	
+	string synonym = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (decList.find(synonym) == decList.end()){
+		throw InvalidDeclarationException();
+	}
+	
+	string attribute = Utils::getWordAndPop(line);
+	if (attribute != "."){
+		throw InvalidSyntaxException();
+	}
+	unexpectedEndCheck(line);
+	
+	string condition = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	
+	string comparatorW = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	
+	
+	
+}
+*/
+/*
 //PARSE BRACKETS, COMMAS, OPERATORS, UNDERSCORE AND INVERTED COMMAS AS INDIVIDUAL TOKENS
+//need if/while/assign <<-- create 1 submethod, specify type// or create 3 sub methods
 void QueryParser::parsePattern(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	
@@ -444,9 +471,12 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 	unexpectedEndCheck(line);
 
 	string synonym = Utils::getWordAndPop(line);
-	if (decList.find(synonym) == decList.end() || decList.at(synonym) != stringconst::ARG_ASSIGN){
+	if (decList.find(synonym) == decList.end()){
 		throw InvalidDeclarationException();
 	}
+
+	/* check what type this thingy is, use the submethods */
+	/*
 	unexpectedEndCheck(line);
 
 	string openParen = Utils::getWordAndPop(line);
@@ -650,7 +680,7 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 		Utils::getWordAndPop(line);
 	}
 	*/
-} 
+//} 
 
 Query QueryParser::parseQuery(string input){
 	Query* output = new Query();
@@ -666,8 +696,8 @@ Query QueryParser::parseQuery(string input){
 			parseSelectSynonyms(output, selectQueue);
 		} else if (containsClauseType(current)){
 			parseClause(output, selectQueue);
-		} else if (contains(current, stringconst::TYPE_PATTERN)){
-			parsePattern(output, selectQueue);
+		//} else if (contains(current, stringconst::TYPE_PATTERN)){
+			//parsePattern(output, selectQueue);
 		} else if (containsKeyword(current)){
 			//selectQueue.pop();
 		}
@@ -676,12 +706,9 @@ Query QueryParser::parseQuery(string input){
 	vector<Clause*> clauseList = output->getClauseList();
 	for (size_t i=0; i<clauseList.size(); i++){
 		Clause* current = clauseList.at(i);
-		if (!current->isValid()){
-			/*cout << current->getClauseType() << endl;
-			cout << current->getFirstArgType() << endl;
-			cout << current->getSecondArgType() << endl;*/
-			throw InvalidClauseException();
-		}
+		//if (!current->isValid()){
+			//throw InvalidClauseException();
+		//}
 	}
 	return *output;
 }
