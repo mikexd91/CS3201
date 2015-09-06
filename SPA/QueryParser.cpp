@@ -5,13 +5,13 @@
 #include "PQLExceptions.h"
 #include "boost/algorithm/string.hpp"
 #include "Clause.h"
-//#include "FollowsClause.h"
+#include "FollowsClause.h"
 //#include "FollowsStarClause.h"
 #include "ModifiesClause.h"
-//#include "ParentClause.h"
+#include "ParentClause.h"
 //#include "ParentStarClause.h"
-//#include "PatternClause.h"
-//#include "UsesClause.h"
+#include "PatternClause.h"
+#include "UsesClause.h"
 //#include "PatternAssgClause.h"
 #include "boost/unordered_map.hpp"
 #include "ExpressionParser.h"
@@ -232,10 +232,10 @@ Clause* QueryParser::createCorrectClause(string type){
 	//if (type == stringconst::TYPE_FOLLOWS_STAR){
 		//FollowsStarClause* clause = new FollowsStarClause();
 		//return clause;		
-	/*} else*/ if (type == stringconst::TYPE_PARENT_STAR){
+	/*} else if (type == stringconst::TYPE_PARENT_STAR){
 		ParentStarClause* clause = new ParentStarClause();
 		return clause;
-	} else if (type == stringconst::TYPE_FOLLOWS){
+	} else*/ if (type == stringconst::TYPE_FOLLOWS){
 		FollowsClause* clause = new FollowsClause();
 		return clause;		
 	} else if (type == stringconst::TYPE_PARENT){
