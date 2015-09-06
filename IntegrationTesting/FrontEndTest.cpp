@@ -1,7 +1,7 @@
 #include <cppunit/config/SourcePrefix.h>
-#include "TestOne.h"
-#include "../../SPA/Parser.h"
-#include "../../SPA/PDR.h"
+#include "FrontEndTest.h"
+#include "../SPA/Parser.h"
+#include "../SPA/PDR.h"
 
 using namespace std;
 // TEST VARIABLES
@@ -15,7 +15,7 @@ ProcTable* procTable;
 StmtTable* stmtTable1;
 ConstTable* constTable;
 
-void TestOne::setUp() {
+void FrontEndTest::setUp() {
 	pdr = PDR::getInstance();
 	ast = AST::getInstance();
 	constTable = ConstTable::getInstance();
@@ -26,7 +26,7 @@ void TestOne::setUp() {
 
 }
 
-void TestOne::tearDown() {
+void FrontEndTest::tearDown() {
 	PDR::resetInstanceFlag();
 	AST::reset();
 	constTable->clearTable();
@@ -35,10 +35,10 @@ void TestOne::tearDown() {
 	stmtTable1->clearTable();
 }
 
-CPPUNIT_TEST_SUITE_REGISTRATION( TestOne );
+CPPUNIT_TEST_SUITE_REGISTRATION( FrontEndTest );
 
 // method to test adding of proc to table
-void TestOne::testAddProc() {
+void FrontEndTest::testAddProc() {
 	parser.parse("procedure test {x = 2; y=x+z; z=x+y+z; while i {y=x+1; a=a+b;} }");
 	//ProcTable* procTable = ProcTable::getInstance();
 	//StmtTable* stmtTable1 = StmtTable::getInstance();
@@ -124,7 +124,7 @@ void TestOne::testAddProc() {
 
 
 
-void TestOne::testAssign() {
+void FrontEndTest::testAssign() {
 	
 	parser.parse("procedure test {x = 2; y=x;}");
 	
@@ -139,13 +139,13 @@ void TestOne::testAssign() {
 }
 
 // method to test false adding of proc to table
-void TestOne::testFalseAddProc() {
+void FrontEndTest::testFalseAddProc() {
 	// Create a procedure
 	
 	CPPUNIT_ASSERT(true);
 }
 
-void TestOne::testWhileAST() {
+void FrontEndTest::testWhileAST() {
 	parser.parse("procedure whileTest {while x{}}");
 	CPPUNIT_ASSERT(ast->contains("whileTest"));
 	CPPUNIT_ASSERT(ast->getProcNode("whileTest")->hasChildren() == true);
@@ -157,7 +157,7 @@ void TestOne::testWhileAST() {
 	CPPUNIT_ASSERT(whileNode->getChildren().size() == 2);
 }
 
-void TestOne::testNestedWhileAST() {
+void FrontEndTest::testNestedWhileAST() {
 	parser.parse("procedure nestedWhile {while x{ while y{z = 2;}}}");
 	CPPUNIT_ASSERT(ast->contains("nestedWhile"));
 	
@@ -198,7 +198,7 @@ void TestOne::testNestedWhileAST() {
 	CPPUNIT_ASSERT(constant->getName() == "2");
 }
 
-void TestOne::testSiblingsAST() {
+void FrontEndTest::testSiblingsAST() {
 	parser.parse("procedure testSiblings {x = 2; y = 3; while x{z = x + y;}}");
 	CPPUNIT_ASSERT(ast->contains("testSiblings"));
 
@@ -252,7 +252,7 @@ void TestOne::testSiblingsAST() {
 	CPPUNIT_ASSERT(operat->getChildren().at(1)->getName() == "y");
 }
 
-void TestOne::testMultipleProcAST() {
+void FrontEndTest::testMultipleProcAST() {
 	parser.parse("procedure proc1{} procedure proc2{} procedure proc3{}");
 	CPPUNIT_ASSERT(ast->contains("proc1"));
 	CPPUNIT_ASSERT(ast->contains("proc2"));
@@ -266,7 +266,7 @@ void TestOne::testMultipleProcAST() {
 	CPPUNIT_ASSERT(proc2->getRightSibling() == proc3);
 }
 
-void TestOne::testFollows() {
+void FrontEndTest::testFollows() {
 	//StmtTable* stmtTable1 = StmtTable::getInstance();
 	
 	parser.parse("procedure proc{x = 2; y = x + 3; while y{z = y + x;} w = z + 2;}");
@@ -289,7 +289,7 @@ void TestOne::testFollows() {
 	CPPUNIT_ASSERT(fourthAssg->getFollowsAfter() == -1);
 }
 
-void TestOne::testWhileUses() {
+void FrontEndTest::testWhileUses() {
 	parser.parse("procedure proc { while w { while y { z = a + b; }} }");
 	
 	Statement* firstWhile = stmtTable1->getStmtObj(1);
@@ -305,7 +305,7 @@ void TestOne::testWhileUses() {
 
 }
 
-void TestOne::testWhileModifies() {
+void FrontEndTest::testWhileModifies() {
 	parser.parse("procedure proc { while x { while y {x = 2; y = 2; z = x + y;}}} ");
 	
 	Statement* firstWhile = stmtTable1->getStmtObj(1);
@@ -333,7 +333,7 @@ void TestOne::testWhileModifies() {
 	CPPUNIT_ASSERT(thirdAssg->getModifies() == thirdAssgModSet);
 }
 
-void TestOne::testStmtTableAllWhile() {
+void FrontEndTest::testStmtTableAllWhile() {
 	parser.parse("procedure proc3 { while x {} while y{} while z{x = 2; while w {}} }");
 
 	unordered_set<Statement*> whileStmts = stmtTable1->getWhileStmts();
@@ -376,7 +376,7 @@ void TestOne::testStmtTableAllWhile() {
 	}
 }
 
-void TestOne::testConstTable() {
+void FrontEndTest::testConstTable() {
 	parser.parse("procedure proc {x = 2; y = 3;}");
 
 	vector<Constant*> allConst = constTable->getAllConst();
@@ -392,7 +392,7 @@ void TestOne::testConstTable() {
 	CPPUNIT_ASSERT(combi == firstCombi || secCombi);
 }
 
-void TestOne::testCallsAST() {
+void FrontEndTest::testCallsAST() {
 	parser.parse("procedure proc1{call proc2;} procedure proc2{x = 2;}");
 
 	CPPUNIT_ASSERT(procTable->contains("proc1"));
@@ -406,7 +406,7 @@ void TestOne::testCallsAST() {
 	CPPUNIT_ASSERT(stmtLstNodeChildren.size() == 1);
 
 	TNode* call1Node = stmtLstNodeChildren[0];
-	CPPUNIT_ASSERT(call1Node->getNodeType() == NodeType::CALL_STMT_);
+	CPPUNIT_ASSERT(call1Node->getNodeType() == CALL_STMT_);
 	CPPUNIT_ASSERT(call1Node->getName() == "proc2");
 
 	ProcNode* proc2Node = ast->getProcNode("proc2");
@@ -417,19 +417,19 @@ void TestOne::testCallsAST() {
 	CPPUNIT_ASSERT(stmtLstNode2Children.size() == 1);
 	
 	TNode* assignNode = stmtLstNode2Children[0];
-	CPPUNIT_ASSERT(assignNode->getNodeType() == NodeType::ASSIGN_STMT_);
+	CPPUNIT_ASSERT(assignNode->getNodeType() == ASSIGN_STMT_);
 	CPPUNIT_ASSERT(assignNode->getChildren().size() == 2);
 }
 
-void TestOne::testCallsPKB() {
+void FrontEndTest::testCallsPKB() {
 	parser.parse("procedure proc1{call proc2;} procedure proc2{x = 2;}");
 
 	Statement* stmt1 = stmtTable1->getStmtObj(1);
-	CPPUNIT_ASSERT(stmt1->getType() == NodeType::CALL_STMT_);
+	CPPUNIT_ASSERT(stmt1->getType() == CALL_STMT_);
 	CPPUNIT_ASSERT(stmt1->getCalls() == "proc2");
 
 	Statement* stmt2 = stmtTable1->getStmtObj(2);
-	CPPUNIT_ASSERT(stmt2->getType() == NodeType::ASSIGN_STMT_);
+	CPPUNIT_ASSERT(stmt2->getType() == ASSIGN_STMT_);
 
 	Procedure* procedure1 = procTable->getProcObj("proc1");
 	Procedure* procedure2 = procTable->getProcObj("proc2");
@@ -443,7 +443,7 @@ void TestOne::testCallsPKB() {
 	CPPUNIT_ASSERT(procedure1->getCalls() == calls);
 }
 
-void TestOne::testProcedureUses() {
+void FrontEndTest::testProcedureUses() {
 	parser.parse("procedure proc1 { x = 2; y = x; } procedure proc2{ z = 3; y = 1; x = z + y;}");
 
 	Procedure* procedure = procTable->getProcObj("proc1");
@@ -457,7 +457,7 @@ void TestOne::testProcedureUses() {
 	CPPUNIT_ASSERT(procedure2->getUses() == usesSet2);
 }
 
-void TestOne::testProcedureModifies() {
+void FrontEndTest::testProcedureModifies() {
 	parser.parse("procedure proc1 {a = 3; b = a + 4;} procedure proc2 {x = 4; y = 2; z = x + y;}");
 
 	Procedure* procedure1 = procTable->getProcObj("proc1");
@@ -471,7 +471,7 @@ void TestOne::testProcedureModifies() {
 	CPPUNIT_ASSERT(procedure2->getModifies() == modifiesSet2);
 }
 
-void TestOne::testNestedProceduresUses() {
+void FrontEndTest::testNestedProceduresUses() {
 	parser.parse("procedure proc1 {call proc2;} procedure proc2 {x = 2; while x {y = 2;}}");
 
 	Procedure* procedure1 = procTable->getProcObj("proc1");
@@ -483,7 +483,7 @@ void TestOne::testNestedProceduresUses() {
 	CPPUNIT_ASSERT(procedure2->getUses() == usesSet);
 }
 
-void TestOne::testNestedProceduresModifies() {
+void FrontEndTest::testNestedProceduresModifies() {
 	parser.parse("procedure proc1 { a = 2; call proc2;} procedure proc2 {x = 2; z = x; y = x + z;}");
 
 	Procedure* procedure1 = procTable->getProcObj("proc1");
@@ -497,11 +497,11 @@ void TestOne::testNestedProceduresModifies() {
 	CPPUNIT_ASSERT(procedure2->getModifies() == modifiesSet2);
 }
 
-void TestOne::testIfStatement() {
+void FrontEndTest::testIfStatement() {
 	parser.parse("procedure proc { a = 2; if a then {y = 2;} else { z = 3; } }");
 
 	Statement* ifStmt = stmtTable1->getStmtObj(2);
-	CPPUNIT_ASSERT(ifStmt->getType() == NodeType::IF_STMT_);
+	CPPUNIT_ASSERT(ifStmt->getType() == IF_STMT_);
 	
 	string ifUses[] = {"a"};
 	unordered_set<string> ifUsesSet(ifUses, ifUses + 1);
@@ -531,7 +531,7 @@ void TestOne::testIfStatement() {
 	CPPUNIT_ASSERT(thirdAssign->getFollowsAfter() == -1);
 }
 
-void TestOne::testNestedIfStatement() {
+void FrontEndTest::testNestedIfStatement() {
 	parser.parse("procedure proc { a = 1; if a then { b = 2; if b then {c = 3;} else {d = 4;}} else {e = 5;}}");
 	
 	Statement* firstIf = stmtTable1->getStmtObj(2);
@@ -550,7 +550,7 @@ void TestOne::testNestedIfStatement() {
 	CPPUNIT_ASSERT(secondIf->getModifies() == secondModSet);
 }
 
-void TestOne::testUsingProc() {
+void FrontEndTest::testUsingProc() {
 	parser.parse("procedure proc { x = 2; while x{ y = x;} if y then {z = y;} else {z = x;}}");
 
 	Variable* varX = varTable1->getVariable("x");
@@ -564,7 +564,7 @@ void TestOne::testUsingProc() {
 	CPPUNIT_ASSERT(varZ->getUsedByProc().empty());
 }
 
-void TestOne::testModifyingProc() {
+void FrontEndTest::testModifyingProc() {
 	parser.parse("procedure proc { while x {y = 3; while y{z = 2; while z{x = z;}}} }");
 
 	Variable* varX = varTable1->getVariable("x");
@@ -578,7 +578,7 @@ void TestOne::testModifyingProc() {
 	CPPUNIT_ASSERT(varZ->getModifiedByProc() == procSet);
 }
 
-void TestOne::testUsingMultipleProc() {
+void FrontEndTest::testUsingMultipleProc() {
 	parser.parse("procedure proc1 {while  y{x = 2; y = x;} } procedure proc2 {x = 3; y = x;}");
 
 	Variable* varX = varTable1->getVariable("x");
@@ -592,7 +592,7 @@ void TestOne::testUsingMultipleProc() {
 	CPPUNIT_ASSERT(varY->getUsedByProc() == procSet1);
 }
 
-void TestOne::testModifyingMultipleProc() {
+void FrontEndTest::testModifyingMultipleProc() {
 	parser.parse("procedure proc1 { x = 3;} procedure proc2 { y = 4;} procedure proc3 {x = 4; if a then {w = 3;} else {z = 4;}}");
 
 	Variable* varW = varTable1->getVariable("w");
