@@ -1,22 +1,23 @@
 #pragma once
 #include <string>
 #include "PatternClause.h"
-#include "AssgNode.h"
+#include "IfNode.h"
 
 using namespace std;
 
-class PatternAssgClause :
+class PatternIfClause :
 	public PatternClause {
 
 public:
-	PatternAssgClause(const string& syn); // deprecated
-	PatternAssgClause(const string& syn, const string& var, const string& expr);
-	~PatternAssgClause(void);
-	
-	string getExpression();
+	PatternIfClause(const string&, const string&, const string&, const string&);
+	~PatternIfClause(void);
+
+	string getThenList();
+	string getElseList();
 	bool isValid();
 
-	void setExpression(string expr);
+	//void setThenList(string);
+	//void setElseList(string);
 
 protected:
 	// ---- new stuff ----
@@ -39,24 +40,23 @@ protected:
 	//Parent(s1,s2)
 	Results::ResultsTable* getAllS1AndS2();
 	// ---- end new stuff -
-	
+
 private:
 	// ---- old stuff
-	unordered_set<string> evaluateVarWildExprWild();
-	unordered_set<string> evaulateVarWildExprFixed();
-	unordered_set<string> evaluateVarFixedExprWild();
-	unordered_set<string> evaluateVarFixedExprFixed();
-	Results::ResultsTable* evaluateVarSynExprWild();
-	Results::ResultsTable* evaluateVarSynExprFixed();
+	unordered_set<string> evaluateVarWild();
+	unordered_set<string> evaluateVarFixed();
+	Results::ResultsTable* evaluateVarSyn();
 	// ---- end old stuff
 
-	//vector<int> getAssgNums(Results, string);
-	bool matchExpr(AssgNode* assg, string expr);
-	bool matchVar(AssgNode* assg, string var);
+	bool matchThenList(IfNode*, string);
+	bool matchElseList(IfNode*, string);
+	bool matchVar(IfNode*, string);
 
-	bool isExprWild();
+	bool isThenListWild();
+	bool isElseListWild();
 	bool isVarWild();
-	
-	string _expr;
+
+	string _thenList;
+	string _elseList;
 };
 
