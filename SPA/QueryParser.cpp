@@ -5,14 +5,14 @@
 #include "PQLExceptions.h"
 #include "boost/algorithm/string.hpp"
 #include "Clause.h"
-#include "FollowsClause.h"
-#include "FollowsStarClause.h"
+//#include "FollowsClause.h"
+//#include "FollowsStarClause.h"
 #include "ModifiesClause.h"
-#include "ParentClause.h"
-#include "ParentStarClause.h"
-#include "PatternClause.h"
-#include "UsesClause.h"
-#include "PatternAssgClause.h"
+//#include "ParentClause.h"
+//#include "ParentStarClause.h"
+//#include "PatternClause.h"
+//#include "UsesClause.h"
+//#include "PatternAssgClause.h"
 #include "boost/unordered_map.hpp"
 #include "ExpressionParser.h"
 #include <queue>
@@ -193,12 +193,12 @@ bool QueryParser::containsDeclarationType(string s){
 
 bool QueryParser::containsClauseType(string s){
 	vector<string> clauseVector;
-	clauseVector.push_back(stringconst::TYPE_FOLLOWS);
-	clauseVector.push_back(stringconst::TYPE_PARENT);
+	//clauseVector.push_back(stringconst::TYPE_FOLLOWS);
+	//clauseVector.push_back(stringconst::TYPE_PARENT);
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
-	clauseVector.push_back(stringconst::TYPE_USES);
-	clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
-	clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
+	//clauseVector.push_back(stringconst::TYPE_USES);
+	//clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
+	//clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
 	return containsAny(s, clauseVector);
 }
 
@@ -213,12 +213,12 @@ bool QueryParser::containsKeyword(string s){
 
 string QueryParser::getClauseString(string s){
 	vector<string> clauseVector;
-	clauseVector.push_back(stringconst::TYPE_FOLLOWS);
-	clauseVector.push_back(stringconst::TYPE_PARENT);
+	//clauseVector.push_back(stringconst::TYPE_FOLLOWS);
+	//clauseVector.push_back(stringconst::TYPE_PARENT);
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
-	clauseVector.push_back(stringconst::TYPE_USES);
-	clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
-	clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
+	//clauseVector.push_back(stringconst::TYPE_USES);
+	//clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
+	//clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
 	for (size_t i=0; i<clauseVector.size(); i++){
 		string current = clauseVector.at(i);
 		if (contains(s, current)){
@@ -229,7 +229,7 @@ string QueryParser::getClauseString(string s){
 }
 
 Clause* QueryParser::createCorrectClause(string type){
-	if (type == stringconst::TYPE_FOLLOWS_STAR){
+	/*if (type == stringconst::TYPE_FOLLOWS_STAR){
 		FollowsStarClause* clause = new FollowsStarClause();
 		return clause;		
 	} else if (type == stringconst::TYPE_PARENT_STAR){
@@ -241,12 +241,12 @@ Clause* QueryParser::createCorrectClause(string type){
 	} else if (type == stringconst::TYPE_PARENT){
 		ParentClause* clause = new ParentClause();
 		return clause;		
-	} else if (type == stringconst::TYPE_MODIFIES){
+	} else */if (type == stringconst::TYPE_MODIFIES){
 		ModifiesClause* clause = new ModifiesClause();
 		return clause;		
-	} else if (type == stringconst::TYPE_USES){
+	} /*else if (type == stringconst::TYPE_USES){
 		UsesClause* clause = new UsesClause();
-		return clause;
+		return clause;*/
 	/*INSERT WHEN CLAUSES ARE DONE
 	} else if (type == stringconst::TYPE_CALLS){
 		CallsClause* clause = new CallsClause();
@@ -264,8 +264,8 @@ Clause* QueryParser::createCorrectClause(string type){
 		AffectsStarClause* clause = new AffectsStarClause();
 		return clause;
 	}
-	*/ 
-	} else {
+	 
+	}*/ else {
 		throw UnexpectedClauseException();
 	}
 }
@@ -461,7 +461,7 @@ void QueryParser::parseWith(Query* query, queue<string> line){
 	
 }
 */
-
+/*
 //TODO UPDATE WITH NEW QUEUE
 //PARSE BRACKETS, COMMAS, OPERATORS, UNDERSCORE AND INVERTED COMMAS AS INDIVIDUAL TOKENS
 void QueryParser::parsePattern(Query* query, queue<string> line){
@@ -677,7 +677,7 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 		Utils::getWordAndPop(line);
 	}
 	*/
-} 
+//} 
 
 Query QueryParser::parseQuery(string input){
 	Query* output = new Query();
@@ -693,8 +693,8 @@ Query QueryParser::parseQuery(string input){
 			parseSelectSynonyms(output, selectQueue);
 		} else if (containsClauseType(current)){
 			parseClause(output, selectQueue);
-		} else if (contains(current, stringconst::TYPE_PATTERN)){
-			parsePattern(output, selectQueue);
+		//} else if (contains(current, stringconst::TYPE_PATTERN)){
+			//parsePattern(output, selectQueue);
 		} else if (containsKeyword(current)){
 			//selectQueue.pop();
 		}
