@@ -51,6 +51,6 @@ public:
 	void testModifiesEvaluateSynSynAssgPass();
 
 	// Testing Modifies clause, category HALF_IN_CLAUSE, 1 cluase in query
-	//void testHalfInClauseWithModifiesSynSynStmtPass();
+	void testHalfInClauseWithModifiesSynSynStmtPass();
 };
 
