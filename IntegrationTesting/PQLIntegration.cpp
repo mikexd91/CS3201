@@ -10,6 +10,7 @@
 #include "../SPA/VarTable.h"
 #include "../SPA/Utils.h"
 #include "../SPA/ConstTable.h"
+#include "../SPA/IfNode.h"
 
 #include <iostream>
 #include <string>
@@ -25,17 +26,21 @@ void PQLIntegration::setUp() {
 	/* testing this source
 
 	procedure chocs {
-		a=4;			//1
-		while i {		//2
-			k = 3;		//3
-			while j {	//4
-				i=1;	//5
-				j=2;	//6
+		a=4;				//1
+		while i {			//2
+			k = 3;			//3
+			while j {		//4
+				i=1;		//5
+				j=2; 		//6
 			}
-			b=5;		//7
-			j=2+3+4;	//8
-			z=(10+11)*12	//9
-		}	
+			b=5;			//7
+			j=2+3+4;		//8
+			z=(10+11)*12; 	//9
+		}
+		--- new stuff TODO ---
+		if a then {			//10
+		} else {
+		}
 	}
 	*/
 
@@ -126,6 +131,15 @@ void PQLIntegration::setUp() {
 	assg7->linkExprNode(multiply);
 	procsl->linkStmtNode(assg7);
 
+	/// if a then {} else {}	//10
+	IfNode* if1 = new IfNode(10);
+	VarNode* a2 = new VarNode("a");
+	if1->linkVarNode(a2);
+	StmtLstNode* thensl1 = new StmtLstNode();
+	if1->linkThenStmtLstNode(thensl1);
+	StmtLstNode* elsesl1 = new StmtLstNode();
+	if1->linkElseStmtLstNode(elsesl1);
+
 	ast->addProcNode(proc);
 
 	// to set up the stmttable manually
@@ -145,6 +159,7 @@ void PQLIntegration::setUp() {
 	stmt2->setStmtNum(2);
 	stmt2->setType(WHILE_STMT_);
 	stmt2->setFollowsBefore(1);
+	stmt2->setFollowsAfter(10);
 	string modifiesArray2[] = {"k", "i", "j", "b"};
 	unordered_set<string> mods2(modifiesArray2, modifiesArray2 + 4);
 	string usesArray2[] = {"i", "j"};
@@ -228,6 +243,7 @@ void PQLIntegration::setUp() {
 	mods8.emplace("j");
 	stmt8->setModifies(mods8);
 	stmt8->setFollowsBefore(7);
+	stmt8->setFollowsAfter(9);
 	stmt8->setTNodeRef(assg6);
 	stmt8->setParent(2);
 	stable->addStmt(stmt8);
@@ -241,13 +257,24 @@ void PQLIntegration::setUp() {
 	stmt9->setFollowsBefore(8);
 	stmt9->setTNodeRef(assg7);
 	stmt9->setParent(2);
-	stable->addStmt(stmt8);
+	stable->addStmt(stmt9);
+
+	Statement* stmt10 = new Statement();
+	stmt10->setStmtNum(10);
+	stmt10->setType(IF_STMT_);
+	unordered_set<string> uses10 = unordered_set<string>();
+	uses10.emplace("a");
+	stmt10->setUses(uses10);
+	stmt10->setFollowsBefore(2);
+	stable->addStmt(stmt10);
 
 	// to set up the vartable manually
 	VarTable* vtable = VarTable::getInstance();
 
 	Variable* va = new Variable("a");
 	va->addModifyingStmt(1);
+	va->addUsingStmt(10);
+	va->addUsingProc("chocs");
 	va->addTNode(a1);
 	vtable->addVariable(va);
 
@@ -255,6 +282,7 @@ void PQLIntegration::setUp() {
 	vi->addModifyingStmt(2);
 	vi->addModifyingStmt(5);
 	vi->addUsingStmt(2);
+	vi->addUsingProc("chocs");
 	vi->addTNode(i1);
 	vi->addTNode(i2);
 	vtable->addVariable(vi);
@@ -356,6 +384,14 @@ void PQLIntegration::testSelectOnly() {
 	r = pcc->parse(QUERY_STRING);
 
 	CPPUNIT_ASSERT(6 == r.size());
+
+	// new test for if
+	string QUERY_STRING2 = "if i; Select i";
+	pcc = new PQLController();
+	set<string> r2;
+	r2 = pcc->parse(QUERY_STRING);
+
+	CPPUNIT_ASSERT(1 == r2.size());
 }
 
 void PQLIntegration::testSelectModifies() {
