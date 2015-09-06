@@ -3,6 +3,7 @@
 #include <sstream>
 #include "TestWrapper.h"
 
+
 // implementation code of WrapperFactory - do NOT modify the next 5 lines
 AbstractWrapper* WrapperFactory::wrapper = 0;
 AbstractWrapper* WrapperFactory::createWrapper() {
@@ -55,7 +56,7 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
 		for (iter = resultSet.begin(); iter != resultSet.end(); ++iter) {
 			results.push_back(*iter);
 		}
-	} catch (exception e) {
+	} catch (std::exception e) {
 		results.push_back(e.what());
 	}
 }

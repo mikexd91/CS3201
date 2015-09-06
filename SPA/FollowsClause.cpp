@@ -11,6 +11,27 @@ FollowsClause::FollowsClause(void):Clause(FOLLOWS_){
 FollowsClause::~FollowsClause(void){
 }
 
+bool FollowsClause::isValid(void){
+	string firstType = this->getFirstArgType();
+	string secondType = this->getSecondArgType();
+	bool firstArg = (firstType == stringconst::ARG_STATEMENT) || 
+					(firstType == stringconst::ARG_ASSIGN) || 
+					(firstType == stringconst::ARG_WHILE) || 
+					(firstType == stringconst::ARG_PROGLINE) || 
+					(firstType == stringconst::ARG_GENERIC);
+	bool secondArg = (secondType == stringconst::ARG_STATEMENT) || 
+					(secondType == stringconst::ARG_ASSIGN) || 
+					(secondType == stringconst::ARG_WHILE) || 
+					(secondType == stringconst::ARG_PROGLINE) || 
+					(secondType == stringconst::ARG_GENERIC);
+	return (firstArg && secondArg);
+}
+
+bool FollowsClause::evaluate(Results* results) {
+	return false;
+}
+
+/*
 bool FollowsClause::checkIsSameType(NodeType type, string stmtType) {
 	if ((stmtType == stringconst::ARG_STATEMENT) ||
 		(type == WHILE_STMT_ && stmtType == stringconst::ARG_WHILE) ||
@@ -99,13 +120,7 @@ bool FollowsClause::isFollows(string stmtNum1, string stmtNum2) {
 	return false;
 }
 
-bool FollowsClause::isValid(void){
-	string firstType = this->getFirstArgType();
-	string secondType = this->getSecondArgType();
-	bool firstArg = (firstType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_ASSIGN) || (firstType == stringconst::ARG_WHILE) || (firstType == stringconst::ARG_PROGLINE) || (firstType == stringconst::ARG_GENERIC);
-	bool secondArg = (secondType == stringconst::ARG_STATEMENT) || (secondType == stringconst::ARG_ASSIGN) || (secondType == stringconst::ARG_WHILE) || (secondType == stringconst::ARG_PROGLINE) || (secondType == stringconst::ARG_GENERIC);
-	return (firstArg && secondArg);
-}
+
 
 void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgType, Results &resObj) {
 	if (firstArgType == stringconst::ARG_ASSIGN) {
@@ -231,6 +246,7 @@ void FollowsClause::followsWithOneUnderscore(string firstArgType, string secondA
 	}	
 }
 
+*/
 Results FollowsClause::evaluate(void) {
 	Results* resultsObj = new Results();
 	bool isFirstFixed = this->getFirstArgFixed();

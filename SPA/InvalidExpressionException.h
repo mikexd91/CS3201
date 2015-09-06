@@ -6,7 +6,7 @@
 using namespace std;
 
 	
-class InvalidExpressionException : public exception {
+class InvalidExpressionException : public std::exception {
 	
 public:
 	InvalidExpressionException(const string m) : message(m) { }

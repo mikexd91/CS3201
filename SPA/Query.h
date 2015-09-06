@@ -19,10 +19,13 @@ public:
 	Query(void);
 	~Query(void);
 	
+	// Select Line
 	void setSelectList(vector<StringPair>);
 	void addSelectSynonym(StringPair);
 	void setClauseList(vector<Clause*>);
 	void addClause(Clause*);
+
+	// Line above select
 	void setDeclarationList(unordered_map<string, string>);
 	void addDeclaration(StringPair);
 

@@ -1,7 +1,10 @@
 #pragma once
 
-#include <set>
+#include "boost\unordered_set.hpp"
 #include "TNode.h"
+
+using namespace boost;
+using boost::unordered_set;
 
 /*
 // -------------------------- Constant ----------------------------- 
@@ -24,15 +27,16 @@ public:
 	Constant(const string &name);
 
 	// GETTERS
-	string getConstName();						// get name of const
-	int getValue();								// get value of const
-	const set<TNode*>& getTNodes();				// get set of references to TNodes
-	const set<int>& getAppearsIn();				// get set of stmt numbers const appears in
+	string getConstName();									// get name of const
+	int getValue();											// get value of const
+	const unordered_set<TNode*>& getTNodes();				// get set of references to TNodes
+	const unordered_set<int>& getAppearsIn();				// get set of stmt numbers const appears in
 
 	// SETTERS
 	void setConstName(const string &name);
 	void addTNodeRef(TNode *node);
 	void addAppearsIn(int stmtNum);
+	void setAppearsIn(const unordered_set<int> &stmts);
 
 private:
 	// PRIVATE ATTRIBUTES
@@ -41,7 +45,7 @@ private:
 	TNode		*TNodeRef;		// TNode reference
 
 	// PRIVATE SETS
-	set<TNode*>			nodes;
-	set<int>			appearsIn;
+	unordered_set<TNode*>		nodes;
+	unordered_set<int>			appearsIn;
 
 };

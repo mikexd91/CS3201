@@ -8,7 +8,6 @@
 #include "../../SPA/InvalidCodeException.h"
 #include "../../SPA/PQLController.h"
 
-
 // include your other headers here
 #include "AbstractWrapper.h"
 

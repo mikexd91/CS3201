@@ -3,13 +3,11 @@
 #include <string>
 #include <sstream>
 
-using namespace std;
 
-	
-class InvalidCodeException : public exception {
+class InvalidCodeException : public std::exception {
 	
 public:
-	InvalidCodeException(const string m) : message(m) { }
+	InvalidCodeException(const std::string m) : message(m) { }
 
 	virtual const char * what() const throw() { 
 		return message.c_str(); 
@@ -17,5 +15,5 @@ public:
 
 private:
 	int lineNumber;
-	string message;
+	std::string message;
 };
