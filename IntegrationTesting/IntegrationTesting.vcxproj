@@ -11,11 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\IntegrationTest.cpp" />
-    <ClCompile Include="source\TestOne.cpp" />
+    <ClCompile Include="IntegrationTest.cpp" />
+    <ClCompile Include="FrontEndTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\TestOne.h" />
+    <ClInclude Include="FrontEndTest.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{44B65641-96D6-4FB5-B78A-F0CAD8DDA42C}</ProjectGuid>
