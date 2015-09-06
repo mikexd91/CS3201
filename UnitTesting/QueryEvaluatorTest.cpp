@@ -23,62 +23,43 @@ using namespace std;
 
 void QueryEvaluatorTest::setUp() {
 	/* testing this source
-
-	procedure chocs {
-		while i {
-			k = 3;
-			while j {
-				i=1+2;
-				j=2+3+4;
-			}
-			if i {
-				i=1;
-			} else {
-				call hello;
-			}
-		}	
+	procedure zumba {
+		i = 1+2;	//1
+		j = 2+3+4;	//2
+		k = 3;		//3
+		w = i;		//4
+		x = w+k;	//5
+		i = i;		//6
+		while j {	//7
+			x = 4;	//8
 		}
+		if w then { //9
+			z = 2;	//10
+		} else {
+			y = 6;	//11
+		}
+	}
 	*/
 
 	// to set up the ast manually
 	AST* ast = AST::getInstance();
 
-	ProcNode* proc = new ProcNode("chocs");
+	ProcNode* proc = new ProcNode("zumba");
 	StmtLstNode* procsl = new StmtLstNode();
 	proc->linkStmtLstNode(procsl);
 
-	WhileNode* while1 = new WhileNode(1);
+	AssgNode* assg1 = new AssgNode(1);
 	VarNode* i1 = new VarNode("i");
-	while1->linkVarNode(i1);
-	StmtLstNode* whilesl1 = new StmtLstNode();
-	while1->linkStmtLstNode(whilesl1);
-	procsl->linkStmtNode(while1);
-
-	AssgNode* assg1 = new AssgNode(2);
-	VarNode* k1 = new VarNode("k");
-	assg1->linkVarNode(k1);
-	assg1->linkExprNode(new ConstNode("3"));
-	procsl->linkStmtNode(assg1);
-
-	WhileNode* while2 = new WhileNode(3);
-	VarNode* j1 = new VarNode("j");
-	while2->linkVarNode(j1);
-	StmtLstNode* whilesl2 = new StmtLstNode();
-	while2->linkStmtLstNode(whilesl2);
-	whilesl1->linkStmtNode(while2);
-
-	AssgNode* assg2 = new AssgNode(4);
-	VarNode* i2 = new VarNode("i");
-	assg2->linkVarNode(i2);
+	assg1->linkVarNode(i1);
 	OpNode* plus1 = new OpNode("+");
 	ConstNode* one1 = new ConstNode("1");
 	ConstNode* two1 = new ConstNode("2");
 	plus1->linkLeftNode(one1);
 	plus1->linkRightNode(two1);
-	assg2->linkExprNode(plus1);
-	whilesl2->linkStmtNode(assg2);
+	assg1->linkExprNode(plus1);
+	procsl->linkStmtNode(assg1);
 
-	AssgNode* assg3 = new AssgNode(5);
+	AssgNode* assg2 = new AssgNode(2);
 	VarNode* j2 = new VarNode("j");
 	OpNode* plus2_1 = new OpNode("+");
 	ConstNode* four2 = new ConstNode("4");
@@ -89,28 +70,73 @@ void QueryEvaluatorTest::setUp() {
 	plus2_2->linkLeftNode(two2);
 	plus2_1->linkRightNode(four2);
 	plus2_1->linkLeftNode(plus2_2);
-	assg3->linkVarNode(j2);
-	assg3->linkExprNode(plus2_1);
-	whilesl2->linkStmtNode(assg3);
+	assg2->linkVarNode(j2);
+	assg2->linkExprNode(plus2_1);
+	procsl->linkStmtNode(assg2);
 
-	IfNode* if1 = new IfNode(6);
-	VarNode* i3 = new VarNode("i");
-	if1->linkVarNode(i3);
-	StmtLstNode* then1 = new StmtLstNode();
-	if1->linkThenStmtLstNode(then1);
-	StmtLstNode* else1 = new StmtLstNode();
-	if1->linkElseStmtLstNode(else1);
-	whilesl1->linkStmtNode(if1);
+	AssgNode* assg3 = new AssgNode(3);
+	VarNode* k3 = new VarNode("k");
+	ConstNode* three3 = new ConstNode("3");
+	assg3->linkVarNode(k3);
+	assg3->linkExprNode(three3);
+	procsl->linkStmtNode(assg3);
 
-	AssgNode* assg4 = new AssgNode(7);
+	AssgNode* assg4 = new AssgNode(4);
+	VarNode* w4 = new VarNode("w");
+	assg4->linkVarNode(w4);
 	VarNode* i4 = new VarNode("i");
-	ConstNode* two3 = new ConstNode("2");
-	assg3->linkVarNode(i4);
-	assg3->linkExprNode(two3);
-	then1->linkStmtNode(assg4);
+	assg4->linkExprNode(i4);
+	procsl->linkStmtNode(assg4);
 
-	CallNode* call1 = new CallNode(8, "Hello");
-	else1->linkStmtNode(call1);
+	AssgNode* assg5 = new AssgNode(5);
+	VarNode* x5 = new VarNode("x");
+	assg5->linkVarNode(x5);
+	OpNode* plus5 = new OpNode("+");
+	VarNode* w5 = new VarNode("w");
+	VarNode* k5 = new VarNode("k");
+	plus5->linkLeftNode(w5);
+	plus5->linkRightNode(k5);
+	assg5->linkExprNode(plus5);
+	procsl->linkStmtNode(assg5);
+
+	AssgNode* assg6 = new AssgNode(6);
+	VarNode* i6 = new VarNode("i");
+	assg6->linkVarNode(i6);
+	VarNode* i6_2 = new VarNode("i");
+	assg6->linkExprNode(i6_2);
+	procsl->linkStmtNode(assg6);
+
+	WhileNode* whileNode = new WhileNode(7);
+	VarNode* j7 = new VarNode("j");
+	whileNode->linkVarNode(j7);
+	StmtLstNode* whileStmtLst = new StmtLstNode();
+	whileNode->linkStmtLstNode(whileStmtLst);
+	procsl->linkStmtNode(whileNode);
+
+	AssgNode* assg8 = new AssgNode(8);
+	VarNode* x8 = new VarNode("x");
+	assg8->linkVarNode(x8);
+	whileStmtLst->linkChild(assg8);
+
+	IfNode* ifNode = new IfNode(9);
+	VarNode* w9 = new VarNode("w");
+	ifNode->linkVarNode(w9);
+	StmtLstNode* thenStmtLst = new StmtLstNode();
+	ifNode->linkThenStmtLstNode(thenStmtLst);
+	procsl->linkStmtNode(ifNode);
+
+	AssgNode* assg10 = new AssgNode(10);
+	VarNode* z10 = new VarNode("z");
+	assg10->linkVarNode(z10);
+	thenStmtLst->linkChild(assg10);
+
+	StmtLstNode* elseStmtLst = new StmtLstNode();
+	ifNode->linkElseStmtLstNode(elseStmtLst);
+
+	AssgNode* assg11 = new AssgNode(11);
+	VarNode* y11 = new VarNode("y");
+	assg11->linkVarNode(y11);
+	elseStmtLst->linkChild(assg11);
 
 	ast->addProcNode(proc);
 
@@ -119,135 +145,242 @@ void QueryEvaluatorTest::setUp() {
 
 	Statement* stmt1 = new Statement();
 	stmt1->setStmtNum(1);
-	stmt1->setType(WHILE_STMT_);
-	string modifiesArray1[] = {"k", "i", "j"};
-	unordered_set<string> mods1(modifiesArray1, modifiesArray1 + 3);
+	stmt1->setType(ASSIGN_STMT_);
+	stmt1->setFollowsAfter(2);
+	string ivar = "i";
+	unordered_set<string> mods1;
+	mods1.emplace(ivar);
 	stmt1->setModifies(mods1);
-	stmt1->setTNodeRef(while1);
-	int children1[] = {2, 3, 6};
-	stmt1->setChildren(unordered_set<int>(children1, children1+3));
+	stmt1->setTNodeRef(assg1);
 	stable->addStmt(stmt1);
 
 	Statement* stmt2 = new Statement();
 	stmt2->setStmtNum(2);
 	stmt2->setType(ASSIGN_STMT_);
+	stmt2->setFollowsBefore(1);
 	stmt2->setFollowsAfter(3);
-	string kvar = "k";
-	unordered_set<string> mods2 = unordered_set<string>();
-	mods2.emplace(kvar);
+	string jvar = "j";
+	unordered_set<string> mods2;
+	mods2.emplace(jvar);
 	stmt2->setModifies(mods2);
-	stmt2->setTNodeRef(assg1);
-	stmt2->setParent(1);
+	stmt2->setTNodeRef(assg2);
 	stable->addStmt(stmt2);
 	
 	Statement* stmt3 = new Statement();
 	stmt3->setStmtNum(3);
-	stmt3->setType(WHILE_STMT_);
+	stmt3->setType(ASSIGN_STMT_);
 	stmt3->setFollowsBefore(2);
-	string modifiesArray3[] = {"i", "j"};
-	unordered_set<string> mods3(modifiesArray1, modifiesArray1 + 2);
+	string kvar = "k";
+	unordered_set<string> mods3;
+	mods3.emplace(kvar);
 	stmt3->setModifies(mods3);
 	stmt3->setTNodeRef(assg3);
-	stmt3->setParent(1);
-	int children3[] = {4, 5};
-	stmt3->setChildren(unordered_set<int>(children3, children3+2));
 	stable->addStmt(stmt3);
 
 	Statement* stmt4 = new Statement();
 	stmt4->setStmtNum(4);
 	stmt4->setType(ASSIGN_STMT_);
+	stmt4->setFollowsBefore(3);
 	stmt4->setFollowsAfter(5);
-	string ivar = "i";
-	unordered_set<string> mods4 = unordered_set<string>();
-	mods4.emplace(ivar);
+	string wvar = "w";
+	unordered_set<string> mods4;
+	mods4.emplace(wvar);
 	stmt4->setModifies(mods4);
-	stmt4->setTNodeRef(assg2);
-	stmt4->setParent(3);
+	unordered_set<string> uses4;
+	uses4.emplace(ivar);
+	stmt4->setUses(uses4);
+	stmt4->setTNodeRef(assg4);
 	stable->addStmt(stmt4);
 
 	Statement* stmt5 = new Statement();
 	stmt5->setStmtNum(5);
 	stmt5->setType(ASSIGN_STMT_);
 	stmt5->setFollowsBefore(4);
-	string jvar = "j";
-	unordered_set<string> mods5 = unordered_set<string>();
-	mods5.emplace(jvar);
+	stmt5->setFollowsAfter(6);
+	string xvar = "x";
+	unordered_set<string> mods5;
+	mods5.emplace(xvar);
 	stmt5->setModifies(mods5);
-	stmt5->setTNodeRef(assg3);
-	stmt5->setParent(3);
+	unordered_set<string> uses5;
+	uses5.emplace(wvar);
+	uses5.emplace(kvar);
+	stmt5->setUses(uses5);
+	stmt5->setTNodeRef(assg5);
 	stable->addStmt(stmt5);
-	
+
 	Statement* stmt6 = new Statement();
 	stmt6->setStmtNum(6);
-	stmt6->setType(IF_STMT_);
-	stmt6->setFollowsBefore(3);
-	unordered_set<string> uses6 = unordered_set<string>();
-	uses6.emplace("i");
+	stmt6->setType(ASSIGN_STMT_);
+	stmt6->setFollowsBefore(5);
+	stmt6->setFollowsAfter(7);
+	unordered_set<string> mods6;
+	mods6.emplace(ivar);
+	stmt6->setModifies(mods6);
+	unordered_set<string> uses6;
+	uses6.emplace(ivar);
 	stmt6->setUses(uses6);
-	stmt6->setTNodeRef(if1);
-	stmt6->setParent(1);
-	unordered_set<int> children6 = unordered_set<int>();
-	children6.insert(7);
-	children6.insert(8);
-	//int children6[] = {7, 8};
-	stmt6->setChildren(children6);
+	stmt6->setTNodeRef(assg6);
 	stable->addStmt(stmt6);
 
 	Statement* stmt7 = new Statement();
 	stmt7->setStmtNum(7);
-	stmt7->setType(ASSIGN_STMT_);
-	unordered_set<string> mods7 = unordered_set<string>();
-	mods5.emplace("i");
+	stmt7->setType(WHILE_STMT_);
+	stmt7->setFollowsBefore(6);
+	stmt7->setFollowsAfter(9);
+	unordered_set<string> mods7;
+	mods7.emplace(xvar);
 	stmt7->setModifies(mods7);
-	stmt7->setTNodeRef(assg4);
-	stmt7->setParent(6);
+	unordered_set<string> uses7;
+	uses7.emplace(jvar);
+	stmt7->setUses(uses7);
+	stmt7->setTNodeRef(whileNode);
 	stable->addStmt(stmt7);
 
 	Statement* stmt8 = new Statement();
 	stmt8->setStmtNum(8);
-	stmt8->setType(CALL_STMT_);
-	stmt8->setTNodeRef(call1);
-	stmt8->setParent(6);
+	stmt8->setType(ASSIGN_STMT_);
+	unordered_set<string> mods8;
+	mods8.emplace(xvar);
+	stmt8->setModifies(mods8);
+	stmt8->setTNodeRef(assg8);
 	stable->addStmt(stmt8);
+
+	Statement* stmt9 = new Statement();
+	stmt9->setStmtNum(9);
+	stmt9->setType(IF_STMT_);
+	stmt9->setFollowsBefore(7);
+	unordered_set<string> mods9;
+	mods9.emplace("z");
+	mods9.emplace("y");
+	unordered_set<string> uses9;
+	uses9.emplace("w");
+	stmt9->setModifies(mods9);
+	stmt9->setUses(uses9);
+	stable->addStmt(stmt9);
+
+	Statement* stmt10 = new Statement();
+	stmt10->setStmtNum(10);
+	stmt10->setType(ASSIGN_STMT_);
+	unordered_set<string> mods10;
+	mods10.insert("z");
+	stmt10->setModifies(mods10);
+	stmt10->setTNodeRef(assg10);
+	stable->addStmt(stmt10);
+
+	Statement* stmt11 = new Statement();
+	stmt11->setStmtNum(11);
+	stmt11->setType(ASSIGN_STMT_);
+	unordered_set<string> mods11;
+	mods11.insert("y");
+	stmt11->setModifies(mods11);
+	stmt11->setTNodeRef(assg11);
+	stable->addStmt(stmt11);
+
+	// to set up the constTable manually
+	ConstTable* constTable = ConstTable::getInstance();
+
+	Constant* c1 = new Constant("1");
+	int lineNumberArr[] = {1};
+	unordered_set<int> constSet1(lineNumberArr, lineNumberArr + 1);
+	c1->setAppearsIn(constSet1);
+	constTable->addConst(c1);
+
+	Constant* c2 = new Constant("2");
+	int lineNumberArr[] = {1, 2, 10};
+	unordered_set<int> constSet2(lineNumberArr, lineNumberArr + 3);
+	c2->setAppearsIn(constSet2);
+	constTable->addConst(c2);
+
+	Constant* c3 = new Constant("3");
+	int lineNumberArr[] = {2, 3};
+	unordered_set<int> constSet3(lineNumberArr, lineNumberArr + 2);
+	c3->setAppearsIn(constSet3);
+	constTable->addConst(c3);
+
+	Constant* c4 = new Constant("4");
+	int lineNumberArr[] = {2, 8};
+	unordered_set<int> constSet4(lineNumberArr, lineNumberArr + 2);
+	c4->setAppearsIn(constSet4);
+	constTable->addConst(c4);
+
+	Constant* c6 = new Constant("6");
+	int lineNumberArr[] = {11};
+	unordered_set<int> constSet5(lineNumberArr, lineNumberArr + 1);
+	c6->setAppearsIn(constSet5);
+	constTable->addConst(c6);
 
 	// to set up the vartable manually
 	VarTable* vtable = VarTable::getInstance();
 
+	Variable* vy = new Variable("y");
+	vy->addModifyingProc("zumba");
+	vy->addModifyingStmt(9);
+	vy->addModifyingStmt(11);
+	vy->addTNode(y11);
+	vtable->addVariable(vy);
+
+	Variable* vz = new Variable("z");
+	vz->addModifyingProc("zumba");
+	vz->addModifyingStmt(9);
+	vz->addModifyingStmt(10);
+	vz->addTNode(z10);
+	vtable->addVariable(vz);
+
 	Variable* vi = new Variable("i");
+	vi->addModifyingProc("zumba");
+	vi->addUsingProc("zumba");
 	vi->addModifyingStmt(1);
-	vi->addModifyingStmt(4);
-	vi->addUsingStmt(1);
+	vi->addModifyingStmt(6);
+	vi->addUsingStmt(4);
+	vi->addUsingStmt(6);
 	vi->addTNode(i1);
-	vi->addTNode(i2);
+	vi->addTNode(i4);
 	vtable->addVariable(vi);
 
 	Variable* vj = new Variable("j");
-	vj->addModifyingStmt(1);
-	vj->addModifyingStmt(3);
-	vj->addModifyingStmt(5);
-	vj->addUsingStmt(3);
-	vj->addTNode(j1);
+	vj->addUsingProc("zumba");
+	vj->addModifyingProc("zumba");
+	vj->addModifyingStmt(2);
+	vj->addUsingStmt(7);
 	vj->addTNode(j2);
 	vtable->addVariable(vj);
 
 	Variable* vk = new Variable("k");
-	vk->addModifyingStmt(1);
-	vk->addModifyingStmt(2);
-	vk->addTNode(k1);
+	vk->addUsingProc("zumba");
+	vk->addModifyingProc("zumba");
+	vk->addModifyingStmt(3);
+	vk->addUsingStmt(5);
+	vk->addTNode(k3);
 	vtable->addVariable(vk);
 
-	// setting up procedure for procTable
+	Variable* vw = new Variable("w");
+	vw->addUsingProc("zumba");
+	vw->addModifyingProc("zumba");
+	vw->addModifyingStmt(4);
+	vw->addUsingStmt(5);
+	vw->addUsingStmt(9);
+	vw->addTNode(w4);
+	vtable->addVariable(vw);
+
+	Variable* vx = new Variable("x");
+	vx->addModifyingStmt(5);
+	vx->addModifyingStmt(7);
+	vx->addModifyingStmt(8);
+	vx->addModifyingProc("zumba");
+	vx->addTNode(x5);
+	vtable->addVariable(vx);
+
+
+	// set procedure for modifies
 	ProcTable* procTable = ProcTable::getInstance();
-	Procedure* procedure1 = new Procedure("chocs");
-	Procedure* procedure2 = new Procedure("hello");
-	string chocsUses[] = {"i", "j"};
-	string chocsModifies[] = {"k", "i", "j"};
-	unordered_set<string> chocsUsesSet(chocsUses, chocsUses + 2);
-	unordered_set<string> chocsModifiesSet(chocsModifies, chocsModifies + 3);
-	procedure1->setModifies(chocsModifiesSet);
-	procedure1->setUses(chocsUsesSet);
-	procedure
-	
+	Procedure* procedure = new Procedure("zumba");
+	string procUsesArr[] = {"i", "w", "k", "j"};
+	unordered_set<string> procUses(procUsesArr, procUsesArr + 4);
+	string procModsArr[] = {"i", "j", "k", "w", "x", "z", "y"};
+	unordered_set<string> procModifies(procModsArr, procModsArr + 7);
+	procedure->setUses(procUses);
+	procedure->setModifies(procModifies);
+	procTable->addProc(procedure);
 }
 
 void QueryEvaluatorTest::tearDown() {
@@ -272,7 +405,7 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectAssignSyn() {
 
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("a") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 4);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 9);
 	
 	delete qe;
 	delete p;
@@ -292,7 +425,7 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectStmtSyn() {
 
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("b") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 8);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 11);
 	
 	delete qe;
 	delete p;
@@ -312,7 +445,7 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectWhileSyn() {
 
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("c") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 2);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
 	
 	delete qe;
 	delete p;
@@ -341,6 +474,7 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectIfSyn() {
 }
 
 void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectCallSyn() {
+	/*
 	QueryEvaluator *qe = new QueryEvaluator();
 	
 	StringPair *p = new StringPair();
@@ -358,6 +492,7 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectCallSyn() {
 	delete p;
 	delete q;
 	delete result;
+	*/
 }
 
 void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectVarSyn() {
@@ -372,7 +507,7 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectVarSyn() {
 
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("g") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 3);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 7);
 	
 	delete qe;
 	delete p;
@@ -391,10 +526,8 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectProcSyn() {
 	qe->setCategory(SynListConstants::NONE_IN_CLAUSE);
 
 	Results* result = qe->evaluateQuery(*q);
-
-	cout << result->getResultsTableSize();
-	//CPPUNIT_ASSERT(result->hasResults("g") == true);
-	//CPPUNIT_ASSERT(result->getResultsTableSize() == 2);
+	CPPUNIT_ASSERT(result->hasResults("g") == true);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
 	
 	delete qe;
 	delete p;
@@ -403,7 +536,6 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectProcSyn() {
 }
 
 void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectConstSyn() {
-	/*
 	QueryEvaluator *qe = new QueryEvaluator();
 	
 	StringPair *p = new StringPair();
@@ -414,260 +546,12 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectConstSyn() {
 	qe->setCategory(SynListConstants::NONE_IN_CLAUSE);
 
 	Results* result = qe->evaluateQuery(*q);
+	cout << result->getResultsTableSize() << endl;
 	CPPUNIT_ASSERT(result->hasResults("g") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 7);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 9);
 	
 	delete qe;
 	delete p;
 	delete q;
 	delete result;
-	*/
 }
-
-void QueryEvaluatorTest::testEvaluateParentFixedFixedPass() {
-
-}
-
-void QueryEvaluatorTest::testEvaluateParentFixedFixedFail() {
-
-}
-
-void QueryEvaluatorTest::testEvaluateParentSynFixedPass() {
-	QueryEvaluator *qe = new QueryEvaluator();
-	
-	StringPair *p = new StringPair();
-	p->setFirst("s");
-	p->setSecond(ARG_STATEMENT);
-	Query *q = new Query();
-	q->addSelectSynonym(*p);
-	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
-
-	ParentClause* m1 = new ParentClause();
-	m1->setFirstArg("s");
-	m1->setFirstArgFixed(false);
-	m1->setFirstArgType(ARG_STATEMENT);
-	m1->setSecondArg("4");
-	m1->setSecondArgFixed(true);
-	m1->setSecondArgType(ARG_STATEMENT);
-	q->addClause(m1);
-
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("s") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
-	
-	delete qe;
-	delete p;
-	delete q;
-	delete m1;
-	delete result;
-}
-
-void QueryEvaluatorTest::testEvaluateParentSynFixedFail() {
-	QueryEvaluator *qe = new QueryEvaluator();
-	
-	StringPair *p = new StringPair();
-	p->setFirst("s");
-	p->setSecond(ARG_STATEMENT);
-	Query *q = new Query();
-	q->addSelectSynonym(*p);
-	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
-
-	ParentClause* m1 = new ParentClause();
-	m1->setFirstArg("s");
-	m1->setFirstArgFixed(false);
-	m1->setFirstArgType(ARG_STATEMENT);
-	m1->setSecondArg("1");
-	m1->setSecondArgFixed(true);
-	m1->setSecondArgType(ARG_STATEMENT);
-	q->addClause(m1);
-
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("s") == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
-	
-	delete qe;
-	delete p;
-	delete q;
-	delete m1;
-	delete result;
-}
-
-void QueryEvaluatorTest::testEvaluateParentFixedSynPass() {
-	QueryEvaluator *qe = new QueryEvaluator();
-	
-	StringPair *p = new StringPair();
-	p->setFirst("s");
-	p->setSecond(ARG_STATEMENT);
-	Query *q = new Query();
-	q->addSelectSynonym(*p);
-	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
-
-	ParentClause* m1 = new ParentClause();
-	m1->setFirstArg("1");
-	m1->setFirstArgFixed(true);
-	m1->setFirstArgType(ARG_STATEMENT);
-	m1->setSecondArg("s");
-	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_STATEMENT);
-	q->addClause(m1);
-
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("s") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 3);
-	
-	delete qe;
-	delete p;
-	delete q;
-	delete m1;
-	delete result;
-}
-
-void QueryEvaluatorTest::testEvaluateParentFixedSynPassWithWhile() {
-	QueryEvaluator *qe = new QueryEvaluator();
-	
-	StringPair *p = new StringPair();
-	p->setFirst("w");
-	p->setSecond(ARG_WHILE);
-	Query *q = new Query();
-	q->addSelectSynonym(*p);
-	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
-
-	ParentClause* m1 = new ParentClause();
-	m1->setFirstArg("1");
-	m1->setFirstArgFixed(true);
-	m1->setFirstArgType(ARG_STATEMENT);
-	m1->setSecondArg("w");
-	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_WHILE);
-	q->addClause(m1);
-
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("w") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
-	
-	delete qe;
-	delete p;
-	delete q;
-	delete m1;
-	delete result;
-}
-
-void QueryEvaluatorTest::testEvaluateParentFixedSynFail() {
-	QueryEvaluator *qe = new QueryEvaluator();
-	
-	StringPair *p = new StringPair();
-	p->setFirst("s");
-	p->setSecond(ARG_STATEMENT);
-	Query *q = new Query();
-	q->addSelectSynonym(*p);
-	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
-
-	ParentClause* m1 = new ParentClause();
-	m1->setFirstArg("2");
-	m1->setFirstArgFixed(true);
-	m1->setFirstArgType(ARG_STATEMENT);
-	m1->setSecondArg("s");
-	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_STATEMENT);
-	q->addClause(m1);
-
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("s") == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
-	
-	delete qe;
-	delete p;
-	delete q;
-	delete m1;
-	delete result;
-}
-
-void QueryEvaluatorTest::testEvaluateParentFixedSynFailWithWhile() {
-	QueryEvaluator *qe = new QueryEvaluator();
-	
-	StringPair *p = new StringPair();
-	p->setFirst("w");
-	p->setSecond(ARG_WHILE);
-	Query *q = new Query();
-	q->addSelectSynonym(*p);
-	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
-
-	ParentClause* m1 = new ParentClause();
-	m1->setFirstArg("4");
-	m1->setFirstArgFixed(true);
-	m1->setFirstArgType(ARG_STATEMENT);
-	m1->setSecondArg("w");
-	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_WHILE);
-
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("w") == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
-	
-	delete qe;
-	delete p;
-	delete q;
-	delete m1;
-	delete result;
-}
-
-void QueryEvaluatorTest::testEvaluateParentSynSynPass() {
-	// Dont understand pn's code
-}
-
-void QueryEvaluatorTest::testEvaluateParentSynSynPassWithWhile() {
-	/*
-	QueryEvaluator *qe = new QueryEvaluator();
-	
-	StringPair *p1 = new StringPair();
-	p1->setFirst("s1");
-	p1->setSecond(ARG_STATEMENT);
-	StringPair *p2 = new StringPair();
-	p2->setFirst("w1");
-	p2->setSecond(ARG_WHILE);
-
-	Query *q = new Query();
-	q->addSelectSynonym(*p1);
-	q->addSelectSynonym(*p2);
-	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
-
-	ParentClause* m1 = new ParentClause();
-	m1->setFirstArg("4");
-	m1->setFirstArgFixed(true);
-	m1->setFirstArgType(ARG_STATEMENT);
-	m1->setSecondArg("w");
-	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_WHILE);
-
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("w") == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
-	
-	delete qe;
-	delete p;
-	delete q;
-	delete m1;
-	delete result;
-	*/
-}
-
-void QueryEvaluatorTest::testEvaluateParentSynSynPassWithIf() {
-
-}
-
-void QueryEvaluatorTest::testEvaluateParentFirstUnderscorePass() {
-
-}
-
-void QueryEvaluatorTest::testEvaluateParentSecondUnderscorePass() {
-
-}
-
-void QueryEvaluatorTest::testEvaluateParentBothUnderscorePass() {
-
-}
-
-void QueryEvaluatorTest::testEvaluateParentCallPass() {
-
-}
-

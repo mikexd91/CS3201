@@ -29,7 +29,6 @@
     <ClCompile Include="ExpressionParser.cpp" />
     <ClCompile Include="IfNode.cpp" />
     <ClCompile Include="OpNode.cpp" />
-    <ClCompile Include="ParentClause.cpp" />
     <ClCompile Include="ParsedData.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PatternAssg.cpp" />
@@ -66,7 +65,6 @@
     <ClInclude Include="InvalidCodeException.h" />
     <ClInclude Include="InvalidExpressionException.h" />
     <ClInclude Include="OpNode.h" />
-    <ClInclude Include="ParentClause.h" />
     <ClInclude Include="ParsedData.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="PatternAssg.h" />
