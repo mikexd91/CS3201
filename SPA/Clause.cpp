@@ -172,6 +172,16 @@ bool Clause::evaluate(Results* res) {
 			if (evaluateS1GenericS2Generic()) {
 				res->setClausePass();
 			}
+		//Parent(_,2)
+		} else if (firstArgType == stringconst::ARG_GENERIC && isSecondFixed) {
+			if (evaluateS1GenericS2Fixed(secondArgSyn)) {
+				res->setClausePass();
+			}
+		//Parent(2,_)
+		} else if (isFirstFixed && secondArgType == stringconst::ARG_GENERIC) {
+			if (evaluateS1FixedS2Generic(firstArgSyn)) {
+				res->setClausePass();
+			}
 		//Parent(2,a) or Parent (_,a)
 		} else if (!isSecondFixed && secondArgType != stringconst::ARG_GENERIC && (isFirstFixed || firstArgType == stringconst::ARG_GENERIC)) {
 			//find if second syn is in table
