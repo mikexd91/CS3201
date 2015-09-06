@@ -140,6 +140,8 @@
     <ClCompile Include="ParserTest.cpp" />
     <ClCompile Include="PatternAssgClauseTest.cpp" />
     <ClCompile Include="PatternAssgTest.cpp" />
+    <ClCompile Include="PatternIfClauseTest.cpp" />
+    <ClCompile Include="PatternWhileClauseTest.cpp" />
     <ClCompile Include="PDRTest.cpp" />
     <ClCompile Include="ProcNodeTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
@@ -168,6 +170,8 @@
     <ClInclude Include="ParserTest.h" />
     <ClInclude Include="PatternAssgClauseTest.h" />
     <ClInclude Include="PatternAssgTest.h" />
+    <ClInclude Include="PatternIfClauseTest.h" />
+    <ClInclude Include="PatternWhileClauseTest.h" />
     <ClInclude Include="PDRTest.h" />
     <ClInclude Include="ProcNodeTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
