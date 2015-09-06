@@ -3,8 +3,8 @@
 #include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
-class TestOne : public CPPUNIT_NS::TestFixture { 
-	CPPUNIT_TEST_SUITE( TestOne );
+class FrontEndTest : public CPPUNIT_NS::TestFixture { 
+	CPPUNIT_TEST_SUITE( FrontEndTest );
 	CPPUNIT_TEST( testAddProc );
 	CPPUNIT_TEST( testAssign );
 	CPPUNIT_TEST( testFalseAddProc );
