@@ -35,7 +35,11 @@ protected:
 	string secondArgType;
 	string patternArg;
 	Results::ResultsTable table;
-	
+
+	StmtTable* stmtTable;
+	VarTable* varTable;
+	ProcTable* procTable;
+
 	//e.g. Parent(string,string)
 	virtual bool evaluateS1FixedS2Fixed(string, string)=0;
 	//e.g. Parent(_,_)
