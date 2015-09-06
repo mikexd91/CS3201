@@ -406,7 +406,11 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectAssignSyn() {
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("a") == true);
 	CPPUNIT_ASSERT(result->getResultsTableSize() == 9);
-	
+
+	vector<StringPair> selectList = q->getSelectList();
+	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
+	CPPUNIT_ASSERT(toPrint.size() == 9);
+
 	delete qe;
 	delete p;
 	delete q;
@@ -474,7 +478,7 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectIfSyn() {
 }
 
 void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectCallSyn() {
-	/*
+	
 	QueryEvaluator *qe = new QueryEvaluator();
 	
 	StringPair *p = new StringPair();
@@ -485,14 +489,14 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectCallSyn() {
 	qe->setCategory(SynListConstants::NONE_IN_CLAUSE);
 
 	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("e") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(result->hasResults("e") == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
 	
 	delete qe;
 	delete p;
 	delete q;
 	delete result;
-	*/
+	
 }
 
 void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectVarSyn() {
@@ -555,3 +559,186 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectConstSyn() {
 	delete result;
 }
 
+
+void QueryEvaluatorTest::testModifiesEvaluateFixedSynProcPass() {
+	QueryEvaluator *qe = new QueryEvaluator();
+
+	StringPair *p = new StringPair();
+	p->setFirst("v");
+	p->setSecond(ARG_VARIABLE);
+	Query *q = new Query();
+	q->addSelectSynonym(*p);
+	
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("zumba");
+	mod->setFirstArgFixed(true);
+	mod->setFirstArgType(ARG_PROCEDURE);
+	mod->setSecondArg("v");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_VARIABLE);
+
+	q->addClause(mod);
+	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
+
+	Results* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->hasResults("v") == true);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 7);
+	
+	delete qe;
+	delete p;
+	delete q;
+	delete result;
+}
+
+void QueryEvaluatorTest::testModifiesEvaluateSynFixedWhilePass() {
+	QueryEvaluator *qe = new QueryEvaluator();
+
+	StringPair *p = new StringPair();
+	p->setFirst("w");
+	p->setSecond(ARG_WHILE);
+	Query *q = new Query();
+	q->addSelectSynonym(*p);
+	
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("w");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_WHILE);
+	mod->setSecondArg("x");
+	mod->setSecondArgFixed(true);
+	mod->setSecondArgType(ARG_VARIABLE);
+
+	q->addClause(mod);
+	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
+
+	Results* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->hasResults("w") == true);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	
+	delete qe;
+	delete p;
+	delete q;
+	delete result;
+}
+
+void QueryEvaluatorTest::testModifiesEvaluateSynGenericStmtPass() {
+	QueryEvaluator *qe = new QueryEvaluator();
+
+	StringPair *p = new StringPair();
+	p->setFirst("s");
+	p->setSecond(ARG_STATEMENT);
+	Query *q = new Query();
+	q->addSelectSynonym(*p);
+	
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("s");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_STATEMENT);
+	mod->setSecondArg("_");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_GENERIC);
+
+	q->addClause(mod);
+	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
+
+	Results* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->hasResults("s") == true);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 11);
+	
+	delete qe;
+	delete p;
+	delete q;
+	delete result;
+}
+
+void QueryEvaluatorTest::testModifiesEvaluateSynSynAssgPass() {
+	QueryEvaluator *qe = new QueryEvaluator();
+
+	StringPair *p1 = new StringPair();
+	p1->setFirst("a");
+	p1->setSecond(ARG_ASSIGN);
+	StringPair *p2 = new StringPair();
+	p2->setFirst("v");
+	p2->setSecond(ARG_VARIABLE);
+
+	Query *q = new Query();
+	q->addSelectSynonym(*p1);
+	q->addSelectSynonym(*p2);
+	
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("a");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_ASSIGN);
+	mod->setSecondArg("v");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_VARIABLE);
+
+	q->addClause(mod);
+	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
+
+	Results* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->hasResults("a") == true);
+	CPPUNIT_ASSERT(result->hasResults("v") == true);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 9);
+
+	vector<StringPair> selectList = q->getSelectList();
+	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
+	CPPUNIT_ASSERT(toPrint.size() == 9);
+
+	delete qe;
+	delete p1;
+	delete p2;
+	delete q;
+	delete result;
+}
+
+void QueryEvaluatorTest::testHalfInClauseWithModifiesSynSynStmtPass() {
+	QueryEvaluator *qe = new QueryEvaluator();
+
+	// Synonym in clause
+	StringPair *p1 = new StringPair();
+	p1->setFirst("s");
+	p1->setSecond(ARG_STATEMENT);
+	StringPair *p2 = new StringPair();
+	p2->setFirst("v");
+	p2->setSecond(ARG_VARIABLE);
+
+	//Synonym not in clause
+	StringPair *n1 = new StringPair();
+	n1->setFirst("s1");
+	n1->setSecond(ARG_STATEMENT);
+	StringPair *n2 = new StringPair();
+	n2->setFirst("v1");
+	n2->setSecond(ARG_VARIABLE);
+
+	Query *q = new Query();
+	q->addSelectSynonym(*p1);
+	q->addSelectSynonym(*p2);
+	q->addSelectSynonym(*n1);
+	q->addSelectSynonym(*n2);
+	
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("s");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_STATEMENT);
+	mod->setSecondArg("v");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_VARIABLE);
+
+	q->addClause(mod);
+	qe->setCategory(SynListConstants::HALF_IN_CLAUSE);
+
+	Results* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->hasResults("s") == true);
+	CPPUNIT_ASSERT(result->hasResults("v") == true);
+	CPPUNIT_ASSERT(result->hasResults("s1") == true);
+	CPPUNIT_ASSERT(result->hasResults("v1") == true);
+	//CPPUNIT_ASSERT(result->getResultsTableSize() == 924);
+	
+	delete qe;
+	delete p1;
+	delete p2;
+	delete n1;
+	delete n2;
+	delete q;
+	delete result;
+}

@@ -2,6 +2,8 @@
 #include "Utils.h"
 #include <boost/lexical_cast.hpp>
 #include <iostream>
+#include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -45,16 +47,47 @@ Results* QueryEvaluator::evaluateQuery(Query query) {
 
 // Return values to be printed.
 unordered_set<string> QueryEvaluator::getValuesToPrint(Results* obj, vector<StringPair> selectList) {
-	Results::ResultsTable resultsTable = obj->getResultsTable();
 	unordered_set<string> resultSet = unordered_set<string>();
-	string tuple;
+	int numOfSyn = selectList.size();
+	if (numOfSyn == 1) {
+		string syn = selectList.at(0).getFirst();
+		resultSet = printSingleSynValues(*obj, syn);
+	} else {
+		resultSet = printTupleSynValues(*obj, selectList);
+	}
+	return resultSet;
+}
+
+unordered_set<string> QueryEvaluator::printSingleSynValues(Results &obj, string syn) {
+	Results::ResultsTable resultsTable = obj.getResultsTable();
+	unordered_set<string> resultSet;
 	for (Results::ResultsTable::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
 		Results::Row row = *(*i);
-		tuple = "";
+		string value = row[syn];
+		resultSet.insert(value);
+	}
+	return resultSet;
+}
+
+unordered_set<string> QueryEvaluator::printTupleSynValues(Results &obj, vector<StringPair> selectList) {
+	Results::ResultsTable resultsTable = obj.getResultsTable();
+	unordered_set<string> resultSet;
+	string open_brace = "<";
+	string close_brace = ">";
+	for (Results::ResultsTable::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
+		Results::Row row = *(*i);
+		string tuple = "";
+		tuple.append(open_brace);
 		for (vector<StringPair>::iterator j = selectList.begin(); j != selectList.end(); ++j) {
 			string syn = j->getFirst();
-			tuple = tuple + ", " + row[syn];
+			if (j == selectList.end() - 1) {
+				tuple.append(row[syn]);
+			} else {
+				tuple.append(row[syn]);
+				tuple.append(", ");
+			}
 		}
+		tuple.append(close_brace);
 		resultSet.insert(tuple);
 	}
 	return resultSet;
