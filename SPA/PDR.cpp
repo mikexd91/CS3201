@@ -263,6 +263,8 @@ void PDR::processWhileStmt(ParsedData data) {
 }
 
 void PDR::addCallToCurrentProcedure(Procedure* calledProcedure) {
+	VarTable* varTable = VarTable::getInstance();
+	
 	unordered_set<Procedure*> currentProcedureCalls = currentProcedure->getCalls();
 	currentProcedureCalls.insert(calledProcedure);
 	currentProcedure->setCalls(currentProcedureCalls);
@@ -274,10 +276,14 @@ void PDR::addCallToCurrentProcedure(Procedure* calledProcedure) {
 
 	for(auto i = modifiesToBeAdded.begin(); i != modifiesToBeAdded.end(); i++) {
 		currentModifies.insert(*i);
+		Variable* var = varTable->getVariable(*i);
+		var->addModifyingProc(currentProcedure->getProcName());
 	}
 
 	for(auto j = usesToBeAdded.begin(); j != usesToBeAdded.end(); j++) {
 		currentUses.insert(*j);
+		Variable* var = varTable->getVariable(*j);
+		var->addUsingProc(currentProcedure->getProcName());
 	}
 
 	currentProcedure->setModifies(currentModifies);
