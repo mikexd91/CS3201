@@ -5,8 +5,6 @@
 #include <string>
 #include <sstream>
 
-using namespace std;
-
 QueryEvaluator::QueryEvaluator(void)
 {
 	stmtTable = StmtTable::getInstance();

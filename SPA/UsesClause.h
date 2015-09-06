@@ -31,6 +31,10 @@ protected:
 	//Parent(s1,__)
 	unordered_set<string> getAllS1();
 	//Parent(s1,s2)
-	unordered_set<unordered_map<string, string>> getAllS1AndS2();
+	Results::ResultsTable* getAllS1AndS2();
 
+private:
+	bool isStmtType(string);
+	bool isProcedureUses(string proc, string var);
+	bool isStmtUses(int stmtNum, string var);
 };

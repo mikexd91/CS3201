@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 // Get the top level suite from the registry
 
 CppUnit::TestSuite *unitSuite = new CppUnit::TestSuite( "PKB Unit Tests" );
-/*
+
 //Front End
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("PDRTest").makeTest());
 
@@ -33,10 +33,15 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("StmtTableTest").ma
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ProcTableTest").makeTest());
 
 // PQL Clauses
+/**
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("FollowsClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("FollowsStarClauseTest").makeTest());
+**/
+
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("UsesClauseTest").makeTest());
-*/
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("PatternAssgClauseTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ModifiesClauseTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ParentClauseTest").makeTest());
 // PQL Evaluator
 //unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ResultsTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("QueryEvaluatorTest").makeTest());

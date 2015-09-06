@@ -1,11 +1,8 @@
 #pragma once
 #include "Query.h"
-#include <set>
 #include "boost/unordered_set.hpp"
 
 //Query object to be passed between parser and evaluator
-using namespace std;
-using boost::unordered_set;
 
 namespace SynListConstants {
 	const enum Category {

@@ -5,7 +5,7 @@
 #include "ConstTable.h"
 
 using namespace std;
-using namespace boost;
+using boost::unordered_map;
 
 bool ConstTable::instanceFlag = false;			// instance flag
 ConstTable* ConstTable::tableInstance = NULL;	// table instance

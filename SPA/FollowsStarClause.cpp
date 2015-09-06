@@ -31,6 +31,44 @@ bool FollowsStarClause::isValid(void){
 	return (firstArg && secondArg);
 }
 
+bool FollowsStarClause::evaluateS1FixedS2Fixed(string s1, string s2) {
+	return false;
+};
+
+bool FollowsStarClause::evaluateS1GenericS2Generic() {
+	return false;
+};
+
+bool FollowsStarClause::evaluateS1GenericS2Fixed(string s2){
+	return false;
+};
+
+bool FollowsStarClause::evaluateS1FixedS2Generic(string s1) {
+	return false;
+}
+
+unordered_set<string> FollowsStarClause::getAllS2WithS1Fixed(string s1) {
+	return unordered_set<string>();
+}
+
+unordered_set<string> FollowsStarClause::getAllS2() {
+	return unordered_set<string>();
+}
+
+unordered_set<string> FollowsStarClause::getAllS1WithS2Fixed(string s2) {
+	return unordered_set<string>();
+}
+
+unordered_set<string> FollowsStarClause::getAllS1() {
+	return unordered_set<string>();
+}
+
+Results::ResultsTable* FollowsStarClause::getAllS1AndS2() {
+	return new Results::ResultsTable;
+}
+
+
+/**
 int FollowsStarClause::getFirstStmtNum() {
 	return atoi(getFirstArg().c_str());
 }
@@ -273,5 +311,5 @@ bool FollowsStarClause::isFollowsStar(int stmtNum1, int stmtNum2) {
 	}
 
 	return false;
-}
+}**/
 

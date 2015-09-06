@@ -75,7 +75,7 @@ void PatternAssgTest::setUp() {
 	stmt1->setType(ASSIGN_STMT_);
 	stmt1->setFollowsAfter(2);
 	string ivar = "i";
-	set<string> uses1 = set<string>();
+	unordered_set<string> uses1 = unordered_set<string>();
 	uses1.emplace(ivar);
 	stmt1->setModifies(uses1);
 	stmt1->setTNodeRef(assg1);
@@ -87,7 +87,7 @@ void PatternAssgTest::setUp() {
 	stmt2->setFollowsBefore(1);
 	stmt2->setFollowsAfter(3);
 	string jvar = "j";
-	set<string> uses2 = set<string>();
+	unordered_set<string> uses2 = unordered_set<string>();
 	uses2.emplace(jvar);
 	stmt2->setModifies(uses2);
 	stmt2->setTNodeRef(assg2);
@@ -98,7 +98,7 @@ void PatternAssgTest::setUp() {
 	stmt3->setType(ASSIGN_STMT_);
 	stmt3->setFollowsBefore(2);
 	string kvar = "k";
-	set<string> uses3 = set<string>();
+	unordered_set<string> uses3 = unordered_set<string>();
 	uses3.emplace(kvar);
 	stmt3->setModifies(uses3);
 	stmt3->setTNodeRef(assg3);
