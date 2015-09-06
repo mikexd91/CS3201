@@ -77,7 +77,7 @@ bool Clause::isBaseValidityCheck() {
 	bool secondSynValidity = true;
 
 	if(firstArgFixed) {
-		if(firstArgType == ARG_PROGLINE) {
+		if(firstArgType == ARG_PROGLINE || firstArgType == ARG_STATEMENT) {
 			firstSynValidity = isValidStmtNumber(firstArg);
 		} else if(firstArgType == ARG_PROCEDURE) {
 			firstSynValidity = isValidProcedure(firstArg);
@@ -91,7 +91,7 @@ bool Clause::isBaseValidityCheck() {
 	}
 
 	if(secondArgFixed) {
-		if(secondArgType == ARG_PROGLINE) {
+		if(secondArgType == ARG_PROGLINE || secondArgType == ARG_STATEMENT) {
 			secondSynValidity = isValidStmtNumber(secondArg);
 		} else if(secondArgType == ARG_VARIABLE) {
 			secondSynValidity = isValidVariable(secondArg);
@@ -108,7 +108,8 @@ bool Clause::isBaseValidityCheck() {
 bool Clause::isValidStmtNumber(string stmt) {
 	StmtTable* stmtTable = StmtTable::getInstance();
 	size_t stmtNum = atoi(stmt.c_str());
-	return (stmtNum < stmtTable->getAllStmts().size()) || (stmtNum > 0);
+	int totalNumStatements = stmtTable->getAllStmts().size();
+	return (stmtNum <= stmtTable->getAllStmts().size()) && (stmtNum > 0);
 }
 
 bool Clause::isValidVariable(string var) {
