@@ -36,9 +36,6 @@ protected:
 
 
 private:
-	void insertParentAndChildrenIntoResult(Results::ResultsTable*, unordered_set<Statement*>);
-	void insertChildrenIntoStmtNum(unordered_set<string> &, unordered_set<Statement*>, string);
-	void insertParentIntoStmtNum(unordered_set<string> &, unordered_set<Statement*>, string);
 	int getParent(int, string);									// gets immdiate parent of stmtNum
 
 	// set<set<int>> getAllParent(int stmtNum1, int stmtNum2);		// gets lists of all possible Parents

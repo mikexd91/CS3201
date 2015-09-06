@@ -127,11 +127,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="PatternAssgClauseTest.cpp" />
+    <ClCompile Include="ModifiesClauseTest.cpp" />
     <ClCompile Include="source\AllUnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PatternAssgClauseTest.h" />
+    <ClInclude Include="ModifiesClauseTest.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
