@@ -77,7 +77,7 @@ void PatternIfClauseTest::tearDown() {
 CPPUNIT_TEST_SUITE_REGISTRATION( PatternIfClauseTest );
 
 void PatternIfClauseTest::evaluateVarWild() {
-	cout << "varwild";
+	//cout << "varwild";
 	string syn1 = "if";
 	PatternIfClause* p1 = new PatternIfClause(syn1, "_", "_", "_");
 	p1->setVarFixed(false);
@@ -111,7 +111,7 @@ void PatternIfClauseTest::evaluateVarWild() {
 }
 
 void PatternIfClauseTest::evaluateVarFixed() {
-	cout << "varfixed";
+	//cout << "varfixed";
 	// pass pattern if("x", "_", "_");
 	string syn1 = "if";
 	PatternIfClause* p1 = new PatternIfClause(syn1, "x", "_", "_");
@@ -170,12 +170,12 @@ void PatternIfClauseTest::evaluateVarFixed() {
 }
 
 void PatternIfClauseTest::evaluateVarSyn() {
-	cout << "varsyn";
+	//cout << "varsyn";
 	// pass pattern if(x, "_", "_");
 	string syn1 = "if";
 	string syn2 = "x";
 	PatternIfClause* p1 = new PatternIfClause(syn1, syn2, "_", "_");
-	p1->setVarFixed(true);
+	p1->setVarFixed(false);
 	p1->setVarType(stringconst::ARG_VARIABLE);
 
 	CPPUNIT_ASSERT(p1->isValid());

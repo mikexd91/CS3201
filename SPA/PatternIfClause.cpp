@@ -161,8 +161,30 @@ unordered_set<string> PatternIfClause::evaluateVarFixed() {
 }
 
 Results::ResultsTable* PatternIfClause::evaluateVarSyn() {
-	// TODO
-	return nullptr;
+	Results::ResultsTable* res = new Results::ResultsTable();
+
+	// simply insert all assgs
+	StmtTable* stable = StmtTable::getInstance();
+	unordered_set<Statement*> ifStmts = stable->getIfStmts();
+	VarTable* vtable = VarTable::getInstance();
+	vector<string>* varNames = vtable->getAllVarNames();//->getAllVarNames();
+
+	BOOST_FOREACH(Statement* ifStmt, ifStmts) {
+		IfNode* ifNode = (IfNode*) ifStmt->getTNodeRef();
+		for (size_t j = 0; j < varNames->size(); j++) {
+			string var = varNames->at(j);
+			if (matchVar(ifNode, var)) {
+				string stmtNumStr = boost::lexical_cast<string>(ifNode->getStmtNum());
+				// TODO add pair result;
+				Results::Row* pair = new Results::Row();
+				(*pair)[getSynonym()] = stmtNumStr;
+				(*pair)[getVar()] = var;
+				res->insert(pair);
+			}
+		}
+	}
+
+	return res;
 }
 
 
