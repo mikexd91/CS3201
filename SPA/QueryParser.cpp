@@ -47,7 +47,7 @@ vector<string> QueryParser::split(string s, char delim, vector<string>* elems) {
     return *elems;
 }
 
-//TODO: CHECK COMPATIBILITY WITH PATTERN AND CLAUSE PARSING
+//ADD OPERATORS TO Q: splitByDelims( operator )
 queue<string> QueryParser::queueBuilder(string in){
 	queue<string> out;
 	vector<string> temp;
@@ -68,6 +68,10 @@ queue<string> QueryParser::queueBuilder(string in){
 	outHolder = QueryParser::splitByDelims(temp, "*");
 	temp = outHolder;
 	outHolder = QueryParser::splitByDelims(temp, "-");
+	temp = outHolder;
+	outHolder = QueryParser::splitByDelims(temp, ".");
+	temp = outHolder;
+	outHolder = QueryParser::splitByDelims(temp, "=");
 	for (size_t i=0; i<outHolder.size(); i++){
 		out.push(outHolder.at(i));
 	}
@@ -427,6 +431,36 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 
 	query->addClause(newClause);
 }
+
+/*
+void QueryParser::parseWith(Query* query, queue<string> line){
+	unordered_map<string, string> decList = query->getDeclarationList();
+	
+	string wordWith = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	
+	string synonym = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (decList.find(synonym) == decList.end()){
+		throw InvalidDeclarationException();
+	}
+	
+	string attribute = Utils::getWordAndPop(line);
+	if (attribute != "."){
+		throw InvalidSyntaxException();
+	}
+	unexpectedEndCheck(line);
+	
+	string condition = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	
+	string comparatorW = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	
+	
+	
+}
+*/
 
 //TODO UPDATE WITH NEW QUEUE
 //PARSE BRACKETS, COMMAS, OPERATORS, UNDERSCORE AND INVERTED COMMAS AS INDIVIDUAL TOKENS

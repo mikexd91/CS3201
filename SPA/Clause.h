@@ -54,7 +54,7 @@ protected:
 	virtual unordered_set<string> getAllS1()=0;
 	//Parent(s1,s2)
 	virtual Results::ResultsTable* getAllS1AndS2()=0;
-	
+
 	//Check the validity of the specific clause
 	//Substitute the original clause isValid for this one
 	virtual bool isValid(void)=0;

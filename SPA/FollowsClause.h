@@ -8,7 +8,7 @@ public:
 	FollowsClause(void);
 	~FollowsClause(void);
 
-	bool isValid(void);
+	bool isValid(void)=0;
 
 	Results evaluate(void);
 
@@ -37,6 +37,6 @@ private:
 	//Parent(s1,__)
 	unordered_set<string> getAllS1()=0;
 	//Parent(s1,s2)
-	unordered_set<unordered_map<string, string>> getAllS1AndS2()=0;
+	Results::ResultsTable* getAllS1AndS2()=0;
 };
 

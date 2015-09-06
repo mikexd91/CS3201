@@ -124,10 +124,11 @@ bool FollowsClause::isValid(void){
 	return (firstArg && secondArg);
 }
 
+/*
 void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgType, Results &resObj) {
 	if (firstArgType == stringconst::ARG_ASSIGN) {
 		StmtTable* stmtTable = StmtTable::getInstance();
-		set<Statement*> assignList = stmtTable->getAssgStmts();
+		unordered_set<Statement*> assignList = stmtTable->getAssgStmts();
 		
 		for (set<Statement*>::iterator iter = assignList.begin() ; iter != assignList.end(); iter++) {
 			Statement* stmtObj1 = *iter;
@@ -209,6 +210,7 @@ void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgT
 		//resObj.setNumOfSyn(2);
 	//}
 }
+*/
 
 void FollowsClause::followsWithOneUnderscore(string firstArgType, string secondArgType, Results &resObj) {
 	StmtTable* stmtTable = StmtTable::getInstance();
@@ -368,12 +370,12 @@ unordered_set<string> FollowsClause::getAllS2WithS1Fixed(string s1){
 }
 //Parent(_,s2)
 //is this necessary for follows???
-/*
-unordered_set<string> getAllS2(){
+
+unordered_set<string> FollowsClause::getAllS2(){
 	unordered_set<string> asd;
 	return asd;
 }
-*/
+
 //Follows(_,s2)
 unordered_set<string> FollowsClause::getAllS1WithS2Fixed(string s2){
 	Statement* stmt = stmtTable->getStmtObj(lexical_cast<int>(s2));
@@ -384,18 +386,17 @@ unordered_set<string> FollowsClause::getAllS1WithS2Fixed(string s2){
 }
 //Follows(s1,__)
 //is this necessary for follows???
-/*
-unordered_set<string> getAllS1(){
+
+unordered_set<string> FollowsClause::getAllS1(){
 	unordered_set<string> asd;
 	return asd;
 }
-*/
+
 
 //Follows(s1,s2)
 //is this necessary for follows???
-/*
-unordered_set<unordered_map<string, string>> getAllS1AndS2(){
-	unordered_set<unordered_map<string, string>> asd;
+
+Results::ResultsTable* FollowsClause::getAllS1AndS2(){
+	Results::ResultsTable* asd = new Results::ResultsTable();
 	return asd;
 }
-*/
