@@ -14,11 +14,11 @@ using namespace std;
 using namespace stringconst;
 using boost::unordered_set;
 
-StmtTable* stmtTable = StmtTable::getInstance();
-VarTable* varTable = VarTable::getInstance();
-ProcTable* procTable = ProcTable::getInstance();
-
 UsesClause::UsesClause(void):Clause(USES_){
+	stmtTable = StmtTable::getInstance();
+	varTable = VarTable::getInstance();
+	procTable = ProcTable::getInstance();
+	
 }
 
 UsesClause::~UsesClause(void){
@@ -31,6 +31,7 @@ bool UsesClause::isValid(){
 		|| (firstType == ARG_STATEMENT) 
 		|| (firstType == ARG_ASSIGN) 
 		|| (firstType == ARG_WHILE) 
+		|| (firstType == ARG_IF)
 		|| (firstType == ARG_PROGLINE)
 		|| (firstType == ARG_PROCEDURE);
 	bool secondArg = (secondType == ARG_GENERIC) 
@@ -38,42 +39,20 @@ bool UsesClause::isValid(){
 	return (firstArg && secondArg);
 }
 
-//e.g. Uses(string,string)
+//e.g. Uses(1, "x") or Uses("proc", "x")
 bool UsesClause::evaluateS1FixedS2Fixed(string s1, string s2) {
 
 	// Uses(s,v) - statement uses
-	if(firstArgType==ARG_STATEMENT || firstArgType==ARG_ASSIGN || firstArgType==ARG_WHILE || firstArgType==ARG_PROGLINE) {
-		// get stmt object
-		Statement* stmt = stmtTable->getStmtObj(lexical_cast<int>(s1));
-
-		// get set of variables stmt uses
-		Statement::UsesSet stmtUses = stmt->getUses();
-					
-		// checks if stmt uses variable
-		if(stmtUses.find(s2) != stmtUses.end()) {
-			return true;
-		} else {
-			return false;
-		}
+	if(isStmtType(firstArgType)) {
+		return isStmtUses(lexical_cast<int>(s1), s2);
 
 	// Uses(p,v) - procedure uses
 	} else {
-		// get proc object
-		Procedure* proc = procTable->getProcObj(s1);
-
-		// get set of variables proc uses
-		Procedure::UsesSet procUses = proc->getUses();
-
-		// checks if proc uses variable
-		if(procUses.find(s2) != procUses.end()) {
-			return true;
-		} else {
-			return false;
-		}
+		return isProcedureUses(s1, s2);
 	}
 }
 
-//e.g. Parent(_,_)
+//e.g. Uses(_,_)
 bool UsesClause::evaluateS1GenericS2Generic() {
 
 	// get all variables
@@ -92,27 +71,25 @@ bool UsesClause::evaluateS1GenericS2Generic() {
 	return false;
 }
 
-//e.g. Uses(_,string)
+//e.g. Uses(_, "x")
 bool UsesClause::evaluateS1GenericS2Fixed(string s2) {
-	
-	// get var object
 	Variable* var = varTable->getVariable(s2);
 
-	unordered_set<int> usedByStmts = var->getUsedByStmts();
-	unordered_set<string> usedByProc = var->getUsedByProc();
+	unordered_set<string> modifiedBy = var->getUsedByProc();
+	unordered_set<int> usedBy = var->getUsedByStmts();
 
-	if(usedByStmts.empty() && usedByProc.empty()) {
-		return false;
-	} else {
+	if(!modifiedBy.empty() || !usedBy.empty()) {
 		return true;
 	}
+
+	return false;
 }
 
-//Uses(string,_)
+//Uses(1, _) or Uses("proc", _)
 bool UsesClause::evaluateS1FixedS2Generic(string s1) {
 
 	// Uses(s,v) - statement uses
-	if(firstArgType==ARG_STATEMENT || firstArgType==ARG_ASSIGN || firstArgType==ARG_WHILE || firstArgType==ARG_PROGLINE) {
+	if(isStmtType(firstArgType)) {
 		// get stmt object
 		Statement* stmt = stmtTable->getStmtObj(lexical_cast<int>(s1));
 
@@ -135,11 +112,11 @@ bool UsesClause::evaluateS1FixedS2Generic(string s1) {
 	}
 }
 
-//Uses(string,s2)
+//Uses(1, v) or Uses("proc", v)
 unordered_set<string> UsesClause::getAllS2WithS1Fixed(string s1) {
 
 	// Uses(s,v) - statement uses
-	if(firstArgType==ARG_STATEMENT || firstArgType==ARG_ASSIGN || firstArgType==ARG_WHILE || firstArgType==ARG_PROGLINE) {
+	if(isStmtType(firstArgType)) {
 		// get stmt object
 		Statement* stmt = stmtTable->getStmtObj(lexical_cast<int>(s1));
 
@@ -163,22 +140,30 @@ unordered_set<string> UsesClause::getAllS2WithS1Fixed(string s1) {
 //Uses(_,s2)
 unordered_set<string> UsesClause::getAllS2() {
 
-	unordered_set<string> varNames = unordered_set<string>();
+	// container for result
+	unordered_set<string> vars = unordered_set<string>();
 
-	// get all variables
-	vector<Variable*>* vars = varTable->getAllVariables();
+	// get all stmts and procs
+	unordered_set<Statement*> stmts = stmtTable->getAllStmts();
+	unordered_set<Procedure*> procs = procTable->getAllProcs();
 
-	// for each variable, check if it is used by anything
-	BOOST_FOREACH(auto v, *vars) {
-		unordered_set<int> usedByStmts = v->getUsedByStmts();
-		unordered_set<string> usedByProc = v->getUsedByProc();
-
-		if(!usedByStmts.empty() || !usedByProc.empty()) {
-			varNames.insert(v->getName());
+	// consolidate stmt variables
+	BOOST_FOREACH(auto s, stmts) {
+		Statement::UsesSet uses = s->getUses();
+		BOOST_FOREACH(auto v, uses) {
+			vars.insert(v);
 		}
 	}
 
-	return varNames;
+	// consolidate proc variables
+	BOOST_FOREACH(auto p, procs) {
+		Procedure::UsesSet uses = p->getUses();
+		BOOST_FOREACH(auto v, vars) {
+			vars.insert(v);
+		}
+	}
+
+	return vars;
 }
 
 //Uses(s1,string)
@@ -187,9 +172,40 @@ unordered_set<string> UsesClause::getAllS1WithS2Fixed(string s2) {
 	// get var object
 	Variable* var = varTable->getVariable(s2);
 
-	if(firstArgType==ARG_STATEMENT || firstArgType==ARG_ASSIGN || firstArgType==ARG_WHILE || firstArgType==ARG_PROGLINE) {
-		unordered_set<string> usedByStmts = var->getUsedByStmtsAsString();
-		return usedByStmts;
+	//Uses(s,v)
+	if(isStmtType(firstArgType)) {
+		// container for result
+		unordered_set<string> result = unordered_set<string>();
+
+		// stmt set to check
+		unordered_set<Statement*> stmts;
+
+		// check through the arg types
+		if(firstArgType == ARG_ASSIGN) {
+			stmts = stmtTable->getAssgStmts();
+		} else if(firstArgType == ARG_WHILE) {
+			stmts = stmtTable->getWhileStmts();
+		} else if(firstArgType == ARG_IF) {
+			stmts = stmtTable->getIfStmts();
+		} else {
+			stmts = stmtTable->getAllStmts();
+		}
+
+		// stmts that uses s2
+		unordered_set<int> usedBy = var->getUsedByStmts();
+
+		// add those stmts that are of the right type
+		BOOST_FOREACH(auto s, usedBy) {
+			BOOST_FOREACH(auto st, stmts) {
+				if(st->getStmtNum() == s) {
+					result.insert(lexical_cast<string>(s));
+				}
+			}
+		}
+
+		return result;
+
+	//Uses(p,v)
 	} else {
 		unordered_set<string> usedByProc = var->getUsedByProc();
 		return usedByProc;
@@ -199,15 +215,27 @@ unordered_set<string> UsesClause::getAllS1WithS2Fixed(string s2) {
 //Uses(s1,__)
 unordered_set<string> UsesClause::getAllS1() {
 
-	unordered_set<string> s1Set = unordered_set<string>();
+	// container for results
+	unordered_set<string> result = unordered_set<string>();
 
-	if(firstArgType==ARG_STATEMENT || firstArgType==ARG_ASSIGN || firstArgType==ARG_WHILE || firstArgType==ARG_PROGLINE) {
-		// get all statements
-		unordered_set<Statement*> allStmts = stmtTable->getAllStmts();
+	if(isStmtType(firstArgType)) {
+		// stmt set to check
+		unordered_set<Statement*> stmts;
 
-		BOOST_FOREACH(auto s, allStmts) {
+		// check through the arg types
+		if(firstArgType == ARG_ASSIGN) {
+			stmts = stmtTable->getAssgStmts();
+		} else if(firstArgType == ARG_WHILE) {
+			stmts = stmtTable->getWhileStmts();
+		} else if(firstArgType == ARG_IF) {
+			stmts = stmtTable->getIfStmts();
+		} else {
+			stmts = stmtTable->getAllStmts();
+		}
+
+		BOOST_FOREACH(auto s, stmts) {
 			if(!s->getUses().empty()) {
-				s1Set.insert(lexical_cast<string>(s->getStmtNum()));
+				result.insert(lexical_cast<string>(s->getStmtNum()));
 			}
 		}
 
@@ -218,16 +246,86 @@ unordered_set<string> UsesClause::getAllS1() {
 
 		BOOST_FOREACH(auto p, allProcs) {
 			if(!p->getUses().empty()) {
-				s1Set.insert(p->getProcName());
+				result.insert(p->getProcName());
 			}
 		}
 	}
 
-	return s1Set;
+	return result;
 }
 
 //Uses(s1,s2)
-unordered_set<unordered_map<string, string>> UsesClause::getAllS1AndS2() {
+Results::ResultsTable* UsesClause::getAllS1AndS2() {
+	Results::ResultsTable* results = new Results::ResultsTable();
 
+	//Uses(s,v)
+	if(isStmtType(firstArgType)) {
+		// prepare stmt sets
+		unordered_set<Statement*> stmts;
 
+		// check through the arg types
+		if(firstArgType == ARG_ASSIGN) {
+			stmts = stmtTable->getAssgStmts();
+		} else if(firstArgType == ARG_WHILE) {
+			stmts = stmtTable->getWhileStmts();
+		} else if(firstArgType == ARG_IF) {
+			stmts = stmtTable->getIfStmts();
+		} else {
+			stmts = stmtTable->getAllStmts();
+		}
+
+		// add each s,v pair
+		BOOST_FOREACH(auto s, stmts) {
+			Statement::UsesSet vars = s->getUses();
+			BOOST_FOREACH(auto v, vars) {
+				// create tuple
+				Results::Row* tuple = new Results::Row();
+				(*tuple)[firstArg] = lexical_cast<string>(s->getStmtNum());
+				(*tuple)[secondArg] = v;
+
+				results->insert(tuple);
+			}
+		}
+
+	//Uses(p,v)
+	} else {
+		unordered_set<Procedure*> procs = procTable->getAllProcs();
+
+		// add each p,v pair
+		BOOST_FOREACH(auto p, procs) {
+			Procedure::UsesSet vars = p->getUses();
+			BOOST_FOREACH(auto v, vars) {
+				// create tuple
+				Results::Row* tuple = new Results::Row();
+				(*tuple)[firstArg] = p->getProcName();
+				(*tuple)[secondArg] = v;
+
+				results->insert(tuple);
+			}
+		}
+	}
+
+	return results;
+}
+
+bool UsesClause::isStmtType(string argType) {
+	if(firstArgType==ARG_STATEMENT || firstArgType==ARG_ASSIGN || firstArgType==ARG_WHILE || firstArgType==ARG_PROGLINE) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool UsesClause::isProcedureUses(string proc, string var) {
+	Procedure* procedure = procTable->getProcObj(proc);
+
+	unordered_set<string> usesSet = procedure->getUses();
+	return usesSet.find(var) != usesSet.end();
+}
+
+bool UsesClause::isStmtUses(int stmtNum, string var) {
+	Statement* stmt = stmtTable->getStmtObj(stmtNum);
+
+	unordered_set<string> usesSet = stmt->getUses();
+	return usesSet.find(var) != usesSet.end();
 }
