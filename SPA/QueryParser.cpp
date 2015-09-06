@@ -193,10 +193,10 @@ bool QueryParser::containsDeclarationType(string s){
 
 bool QueryParser::containsClauseType(string s){
 	vector<string> clauseVector;
-	//clauseVector.push_back(stringconst::TYPE_FOLLOWS);
-	//clauseVector.push_back(stringconst::TYPE_PARENT);
+	clauseVector.push_back(stringconst::TYPE_FOLLOWS);
+	clauseVector.push_back(stringconst::TYPE_PARENT);
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
-	//clauseVector.push_back(stringconst::TYPE_USES);
+	clauseVector.push_back(stringconst::TYPE_USES);
 	//clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
 	//clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
 	return containsAny(s, clauseVector);
