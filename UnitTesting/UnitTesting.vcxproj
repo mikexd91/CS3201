@@ -127,10 +127,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AllUnitTest.cpp" />
     <ClCompile Include="PatternAssgClauseTest.cpp" />
     <ClCompile Include="PatternIfClauseTest.cpp" />
     <ClCompile Include="PatternWhileClauseTest.cpp" />
-    <ClCompile Include="source\AllUnitTest.cpp" />
+    <ClCompile Include="AllUnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PatternAssgClauseTest.h" />

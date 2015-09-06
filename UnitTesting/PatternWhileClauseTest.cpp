@@ -70,7 +70,7 @@ void PatternWhileClauseTest::tearDown() {
 CPPUNIT_TEST_SUITE_REGISTRATION( PatternWhileClauseTest );
 
 void PatternWhileClauseTest::evaluateVarWild() {
-	cout << "varwild";
+	//cout << "varwild";
 	string syn1 = "if";
 	PatternWhileClause* p1 = new PatternWhileClause(syn1, "_", "_");
 	p1->setVarFixed(false);
@@ -87,7 +87,7 @@ void PatternWhileClauseTest::evaluateVarWild() {
 }
 
 void PatternWhileClauseTest::evaluateVarFixed() {
-	cout << "varfixed";
+	//cout << "varfixed";
 	// pass pattern if("x", "_", "_");
 	string syn1 = "if";
 	PatternWhileClause* p1 = new PatternWhileClause(syn1, "x", "_");
@@ -116,7 +116,7 @@ void PatternWhileClauseTest::evaluateVarFixed() {
 }
 
 void PatternWhileClauseTest::evaluateVarSyn() {
-	cout << "varsyn";
+	//cout << "varsyn";
 	// pass pattern if(x, "_", "_");
 	string syn1 = "if";
 	string syn2 = "x";
