@@ -213,10 +213,10 @@ bool QueryParser::containsKeyword(string s){
 
 string QueryParser::getClauseString(string s){
 	vector<string> clauseVector;
-	//clauseVector.push_back(stringconst::TYPE_FOLLOWS);
-	//clauseVector.push_back(stringconst::TYPE_PARENT);
+	clauseVector.push_back(stringconst::TYPE_FOLLOWS);
+	clauseVector.push_back(stringconst::TYPE_PARENT);
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
-	//clauseVector.push_back(stringconst::TYPE_USES);
+	clauseVector.push_back(stringconst::TYPE_USES);
 	//clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
 	//clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
 	for (size_t i=0; i<clauseVector.size(); i++){
@@ -229,24 +229,24 @@ string QueryParser::getClauseString(string s){
 }
 
 Clause* QueryParser::createCorrectClause(string type){
-	/*if (type == stringconst::TYPE_FOLLOWS_STAR){
-		FollowsStarClause* clause = new FollowsStarClause();
-		return clause;		
-	} else if (type == stringconst::TYPE_PARENT_STAR){
+	//if (type == stringconst::TYPE_FOLLOWS_STAR){
+		//FollowsStarClause* clause = new FollowsStarClause();
+		//return clause;		
+	/*} else*/ if (type == stringconst::TYPE_PARENT_STAR){
 		ParentStarClause* clause = new ParentStarClause();
-		return clause;			
+		return clause;
 	} else if (type == stringconst::TYPE_FOLLOWS){
 		FollowsClause* clause = new FollowsClause();
 		return clause;		
 	} else if (type == stringconst::TYPE_PARENT){
 		ParentClause* clause = new ParentClause();
 		return clause;		
-	} else */if (type == stringconst::TYPE_MODIFIES){
+	} else if (type == stringconst::TYPE_MODIFIES){
 		ModifiesClause* clause = new ModifiesClause();
 		return clause;		
-	} /*else if (type == stringconst::TYPE_USES){
+	} else if (type == stringconst::TYPE_USES){
 		UsesClause* clause = new UsesClause();
-		return clause;*/
+		return clause;
 	/*INSERT WHEN CLAUSES ARE DONE
 	} else if (type == stringconst::TYPE_CALLS){
 		CallsClause* clause = new CallsClause();
@@ -264,8 +264,8 @@ Clause* QueryParser::createCorrectClause(string type){
 		AffectsStarClause* clause = new AffectsStarClause();
 		return clause;
 	}
-	 
-	}*/ else {
+	*/
+	} else {
 		throw UnexpectedClauseException();
 	}
 }
@@ -462,8 +462,8 @@ void QueryParser::parseWith(Query* query, queue<string> line){
 }
 */
 /*
-//TODO UPDATE WITH NEW QUEUE
 //PARSE BRACKETS, COMMAS, OPERATORS, UNDERSCORE AND INVERTED COMMAS AS INDIVIDUAL TOKENS
+//need if/while/assign <<-- create 1 submethod, specify type// or create 3 sub methods
 void QueryParser::parsePattern(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	
@@ -471,9 +471,12 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 	unexpectedEndCheck(line);
 
 	string synonym = Utils::getWordAndPop(line);
-	if (decList.find(synonym) == decList.end() || decList.at(synonym) != stringconst::ARG_ASSIGN){
+	if (decList.find(synonym) == decList.end()){
 		throw InvalidDeclarationException();
 	}
+
+	/* check what type this thingy is, use the submethods */
+	/*
 	unexpectedEndCheck(line);
 
 	string openParen = Utils::getWordAndPop(line);

@@ -227,25 +227,19 @@ void FollowsClauseTest::testIsFollows() {
 	fol->setFirstArg("2");
 	fol->setSecondArg("3");
 	
-	fol->setFirstArgFixed(false);
-	fol->setSecondArgFixed(false);
+	fol->setFirstArgFixed(true);
+	fol->setSecondArgFixed(true);
 
 	fol->setFirstArgType(stringconst::ARG_STATEMENT);
 	fol->setSecondArgType(stringconst::ARG_STATEMENT);
-	CPPUNIT_ASSERT(true);
 	
 	CPPUNIT_ASSERT(fol->isValid());
 	bool evalResult = fol->evaluate(result);
 	
-	//CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(evalResult);
 	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
-}
+
 	/*
-	CPPUNIT_ASSERT(r.isClausePassed());
-	CPPUNIT_ASSERT(r.getPairResults().size() == 2);
-	CPPUNIT_ASSERT(r.getPairResults().at(1).first == res2);
-	CPPUNIT_ASSERT(r.getPairResults().at(1).second == res3);
-	
 	// Test Follows(a1, a1) where a1 is assign
 	fol.setFirstArg("a1");
 	fol.setSecondArg("a1");
@@ -254,9 +248,6 @@ void FollowsClauseTest::testIsFollows() {
 	fol.setSecondArgType(stringconst::ARG_ASSIGN);
 
 	Results r2 = fol.evaluate();
-
-	CPPUNIT_ASSERT(!r2.isClausePassed());
-	CPPUNIT_ASSERT(r2.getPairResults().size() == 0);
 	
 	// Test Follows(a1, s1) where a1 is assign and s1 is statement
 	fol.setFirstArg("a1");
@@ -327,7 +318,7 @@ void FollowsClauseTest::testIsFollows() {
 	}*/
 
 	//CPPUNIT_ASSERT(r7.getSinglesResults().size() == 2);
-//}
+}
 /*
 // Test augument-type combinations of Follows (1, a) where a is unfixed
 void FollowsClauseTest::testIsFollows2() {
