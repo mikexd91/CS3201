@@ -139,6 +139,8 @@
     <ClCompile Include="ParentClauseTest.cpp" />
     <ClCompile Include="ParserTest.cpp" />
     <ClCompile Include="PatternAssgClauseTest.cpp" />
+    <ClCompile Include="PatternAssgTest.cpp" />
+    <ClCompile Include="PDRTest.cpp" />
     <ClCompile Include="ProcNodeTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
     <ClCompile Include="ResultsTest.cpp" />
@@ -146,6 +148,7 @@
     <ClCompile Include="ProcTableTest.cpp" />
     <ClCompile Include="TNodeTest.cpp" />
     <ClCompile Include="StmtLstNodeTest.cpp" />
+    <ClCompile Include="StmtTableTest.cpp" />
     <ClCompile Include="TNodeTest.cpp" />
     <ClCompile Include="VarNodeTest.cpp" />
     <ClCompile Include="VarTableTest.cpp" />
@@ -163,12 +166,15 @@
     <ClInclude Include="ParentClauseTest.h" />
     <ClInclude Include="ParserTest.h" />
     <ClInclude Include="PatternAssgClauseTest.h" />
+    <ClInclude Include="PatternAssgTest.h" />
+    <ClInclude Include="PDRTest.h" />
     <ClInclude Include="ProcNodeTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
     <ClInclude Include="ResultsTest.h" />
     <ClInclude Include="ProcTableTest.h" />
     <ClInclude Include="TNodeTest.h" />
     <ClInclude Include="StmtLstNodeTest.h" />
+    <ClInclude Include="StmtTableTest.h" />
     <ClInclude Include="TNodeTest.h" />
     <ClInclude Include="VarNodeTest.h" />
     <ClInclude Include="VarTableTest.h" />
