@@ -1,0 +1,50 @@
+1 - calls: all combinations
+procedure p, q;
+Select <p,q> such that Calls(p,q)
+firstProc secondProc, firstProc thirdProc, secondProc thirdProc, thirdProc firstProc, fourthProc fourthProc
+5000
+2 - calls*: all combinations
+procedure p, q;
+Select <p,q> such that Calls*(p,q)
+firstProc secondProc, firstProc thirdProc, secondProc firstProc, secondProc thirdProc, thirdProc firstProc, thirdProc secondProc, fourthProc fourthProc
+5000
+3 - calls: synonym, fixed
+procedure p;
+Select p such that Calls(p, "thirdProc")
+firstProc, secondProc
+5000
+4 - calls*: synonym, fixed
+procedure p;
+Select p such that Calls*(p, "thirdProc")
+firstProc, secondProc, thirdProc
+5000
+5 - calls: fixed, synonym
+procedure p;
+Select p such that Calls("firstProc", p)
+thirdProc
+5000
+6 - calls*: fixed, synonym
+procedure p;
+Select p such that Calls*("firstProc", p)
+firstProc, secondProc, thirdProc
+5000
+7 - calls-boolean
+
+Select BOOLEAN such that Calls(p, p)
+true
+5000
+8 - calls*-boolean
+
+Select BOOLEAN such that Calls*("fourthProc", "firstProc")
+false
+5000
+9 - calls-multi
+procedure p, q, r;
+Select p such that Calls(p,q) and Calls(p,r)
+firstProc
+5000
+10 - calls*-multi
+procedure p;
+Select p such that Calls*(p,p) and Calls*("fourthProc", "secondProc")
+none
+5000
