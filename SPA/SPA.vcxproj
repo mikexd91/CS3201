@@ -28,6 +28,7 @@
     <ClCompile Include="ConstTable.cpp" />
     <ClCompile Include="ExpressionParser.cpp" />
     <ClCompile Include="IfNode.cpp" />
+    <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="OpNode.cpp" />
     <ClCompile Include="ParsedData.cpp" />
     <ClCompile Include="Parser.cpp" />
@@ -64,6 +65,7 @@
     <ClInclude Include="IfNode.h" />
     <ClInclude Include="InvalidCodeException.h" />
     <ClInclude Include="InvalidExpressionException.h" />
+    <ClInclude Include="ModifiesClause.h" />
     <ClInclude Include="OpNode.h" />
     <ClInclude Include="ParsedData.h" />
     <ClInclude Include="Parser.h" />

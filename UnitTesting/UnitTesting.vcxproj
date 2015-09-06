@@ -127,10 +127,12 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ModifiesClauseTest.cpp" />
     <ClCompile Include="QueryEvaluatorTest.cpp" />
     <ClCompile Include="source\AllUnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ModifiesClauseTest.h" />
     <ClInclude Include="QueryEvaluatorTest.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
