@@ -1,22 +1,19 @@
 #pragma once
 #include <string>
 #include "PatternClause.h"
-#include "AssgNode.h"
+#include "WhileNode.h"
 
 using namespace std;
 
-class PatternAssgClause :
+class PatternWhileClause :
 	public PatternClause {
 
 public:
-	PatternAssgClause(const string& syn); // deprecated
-	PatternAssgClause(const string& syn, const string& var, const string& expr);
-	~PatternAssgClause(void);
-	
-	string getExpression();
-	bool isValid();
+	PatternWhileClause(const string&, const string&, const string&);
+	~PatternWhileClause(void);
 
-	void setExpression(string expr);
+	string getStmtList();
+	bool isValid();
 
 protected:
 	// ---- new stuff ----
@@ -39,24 +36,20 @@ protected:
 	//Parent(s1,s2)
 	Results::ResultsTable* getAllS1AndS2();
 	// ---- end new stuff -
-	
+
 private:
 	// ---- old stuff
-	unordered_set<string> evaluateVarWildExprWild();
-	unordered_set<string> evaulateVarWildExprFixed();
-	unordered_set<string> evaluateVarFixedExprWild();
-	unordered_set<string> evaluateVarFixedExprFixed();
-	Results::ResultsTable* evaluateVarSynExprWild();
-	Results::ResultsTable* evaluateVarSynExprFixed();
+	unordered_set<string> evaluateVarWild();
+	unordered_set<string> evaluateVarFixed();
+	Results::ResultsTable* evaluateVarSyn();
 	// ---- end old stuff
 
-	//vector<int> getAssgNums(Results, string);
-	bool matchExpr(AssgNode* assg, string expr);
-	bool matchVar(AssgNode* assg, string var);
+	bool matchStmtList(WhileNode*, string);
+	bool matchVar(WhileNode*, string);
 
-	bool isExprWild();
+	bool isStmtListWild();
 	bool isVarWild();
-	
-	string _expr;
+
+	string _stmtList;
 };
 

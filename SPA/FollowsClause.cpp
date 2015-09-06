@@ -1,16 +1,26 @@
 #include "FollowsClause.h"
 #include "Utils.h"
 #include "StmtTable.h"
+#include "Utils.h"
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <boost/lexical_cast.hpp>
+#include <boost/unordered_set.hpp>
+#include <boost/foreach.hpp>
+
+using namespace stringconst;
+using boost::unordered_set;
+using boost::lexical_cast;
+
+StmtTable* stmtTable = StmtTable::getInstance();
 
 FollowsClause::FollowsClause(void):Clause(FOLLOWS_){
 }
 
 FollowsClause::~FollowsClause(void){
 }
-
+/*
 bool FollowsClause::checkIsSameType(NodeType type, string stmtType) {
 	if ((stmtType == stringconst::ARG_STATEMENT) ||
 		(type == WHILE_STMT_ && stmtType == stringconst::ARG_WHILE) ||
@@ -74,7 +84,7 @@ string FollowsClause::getFollowedBy(string stmtNum, string unfixedStmtType) {
 	}
 	return "-1";
 }
-
+*/
 bool FollowsClause::isFollows(string stmtNum1, string stmtNum2) {
 	StmtTable* table = StmtTable::getInstance();
 	int stmt1 = stoi(stmtNum1);
@@ -102,15 +112,24 @@ bool FollowsClause::isFollows(string stmtNum1, string stmtNum2) {
 bool FollowsClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
-	bool firstArg = (firstType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_ASSIGN) || (firstType == stringconst::ARG_WHILE) || (firstType == stringconst::ARG_PROGLINE) || (firstType == stringconst::ARG_GENERIC);
-	bool secondArg = (secondType == stringconst::ARG_STATEMENT) || (secondType == stringconst::ARG_ASSIGN) || (secondType == stringconst::ARG_WHILE) || (secondType == stringconst::ARG_PROGLINE) || (secondType == stringconst::ARG_GENERIC);
+	bool firstArg = (firstType == stringconst::ARG_STATEMENT) 
+		|| (firstType == stringconst::ARG_ASSIGN) 
+		|| (firstType == stringconst::ARG_WHILE) 
+		|| (firstType == stringconst::ARG_PROGLINE) 
+		|| (firstType == stringconst::ARG_GENERIC);
+	bool secondArg = (secondType == stringconst::ARG_STATEMENT) 
+		|| (secondType == stringconst::ARG_ASSIGN) 
+		|| (secondType == stringconst::ARG_WHILE) 
+		|| (secondType == stringconst::ARG_PROGLINE) 
+		|| (secondType == stringconst::ARG_GENERIC);
 	return (firstArg && secondArg);
 }
 
+/*
 void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgType, Results &resObj) {
 	if (firstArgType == stringconst::ARG_ASSIGN) {
 		StmtTable* stmtTable = StmtTable::getInstance();
-		set<Statement*> assignList = stmtTable->getAssgStmts();
+		unordered_set<Statement*> assignList = stmtTable->getAssgStmts();
 		
 		for (set<Statement*>::iterator iter = assignList.begin() ; iter != assignList.end(); iter++) {
 			Statement* stmtObj1 = *iter;
@@ -128,7 +147,7 @@ void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgT
 					string strStmt1, strStmt2;
 					ss >> strStmt1 >> strStmt2;
 
-					resObj.addPairResult(strStmt1, strStmt2);
+					//resObj.addPairResult(strStmt1, strStmt2);
 				}
 			}
 		}
@@ -152,7 +171,7 @@ void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgT
 					string strStmt1, strStmt2;
 					ss >> strStmt1 >> strStmt2;
 
-					resObj.addPairResult(strStmt1, strStmt2);
+					//resObj.addPairResult(strStmt1, strStmt2);
 				}
 			}
 		}
@@ -178,7 +197,7 @@ void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgT
 					string strStmt1, strStmt2;
 					ss >> strStmt1 >> strStmt2;
 
-					resObj.addPairResult(strStmt1, strStmt2);
+					//resObj.addPairResult(strStmt1, strStmt2);
 				}
 			}
 		}
@@ -187,12 +206,13 @@ void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgT
 		// throw error
 	}
 
-	if (resObj.getPairResults().size() > 0) {
-		resObj.setClausePassed(true);
+	//if (resObj.getPairResults().size() > 0) {
+		//resObj.setClausePassed(true);
 		//resObj.setNumOfSyn(2);
-	}
+	//}
 }
-
+*/
+/*
 void FollowsClause::followsWithOneUnderscore(string firstArgType, string secondArgType, Results &resObj) {
 	StmtTable* stmtTable = StmtTable::getInstance();
 	boost::unordered_map<int, Statement*>::iterator iter;
@@ -225,12 +245,13 @@ void FollowsClause::followsWithOneUnderscore(string firstArgType, string secondA
 				string strStmt2;
 				ss >> strStmt2;
 
-				resObj.addSingleResult(strStmt2);
+				//resObj.addSingleResult(strStmt2);
 			}
 		}
 	}	
 }
-
+*/
+/*
 Results FollowsClause::evaluate(void) {
 	Results* resultsObj = new Results();
 	bool isFirstFixed = this->getFirstArgFixed();
@@ -239,7 +260,8 @@ Results FollowsClause::evaluate(void) {
 	string secondArgSyn = this->getSecondArg();
 	string firstArgType = this->getFirstArgType();
 	string secondArgType = this->getSecondArgType();
-
+	*/
+	/*
 	if (isFirstFixed && isSecondFixed) {
 		bool isClauseTrue = isFollows(firstArgSyn, secondArgSyn);
 		resultsObj->setClausePassed(isClauseTrue);
@@ -302,8 +324,81 @@ Results FollowsClause::evaluate(void) {
 		}
 		return resObj;
 
-	} else {
+	} else {*/
 		// Error
-		return *resultsObj;
+		//return *resultsObj;
+	//}
+	
+//}
+
+//Follows(1,2)
+bool FollowsClause::evaluateS1FixedS2Fixed(string s1, string s2){
+	bool isClauseTrue = isFollows(s1, s2);
+	return isClauseTrue;
+}
+
+//e.g. Follows(_,_)
+bool FollowsClause::evaluateS1GenericS2Generic(){
+	unordered_set<Statement*> stmts = stmtTable->getAllStmts();
+	for (unordered_set<Statement*>::iterator iter = stmts.begin(); iter != stmts.end(); iter++){
+		Statement* current = *iter;
+		int a = current->getFollowsAfter();
+		int b = current->getFollowsBefore();
+		if (a != -1 || b != -1){
+			return true;
+		}
 	}
+	return false;
+}
+//e.g. Follows(_,2) bool
+bool FollowsClause::evaluateS1GenericS2Fixed(string s2){
+	Statement* stmt = stmtTable->getStmtObj(lexical_cast<int>(s2));
+	int a = stmt->getFollowsBefore();
+	return (a != -1);
+}
+//Follows(1,_) bool
+bool FollowsClause::evaluateS1FixedS2Generic(string s1){
+	Statement* stmt = stmtTable->getStmtObj(lexical_cast<int>(s1));
+	int a = stmt->getFollowsAfter();
+	return (a != -1);
+}
+//Follows(s1,_)
+unordered_set<string> FollowsClause::getAllS2WithS1Fixed(string s1){
+	Statement* stmt = stmtTable->getStmtObj(lexical_cast<int>(s1));
+	int a = stmt->getFollowsAfter();
+	unordered_set<string> results;
+	results.insert(lexical_cast<string>(a));
+	return results;
+}
+//Parent(_,s2)
+//is this necessary for follows???
+
+unordered_set<string> FollowsClause::getAllS2(){
+	unordered_set<string> asd;
+	return asd;
+}
+
+//Follows(_,s2)
+unordered_set<string> FollowsClause::getAllS1WithS2Fixed(string s2){
+	Statement* stmt = stmtTable->getStmtObj(lexical_cast<int>(s2));
+	int a = stmt->getFollowsBefore();
+	unordered_set<string> results;
+	results.insert(lexical_cast<string>(a));
+	return results;
+}
+//Follows(s1,__)
+//is this necessary for follows???
+
+unordered_set<string> FollowsClause::getAllS1(){
+	unordered_set<string> asd;
+	return asd;
+}
+
+
+//Follows(s1,s2)
+//is this necessary for follows???
+
+Results::ResultsTable* FollowsClause::getAllS1AndS2(){
+	Results::ResultsTable* asd = new Results::ResultsTable();
+	return asd;
 }

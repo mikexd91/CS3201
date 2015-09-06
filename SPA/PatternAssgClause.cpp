@@ -349,34 +349,34 @@ Results::ResultsTable* PatternAssgClause::evaluateVarSynExprFixed() {
 	return res;
 }
 
-vector<int> PatternAssgClause::getAssgNums(Results res, string synonym) {
-	vector<int> assgNums = vector<int>();
-
-	if (res.hasResults(synonym)) {
-		cout << "has results";
-		// get the result set and convert that to assg statements
-		unordered_set<string> synValues = res.selectSyn(synonym);
-
-		for (unordered_set<string>::iterator iter = synValues.begin(); iter != synValues.end(); iter++) {
-			int stmtNum = stoi(*iter);
-			assgNums.push_back(stmtNum);
-		}
-	} else {
-		cout << "has no results";
-		// get all assignment statements
-		StmtTable* stable = StmtTable::getInstance();
-		unordered_set<Statement*> allAssg = stable->getAssgStmts();
-
-		set<Statement*>::iterator assgIter;
-		BOOST_FOREACH(Statement* assg, allAssg) {
-			assgNums.push_back(assg->getStmtNum());
-		}
-		//debug
-		assgNums.push_back(2);
-	}
-
-	return assgNums;
-}
+//vector<int> PatternAssgClause::getAssgNums(Results res, string synonym) {
+//	vector<int> assgNums = vector<int>();
+//
+//	if (res.hasResults(synonym)) {
+//		cout << "has results";
+//		// get the result set and convert that to assg statements
+//		unordered_set<string> synValues = res.selectSyn(synonym);
+//
+//		for (unordered_set<string>::iterator iter = synValues.begin(); iter != synValues.end(); iter++) {
+//			int stmtNum = stoi(*iter);
+//			assgNums.push_back(stmtNum);
+//		}
+//	} else {
+//		cout << "has no results";
+//		// get all assignment statements
+//		StmtTable* stable = StmtTable::getInstance();
+//		unordered_set<Statement*> allAssg = stable->getAssgStmts();
+//
+//		set<Statement*>::iterator assgIter;
+//		BOOST_FOREACH(Statement* assg, allAssg) {
+//			assgNums.push_back(assg->getStmtNum());
+//		}
+//		//debug
+//		assgNums.push_back(2);
+//	}
+//
+//	return assgNums;
+//}
 
 bool PatternAssgClause::matchVar(AssgNode* assgnode, string var) {
 

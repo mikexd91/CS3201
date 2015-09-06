@@ -3,6 +3,7 @@
 #include <sstream>
 #include "TestWrapper.h"
 
+
 // implementation code of WrapperFactory - do NOT modify the next 5 lines
 AbstractWrapper* WrapperFactory::wrapper = 0;
 AbstractWrapper* WrapperFactory::createWrapper() {
@@ -34,8 +35,10 @@ void TestWrapper::parse(std::string filename) {
 	// call parser.parse on the string
 	try {
 	parser->parse(programSource);
+	delete parser;
 	} catch (InvalidCodeException e) {
 		cout << e.what();
+		delete parser;
 		exit(EXIT_FAILURE);
 	}
 }
@@ -48,14 +51,16 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
 	// each result must be a string.
 	// eval the query
 	try {
-		set<string> resultSet = pqlController->parse(query);
+		unordered_set<string> resultSet = pqlController->parse(query);
 		// get results
 		// iterate through the results and stuff them into the results list
-		set<string>::iterator iter;
+		unordered_set<string>::iterator iter;
 		for (iter = resultSet.begin(); iter != resultSet.end(); ++iter) {
 			results.push_back(*iter);
 		}
-	} catch (exception e) {
+		delete pqlController;
+	} catch (std::exception e) {
 		results.push_back(e.what());
+		delete pqlController;
 	}
 }

@@ -263,9 +263,31 @@ void PDR::processWhileStmt(ParsedData data) {
 }
 
 void PDR::addCallToCurrentProcedure(Procedure* calledProcedure) {
+	VarTable* varTable = VarTable::getInstance();
+	
 	unordered_set<Procedure*> currentProcedureCalls = currentProcedure->getCalls();
 	currentProcedureCalls.insert(calledProcedure);
 	currentProcedure->setCalls(currentProcedureCalls);
+
+	unordered_set<string> modifiesToBeAdded = calledProcedure->getModifies();
+	unordered_set<string> usesToBeAdded = calledProcedure->getUses();
+	unordered_set<string> currentModifies = currentProcedure->getModifies();
+	unordered_set<string> currentUses = currentProcedure->getUses();
+
+	for(auto i = modifiesToBeAdded.begin(); i != modifiesToBeAdded.end(); i++) {
+		currentModifies.insert(*i);
+		Variable* var = varTable->getVariable(*i);
+		var->addModifyingProc(currentProcedure->getProcName());
+	}
+
+	for(auto j = usesToBeAdded.begin(); j != usesToBeAdded.end(); j++) {
+		currentUses.insert(*j);
+		Variable* var = varTable->getVariable(*j);
+		var->addUsingProc(currentProcedure->getProcName());
+	}
+
+	currentProcedure->setModifies(currentModifies);
+	currentProcedure->setUses(currentUses);
 
 	unordered_set<Procedure*> calledProcedureCalledBy = calledProcedure->getCalledBy();
 	calledProcedureCalledBy.insert(currentProcedure);
@@ -401,6 +423,10 @@ TNode* PDR::breakDownAssignExpression(ParsedData data, unordered_set<string>& us
 }
 
 void PDR::addUseToCurrentProcedure(string useVar) {
+	VarTable* varTable = VarTable::getInstance();
+	Variable* var = varTable->getVariable(useVar);
+	var->addUsingProc(currentProcedure->getProcName());
+
 	unordered_set<string> usesSet = currentProcedure->getUses();
 	usesSet.insert(useVar);
 	currentProcedure->setUses(usesSet);
@@ -409,6 +435,10 @@ void PDR::addUseToCurrentProcedure(string useVar) {
 }
 
 void PDR::addModifyToCurrentProcedure(string modifyVar) {
+	VarTable* varTable = VarTable::getInstance();
+	Variable* var = varTable->getVariable(modifyVar);
+	var->addModifyingProc(currentProcedure->getProcName());
+
 	unordered_set<string> modifiesSet = currentProcedure->getModifies();
 	modifiesSet.insert(modifyVar);
 	currentProcedure->setModifies(modifiesSet);
@@ -417,6 +447,8 @@ void PDR::addModifyToCurrentProcedure(string modifyVar) {
 }
 
 void PDR::addUsesToCalledBy(string useVar) {
+	VarTable* varTable = VarTable::getInstance();
+
 	unordered_set<Procedure*> currentProcedureCalledBy = currentProcedure->getCalledBy();
 	unordered_set<Procedure*>::iterator iter;
 	for(iter = currentProcedureCalledBy.begin(); iter != currentProcedureCalledBy.end(); iter++) {
@@ -424,10 +456,15 @@ void PDR::addUsesToCalledBy(string useVar) {
 		unordered_set<string> calledByUses = calledByProcedure->getUses();
 		calledByUses.insert(useVar);
 		calledByProcedure->setUses(calledByUses);
+
+		Variable* var = varTable->getVariable(useVar);
+		var->addUsingProc(calledByProcedure->getProcName());
 	}
 }
 
 void PDR::addModifiesToCalledBy(string modifyVar) {
+	VarTable* varTable = VarTable::getInstance();
+
 	unordered_set<Procedure*> currentProcedureCalledBy = currentProcedure->getCalledBy();
 	unordered_set<Procedure*>::iterator iter;
 	for(iter = currentProcedureCalledBy.begin(); iter != currentProcedureCalledBy.end(); iter++) {
@@ -435,6 +472,9 @@ void PDR::addModifiesToCalledBy(string modifyVar) {
 		unordered_set<string> calledByModifies = calledByProcedure->getModifies();
 		calledByModifies.insert(modifyVar);
 		calledByProcedure->setModifies(calledByModifies);
+
+		Variable* var = varTable->getVariable(modifyVar);
+		var->addModifyingProc(calledByProcedure->getProcName());
 	}
 }
 
