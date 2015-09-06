@@ -9,11 +9,12 @@
 using namespace stringconst;
 using namespace boost;
 
-StmtTable* stmtTable = StmtTable::getInstance();
-ProcTable* procTable = ProcTable::getInstance();
-VarTable* varTable = VarTable::getInstance();
+
 
 ModifiesClause::ModifiesClause(void):Clause(MODIFIES_){
+	stmtTable = StmtTable::getInstance();
+	procTable = ProcTable::getInstance();
+	varTable = VarTable::getInstance();
 }
 
 ModifiesClause::~ModifiesClause(void){
