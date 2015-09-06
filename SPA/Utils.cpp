@@ -117,12 +117,16 @@ string Utils::convertNodeTypeToArgType(NodeType stmtType) {
 		case ASSIGN_STMT_:
 			return stringconst::ARG_ASSIGN;
 		case IF_STMT_:
-			//return stringconst::ARG_IF;
+			return stringconst::ARG_IF;
 		case WHILE_STMT_:
 			return stringconst::ARG_WHILE;
+		case CALL_STMT_:
+			return stringconst::ARG_CALL;
+		default:
+			return NULL;
 	}
 
-	return NULL;
+
 }
 
 
@@ -132,6 +136,10 @@ NodeType Utils::convertArgTypeToNodeType(string stmtType) {
 		return ASSIGN_STMT_;
 	} else if (stmtType == stringconst::ARG_WHILE) {
 		return WHILE_STMT_;
+	} else if (stmtType == stringconst::ARG_IF) {
+		return IF_STMT_;
+	} else if (stmtType == stringconst::ARG_CALL) {
+		return CALL_STMT_;
 	} else {
 		return NULL_;
 	}
@@ -139,10 +147,13 @@ NodeType Utils::convertArgTypeToNodeType(string stmtType) {
 
 
 //filters the set to retrieve the statement of the specified type
-set<int> Utils::filterStatements(set<int> stmtSet, NodeType type) {
+unordered_set<int> Utils::filterStatements(unordered_set<int> stmtSet, NodeType type) {
+	if (type==NULL_) {
+		return stmtSet;
+	}
 	StmtTable * stmtTable = StmtTable::getInstance();
-	set<int>::iterator it;
-	set<int> finalValue;
+	unordered_set<int>::iterator it;
+	unordered_set<int> finalValue;
 	for (it = stmtSet.begin(); it != stmtSet.end(); ++it) {
 		Statement* currentStmt = stmtTable->getStmtObj(*it);
 		if (currentStmt->getType() == type) {

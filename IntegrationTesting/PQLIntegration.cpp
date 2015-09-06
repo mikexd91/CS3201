@@ -15,9 +15,11 @@
 #include <string>
 #include <algorithm>
 #include <boost\foreach.hpp>
+#include <boost\unordered_set.hpp>
 
 using namespace stringconst;
 using namespace std;
+using boost::unordered_set;
 
 void PQLIntegration::setUp() {
 	/* testing this source
@@ -134,7 +136,7 @@ void PQLIntegration::setUp() {
 	stmt1->setType(ASSIGN_STMT_);
 	stmt1->setFollowsAfter(2);
 	string modifiesArray1[] = {"a"};
-	set<string> mods1(modifiesArray1, modifiesArray1 + 1);
+	unordered_set<string> mods1(modifiesArray1, modifiesArray1 + 1);
 	stmt1->setModifies(mods1);
 	stmt1->setTNodeRef(assg1);
 	stable->addStmt(stmt1);
@@ -144,21 +146,21 @@ void PQLIntegration::setUp() {
 	stmt2->setType(WHILE_STMT_);
 	stmt2->setFollowsBefore(1);
 	string modifiesArray2[] = {"k", "i", "j", "b"};
-	set<string> mods2(modifiesArray2, modifiesArray2 + 4);
+	unordered_set<string> mods2(modifiesArray2, modifiesArray2 + 4);
 	string usesArray2[] = {"i", "j"};
-	set<string> uses2(usesArray2, usesArray2 + 2);
+	unordered_set<string> uses2(usesArray2, usesArray2 + 2);
 	stmt2->setModifies(mods2);
 	stmt2->setUses(uses2);
 	stmt2->setTNodeRef(while1);
 	int children2[] = {3, 4, 7};
-	stmt2->setChildren(set<int>(children2, children2+3));
+	stmt2->setChildren(unordered_set<int>(children2, children2+3));
 	stable->addStmt(stmt2);
 
 	Statement* stmt3 = new Statement();
 	stmt3->setStmtNum(3);
 	stmt3->setType(ASSIGN_STMT_);
 	stmt3->setFollowsAfter(4);
-	set<string> mods3 = set<string>();
+	unordered_set<string> mods3 = unordered_set<string>();
 	mods3.emplace("k");
 	stmt3->setModifies(mods3);
 	stmt3->setTNodeRef(assg2);
@@ -170,14 +172,14 @@ void PQLIntegration::setUp() {
 	stmt4->setType(WHILE_STMT_);
 	stmt4->setFollowsBefore(3);
 	stmt4->setFollowsAfter(7);
-	set<string> mods4 = set<string>();
+	unordered_set<string> mods4 = unordered_set<string>();
 	mods4.emplace("i");
 	mods4.emplace("j");
-	set<string> uses4 = set<string>();
+	unordered_set<string> uses4 = unordered_set<string>();
 	uses4.emplace("j");
 	stmt4->setModifies(mods4);
 	stmt4->setUses(uses4);
-	set<int> children3 = *new set<int>();
+	unordered_set<int> children3 = *new unordered_set<int>();
 	children3.emplace(5);
 	children3.emplace(6);
 	stmt4->setChildren(children3);
@@ -189,7 +191,7 @@ void PQLIntegration::setUp() {
 	stmt5->setStmtNum(5);
 	stmt5->setType(ASSIGN_STMT_);
 	stmt5->setFollowsAfter(6);
-	set<string> mods5= set<string>();
+	unordered_set<string> mods5= unordered_set<string>();
 	mods5.emplace("i");
 	stmt5->setModifies(mods5);
 	stmt5->setTNodeRef(assg3);
@@ -200,7 +202,7 @@ void PQLIntegration::setUp() {
 	stmt6->setStmtNum(6);
 	stmt6->setType(ASSIGN_STMT_);
 	stmt6->setFollowsBefore(5);
-	set<string> mods6= set<string>();
+	unordered_set<string> mods6= unordered_set<string>();
 	mods6.emplace("j");
 	stmt6->setModifies(mods6);
 	stmt6->setTNodeRef(assg4);
@@ -212,7 +214,7 @@ void PQLIntegration::setUp() {
 	stmt7->setType(ASSIGN_STMT_);
 	stmt7->setFollowsBefore(4);
 	stmt7->setFollowsAfter(8);
-	set<string> mods7= set<string>();
+	unordered_set<string> mods7= unordered_set<string>();
 	mods7.emplace("b");
 	stmt7->setModifies(mods7);
 	stmt7->setTNodeRef(assg5);
@@ -222,7 +224,7 @@ void PQLIntegration::setUp() {
 	Statement* stmt8 = new Statement();
 	stmt8->setStmtNum(8);
 	stmt8->setType(ASSIGN_STMT_);
-	set<string> mods8 = set<string>();
+	unordered_set<string> mods8 = unordered_set<string>();
 	mods8.emplace("j");
 	stmt8->setModifies(mods8);
 	stmt8->setFollowsBefore(7);
@@ -233,7 +235,7 @@ void PQLIntegration::setUp() {
 	Statement* stmt9 = new Statement();
 	stmt9->setStmtNum(9);
 	stmt9->setType(ASSIGN_STMT_);
-	set<string> mods9 = set<string>();
+	unordered_set<string> mods9 = unordered_set<string>();
 	mods9.emplace("z");
 	stmt9->setModifies(mods9);
 	stmt9->setFollowsBefore(8);

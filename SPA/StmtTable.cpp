@@ -53,28 +53,28 @@ Statement* StmtTable::getStmtObj(int stmtNum) {
 }
 
 // gets all assignment stmts
-const set<Statement*>& StmtTable::getAssgStmts() {
+const unordered_set<Statement*>& StmtTable::getAssgStmts() {
 	return assgStmtSet;
 }
 
 // gets all call stmts
-const set<Statement*>& StmtTable::getCallStmts() {
+const unordered_set<Statement*>& StmtTable::getCallStmts() {
 	return callStmtSet;
 }
 
 // gets all while stmts
-const set<Statement*>& StmtTable::getWhileStmts() {
+const unordered_set<Statement*>& StmtTable::getWhileStmts() {
 	return whileStmtSet;
 }
 
 // gets all if stmts
-const set<Statement*>& StmtTable::getIfStmts() {
+const unordered_set<Statement*>& StmtTable::getIfStmts() {
 	return ifStmtSet;
 }
 
 // gets all stmts
-const set<Statement*>& StmtTable::getAllStmts() {
-	set<Statement*>* allStmt = new set<Statement*>();
+const unordered_set<Statement*>& StmtTable::getAllStmts() {
+	unordered_set<Statement*>* allStmt = new unordered_set<Statement*>();
 	BOOST_FOREACH(auto p, table) {
 		allStmt->emplace(p.second);
 	}

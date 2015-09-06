@@ -1,7 +1,7 @@
 #include <cppunit/config/SourcePrefix.h>
 #include "ProcTableTest.h"
-#include "../../SPA/ProcTable.h"
-#include "../../SPA/Procedure.h"
+#include "../SPA/ProcTable.h"
+#include "../SPA/Procedure.h"
 
 // TEST VARIABLES
 ProcTable* table = ProcTable::getInstance();		// test proctable instance

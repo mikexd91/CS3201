@@ -23,6 +23,12 @@ class TestOne : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testProcedureModifies );
 	CPPUNIT_TEST( testNestedProceduresUses );
 	CPPUNIT_TEST( testNestedProceduresModifies );
+	CPPUNIT_TEST( testIfStatement );
+	CPPUNIT_TEST( testNestedIfStatement );
+	CPPUNIT_TEST( testUsingProc );
+	CPPUNIT_TEST( testModifyingProc );
+	CPPUNIT_TEST( testUsingMultipleProc );
+	CPPUNIT_TEST( testModifyingMultipleProc );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -53,4 +59,12 @@ public:
 	void testProcedureModifies();
 	void testNestedProceduresUses();
 	void testNestedProceduresModifies();
+
+	void testIfStatement();
+	void testNestedIfStatement();
+
+	void testUsingProc();
+	void testModifyingProc();
+	void testUsingMultipleProc();
+	void testModifyingMultipleProc();
 };

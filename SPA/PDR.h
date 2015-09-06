@@ -1,6 +1,7 @@
 
 #include <stack>
 #include <queue>
+#include <boost\unordered_set.hpp>
 
 #ifndef PDR_HEADER
 #define PDR_HEADER
@@ -29,6 +30,7 @@
 #include "ConstTable.h"
 
 using namespace std;
+using boost::unordered_set;
 
 class PDR {
 	
@@ -44,9 +46,10 @@ public:
 	int getCurrStmtNumber();
 	Procedure* getCurrentProcedure();
 	stack<TNode*> getNodeStack();
+	stack<int> getParentNumStack();
 
 private:
-	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHILE, IF, CALL};
+	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHILE, IF, ELSE, CALL};
 	enum Flag {USES, MODIFIES};
 
 	int stmtCounter;
@@ -62,13 +65,14 @@ private:
 	void processProcedureStmt(ParsedData);
 	void processAssignStmt(ParsedData);
 	void processIfStmt(ParsedData);
+	void processElseStmt(ParsedData);
 	void processWhileStmt(ParsedData);
 	void processCallStmt(ParsedData);
     void processEndProgram();
 	
     void addToStmtTable(Statement*);
-    void addToCurrProc(set<string>, Flag);
-    void addParentSet(set<string>, Flag);
+    void addToCurrProc(unordered_set<string>, Flag);
+    void addParentSet(unordered_set<string>, Flag);
     void addToVarTable(TNode*, Flag);
 	void addToConstTable(TNode*);
 	void addCallToCurrentProcedure(Procedure*);
@@ -79,6 +83,9 @@ private:
 	void addModifyToCurrentProcedure(string);
 	void addUsesToCalledBy(string);
 	void addModifiesToCalledBy(string);
+
+	void addUseProcToVarTable(set<string>);
+	void addModifyProcToVarTable(string);
     
 	void createFollowsLinks(StmtNode*, Statement*);
 	void createCurrentProcedureLinks(ProcNode*, Procedure*);
@@ -88,7 +95,7 @@ private:
 	ProcNode* retrievePreviousProc();
 
 
-    TNode* breakDownAssignExpression(ParsedData, set<string>&);
+    TNode* breakDownAssignExpression(ParsedData, unordered_set<string>&);
     
     bool isInteger(string);
 
