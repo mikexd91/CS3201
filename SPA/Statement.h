@@ -3,6 +3,9 @@
 #include <set>
 #include "TNode.h"
 //#include "GNode.h"
+#include <boost\unordered_set.hpp>
+
+using boost::unordered_set;
 
 /*
 // --------------------------- Statement --------------------------- 
@@ -32,9 +35,9 @@ class Statement {
 public:
 
 	// TYPEDEF
-	typedef set<string> UsesSet;
-	typedef set<string> ModifiesSet;
-	typedef set<int> ChildrenSet;
+	typedef unordered_set<string> UsesSet;
+	typedef unordered_set<string> ModifiesSet;
+	typedef unordered_set<int> ChildrenSet;
 
 	// CONSTRUCTOR
 	Statement();

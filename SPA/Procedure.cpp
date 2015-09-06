@@ -67,18 +67,18 @@ void Procedure::setTNodeRef(TNode *ref) {
 	TNodeRef = ref;
 }
 
-void Procedure::setUses(const set<string> &useSet) {
+void Procedure::setUses(const unordered_set<string> &useSet) {
 	uses = useSet;
 }
 
-void Procedure::setModifies(const set<string> &modifiesSet) {
+void Procedure::setModifies(const unordered_set<string> &modifiesSet) {
 	modifies = modifiesSet;
 }
 
-void Procedure::setCalls(const set<Procedure*> &callsSet) {
+void Procedure::setCalls(const unordered_set<Procedure*> &callsSet) {
 	calls = callsSet;
 }
 
-void Procedure::setCalledBy(const set<Procedure*> &calledBySet) {
+void Procedure::setCalledBy(const unordered_set<Procedure*> &calledBySet) {
 	calledBy = calledBySet;
 }
