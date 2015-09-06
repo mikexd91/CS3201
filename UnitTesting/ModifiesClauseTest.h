@@ -6,41 +6,50 @@
 class ModifiesClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( ModifiesClauseTest );
 
-	//CPPUNIT_TEST( testFixedFixedStmtPass );
-	//CPPUNIT_TEST( testFixedFixedStmtFail );
-	//CPPUNIT_TEST( testFixedFixedProcPass );
-	//CPPUNIT_TEST( testFixedFixedProcFail );
+	CPPUNIT_TEST( testFixedFixedStmtPass );
+	CPPUNIT_TEST( testFixedFixedStmtFail );
+	CPPUNIT_TEST( testFixedFixedProcPass );
+	CPPUNIT_TEST( testFixedFixedProcFail );
 
-	//CPPUNIT_TEST( testGenericGenericPass );
-	//CPPUNIT_TEST( testGenericFixedPass );
-	//CPPUNIT_TEST( testGenericFixedFail );
+	CPPUNIT_TEST( testGenericGenericPass );
+	CPPUNIT_TEST( testGenericFixedPass );
+	CPPUNIT_TEST( testGenericFixedFail );
 
-	//CPPUNIT_TEST( testFixedGenericStmtPass );
-	//CPPUNIT_TEST( testFixedGenericStmtFail );
-	//CPPUNIT_TEST( testFixedGenericProcPass );
-	//CPPUNIT_TEST( testFixedGenericProcFail );
+	CPPUNIT_TEST( testFixedGenericStmtPass );
+	CPPUNIT_TEST( testFixedGenericStmtFail );
+	CPPUNIT_TEST( testFixedGenericProcPass );
+	CPPUNIT_TEST( testFixedGenericProcFail );
 
-	//CPPUNIT_TEST( testFixedSynStmtPass );
-	//CPPUNIT_TEST( testFixedSynStmtFail );
-	//CPPUNIT_TEST( testFixedSynProcPass );
-	//CPPUNIT_TEST( testFixedSynProcFail );
+	CPPUNIT_TEST( testFixedSynStmtPass );
+	CPPUNIT_TEST( testFixedSynStmtFail );
+	CPPUNIT_TEST( testFixedSynProcPass );
+	CPPUNIT_TEST( testFixedSynProcFail );
 
-	//CPPUNIT_TEST ( testGenericSynPass );
+	CPPUNIT_TEST ( testGenericSynPass );
 
-	//CPPUNIT_TEST( testSynFixedStmtPass );
-	//CPPUNIT_TEST( testSynFixedStmtFail );
-	//CPPUNIT_TEST( testSynFixedProcPass );
-	//CPPUNIT_TEST( testSynFixedProcFail );
-	//CPPUNIT_TEST( testSynFixedWhilePass );
-	//CPPUNIT_TEST( testSynFixedWhileFail );
-	//CPPUNIT_TEST( testSynFixedIfPass );
-	//CPPUNIT_TEST( testSynFixedIfFail );
-	//CPPUNIT_TEST( testSynFixedAssgPass );
-	//CPPUNIT_TEST( testSynFixedAssgFail );
+	CPPUNIT_TEST( testSynFixedStmtPass );
+	CPPUNIT_TEST( testSynFixedStmtFail );
+	CPPUNIT_TEST( testSynFixedProcPass );
+	CPPUNIT_TEST( testSynFixedProcFail );
+	CPPUNIT_TEST( testSynFixedWhilePass );
+	CPPUNIT_TEST( testSynFixedWhileFail );
+	CPPUNIT_TEST( testSynFixedIfPass );
+	CPPUNIT_TEST( testSynFixedIfFail );
+	CPPUNIT_TEST( testSynFixedAssgPass );
+	CPPUNIT_TEST( testSynFixedAssgFail );
 
 	CPPUNIT_TEST( testSynGenericProcPass );
 	CPPUNIT_TEST( testSynGenericIfPass );
-	
+	CPPUNIT_TEST( testSynGenericWhilePass );
+	CPPUNIT_TEST( testSynGenericStmtPass );
+	CPPUNIT_TEST( testSynGenericAssgPass );	
+
+	CPPUNIT_TEST( testSynSynProcPass );
+	CPPUNIT_TEST( testSynSynIfPass );
+	CPPUNIT_TEST( testSynSynWhilePass );
+	CPPUNIT_TEST( testSynSynStmtPass );
+	CPPUNIT_TEST( testSynSynAssgPass );
+
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -66,7 +75,6 @@ public:
 	void testFixedSynStmtFail();
 	void testFixedSynProcPass();
 	void testFixedSynProcFail();
-
 	void testGenericSynPass();
 
 	void testSynFixedStmtPass();
@@ -86,9 +94,11 @@ public:
 	void testSynGenericStmtPass();
 	void testSynGenericAssgPass();
 
-	//void test
-
-	//void test
+	void testSynSynProcPass();
+	void testSynSynIfPass();
+	void testSynSynWhilePass();
+	void testSynSynStmtPass();
+	void testSynSynAssgPass();
 
 	//void testModifiesFixedFixed();
 	//void testModifiesSynFixed();

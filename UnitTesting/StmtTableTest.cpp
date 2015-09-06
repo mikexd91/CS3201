@@ -1,8 +1,8 @@
 #include <cppunit/config/SourcePrefix.h>
 #include "StmtTableTest.h"
-#include "../../SPA/StmtTable.h"
-#include "../../SPA/Statement.h"
-#include "../../SPA/TNode.h"
+#include "../SPA/StmtTable.h"
+#include "../SPA/Statement.h"
+#include "../SPA/TNode.h"
 
 // TEST VARIABLES
 StmtTable* table = StmtTable::getInstance();		// test stmttable instance
@@ -68,10 +68,10 @@ void StmtTableTest::testGetAssgStmts() {
 	table->addStmt(assg4);
 
 	// Check that assignment statement set returns statements correctly
-	set<Statement*> result = table->getAssgStmts();
+	unordered_set<Statement*> result = table->getAssgStmts();
 	CPPUNIT_ASSERT_EQUAL((size_t)4, result.size());
 
-	set<Statement*>::iterator iter;
+	unordered_set<Statement*>::iterator iter;
 	for(iter=result.begin(); iter!=result.end(); iter++) {
 		CPPUNIT_ASSERT_EQUAL(ASSIGN_STMT_, (*iter)->getType());
 	}
@@ -92,10 +92,10 @@ void StmtTableTest::testGetCallStmts() {
 	table->addStmt(call4);
 
 	// Check that call statement set returns statements correctly
-	set<Statement*> result = table->getCallStmts();
+	unordered_set<Statement*> result = table->getCallStmts();
 	CPPUNIT_ASSERT_EQUAL((size_t)4, result.size());
 
-	set<Statement*>::iterator iter;
+	unordered_set<Statement*>::iterator iter;
 	for(iter=result.begin(); iter!=result.end(); iter++) {
 		CPPUNIT_ASSERT_EQUAL(CALL_STMT_, (*iter)->getType());
 	}
@@ -116,8 +116,8 @@ void StmtTableTest::testGetWhileStmts() {
 	table->addStmt(while4);
 
 	// Check that while statement set returns statements correctly
-	set<Statement*> result = table->getWhileStmts();
-	set<Statement*>::iterator iter;
+	unordered_set<Statement*> result = table->getWhileStmts();
+	unordered_set<Statement*>::iterator iter;
 	CPPUNIT_ASSERT_EQUAL((size_t)4, result.size());
 
 	for(iter=result.begin(); iter!=result.end(); iter++) {
@@ -140,10 +140,10 @@ void StmtTableTest::testGetIfStmts() {
 	table->addStmt(if4);
 
 	// Check that if statement set returns statements correctly
-	set<Statement*> result = table->getIfStmts();
+	unordered_set<Statement*> result = table->getIfStmts();
 	CPPUNIT_ASSERT_EQUAL((size_t)4, result.size());
 
-	set<Statement*>::iterator iter;
+	unordered_set<Statement*>::iterator iter;
 	for(iter=result.begin(); iter!=result.end(); iter++) {
 		CPPUNIT_ASSERT_EQUAL(IF_STMT_, (*iter)->getType());
 	}
@@ -160,6 +160,6 @@ void StmtTableTest:: testFalseGetStmts() {
 	table->clearTable();
 
 	// Check that assgStmt is not in the set of while statements
-	set<Statement*> result = table->getWhileStmts();
+	unordered_set<Statement*> result = table->getWhileStmts();
 	CPPUNIT_ASSERT_EQUAL((size_t)0, result.size());
 }

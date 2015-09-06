@@ -19,8 +19,6 @@
 using namespace stringconst;
 using namespace std;
 
-// note: while stmt not tested yet
-
 void ModifiesClauseTest::setUp() {
 	/* testing this source
 	procedure zumba {
@@ -822,4 +820,116 @@ void ModifiesClauseTest::testSynGenericWhilePass() {
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
 	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+}
+
+void ModifiesClauseTest::testSynGenericStmtPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("s");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_STATEMENT);
+	mod->setSecondArg("_");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 11);
+}
+
+void ModifiesClauseTest::testSynGenericAssgPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("a");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_ASSIGN);
+	mod->setSecondArg("_");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 9);
+}
+
+void ModifiesClauseTest::testSynSynProcPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("p");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_PROCEDURE);
+	mod->setSecondArg("v");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 7);
+}
+
+void ModifiesClauseTest::testSynSynIfPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("if");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_IF);
+	mod->setSecondArg("v");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 2);
+}
+
+void ModifiesClauseTest::testSynSynWhilePass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("w");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_WHILE);
+	mod->setSecondArg("v");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+}
+
+void ModifiesClauseTest::testSynSynStmtPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("s");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_STATEMENT);
+	mod->setSecondArg("v");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 12);
+}
+
+void ModifiesClauseTest::testSynSynAssgPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("a");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_ASSIGN);
+	mod->setSecondArg("v");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 9);
 }
