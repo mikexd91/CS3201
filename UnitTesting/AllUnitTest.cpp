@@ -37,6 +37,7 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("FollowsClauseTest"
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("FollowsStarClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("UsesClauseTest").makeTest());
 */
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ParentClauseTest").makeTest());
 // PQL Evaluator
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ResultsTest").makeTest());
 
