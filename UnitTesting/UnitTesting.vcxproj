@@ -128,7 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ModifiesClauseTest.cpp" />
-    <ClCompile Include="source\AllUnitTest.cpp" />
+    <ClCompile Include="AllUnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModifiesClauseTest.h" />
