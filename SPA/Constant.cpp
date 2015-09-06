@@ -2,8 +2,8 @@
 
 #include "Constant.h"
 #include <boost/lexical_cast.hpp>
+#include <boost/foreach.hpp>
 
-using namespace boost;
 using namespace std;
 
 /* ----------------------------- */
@@ -11,16 +11,16 @@ using namespace std;
 /* ----------------------------- */
 // empty contructor (null attributes)
 Constant::Constant() {
-	appearsIn = set<int>();
-	nodes = set<TNode*>();
+	appearsIn = unordered_set<int>();
+	nodes = unordered_set<TNode*>();
 }
 
 Constant::Constant(const string &name) {
 	Constant();
 	constName = name;
 	value = lexical_cast<int>(name);
-	appearsIn = set<int>();
-	nodes = set<TNode*>();
+	appearsIn = unordered_set<int>();
+	nodes = unordered_set<TNode*>();
 }
 
 
@@ -38,12 +38,12 @@ int Constant::getValue() {
 }
 
 // get set of references to TNodes
-const set<TNode*>& Constant::getTNodes() {
+const unordered_set<TNode*>& Constant::getTNodes() {
 	return nodes;
 }
 
 // get set of stmt numbers const appears in
-const set<int>& Constant::getAppearsIn() {
+const unordered_set<int>& Constant::getAppearsIn() {
 	return appearsIn;
 }
 
@@ -61,4 +61,10 @@ void Constant::addTNodeRef(TNode *node) {
 
 void Constant::addAppearsIn(int stmtNum) {
 	appearsIn.emplace(stmtNum);
+}
+
+void Constant::setAppearsIn(const unordered_set<int> &stmts) {
+	BOOST_FOREACH(auto s, stmts) {
+		appearsIn.emplace(s);
+	}
 }
