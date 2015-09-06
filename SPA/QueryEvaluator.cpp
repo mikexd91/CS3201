@@ -1,5 +1,6 @@
 #include "QueryEvaluator.h"
 #include <boost/lexical_cast.hpp>
+#include<iostream>
 
 using namespace std;
 
@@ -194,6 +195,8 @@ unordered_set<string> QueryEvaluator::getAllProc() {
 		string procName = procObj->getProcName();
 		procNameSet.insert(procName);
 	}
+
+	cout << procSet.size() << endl;
 	return procNameSet;
 }
 
