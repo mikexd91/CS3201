@@ -593,18 +593,21 @@ void FrontEndTest::testUsingMultipleProc() {
 }
 
 void FrontEndTest::testModifyingMultipleProc() {
-	parser.parse("procedure proc1 { x = 3;} procedure proc2 { y = 4;} procedure proc3 {x = 4; if a then {w = 3;} else {z = 4;}}");
+	parser.parse("procedure proc1 { x = 3; } procedure proc2 { y = 4; } procedure proc3 {x = 4; if a then {w = 3;} else {z = 4;}}");
 
 	Variable* varW = varTable1->getVariable("w");
 	Variable* varX = varTable1->getVariable("x");
 	Variable* varY = varTable1->getVariable("y");
 	Variable* varZ = varTable1->getVariable("z");	
 
+	Procedure* procedure1 = procTable->getProcObj("proc1");
+	CPPUNIT_ASSERT(procedure1->getModifies().find("x") != procedure1->getModifies().end());
+
 	string first[] = {"proc2"};
 	unordered_set<string> firstSet(first, first + 1);
 	CPPUNIT_ASSERT(varY->getModifiedByProc() == firstSet);
 
-	string second[] = {"proc1", "proc3"};
+	string second[] = {"proc1", "proc3" };
 	unordered_set<string> secondSet(second, second + 2);
 	CPPUNIT_ASSERT(varX->getModifiedByProc() == secondSet);
 
@@ -612,4 +615,30 @@ void FrontEndTest::testModifyingMultipleProc() {
 	unordered_set<string> thirdSet(third, third + 1);
 	CPPUNIT_ASSERT(varW->getModifiedByProc() == thirdSet);
 	CPPUNIT_ASSERT(varZ->getModifiedByProc() == thirdSet);
+}
+
+void FrontEndTest::testModifyingMultipleProcCall() {
+	parser.parse("procedure proc1 { x = 3; } procedure proc2 { call proc1; }");
+
+	Variable* varX = varTable1->getVariable("x");
+
+	Procedure* procedure2 = procTable->getProcObj("proc2");
+	CPPUNIT_ASSERT(procedure2->getModifies().find("x") != procedure2->getModifies().end());
+
+	string first[] = {"proc1", "proc2"};
+	unordered_set<string> firstSet(first, first + 2);
+	CPPUNIT_ASSERT(varX->getModifiedByProc() == firstSet);
+}
+
+void FrontEndTest::testUsingMultipleProcCall() {
+	parser.parse("procedure proc1 { if x then { i=1; } else { z=2;} } procedure proc2 { call proc1; }");
+
+	Variable* varX = varTable1->getVariable("x");
+
+	Procedure* procedure2 = procTable->getProcObj("proc2");
+	CPPUNIT_ASSERT(procedure2->getUses().find("x") != procedure2->getUses().end());
+
+	string first[] = {"proc1", "proc2"};
+	unordered_set<string> firstSet(first, first + 2);
+	CPPUNIT_ASSERT(varX->getUsedByProc() == firstSet);
 }
