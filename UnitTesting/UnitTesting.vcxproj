@@ -145,6 +145,7 @@
     <ClCompile Include="PDRTest.cpp" />
     <ClCompile Include="ProcNodeTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
+    <ClCompile Include="QueryEvaluatorTest.cpp" />
     <ClCompile Include="ResultsTest.cpp" />
     <ClCompile Include="AllUnitTest.cpp" />
     <ClCompile Include="ProcTableTest.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="PDRTest.h" />
     <ClInclude Include="ProcNodeTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
+    <ClInclude Include="QueryEvaluatorTest.h" />
     <ClInclude Include="ResultsTest.h" />
     <ClInclude Include="ProcTableTest.h" />
     <ClInclude Include="TNodeTest.h" />
