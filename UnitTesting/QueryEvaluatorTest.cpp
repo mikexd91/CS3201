@@ -404,35 +404,220 @@ void QueryEvaluatorTest::testEvaluateParentFixedFixedFail() {
 }
 
 void QueryEvaluatorTest::testEvaluateParentSynFixedPass() {
+	QueryEvaluator *qe = new QueryEvaluator();
+	
+	StringPair *p = new StringPair();
+	p->setFirst("s");
+	p->setSecond(ARG_STATEMENT);
+	Query *q = new Query();
+	q->addSelectSynonym(*p);
+	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
 
+	ParentClause* m1 = new ParentClause();
+	m1->setFirstArg("s");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("4");
+	m1->setSecondArgFixed(true);
+	m1->setSecondArgType(ARG_STATEMENT);
+	q->addClause(m1);
+
+	Results* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->hasResults("s") == true);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	
+	delete qe;
+	delete p;
+	delete q;
+	delete m1;
+	delete result;
 }
 
 void QueryEvaluatorTest::testEvaluateParentSynFixedFail() {
+	QueryEvaluator *qe = new QueryEvaluator();
+	
+	StringPair *p = new StringPair();
+	p->setFirst("s");
+	p->setSecond(ARG_STATEMENT);
+	Query *q = new Query();
+	q->addSelectSynonym(*p);
+	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
 
+	ParentClause* m1 = new ParentClause();
+	m1->setFirstArg("s");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("1");
+	m1->setSecondArgFixed(true);
+	m1->setSecondArgType(ARG_STATEMENT);
+	q->addClause(m1);
+
+	Results* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->hasResults("s") == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	
+	delete qe;
+	delete p;
+	delete q;
+	delete m1;
+	delete result;
 }
 
 void QueryEvaluatorTest::testEvaluateParentFixedSynPass() {
+	QueryEvaluator *qe = new QueryEvaluator();
+	
+	StringPair *p = new StringPair();
+	p->setFirst("s");
+	p->setSecond(ARG_STATEMENT);
+	Query *q = new Query();
+	q->addSelectSynonym(*p);
+	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
 
+	ParentClause* m1 = new ParentClause();
+	m1->setFirstArg("1");
+	m1->setFirstArgFixed(true);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("s");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_STATEMENT);
+	q->addClause(m1);
+
+	Results* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->hasResults("s") == true);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 3);
+	
+	delete qe;
+	delete p;
+	delete q;
+	delete m1;
+	delete result;
 }
 
 void QueryEvaluatorTest::testEvaluateParentFixedSynPassWithWhile() {
+	QueryEvaluator *qe = new QueryEvaluator();
+	
+	StringPair *p = new StringPair();
+	p->setFirst("w");
+	p->setSecond(ARG_WHILE);
+	Query *q = new Query();
+	q->addSelectSynonym(*p);
+	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
 
+	ParentClause* m1 = new ParentClause();
+	m1->setFirstArg("1");
+	m1->setFirstArgFixed(true);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("w");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_WHILE);
+	q->addClause(m1);
+
+	Results* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->hasResults("w") == true);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	
+	delete qe;
+	delete p;
+	delete q;
+	delete m1;
+	delete result;
 }
 
 void QueryEvaluatorTest::testEvaluateParentFixedSynFail() {
+	QueryEvaluator *qe = new QueryEvaluator();
+	
+	StringPair *p = new StringPair();
+	p->setFirst("s");
+	p->setSecond(ARG_STATEMENT);
+	Query *q = new Query();
+	q->addSelectSynonym(*p);
+	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
 
+	ParentClause* m1 = new ParentClause();
+	m1->setFirstArg("2");
+	m1->setFirstArgFixed(true);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("s");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_STATEMENT);
+	q->addClause(m1);
+
+	Results* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->hasResults("s") == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	
+	delete qe;
+	delete p;
+	delete q;
+	delete m1;
+	delete result;
 }
 
 void QueryEvaluatorTest::testEvaluateParentFixedSynFailWithWhile() {
+	QueryEvaluator *qe = new QueryEvaluator();
+	
+	StringPair *p = new StringPair();
+	p->setFirst("w");
+	p->setSecond(ARG_WHILE);
+	Query *q = new Query();
+	q->addSelectSynonym(*p);
+	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
 
+	ParentClause* m1 = new ParentClause();
+	m1->setFirstArg("4");
+	m1->setFirstArgFixed(true);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("w");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_WHILE);
+
+	Results* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->hasResults("w") == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	
+	delete qe;
+	delete p;
+	delete q;
+	delete m1;
+	delete result;
 }
 
 void QueryEvaluatorTest::testEvaluateParentSynSynPass() {
-
+	// Dont understand pn's code
 }
 
 void QueryEvaluatorTest::testEvaluateParentSynSynPassWithWhile() {
+	QueryEvaluator *qe = new QueryEvaluator();
+	
+	StringPair *p1 = new StringPair();
+	p1->setFirst("s1");
+	p1->setSecond(ARG_STATEMENT);
+	StringPair *p2 = new StringPair();
+	p2->setFirst("w1");
+	p2->setSecond(ARG_WHILE);
 
+	Query *q = new Query();
+	q->addSelectSynonym(*p1);
+	q->addSelectSynonym(*p2);
+	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
+
+	ParentClause* m1 = new ParentClause();
+	m1->setFirstArg("4");
+	m1->setFirstArgFixed(true);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("w");
+	m1->setSecondArgFixed(false);
+	m1->setSecondArgType(ARG_WHILE);
+
+	Results* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->hasResults("w") == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	
+	delete qe;
+	delete p;
+	delete q;
+	delete m1;
+	delete result;
 }
 
 void QueryEvaluatorTest::testEvaluateParentSynSynPassWithIf() {
