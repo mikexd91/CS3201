@@ -775,3 +775,51 @@ void ModifiesClauseTest::testSynFixedAssgFail() {
 	CPPUNIT_ASSERT(evalResult == false);
 	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
 }
+
+void ModifiesClauseTest::testSynGenericProcPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("p");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_PROCEDURE);
+	mod->setSecondArg("_");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+}
+
+void ModifiesClauseTest::testSynGenericIfPass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("if");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_IF);
+	mod->setSecondArg("_");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+}
+
+void ModifiesClauseTest::testSynGenericWhilePass() {
+	Results* result = new Results();
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("if");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_IF);
+	mod->setSecondArg("_");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(mod->isValid());
+
+	bool evalResult = mod->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+}
