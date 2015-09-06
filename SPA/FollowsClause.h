@@ -11,15 +11,13 @@ public:
 	bool isValid(void)=0;
 
 	Results evaluate(void);
+	//string getFollows(string stmtNum, string unfixedStmtType);			// gets list of statements that follows stmtNum
+	//string getFollowedBy(string stmtNum, string unfixedStmtType);		// gets list of statements that stmtNum follows
+	//bool checkIsSameType(NodeType type, string stmtType);
+	//void followsBothUnfixedArg(string firstArgType, string secondArgType, Results &resObj);
+	//void followsWithOneUnderscore(string firstArgType, string secondArgType, Results &resObj);
 
-	bool isFollows(string stmtNum1, string stmtNum2);
-	string getFollows(string stmtNum, string unfixedStmtType);			// gets list of statements that follows stmtNum
-	string getFollowedBy(string stmtNum, string unfixedStmtType);		// gets list of statements that stmtNum follows
-	bool checkIsSameType(NodeType type, string stmtType);
-	void followsBothUnfixedArg(string firstArgType, string secondArgType, Results &resObj);
-	void followsWithOneUnderscore(string firstArgType, string secondArgType, Results &resObj);
-
-private:
+protected:
 	
 	bool evaluateS1FixedS2Fixed(string, string)=0;
 	//e.g. Parent(_,_)
@@ -38,5 +36,9 @@ private:
 	unordered_set<string> getAllS1()=0;
 	//Parent(s1,s2)
 	Results::ResultsTable* getAllS1AndS2()=0;
+
+private:
+
+	bool isFollows(string stmtNum1, string stmtNum2);
 };
 

@@ -1,12 +1,13 @@
 #include "FollowsClause.h"
 #include "Utils.h"
 #include "StmtTable.h"
+#include "Utils.h"
 #include <string>
 #include <iostream>
 #include <sstream>
-#include "boost\lexical_cast.hpp"
-#include "boost\unordered_set.hpp"
-#include "boost\foreach.hpp"
+#include <boost/lexical_cast.hpp>
+#include <boost/unordered_set.hpp>
+#include <boost/foreach.hpp>
 
 using namespace stringconst;
 using boost::unordered_set;
@@ -19,7 +20,7 @@ FollowsClause::FollowsClause(void):Clause(FOLLOWS_){
 
 FollowsClause::~FollowsClause(void){
 }
-
+/*
 bool FollowsClause::checkIsSameType(NodeType type, string stmtType) {
 	if ((stmtType == stringconst::ARG_STATEMENT) ||
 		(type == WHILE_STMT_ && stmtType == stringconst::ARG_WHILE) ||
@@ -83,7 +84,7 @@ string FollowsClause::getFollowedBy(string stmtNum, string unfixedStmtType) {
 	}
 	return "-1";
 }
-
+*/
 bool FollowsClause::isFollows(string stmtNum1, string stmtNum2) {
 	StmtTable* table = StmtTable::getInstance();
 	int stmt1 = stoi(stmtNum1);
@@ -211,7 +212,7 @@ void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgT
 	//}
 }
 */
-
+/*
 void FollowsClause::followsWithOneUnderscore(string firstArgType, string secondArgType, Results &resObj) {
 	StmtTable* stmtTable = StmtTable::getInstance();
 	boost::unordered_map<int, Statement*>::iterator iter;
@@ -249,7 +250,7 @@ void FollowsClause::followsWithOneUnderscore(string firstArgType, string secondA
 		}
 	}	
 }
-
+*/
 Results FollowsClause::evaluate(void) {
 	Results* resultsObj = new Results();
 	bool isFirstFixed = this->getFirstArgFixed();
@@ -336,7 +337,7 @@ bool FollowsClause::evaluateS1FixedS2Fixed(string s1, string s2){
 }
 
 //e.g. Follows(_,_)
-bool evaluateS1GenericS2Generic(){
+bool FollowsClause::evaluateS1GenericS2Generic(){
 	unordered_set<Statement*> stmts = stmtTable->getAllStmts();
 	for (unordered_set<Statement*>::iterator iter = stmts.begin(); iter != stmts.end(); iter++){
 		Statement* current = *iter;

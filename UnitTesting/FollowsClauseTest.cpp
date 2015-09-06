@@ -9,7 +9,6 @@
 #include "../SPA/StmtTable.h"
 #include "boost\unordered_set.hpp"
 
-#include <iostream>
 #include <string>
 
 using namespace std;
@@ -220,9 +219,14 @@ void FollowsClauseTest::tearDown() {
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( FollowsClauseTest );
 
+
+
+
+
 // Test argument-type combinations of Follows(a,b) where a and b are unfixed
 void FollowsClauseTest::testIsFollows() { 
 	// Test Follows(a1, a2) where a1 and a2 are both assign
+	Results* result = new Results();
 	FollowsClause* fol = new FollowsClause();
 	fol->setFirstArg("a1");
 	fol->setSecondArg("a2");
