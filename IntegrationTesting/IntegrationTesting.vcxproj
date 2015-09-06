@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="IntegrationTest.cpp" />
     <ClCompile Include="FrontEndTest.cpp" />
+    <ClCompile Include="IntegrationTest.cpp" />
     <ClCompile Include="PQLIntegration.cpp" />
   </ItemGroup>
   <ItemGroup>
