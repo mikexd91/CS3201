@@ -128,10 +128,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="PatternAssgClauseTest.cpp" />
+    <ClCompile Include="PatternIfClauseTest.cpp" />
     <ClCompile Include="source\AllUnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PatternAssgClauseTest.h" />
+    <ClInclude Include="PatternIfClauseTest.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
