@@ -280,32 +280,32 @@ void QueryEvaluatorTest::setUp() {
 	ConstTable* constTable = ConstTable::getInstance();
 
 	Constant* c1 = new Constant("1");
-	int lineNumberArr[] = {1};
-	unordered_set<int> constSet1(lineNumberArr, lineNumberArr + 1);
+	int lineNumberArr1[] = {1};
+	unordered_set<int> constSet1(lineNumberArr1, lineNumberArr1 + 1);
 	c1->setAppearsIn(constSet1);
 	constTable->addConst(c1);
 
 	Constant* c2 = new Constant("2");
-	int lineNumberArr[] = {1, 2, 10};
-	unordered_set<int> constSet2(lineNumberArr, lineNumberArr + 3);
+	int lineNumberArr2[] = {1, 2, 10};
+	unordered_set<int> constSet2(lineNumberArr2, lineNumberArr2 + 3);
 	c2->setAppearsIn(constSet2);
 	constTable->addConst(c2);
 
 	Constant* c3 = new Constant("3");
-	int lineNumberArr[] = {2, 3};
-	unordered_set<int> constSet3(lineNumberArr, lineNumberArr + 2);
+	int lineNumberArr3[] = {2, 3};
+	unordered_set<int> constSet3(lineNumberArr3, lineNumberArr3 + 2);
 	c3->setAppearsIn(constSet3);
 	constTable->addConst(c3);
 
 	Constant* c4 = new Constant("4");
-	int lineNumberArr[] = {2, 8};
-	unordered_set<int> constSet4(lineNumberArr, lineNumberArr + 2);
+	int lineNumberArr4[] = {2, 8};
+	unordered_set<int> constSet4(lineNumberArr4, lineNumberArr4 + 2);
 	c4->setAppearsIn(constSet4);
 	constTable->addConst(c4);
 
 	Constant* c6 = new Constant("6");
-	int lineNumberArr[] = {11};
-	unordered_set<int> constSet5(lineNumberArr, lineNumberArr + 1);
+	int lineNumberArr5[] = {11};
+	unordered_set<int> constSet5(lineNumberArr5, lineNumberArr5 + 1);
 	c6->setAppearsIn(constSet5);
 	constTable->addConst(c6);
 
@@ -546,12 +546,12 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectConstSyn() {
 	qe->setCategory(SynListConstants::NONE_IN_CLAUSE);
 
 	Results* result = qe->evaluateQuery(*q);
-	cout << result->getResultsTableSize() << endl;
 	CPPUNIT_ASSERT(result->hasResults("g") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 9);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 5);
 	
 	delete qe;
 	delete p;
 	delete q;
 	delete result;
 }
+
