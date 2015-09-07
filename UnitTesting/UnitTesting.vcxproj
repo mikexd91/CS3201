@@ -128,11 +128,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AllUnitTest.cpp" />
+    <ClCompile Include="AllUnitTest.cpp" />
     <ClCompile Include="AssgNodeTest.cpp" />
     <ClCompile Include="ASTTest.cpp" />
     <ClCompile Include="CallNodeTest.cpp" />
     <ClCompile Include="ConstNodeTest.cpp" />
     <ClCompile Include="ConstTableTest.cpp" />
+    <ClCompile Include="FollowsClauseTest.cpp" />
     <ClCompile Include="IfNodeTest.cpp" />
     <ClCompile Include="ModifiesClauseTest.cpp" />
     <ClCompile Include="OpNodeTest.cpp" />
@@ -140,14 +142,15 @@
     <ClCompile Include="ParserTest.cpp" />
     <ClCompile Include="PatternAssgClauseTest.cpp" />
     <ClCompile Include="PatternAssgTest.cpp" />
+    <ClCompile Include="PatternIfClauseTest.cpp" />
+    <ClCompile Include="PatternWhileClauseTest.cpp" />
     <ClCompile Include="PDRTest.cpp" />
     <ClCompile Include="ProcNodeTest.cpp" />
+    <ClCompile Include="ProcTableTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
     <ClCompile Include="QueryEvaluatorTest.cpp" />
+    <ClCompile Include="QueryParserTest.cpp" />
     <ClCompile Include="ResultsTest.cpp" />
-    <ClCompile Include="AllUnitTest.cpp" />
-    <ClCompile Include="ProcTableTest.cpp" />
-    <ClCompile Include="TNodeTest.cpp" />
     <ClCompile Include="StmtLstNodeTest.cpp" />
     <ClCompile Include="StmtTableTest.cpp" />
     <ClCompile Include="TNodeTest.cpp" />
@@ -162,6 +165,7 @@
     <ClInclude Include="CallNodeTest.h" />
     <ClInclude Include="ConstNodeTest.h" />
     <ClInclude Include="ConstTableTest.h" />
+    <ClInclude Include="FollowsClauseTest.h" />
     <ClInclude Include="IfNodeTest.h" />
     <ClInclude Include="ModifiesClauseTest.h" />
     <ClInclude Include="OpNodeTest.h" />
@@ -169,13 +173,15 @@
     <ClInclude Include="ParserTest.h" />
     <ClInclude Include="PatternAssgClauseTest.h" />
     <ClInclude Include="PatternAssgTest.h" />
+    <ClInclude Include="PatternIfClauseTest.h" />
+    <ClInclude Include="PatternWhileClauseTest.h" />
     <ClInclude Include="PDRTest.h" />
     <ClInclude Include="ProcNodeTest.h" />
+    <ClInclude Include="ProcTableTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
     <ClInclude Include="QueryEvaluatorTest.h" />
+    <ClInclude Include="QueryParserTest.h" />
     <ClInclude Include="ResultsTest.h" />
-    <ClInclude Include="ProcTableTest.h" />
-    <ClInclude Include="TNodeTest.h" />
     <ClInclude Include="StmtLstNodeTest.h" />
     <ClInclude Include="StmtTableTest.h" />
     <ClInclude Include="TNodeTest.h" />
