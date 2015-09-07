@@ -21,25 +21,9 @@ QueryEvaluator::~QueryEvaluator(void)
 // Else, evaluate all clauses.
 Results* QueryEvaluator::evaluateQuery(Query query) {
 	Results *obj = new Results();
-	resetAllSynInClauseFlag();
 	setClauseList(query.getClauseList());
 	setSelectList(query.getSelectList());
-	SynListConstants::Category category = getCategory();
-	// switch list
-	switch (category) {
-		case SynListConstants::ALL_IN_CLAUSE:
-			obj = evaluateClauses(obj, clauseList);
-			break;
-		case SynListConstants::HALF_IN_CLAUSE:
-			setNotAllSynInClauseFlag();
-			obj = evaluateClauses(obj, clauseList);
-			break;
-		case SynListConstants::NONE_IN_CLAUSE:
-			getAllSynValuesFromTable(*obj);
-			break;
-		default:
-			break;
-	}
+	obj = evaluateClauses(obj, clauseList);
 	return obj;
 }
 
@@ -99,33 +83,37 @@ void QueryEvaluator::setSelectList(vector<StringPair> selectList) {
 	this->selectList = selectList;
 }
 
-void QueryEvaluator::setCategory(SynListConstants::Category category) {
-	this->category = category;
-}
-
-void QueryEvaluator::resetAllSynInClauseFlag() {
-	this->allSynInClauseFlag = true;
-}
-
-void QueryEvaluator::setNotAllSynInClauseFlag() {
-	this->allSynInClauseFlag = false;
-}
-
-bool QueryEvaluator::isAllSynInClauseFlag() {
-	return allSynInClauseFlag;
-}
-
-SynListConstants::Category QueryEvaluator::getCategory() {
-	return category;
-}
-
-void QueryEvaluator::getAllSynValuesFromTable(Results &obj) {
-	for (vector<StringPair>::iterator i = selectList.begin(); i != selectList.end(); ++i) {
-		string type = i->getSecond();
-		string syn = i->getFirst();
-		unordered_set<string> values = getTableValues(type);
-		insertSetValues(syn, values, obj);
+// evalute clauses in clause List
+// inserts in synonyms that appear in select list but not in clause list
+Results* QueryEvaluator::evaluateClauses(Results* obj, vector<Clause*> clauseList) {
+	for (vector<Clause*>::iterator i = clauseList.begin(); i != clauseList.end(); ++i) {
+		Clause* c = *i;
+		c->evaluate(obj);
+		if (obj->isClausePass() == false) {
+			break;
+		} 
 	}
+	getRemainingSynValuesFromTable(*obj);
+	return obj;
+}
+
+void QueryEvaluator::getRemainingSynValuesFromTable(Results &obj) {
+	for (vector<StringPair>::iterator i = selectList.begin(); i != selectList.end(); ++i) {
+		string syn = i->getFirst();
+		if (!obj.hasResults(syn)) {
+			string type = i->getSecond();
+			unordered_set<string> values = getTableValues(type);
+			insertSetValues(syn, values, obj);
+		}
+	}
+}
+
+void QueryEvaluator::insertSetValues(string syn, unordered_set<string> values, Results &obj) {
+	for (unordered_set<string>::iterator i = values.begin(); i != values.end(); ++i) {
+		string val = *i;
+		obj.insertResult(syn, val);
+	}
+	obj.push();
 }
 
 unordered_set<string> QueryEvaluator::getTableValues(string type) {
@@ -252,42 +240,4 @@ unordered_set<string> QueryEvaluator::intVectorToSet(vector<int> &vec) {
 		stringSet.insert(boost::lexical_cast<string>(cons));
 	}
 	return stringSet;
-}
-
-void QueryEvaluator::insertSetValues(string syn, unordered_set<string> values, Results &obj) {
-	for (unordered_set<string>::iterator i = values.begin(); i != values.end(); ++i) {
-		string val = *i;
-		obj.insertResult(syn, val);
-	}
-	obj.push();
-}
-
-// modifies results in results object.
-// check flag for results in results obj.
-Results* QueryEvaluator::evaluateClauses(Results* obj, vector<Clause*> clauseList) {
-	for (vector<Clause*>::iterator i = clauseList.begin(); i != clauseList.end(); ++i) {
-		Clause* c = *i;
-		c->evaluate(obj);
-		if (obj->isClausePass() == false) {
-			break;
-		} 
-	}
-
-	// if not all select syn are in clause and all clauses passed
-	if (!isAllSynInClauseFlag() && obj->isClausePass()) {
-		getRemainingSynValuesFromTable(*obj);
-	}
-
-	return obj;
-}
-
-void QueryEvaluator::getRemainingSynValuesFromTable(Results &obj) {
-	for (vector<StringPair>::iterator i = selectList.begin(); i != selectList.end(); ++i) {
-		string syn = i->getFirst();
-		if (!obj.hasResults(syn)) {
-			string type = i->getSecond();
-			unordered_set<string> values = getTableValues(type);
-			insertSetValues(syn, values, obj);
-		}
-	}
 }

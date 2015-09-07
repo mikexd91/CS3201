@@ -401,7 +401,6 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectAssignSyn() {
 	p->setSecond(ARG_ASSIGN);
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
-	qe->setCategory(SynListConstants::NONE_IN_CLAUSE);
 
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("a") == true);
@@ -425,7 +424,6 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectStmtSyn() {
 	p->setSecond(ARG_STATEMENT);
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
-	qe->setCategory(SynListConstants::NONE_IN_CLAUSE);
 
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("b") == true);
@@ -445,7 +443,6 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectWhileSyn() {
 	p->setSecond(ARG_WHILE);
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
-	qe->setCategory(SynListConstants::NONE_IN_CLAUSE);
 
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("c") == true);
@@ -465,7 +462,6 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectIfSyn() {
 	p->setSecond(ARG_IF);
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
-	qe->setCategory(SynListConstants::NONE_IN_CLAUSE);
 
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("d") == true);
@@ -486,7 +482,6 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectCallSyn() {
 	p->setSecond(ARG_CALL);
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
-	qe->setCategory(SynListConstants::NONE_IN_CLAUSE);
 
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("e") == false);
@@ -507,7 +502,6 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectVarSyn() {
 	p->setSecond(ARG_VARIABLE);
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
-	qe->setCategory(SynListConstants::NONE_IN_CLAUSE);
 
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("g") == true);
@@ -527,7 +521,6 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectProcSyn() {
 	p->setSecond(ARG_PROCEDURE);
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
-	qe->setCategory(SynListConstants::NONE_IN_CLAUSE);
 
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("g") == true);
@@ -547,7 +540,6 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectConstSyn() {
 	p->setSecond(ARG_CONSTANT);
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
-	qe->setCategory(SynListConstants::NONE_IN_CLAUSE);
 
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("g") == true);
@@ -578,7 +570,6 @@ void QueryEvaluatorTest::testModifiesEvaluateFixedSynProcPass() {
 	mod->setSecondArgType(ARG_VARIABLE);
 
 	q->addClause(mod);
-	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
 
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("v") == true);
@@ -608,7 +599,6 @@ void QueryEvaluatorTest::testModifiesEvaluateSynFixedWhilePass() {
 	mod->setSecondArgType(ARG_VARIABLE);
 
 	q->addClause(mod);
-	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
 
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("w") == true);
@@ -638,7 +628,6 @@ void QueryEvaluatorTest::testModifiesEvaluateSynGenericStmtPass() {
 	mod->setSecondArgType(ARG_GENERIC);
 
 	q->addClause(mod);
-	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
 
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("s") == true);
@@ -673,7 +662,6 @@ void QueryEvaluatorTest::testModifiesEvaluateSynSynAssgPass() {
 	mod->setSecondArgType(ARG_VARIABLE);
 
 	q->addClause(mod);
-	qe->setCategory(SynListConstants::ALL_IN_CLAUSE);
 
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("a") == true);
@@ -725,7 +713,6 @@ void QueryEvaluatorTest::testHalfInClauseWithModifiesSynSynStmtPass() {
 	mod->setSecondArgType(ARG_VARIABLE);
 
 	q->addClause(mod);
-	qe->setCategory(SynListConstants::HALF_IN_CLAUSE);
 
 	Results* result = qe->evaluateQuery(*q);
 	CPPUNIT_ASSERT(result->hasResults("s") == true);
