@@ -12,7 +12,9 @@
 //#include "ParentStarClause.h"
 #include "PatternClause.h"
 #include "UsesClause.h"
-//#include "PatternAssgClause.h"
+#include "PatternIfClause.h"
+#include "PatternAssgClause.h"
+#include "PatternWhileClause.h"
 #include "boost/unordered_map.hpp"
 #include "ExpressionParser.h"
 #include <queue>
@@ -572,6 +574,145 @@ void QueryParser::parseWith(Query* query, queue<string> line){
 	
 }
 */
+void QueryParser::parsePattern(Query* query, queue<string> line){
+	unordered_map<string, string> decList = query->getDeclarationList();
+	string patternType;
+
+	string wordPattern = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+
+	string synonym = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (decList.find(synonym) == decList.end()){
+		throw InvalidDeclarationException();
+	} else {
+		patternType = decList.at(synonym);
+	}
+	if (patternType == stringconst::ARG_ASSIGN || patternType == stringconst::ARG_WHILE){
+		parsePatternOther(query, line, synonym);
+	} else if (patternType == stringconst::ARG_IF){
+		parsePatternIf(query, line, synonym);
+	}
+}
+
+void QueryParser::parsePatternOther(Query* query, queue<string> line, string synonym){
+	unordered_map<string, string> decList = query->getDeclarationList();
+	string patternType = decList.at(synonym);
+	string var;
+	bool varFixed = false;
+	string varType;
+	string expr;
+
+	string openParen = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (openParen != "("){
+		throw InvalidSyntaxException();
+	}
+
+	var = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (var == "\""){
+		varFixed = true;
+		varType = stringconst::ARG_VARIABLE;
+		var = Utils::getWordAndPop(line);
+		unexpectedEndCheck(line);
+		if (var == "\""){
+			throw InvalidSyntaxException();
+		}
+		Utils::getWordAndPop(line);
+	} else if (var == stringconst::STRING_EMPTY){
+		varType = stringconst::ARG_GENERIC;
+	} else {
+		if (decList.find(var) == decList.end()){
+			throw MissingDeclarationException();
+		} else {
+			varType = decList.at(var);
+		}
+	}
+
+	if (varFixed){
+		string close = Utils::getWordAndPop(line);
+		unexpectedEndCheck(line);
+		if (close != "\""){
+			throw InvalidSyntaxException();
+		}
+	}
+
+	string comma = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (comma != ","){
+		throw InvalidSyntaxException();
+	}
+
+	string condition = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (condition == stringconst::STRING_EMPTY){
+		if (line.front() == ")"){
+			expr = condition;
+		} else if (line.front() == "\""){
+			Utils::getWordAndPop(line);
+			unexpectedEndCheck(line);
+			string next = Utils::getWordAndPop(line);
+			unexpectedEndCheck(line);
+			if (next == "\""){
+				throw InvalidSyntaxException();
+			}
+			queue<string> exprHolder;
+			while (next != "\""){
+				exprHolder.push(next);
+				next = Utils::getWordAndPop(line);
+				unexpectedEndCheck(line);
+			}
+			string endBound = Utils::getWordAndPop(line);
+			unexpectedEndCheck(line);
+			if (endBound != "_"){
+				throw InvalidSyntaxException();
+			}
+			ExpressionParser expP;
+			expr = "_\"" + queueToString(expP.getRPN(exprHolder)) + "\"_";
+		}
+	} else if (condition == "\""){
+		queue<string> exprHolder;
+		string next = Utils::getWordAndPop(line);
+		unexpectedEndCheck(line);
+		if (next == "\""){
+			throw InvalidSyntaxException();
+		}
+		while (next != "\""){
+			exprHolder.push(next);
+			next = Utils::getWordAndPop(line);
+			unexpectedEndCheck(line);
+		}
+		ExpressionParser expP;
+		expr = "\"" + queueToString(expP.getRPN(exprHolder)) + "\"";
+	} else {
+		throw InvalidSyntaxException();
+	}
+
+	string closeParen = Utils::getWordAndPop(line);
+	if (closeParen != ")"){
+		throw InvalidSyntaxException();
+	}
+
+	if (patternType == stringconst::ARG_ASSIGN){
+		PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expr);
+		newClause->setVarFixed(varFixed);
+		newClause->setVarType(varType);
+		query->addClause(newClause);
+	} else if (patternType == stringconst::ARG_WHILE){
+		PatternWhileClause* newClause = new PatternWhileClause(synonym, var, expr);
+		newClause->setVarFixed(varFixed);
+		newClause->setVarType(varType);
+		query->addClause(newClause);
+	}
+}
+
+void QueryParser::parsePatternIf(Query* query, queue<string> line, string synonym){
+	
+	PatternIfClause* newClause = new PatternIfClause(synonym, var, expr1, expr2);
+	
+}
+
 /*
 //PARSE BRACKETS, COMMAS, OPERATORS, UNDERSCORE AND INVERTED COMMAS AS INDIVIDUAL TOKENS
 //need if/while/assign <<-- create 1 submethod, specify type// or create 3 sub methods
