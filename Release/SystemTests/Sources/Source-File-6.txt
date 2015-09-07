@@ -1,0 +1,13 @@
+procedure firstProc {
+	call secondProc;
+	call thirdProc;
+}
+procedure secondProc {
+	call thirdProc;
+}
+procedure thirdProc {
+	call firstProc;
+}
+procedure fourthProc {
+	procedure fourthProc;
+}

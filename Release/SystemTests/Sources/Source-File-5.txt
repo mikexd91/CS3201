@@ -1,0 +1,82 @@
+procedure firstProc {
+	a = 3;
+	b = 5;
+	c = a + b;
+	d = b - a;
+	while d {
+		a = a + 1;
+		while c {
+			b = b - 1;
+			c = c - 1;
+		}
+		d = d - 1;
+	}
+	summation = a + b + c + d;
+	while a {
+		summation = summation + 1;
+		while b {
+			summation = summation + 2;
+			while c {
+				summation = summation + 3;
+			}
+			while d {
+				summation = summation - 3;
+			}
+		}
+	}
+}
+procedure pokemon {
+	charmander = 5;
+	squirtle = 5;
+	bulbasaur = 5;
+	firstStageEvolution = 11;
+
+	while firstStageEvolution {
+		charmander = charmander + 1;
+		bulbasaur = bulbasaur + 1;
+		squirtle = squirtle + 1;
+	}
+
+	charmeleon = charmander;
+	wartortle = squirtle;
+	ivysaur = bulbasaur;
+
+	battle1 = charmeleon - wartortle;
+	battle2 = ivysaur - charmeleon;
+	battle3 = squirtle - ivysaur;
+
+	while battle1 {
+		charmeleon = wartortle + ivysaur;
+
+		while battle2 {
+			while battle3 {
+				ivysaur = charmeleon + wartortle;
+			}
+		}
+		lastPokemon = 3;
+	}
+}
+procedure ABC {
+  i=1;              
+ b=200 ;            
+  c= a   ;          
+while a             
+{
+   while beta {           
+        oSCar  = 1 + beta + tmp;      
+        while tmp{          
+          oSCar = I + k + j1k + chArlie; }    
+  while x {         
+        x = x + 1;          
+        while left {          
+          while right {         
+            Romeo = Romeo + 1;        
+            b = 0;          
+            c = delta    + l  + width + Romeo ; } 
+            while c {         
+              c = c +1    ; }       
+            x = x+ 1  ; }}        
+          a=   2; }         
+   w = w+1  ;           
+}
+}
