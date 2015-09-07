@@ -610,35 +610,6 @@ void QueryEvaluatorTest::testModifiesEvaluateSynFixedWhilePass() {
 	delete result;
 }
 
-void QueryEvaluatorTest::testModifiesEvaluateSynGenericStmtPass() {
-	QueryEvaluator *qe = new QueryEvaluator();
-
-	StringPair *p = new StringPair();
-	p->setFirst("s");
-	p->setSecond(ARG_STATEMENT);
-	Query *q = new Query();
-	q->addSelectSynonym(*p);
-	
-	ModifiesClause* mod = new ModifiesClause();
-	mod->setFirstArg("s");
-	mod->setFirstArgFixed(false);
-	mod->setFirstArgType(ARG_STATEMENT);
-	mod->setSecondArg("_");
-	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_GENERIC);
-
-	q->addClause(mod);
-
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("s") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 11);
-	
-	delete qe;
-	delete p;
-	delete q;
-	delete result;
-}
-
 void QueryEvaluatorTest::testModifiesEvaluateSynSynAssgPass() {
 	QueryEvaluator *qe = new QueryEvaluator();
 
@@ -726,6 +697,38 @@ void QueryEvaluatorTest::testHalfInClauseWithModifiesSynSynStmtPass() {
 	delete p2;
 	delete n1;
 	delete n2;
+	delete q;
+	delete result;
+}
+
+void QueryEvaluatorTest::testModifiesEvaluateSynGenericStmtPass() {
+	QueryEvaluator *qe = new QueryEvaluator();
+
+	StringPair *p = new StringPair();
+	p->setFirst("p");
+	p->setSecond(ARG_PROCEDURE);
+	Query *q = new Query();
+	q->addSelectSynonym(*p);
+	
+	ModifiesClause* mod = new ModifiesClause();
+	mod->setFirstArg("s");
+	mod->setFirstArgFixed(false);
+	mod->setFirstArgType(ARG_STATEMENT);
+	mod->setSecondArg("_");
+	mod->setSecondArgFixed(false);
+	mod->setSecondArgType(ARG_GENERIC);
+
+	q->addClause(mod);
+
+	Results* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->hasResults("p") == true);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 11);
+	vector<StringPair> selectList = q->getSelectList();
+	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
+	CPPUNIT_ASSERT(toPrint.size() == 1);
+
+	delete qe;
+	delete p;
 	delete q;
 	delete result;
 }
