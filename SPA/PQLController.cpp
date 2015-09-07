@@ -23,17 +23,18 @@ unordered_set<string> PQLController::parse(string query) {
 	// call query evaluator to format query
 	// display query result
 	try {
-		Query* q = new Query();
-		q = &QueryParser::parseQuery(query);
-
+		cout << "parsing query"; 
+		Query q= QueryParser::parseQuery(query);
+		cout << "parsed query";
 		QueryEvaluator* qe = new QueryEvaluator();
-		Results* resObj = qe->evaluateQuery(*q);
-		vector<StringPair> selectList = q->getSelectList();
+		Results* resObj = qe->evaluateQuery(q);
+		vector<StringPair> selectList = q.getSelectList();
+		cout << resObj->getResultsTableSize() << endl;
 		unordered_set<string> valueSet = qe->getValuesToPrint(resObj, selectList);
-		
-		delete q;
-		delete resObj;
-		delete qe;
+		cout << "vauesetsize = " << valueSet.size() << endl;
+		//delete q;
+		//delete resObj;
+		//delete qe;
 
 		return valueSet;
 

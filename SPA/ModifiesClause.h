@@ -33,7 +33,7 @@ protected:
 
 private:
 	bool isProcedureModifies(string proc, string var);
-	bool isStmtModifies(int stmtNum, string var);
+	bool isStmtModifies(int stmtnum, string var);
 	//void transferSinglesToResult(set<string>* singles, Results* res);
 	//void transferPairsToResult(set<pair<string, string>>* pairs, Results* res);
 };
