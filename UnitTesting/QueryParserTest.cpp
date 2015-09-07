@@ -138,6 +138,7 @@ void QueryParserTest::testClause(){
 	
 }
 
+/*
 void QueryParserTest::testPattern(){
 	string const DECLARATION = "assign a;";
 	string const SELECT = "Select a such that";
@@ -165,7 +166,7 @@ void QueryParserTest::testPattern(){
 	string two = Utils::getWordAndPop(q);
 	CPPUNIT_ASSERT(! (!contains(two, "_") || !contains(two, "\"")));
 }
-
+*/
 void QueryParserTest::testParser(){
 	//string const USER_INPUT1 = "assign a; variable v; Select a pattern a(\"v\", _\"x+y\"_) and Modifies(a, v) and pattern a(v, _)";
 	string const USER_INPUT1 = "prog_line p; variable v; Select p such that Uses(p, v)";
