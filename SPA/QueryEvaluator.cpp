@@ -11,6 +11,7 @@ QueryEvaluator::QueryEvaluator(void)
 	varTable = VarTable::getInstance();
 	constTable = ConstTable::getInstance();
 	procTable = ProcTable::getInstance();
+	this->category = SynListConstants::ALL_IN_CLAUSE;
 }
 
 QueryEvaluator::~QueryEvaluator(void)
@@ -40,6 +41,7 @@ Results* QueryEvaluator::evaluateQuery(Query query) {
 		default:
 			break;
 	}
+	//cout << "test1" << obj->getResultsTableSize() << endl;
 	return obj;
 }
 
