@@ -545,35 +545,6 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 	query->addClause(newClause);
 }
 */
-/*
-void QueryParser::parseWith(Query* query, queue<string> line){
-	unordered_map<string, string> decList = query->getDeclarationList();
-	
-	string wordWith = Utils::getWordAndPop(line);
-	unexpectedEndCheck(line);
-	
-	string synonym = Utils::getWordAndPop(line);
-	unexpectedEndCheck(line);
-	if (decList.find(synonym) == decList.end()){
-		throw InvalidDeclarationException();
-	}
-	
-	string attribute = Utils::getWordAndPop(line);
-	if (attribute != "."){
-		throw InvalidSyntaxException();
-	}
-	unexpectedEndCheck(line);
-	
-	string condition = Utils::getWordAndPop(line);
-	unexpectedEndCheck(line);
-	
-	string comparatorW = Utils::getWordAndPop(line);
-	unexpectedEndCheck(line);
-	
-	
-	
-}
-*/
 void QueryParser::parsePattern(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string patternType;
@@ -708,9 +679,70 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 }
 
 void QueryParser::parsePatternIf(Query* query, queue<string> line, string synonym){
-	
+	unordered_map<string, string> decList = query->getDeclarationList();
+	string var;
+	bool varFixed = false;
+	string varType;
+	string expr1;
+	string expr2;
+
+	string openParen = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (openParen != ")"){
+		throw InvalidSyntaxException();
+	}
+
+	var = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (var == "\""){
+		varFixed = true;
+		var = Utils::getWordAndPop(line);
+		varType = stringconst::ARG_VARIABLE;
+		string close = Utils::getWordAndPop(line);
+		unexpectedEndCheck(line);
+		if (close != "\""){
+			throw InvalidSyntaxException();
+		}
+	} else {
+		if (decList.find(var) == decList.end()){
+			throw MissingDeclarationException();
+		}
+		varType = decList.at(var);
+	}
+
+	string comma1 = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (comma1 != ","){
+		throw InvalidSyntaxException();
+	}
+
+	expr1 = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (expr1 != "_"){
+		throw InvalidSyntaxException();
+	}
+
+	string comma2 = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (comma2 != ","){
+		throw InvalidSyntaxException();
+	}
+
+	expr2 = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (expr2 != "_"){
+		throw InvalidSyntaxException();
+	}
+
+	string closeParen = Utils::getWordAndPop(line);
+	if (closeParen != ")"){
+		throw InvalidSyntaxException();
+	}
+
 	PatternIfClause* newClause = new PatternIfClause(synonym, var, expr1, expr2);
-	
+	newClause->setVarFixed(varFixed);
+	newClause->setVarType(varType);
+	query->addClause(newClause);
 }
 
 /*
