@@ -90,7 +90,7 @@
     <ClInclude Include="PatternIfClause.h" />
     <ClInclude Include="PatternWhileClause.h" />
     <ClInclude Include="PDR.h" />
-    <ClCompile Include="PQLController.h" />
+    <ClInclude Include="PQLController.h" />
     <ClInclude Include="PQLExceptions.h" />
     <ClInclude Include="Procedure.h" />
     <ClInclude Include="ProcNode.h" />

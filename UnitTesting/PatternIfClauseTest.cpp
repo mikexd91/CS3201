@@ -19,9 +19,9 @@ void PatternIfClauseTest::setUp() {
 	/* testing this source
 	procedure zumba {
 		if x then {	//1
-		}			//2
-		else {		//3
-		}			//4
+		}			
+		else {		
+		}			
 	}
 	pattern if("x", "_", "_") == 1;
 	*/

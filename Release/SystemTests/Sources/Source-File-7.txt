@@ -1,0 +1,31 @@
+procedure firstProc {
+	a = 3;
+	b = 5;
+	c = a + b;
+	d = b - a;
+	while d {
+		a = a + 1;
+		while c {
+			b = b - 1;
+			c = c - 1;
+		}
+		d = d - 1;
+	}
+}
+procedure secondProc {
+	a = 3;
+	b = 5;
+	c = b + a;
+	d = b - a;
+	while d {
+		a = a + 1;
+		while c {
+			b = c - 1;
+			c = b - 1;
+		}
+		d = d - 1;
+		if c {
+			c = a - b;
+		}
+	}
+}

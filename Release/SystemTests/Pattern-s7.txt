@@ -1,0 +1,40 @@
+1 - pattern-assign: wild match, wild match
+assign a;
+Select a such that a(_,_)
+1, 2, 3, 4, 6, 8, 9, 10, 11, 12, 13, 14, 16, 18, 19, 20, 22
+5000
+2 - pattern-assign: fixed, wild match
+assign a;
+Select a such that a("b", _)
+2, 8, 12, 18
+5000
+3 - pattern-assign: wild match, fixed
+assign a;
+Select a such that a(_, _"b-1"_)
+8, 19
+5000
+4 - pattern-assign: fixed, fixed
+assign a;
+Select a such that a("a", "a+1")
+6, 16
+5000
+5 - pattern-assign-no matches
+assign a;
+Select a such that a("b", _"c-1"_);
+none
+5000
+6 - pattern-assign-boolean
+
+Select BOOLEAN such that a("b", _"c-1"_);
+false
+5000
+7 - pattern-while
+while w;
+Select w such that w("b", _)
+5, 7, 14, 16
+5000
+8 - pattern-if
+if if;
+Select if such that if(_, _"a"_)
+20
+5000
