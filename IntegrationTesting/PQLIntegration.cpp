@@ -459,7 +459,7 @@ void PQLIntegration::testSelectUses() {
 	string QUERY_STRING2 = "assign aaaa; variable verynice; Select verynice such that Uses(aaaa, verynice)";
 	unordered_set<string> r2;
 	r2 = pcc->parse(QUERY_STRING2);
-	//CPPUNIT_ASSERT(0 == r2.size());
+	CPPUNIT_ASSERT(0 == r2.size());
 
 	string QUERY_STRING3 = "stmt s; variable v; Select v such that Uses(s, v)";
 	unordered_set<string> r3;
