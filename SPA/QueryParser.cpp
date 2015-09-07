@@ -187,6 +187,7 @@ bool QueryParser::containsDeclarationType(string s){
 	decVector.push_back(stringconst::ARG_ASSIGN);
 	decVector.push_back(stringconst::ARG_STATEMENT);
 	decVector.push_back(stringconst::ARG_WHILE);
+	decVector.push_back(stringconst::ARG_IF);
 	decVector.push_back(stringconst::ARG_VARIABLE);
 	decVector.push_back(stringconst::ARG_PROGLINE);
 	decVector.push_back(stringconst::ARG_CONSTANT);
