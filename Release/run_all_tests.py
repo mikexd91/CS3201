@@ -32,4 +32,4 @@ os.system("AutoTester SystemTests/Sources/Source-File-5.txt SystemTests/FollowsS
 os.system("AutoTester SystemTests/Sources/Source-File-7.txt SystemTests/Pattern-s7.txt SystemTests/Results/pattern.xml")
 
 # For other miscellaneous crashes
-os.system("AutoTester SystemTests/Source-File-3.txt SystemTests/miscellaneous_crashes.txt SystemTests/Results/miscellaneous_crashes.xml")
+os.system("AutoTester SystemTests/Sources/Source-File-3.txt SystemTests/miscellaneous_crashes.txt SystemTests/Results/miscellaneous_crashes.xml")
