@@ -104,7 +104,7 @@ void QueryParserTest::testClause(){
 	Query* ASSERTION = new Query();
 	string const DEC_LINE = "assign a;";
 	string const SEL_LINE = "Select a";
-	string const CLS_LINE = "Follows(a, _)";
+	string const CLS_LINE = "Follows(\"a\", _)";
 	
 	vector<string> DEC_LIST = QueryParser::tokeniser(DEC_LINE, ';');
 	QueryParser::parseDeclarations(ASSERTION, DEC_LIST);

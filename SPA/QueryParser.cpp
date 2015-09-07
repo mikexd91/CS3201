@@ -341,6 +341,117 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 //TODO: UPDATE PARSE CLAUSE WITH NEW QUEUE (DONE, UNIT TESTING)
 void QueryParser::parseClause(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
+	bool expectFirstFixed = false;
+	bool expectSecondFixed = false;
+
+	string clauseType = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	Clause* newClause = createCorrectClause(clauseType);
+
+	string openParen = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (openParen != "("){
+		throw InvalidSyntaxException();
+	}
+
+	string firstVar = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (firstVar == "\""){
+		expectFirstFixed = true;
+		firstVar = Utils::getWordAndPop(line);
+		unexpectedEndCheck(line);
+		if (firstVar == "\""){
+			throw InvalidSyntaxException();
+		}
+	}
+	newClause->setFirstArgFixed(expectFirstFixed);
+	if (decList.find(firstVar) == decList.end()){
+		if (!Utils::isValidConstant(firstVar)){
+			if (!expectFirstFixed){
+				if (firstVar != stringconst::STRING_EMPTY){
+					throw MissingDeclarationException();
+				} else {
+					newClause->setFirstArg(stringconst::STRING_EMPTY);
+					newClause->setFirstArgType(stringconst::ARG_GENERIC);
+				}
+			} else {
+				newClause->setFirstArg(firstVar);
+				newClause->setFirstArgType(stringconst::ARG_VARIABLE);
+			}
+		} else {
+			newClause->setFirstArg(firstVar);
+			newClause->setFirstArgType(stringconst::ARG_STATEMENT);
+		}
+	} else {
+		string firstArgType = decList.at(firstVar);
+		newClause->setFirstArg(firstVar);
+		newClause->setFirstArgType(firstArgType);
+	}
+	if (expectFirstFixed){
+		string closeFixed = Utils::getWordAndPop(line);
+		unexpectedEndCheck(line);
+		if (closeFixed != "\""){
+			throw InvalidSyntaxException();
+		}
+	}
+
+	string comma = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (comma != ","){
+		throw InvalidSyntaxException();
+	}
+
+	string secondVar = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (secondVar == "\""){
+		expectSecondFixed = true;
+		secondVar = Utils::getWordAndPop(line);
+		unexpectedEndCheck(line);
+		if (secondVar == "\""){
+			throw InvalidSyntaxException();
+		}
+	}
+	newClause->setSecondArgFixed(expectSecondFixed);
+	if (decList.find(secondVar) == decList.end()){
+		if (!Utils::isValidConstant(secondVar)){
+			if (!expectSecondFixed){
+				if (secondVar != stringconst::STRING_EMPTY){
+					throw MissingDeclarationException();
+				} else {
+					newClause->setSecondArg(stringconst::STRING_EMPTY);
+					newClause->setSecondArgType(stringconst::ARG_GENERIC);
+				}
+			} else {
+				newClause->setSecondArg(secondVar);
+				newClause->setSecondArgType(stringconst::ARG_VARIABLE);
+			}
+		} else {
+			newClause->setSecondArg(secondVar);
+			newClause->setSecondArgType(stringconst::ARG_STATEMENT);
+		}
+	} else {
+		string secondArgType = decList.at(secondVar);
+		newClause->setSecondArg(secondVar);
+		newClause->setSecondArgType(secondArgType);
+	}
+	if (expectSecondFixed){
+		string closeFixed = Utils::getWordAndPop(line);
+		unexpectedEndCheck(line);
+		if (closeFixed != "\""){
+			throw InvalidSyntaxException();
+		}
+	}
+
+	string closeParen = Utils::getWordAndPop(line);
+	if (closeParen != ")"){
+		throw InvalidSyntaxException();
+	}
+
+	query->addClause(newClause);
+}
+/*
+void QueryParser::parseClause(Query* query, queue<string> line){
+	unordered_map<string, string> decList = query->getDeclarationList();
 	string clauseType = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
 	Clause* newClause;
@@ -431,7 +542,7 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 
 	query->addClause(newClause);
 }
-
+*/
 /*
 void QueryParser::parseWith(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
