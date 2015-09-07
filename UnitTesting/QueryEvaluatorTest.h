@@ -7,7 +7,7 @@ using namespace std;
 
 class QueryEvaluatorTest: public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( QueryEvaluatorTest );
-	// Testing category NONE_IN_CLAUSE. No clause in query, getting table values
+	// Testing no clause in query, getting table values
 	
 	CPPUNIT_TEST( testEvalauteEmptyClauseListSelectAssignSyn );
 	CPPUNIT_TEST( testEvalauteEmptyClauseListSelectStmtSyn );
@@ -18,15 +18,22 @@ class QueryEvaluatorTest: public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testEvalauteEmptyClauseListSelectProcSyn );
 	CPPUNIT_TEST( testEvalauteEmptyClauseListSelectConstSyn );
 
-	// Testing Modifies clause, category ALL_IN_CLAUSE, 1 clause in query
+	// YET TO TEST: GETTING TABLE VALUES WHEN TABLE IS EMPTY
+
+	// Testing Modifies clause, 1 clause in query.
+	// All synonyms in select list are appearing in clause list
 	CPPUNIT_TEST( testModifiesEvaluateFixedSynProcPass );
 	CPPUNIT_TEST( testModifiesEvaluateSynFixedWhilePass );
-	CPPUNIT_TEST( testModifiesEvaluateSynGenericStmtPass );
 	CPPUNIT_TEST( testModifiesEvaluateSynSynAssgPass );
 	
-	// Testing Modifies clause, category HALF_IN_CLAUSE, 1 cluase in query
+	// Testing Modifies clause, 1 clause in query
+	// Not all synonyms in select list are appearing in clause list
 	//CPPUNIT_TEST( testHalfInClauseWithModifiesSynSynStmtPass );
 	
+	// Testing Modifies clause, 1 clause in query
+	// No synonyms in select list match synonyms in clause list
+	CPPUNIT_TEST( testModifiesEvaluateSynGenericStmtPass );
+
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,13 +51,12 @@ public:
 	void testEvalauteEmptyClauseListSelectProcSyn();
 	void testEvalauteEmptyClauseListSelectConstSyn();
 
-	// Testing Modifies clause, category ALL_IN_CLAUSE, 1 clause in query
 	void testModifiesEvaluateFixedSynProcPass();
 	void testModifiesEvaluateSynFixedWhilePass();
-	void testModifiesEvaluateSynGenericStmtPass();
 	void testModifiesEvaluateSynSynAssgPass();
 
-	// Testing Modifies clause, category HALF_IN_CLAUSE, 1 cluase in query
 	void testHalfInClauseWithModifiesSynSynStmtPass();
+
+	void testModifiesEvaluateSynGenericStmtPass();
 };
 

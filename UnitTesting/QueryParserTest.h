@@ -22,6 +22,6 @@ public:
 	void testDeclaration();
 	void testSelect();
 	void testClause();
-	//void testPattern();
+	void testPattern();
 	void testParser();
 };

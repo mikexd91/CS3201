@@ -18,12 +18,18 @@
     <ClCompile Include="IntegrationTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FrontEndTest.cpp">
+    <ClCompile Include="PQLIntegration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PQLIntegration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FrontEndTest.h">
+    <ClInclude Include="PQLIntegration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PQLIntegration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
