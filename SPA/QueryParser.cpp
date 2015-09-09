@@ -578,6 +578,7 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 	string openParen = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
 	if (openParen != "("){
+		cout << "exception thrown here 1\n";
 		throw InvalidSyntaxException();
 	}
 
@@ -589,9 +590,9 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 		var = Utils::getWordAndPop(line);
 		unexpectedEndCheck(line);
 		if (var == "\""){
+			cout << "exception thrown here 2\n";
 			throw InvalidSyntaxException();
 		}
-		Utils::getWordAndPop(line);
 	} else if (var == stringconst::STRING_EMPTY){
 		varType = stringconst::ARG_GENERIC;
 	} else {
@@ -606,6 +607,7 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 		string close = Utils::getWordAndPop(line);
 		unexpectedEndCheck(line);
 		if (close != "\""){
+			cout << "exception thrown here 3\n";
 			throw InvalidSyntaxException();
 		}
 	}
@@ -689,7 +691,7 @@ void QueryParser::parsePatternIf(Query* query, queue<string> line, string synony
 
 	string openParen = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
-	if (openParen != ")"){
+	if (openParen != "("){
 		throw InvalidSyntaxException();
 	}
 
@@ -702,13 +704,19 @@ void QueryParser::parsePatternIf(Query* query, queue<string> line, string synony
 		string close = Utils::getWordAndPop(line);
 		unexpectedEndCheck(line);
 		if (close != "\""){
+			cout << "Exception thrown here 4\n";
 			throw InvalidSyntaxException();
 		}
 	} else {
 		if (decList.find(var) == decList.end()){
-			throw MissingDeclarationException();
+			if (var != stringconst::STRING_EMPTY){
+				throw MissingDeclarationException();
+			} else {
+				varType = stringconst::ARG_GENERIC;
+			}
+		} else {
+			varType = decList.at(var);
 		}
-		varType = decList.at(var);
 	}
 
 	string comma1 = Utils::getWordAndPop(line);

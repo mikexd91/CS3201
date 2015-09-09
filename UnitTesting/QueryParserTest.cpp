@@ -14,6 +14,7 @@
 #include "../SPA/PatternClause.h"
 #include "../SPA/UsesClause.h"
 #include "../SPA/PatternAssgClause.h"
+#include "../SPA/PatternIfClause.h"
 #include "boost/unordered_map.hpp"
 #include <queue>
 #include <string>
@@ -138,10 +139,10 @@ void QueryParserTest::testClause(){
 	
 }
 
-void QueryParserTest::testPattern(){
+void QueryParserTest::testPatternAssign(){
 	string const DECLARATION = "assign a;";
 	string const SELECT = "Select a such that";
-	string const PATTERN = "pattern a(_, _)";
+	string const PATTERN = "pattern a(\"x\", \"x + y \")";
 
 	Query* ASSERTION = new Query();
 
@@ -157,13 +158,40 @@ void QueryParserTest::testPattern(){
 	Clause* c = ASSERTION->getClauseList().at(0);
 	PatternAssgClause* PATTERN_ASS = dynamic_cast<PatternAssgClause*>(c);
 	string EXPR = PATTERN_ASS->getExpression();
-	CPPUNIT_ASSERT(EXPR == stringconst::STRING_EMPTY);
+	/*cout << EXPR << "\n";
+	cout << PATTERN_ASS->getFirstArg() << "\n";
+	cout << PATTERN_ASS->getSecondArg() << "\n";*/
+	//CPPUNIT_ASSERT(EXPR == stringconst::STRING_EMPTY);
 	//fix pattern parsing other expressions.
 	string token = "a(_, _\"";
 	queue<string> q = QueryParser::queueBuilder(token);
 	string one = Utils::getWordAndPop(q);
 	string two = Utils::getWordAndPop(q);
-	//CPPUNIT_ASSERT(! (!contains(two, "_") || !contains(two, "\"")));
+	
+}
+
+void QueryParserTest::testPatternIf(){
+	string const DECLARATION = "if i;";
+	string const SELECT = "Select i such that";
+	string const PATTERN = "pattern i (\"x\", _,_)";
+
+	Query* ASSERTION = new Query();
+	
+	vector<string> DEC_LIST = QueryParser::tokeniser(DECLARATION, ';');
+	QueryParser::parseDeclarations(ASSERTION, DEC_LIST);
+
+	queue<string> SEL_Q = QueryParser::queueBuilder(SELECT);
+	QueryParser::parseSelectSynonyms(ASSERTION, SEL_Q);
+
+	queue<string> PAT_Q = QueryParser::queueBuilder(PATTERN);
+	QueryParser::parsePattern(ASSERTION, PAT_Q);
+
+	Clause* c = ASSERTION->getClauseList().at(0);
+	PatternIfClause* PATTERN_IF = dynamic_cast<PatternIfClause*>(c);
+	//cout << PATTERN_IF->getFirstArg() << "\n";
+	//cout << PATTERN_IF->getSecondArg() << "\n";
+	//cout << PATTERN_IF->getThenList() << "\n";
+	//cout << PATTERN_IF->getElseList() << "\n";
 }
 
 void QueryParserTest::testParser(){/*
