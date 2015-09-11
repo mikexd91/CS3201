@@ -195,6 +195,7 @@ bool QueryParser::containsDeclarationType(string s){
 	decVector.push_back(stringconst::ARG_VARIABLE);
 	decVector.push_back(stringconst::ARG_PROGLINE);
 	decVector.push_back(stringconst::ARG_CONSTANT);
+	decVector.push_back(stringconst::ARG_PROCEDURE);
 	return containsAny(s, decVector);
 }
 
@@ -315,28 +316,65 @@ void QueryParser::unexpectedEndCheck(queue<string> in){
 	}
 }
 
-//TODO parse tuples/BOOLEAN
-/*
+//TODO add attribute keyword list
 void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string first = Utils::getWordAndPop(line);
 	if (first != stringconst::STRING_SELECT){
 		throw InvalidSelectException();
 	} else {
-		bool expectSelect = true;
-		while (expectSelect){
-			string current = Utils::getWordAndPop(line);
+		string current = Utils::getWordAndPop(line);
+		if (current == "<"){
+			bool expectSelect = true;
+			while (expectSelect){
+				string syn = Utils::getWordAndPop(line);
+				if (decList.find(syn) == decList.end()){
+					throw MissingDeclarationException();
+				}
+				string type = decList.at(syn);
+				StringPair* newPair = new StringPair();
+				newPair->setFirst(syn);
+				newPair->setSecond(type);
+				query->addSelectSynonym(*newPair);
+				string next = line.front();
+				if (next == ">"){
+					expectSelect = false;
+				} else if (next != ","){
+					throw InvalidSyntaxException();
+				}
+				Utils::getWordAndPop(line);
+			}
+		} else {
 			if (current == "BOOLEAN"){
-				
-			} else if (current == "<") {
-				
+				string type = stringconst::ARG_BOOLEAN;
+				StringPair* newPair = new StringPair();
+				newPair->setFirst(current);
+				newPair->setSecond(type);
+				query->addSelectSynonym(*newPair);		
 			} else {
-				
+				if (decList.find(current) == decList.end()){
+					throw MissingDeclarationException();
+				}
+				string type = decList.at(current);
+				StringPair* newPair = new StringPair();
+				newPair->setFirst(current);
+				newPair->setSecond(type);
+				string next;
+				if (!line.empty()){
+					next = line.front();
+				}
+				if (next == "."){
+					Utils::getWordAndPop(line);
+					unexpectedEndCheck(line);
+					string attr = Utils::getWordAndPop(line);
+					newPair->setAttribute(attr);
+				}
+				query->addSelectSynonym(*newPair);
 			}
 		}
 	}
 }
-*/
+/*
 void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string first = Utils::getWordAndPop(line);
@@ -366,7 +404,7 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 		}
 	}
 }
-
+*/
 //TODO: UPDATE PARSE CLAUSE WITH NEW QUEUE (DONE, UNIT TESTING)
 void QueryParser::parseClause(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
