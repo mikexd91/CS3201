@@ -241,6 +241,7 @@ bool Clause::evaluate(Results* res) {
 				} else {
 					firstValues = getAllS1();
 				}
+
 				//for each value of a, add it back to table 
 				for (unordered_set<string>::iterator firstValue = firstValues.begin(); firstValue != firstValues.end(); ++firstValue) {
 					res->insertResult(firstArgSyn, *firstValue);
