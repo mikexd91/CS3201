@@ -54,22 +54,18 @@ unordered_set<string> QueryEvaluator::printSingleSynValues(Results &obj, string 
 unordered_set<string> QueryEvaluator::printTupleSynValues(Results &obj, vector<StringPair> selectList) {
 	Results::ResultsTable resultsTable = obj.getResultsTable();
 	unordered_set<string> resultSet;
-	string open_brace = "<";
-	string close_brace = ">";
 	for (Results::ResultsTable::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
 		Results::Row row = *(*i);
 		string tuple = "";
-		tuple.append(open_brace);
 		for (vector<StringPair>::iterator j = selectList.begin(); j != selectList.end(); ++j) {
 			string syn = j->getFirst();
 			if (j == selectList.end() - 1) {
 				tuple.append(row[syn]);
 			} else {
 				tuple.append(row[syn]);
-				tuple.append(", ");
+				tuple.append(" ");
 			}
 		}
-		tuple.append(close_brace);
 		resultSet.insert(tuple);
 	}
 	return resultSet;
