@@ -84,23 +84,50 @@ void QueryParserTest::testDeclaration(){
 }
 
 void QueryParserTest::testSelect(){
-	//Query* result = new Query();
-	//string const USER_INPUT1 = "prog_line a, a1;";
-	//vector<string> testList = QueryParser::tokeniser(USER_INPUT1, ';');
-	//QueryParser::parseDeclarations(result, testList);
-	//unordered_map<string, string> decs = result->getDeclarationList();
-	//CPPUNIT_ASSERT(decs.at("a") == stringconst::ARG_STATEMENT);
+	Query* result = new Query();
+	string const USER_INPUT1 = "prog_line a, a1;";
+	vector<string> testList = QueryParser::tokeniser(USER_INPUT1, ';');
+	QueryParser::parseDeclarations(result, testList);
+	unordered_map<string, string> decs = result->getDeclarationList();
+	CPPUNIT_ASSERT(decs.at("a") == stringconst::ARG_STATEMENT);
 
+	//string const USER_INPUT2 = "Select BOOLEAN";
 	//string const USER_INPUT2 = "Select <a, a1>";
-	//queue<string> line = QueryParser::queueBuilder(USER_INPUT2);
+	//string const USER_INPUT2 = "Select a";
+	string const USER_INPUT2 = "Select a.dongers";
+	queue<string> line = QueryParser::queueBuilder(USER_INPUT2);
+	/*
+	while (!line.empty()){
+		string asd = Utils::getWordAndPop(line);
+		cout << asd << "\n";
+	}
+	*/
+	QueryParser::parseSelectSynonyms(result, line);
+	vector<StringPair> asd = result->getSelectList();
+	
+	//test bool
+	//StringPair boolpair = asd.at(0);
+	//CPPUNIT_ASSERT(boolpair.getFirst() == "BOOLEAN");
+	//CPPUNIT_ASSERT(boolpair.getSecond() == stringconst::ARG_BOOLEAN);
+	
+	//test tuple
+	//StringPair tuplepair1 = asd.at(0);
+	//StringPair tuplepair2 = asd.at(1);
+	//CPPUNIT_ASSERT(tuplepair1.getFirst() == "a");
+	//CPPUNIT_ASSERT(tuplepair1.getSecond() == stringconst::ARG_STATEMENT);
+	//CPPUNIT_ASSERT(tuplepair2.getFirst() == "a1");
+	//CPPUNIT_ASSERT(tuplepair2.getSecond() == stringconst::ARG_STATEMENT);
 
-	//QueryParser::parseSelectSynonyms(result, line);
+	//test single
+	//StringPair single = asd.at(0);
+	//CPPUNIT_ASSERT(single.getFirst() == "a");
+	//CPPUNIT_ASSERT(single.getSecond() == stringconst::ARG_STATEMENT);
 
-	//unordered_map<string, string> decList = result->getDeclarationList();
-	//CPPUNIT_ASSERT(decs.at("a") == decList.at("a"));
-
-	//string first = Utils::getWordAndPop(line);
-	//CPPUNIT_ASSERT(first == stringconst::STRING_SELECT);
+	//test attr
+	StringPair single = asd.at(0);
+	CPPUNIT_ASSERT(single.getFirst() == "a");
+	CPPUNIT_ASSERT(single.getSecond() == stringconst::ARG_STATEMENT);
+	CPPUNIT_ASSERT(single.getAttribute() == "dongers");
 }
 
 void QueryParserTest::testClause(){
