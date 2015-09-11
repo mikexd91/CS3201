@@ -22,6 +22,7 @@
     <ClCompile Include="AssgNode.cpp" />
     <ClCompile Include="AST.cpp" />
     <ClCompile Include="CallNode.cpp" />
+    <ClCompile Include="CallsClause.cpp" />
     <ClCompile Include="Clause.cpp" />
     <ClCompile Include="Constant.cpp" />
     <ClCompile Include="ConstNode.cpp" />
@@ -69,6 +70,7 @@
     <ClInclude Include="AssgNode.h" />
     <ClInclude Include="AST.h" />
     <ClInclude Include="CallNode.h" />
+    <ClInclude Include="CallsClause.h" />
     <ClInclude Include="Clause.h" />
     <ClInclude Include="Constant.h" />
     <ClInclude Include="ConstNode.h" />
