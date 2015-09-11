@@ -123,6 +123,7 @@ unordered_set<string> CallsClause::getAllS1() {
 
 //Calls(synonym, synonym)
 Results::ResultsTable* CallsClause::getAllS1AndS2() {
+
 	return new Results::ResultsTable();
 }
 
