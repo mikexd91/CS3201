@@ -20,7 +20,9 @@ enum ClauseType{
 	PARENTSTAR_, 
 	USES_, 
 	MODIFIES_, 
-	PATTERN_
+	PATTERN_,
+	CALLS_,
+	CALLSSTAR_
 };
 
 class Clause {
