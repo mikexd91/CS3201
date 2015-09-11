@@ -100,11 +100,11 @@ unordered_set<string> ParentClause::getAllS1() {
 	//get all while statements
 	if (firstArgType == stringconst::ARG_STATEMENT || firstArgType == stringconst::ARG_WHILE) {
 		unordered_set<Statement*> whileStmts = stmtTable->getWhileStmts();
-		insertParentIntoStmtNum(stmtNumSet, whileStmts, this->firstArgType);
+		insertParentIntoStmtNum(stmtNumSet, whileStmts, this->secondArgType);
 	}
 	if (firstArgType == stringconst::ARG_STATEMENT || firstArgType == stringconst::ARG_IF) {
 		unordered_set<Statement*>ifStmts = stmtTable->getIfStmts();
-		insertParentIntoStmtNum(stmtNumSet, ifStmts, this->firstArgType);
+		insertParentIntoStmtNum(stmtNumSet, ifStmts, this->secondArgType);
 	}
 	return stmtNumSet;
 }

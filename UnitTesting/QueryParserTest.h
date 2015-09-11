@@ -9,7 +9,7 @@ class QueryParserTest : public CPPUNIT_NS::TestFixture{
 	CPPUNIT_TEST( testDeclaration );
 	CPPUNIT_TEST( testSelect );
 	CPPUNIT_TEST( testClause );
-	CPPUNIT_TEST( testPattern );
+	//CPPUNIT_TEST( testPattern );
 	CPPUNIT_TEST ( testParser );
 	CPPUNIT_TEST_SUITE_END();
 

@@ -3,8 +3,8 @@
 #include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
-class TestOne : public CPPUNIT_NS::TestFixture { 
-	CPPUNIT_TEST_SUITE( TestOne );
+class FrontEndTest : public CPPUNIT_NS::TestFixture { 
+	CPPUNIT_TEST_SUITE( FrontEndTest );
 	CPPUNIT_TEST( testAddProc );
 	CPPUNIT_TEST( testAssign );
 	CPPUNIT_TEST( testFalseAddProc );
@@ -29,6 +29,8 @@ class TestOne : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testModifyingProc );
 	CPPUNIT_TEST( testUsingMultipleProc );
 	CPPUNIT_TEST( testModifyingMultipleProc );
+	CPPUNIT_TEST( testModifyingMultipleProcCall );
+	CPPUNIT_TEST( testUsingMultipleProcCall );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -67,4 +69,6 @@ public:
 	void testModifyingProc();
 	void testUsingMultipleProc();
 	void testModifyingMultipleProc();
+	void testModifyingMultipleProcCall();
+	void testUsingMultipleProcCall();
 };
