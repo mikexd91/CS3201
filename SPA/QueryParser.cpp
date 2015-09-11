@@ -74,6 +74,10 @@ queue<string> QueryParser::queueBuilder(string in){
 	outHolder = QueryParser::splitByDelims(temp, ".");
 	temp = outHolder;
 	outHolder = QueryParser::splitByDelims(temp, "=");
+	temp = outHolder;
+	outHolder = QueryParser::splitByDelims(temp, "<");
+	temp = outHolder;
+	outHolder = QueryParser::splitByDelims(temp, ">");
 	for (size_t i=0; i<outHolder.size(); i++){
 		out.push(outHolder.at(i));
 	}
@@ -311,6 +315,28 @@ void QueryParser::unexpectedEndCheck(queue<string> in){
 	}
 }
 
+//TODO parse tuples/BOOLEAN
+/*
+void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
+	unordered_map<string, string> decList = query->getDeclarationList();
+	string first = Utils::getWordAndPop(line);
+	if (first != stringconst::STRING_SELECT){
+		throw InvalidSelectException();
+	} else {
+		bool expectSelect = true;
+		while (expectSelect){
+			string current = Utils::getWordAndPop(line);
+			if (current == "BOOLEAN"){
+				
+			} else if (current == "<") {
+				
+			} else {
+				
+			}
+		}
+	}
+}
+*/
 void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string first = Utils::getWordAndPop(line);
