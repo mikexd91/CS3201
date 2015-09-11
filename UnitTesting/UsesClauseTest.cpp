@@ -369,3 +369,563 @@ void UsesClauseTest::testFixedFixedStmtPass() {
 	CPPUNIT_ASSERT(evalResult);
 	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
 }
+
+void UsesClauseTest::testFixedFixedStmtFail() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("3");
+	use->setFirstArgFixed(true);
+	use->setFirstArgType(ARG_STATEMENT);
+	use->setSecondArg("i");
+	use->setSecondArgFixed(true);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void UsesClauseTest::testFixedFixedProcPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("zumba");
+	use->setFirstArgFixed(true);
+	use->setFirstArgType(ARG_PROCEDURE);
+	use->setSecondArg("k");
+	use->setSecondArgFixed(true);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void UsesClauseTest::testFixedFixedProcFail() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("zumba");
+	use->setFirstArgFixed(true);
+	use->setFirstArgType(ARG_PROCEDURE);
+	use->setSecondArg("a");
+	use->setSecondArgFixed(true);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void UsesClauseTest::testGenericGenericPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("_");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_GENERIC);
+	use->setSecondArg("_");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void UsesClauseTest::testGenericFixedPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("_");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_GENERIC);
+	use->setSecondArg("i");
+	use->setSecondArgFixed(true);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void UsesClauseTest::testGenericFixedFail() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("_");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_GENERIC);
+	use->setSecondArg("f");
+	use->setSecondArgFixed(true);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void UsesClauseTest::testFixedGenericStmtPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("7");
+	use->setFirstArgFixed(true);
+	use->setFirstArgType(ARG_STATEMENT);
+	use->setSecondArg("_");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void UsesClauseTest::testFixedGenericStmtFail() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("15");
+	use->setFirstArgFixed(true);
+	use->setFirstArgType(ARG_STATEMENT);
+	use->setSecondArg("_");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void UsesClauseTest::testFixedGenericProcPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("zumba");
+	use->setFirstArgFixed(true);
+	use->setFirstArgType(ARG_PROCEDURE);
+	use->setSecondArg("_");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void UsesClauseTest::testFixedGenericProcFail() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("hello");
+	use->setFirstArgFixed(true);
+	use->setFirstArgType(ARG_PROCEDURE);
+	use->setSecondArg("_");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void UsesClauseTest::testFixedSynStmtPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("5");
+	use->setFirstArgFixed(true);
+	use->setFirstArgType(ARG_STATEMENT);
+	use->setSecondArg("v");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 2);
+}
+
+void UsesClauseTest::testFixedSynStmtFail() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("12");
+	use->setFirstArgFixed(true);
+	use->setFirstArgType(ARG_STATEMENT);
+	use->setSecondArg("v");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void UsesClauseTest::testFixedSynProcPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("zumba");
+	use->setFirstArgFixed(true);
+	use->setFirstArgType(ARG_PROCEDURE);
+	use->setSecondArg("v");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 4);
+}
+
+void UsesClauseTest::testFixedSynProcFail() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("hello");
+	use->setFirstArgFixed(true);
+	use->setFirstArgType(ARG_PROCEDURE);
+	use->setSecondArg("v");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void UsesClauseTest::testGenericSynPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("_");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_GENERIC);
+	use->setSecondArg("v");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 4);
+}
+
+void UsesClauseTest::testSynFixedStmtPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("s");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_STATEMENT);
+	use->setSecondArg("i");
+	use->setSecondArgFixed(true);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 2);
+}
+
+void UsesClauseTest::testSynFixedStmtFail() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("s");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_STATEMENT);
+	use->setSecondArg("a");
+	use->setSecondArgFixed(true);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void UsesClauseTest::testSynFixedProcPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("p");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_PROCEDURE);
+	use->setSecondArg("w");
+	use->setSecondArgFixed(true);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+}
+
+void UsesClauseTest::testSynFixedProcFail() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("p");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_PROCEDURE);
+	use->setSecondArg("l");
+	use->setSecondArgFixed(true);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void UsesClauseTest::testSynFixedWhilePass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("w");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_WHILE);
+	use->setSecondArg("j");
+	use->setSecondArgFixed(true);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+}
+
+void UsesClauseTest::testSynFixedWhileFail() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("w");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_WHILE);
+	use->setSecondArg("h");
+	use->setSecondArgFixed(true);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void UsesClauseTest::testSynFixedIfPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("if");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_IF);
+	use->setSecondArg("w");
+	use->setSecondArgFixed(true);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+}
+
+void UsesClauseTest::testSynFixedIfFail() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("if");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_IF);
+	use->setSecondArg("a");
+	use->setSecondArgFixed(true);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void UsesClauseTest::testSynFixedAssgPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("a");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_ASSIGN);
+	use->setSecondArg("i");
+	use->setSecondArgFixed(true);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 2);
+}
+
+void UsesClauseTest::testSynFixedAssgFail() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("s");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_ASSIGN);
+	use->setSecondArg("a");
+	use->setSecondArgFixed(true);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+}
+
+void UsesClauseTest::testSynGenericProcPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("p");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_PROCEDURE);
+	use->setSecondArg("_");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+}
+
+void UsesClauseTest::testSynGenericIfPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("if");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_IF);
+	use->setSecondArg("_");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+}
+
+void UsesClauseTest::testSynGenericWhilePass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("w");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_IF);
+	use->setSecondArg("_");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+}
+
+void UsesClauseTest::testSynGenericStmtPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("s");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_STATEMENT);
+	use->setSecondArg("_");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 5);
+}
+
+void UsesClauseTest::testSynGenericAssgPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("a");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_ASSIGN);
+	use->setSecondArg("_");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_GENERIC);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 3);
+}
+
+void UsesClauseTest::testSynSynProcPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("p");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_PROCEDURE);
+	use->setSecondArg("v");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 4);
+}
+
+void UsesClauseTest::testSynSynIfPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("if");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_IF);
+	use->setSecondArg("v");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+}
+
+void UsesClauseTest::testSynSynWhilePass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("w");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_WHILE);
+	use->setSecondArg("v");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+}
+
+void UsesClauseTest::testSynSynStmtPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("s");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_STATEMENT);
+	use->setSecondArg("v");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 6);
+}
+
+void UsesClauseTest::testSynSynAssgPass() {
+	Results* result = new Results();
+	UsesClause* use = new UsesClause();
+	use->setFirstArg("a");
+	use->setFirstArgFixed(false);
+	use->setFirstArgType(ARG_ASSIGN);
+	use->setSecondArg("v");
+	use->setSecondArgFixed(false);
+	use->setSecondArgType(ARG_VARIABLE);
+	CPPUNIT_ASSERT(use->isValid());
+
+	bool evalResult = use->evaluate(result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result->getResultsTableSize() == 4);
+}

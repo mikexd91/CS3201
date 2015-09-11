@@ -309,7 +309,7 @@ Results::ResultsTable* UsesClause::getAllS1AndS2() {
 }
 
 bool UsesClause::isStmtType(string argType) {
-	if(firstArgType==ARG_STATEMENT || firstArgType==ARG_ASSIGN || firstArgType==ARG_WHILE || firstArgType==ARG_PROGLINE) {
+	if(firstArgType==ARG_STATEMENT || firstArgType==ARG_ASSIGN || firstArgType==ARG_WHILE || firstArgType==ARG_IF || firstArgType==ARG_PROGLINE) {
 		return true;
 	} else {
 		return false;

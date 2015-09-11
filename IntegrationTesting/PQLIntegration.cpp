@@ -308,6 +308,12 @@ void PQLIntegration::setUp() {
 	vb->addTNode(b1);
 	vtable->addVariable(vb);
 
+	Variable* vz = new Variable("z");
+	vz->addModifyingStmt(2);
+	vz->addModifyingStmt(9);
+	vz->addTNode(j7);
+	vtable->addVariable(vz);
+
 	ConstTable* ctable = ConstTable::getInstance();
 	//Populate Constant Table
 	Constant* const1 = new Constant();
