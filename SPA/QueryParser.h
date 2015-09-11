@@ -39,6 +39,8 @@ public:
 	static void parseSelectSynonyms(Query*, queue<string>);
 	static void parseClause(Query*, queue<string>);
 	static void parsePattern(Query*, queue<string>);
+	static void parsePatternOther(Query*, queue<string>, string);
+	static void parsePatternIf(Query*, queue<string>, string);
 
 	static Query parseQuery(string);
 };
