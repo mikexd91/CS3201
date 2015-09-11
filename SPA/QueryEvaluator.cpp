@@ -100,7 +100,7 @@ Results* QueryEvaluator::evaluateClauses(Results* obj, vector<Clause*> clauseLis
 void QueryEvaluator::getRemainingSynValuesFromTable(Results &obj) {
 	for (vector<StringPair>::iterator i = selectList.begin(); i != selectList.end(); ++i) {
 		string syn = i->getFirst();
-		if (!obj.hasResults(syn)) {
+		if (!obj.hasResults(syn) && obj.isClausePass() == true) {
 			string type = i->getSecond();
 			unordered_set<string> values = getTableValues(type);
 			insertSetValues(syn, values, obj);
