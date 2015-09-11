@@ -1,10 +1,12 @@
 #pragma once
-#include "Clause.h"
+#include "SuchThatClause.h"
 #include "StmtTable.h"
 #include "Statement.h"
 #include "Results.h"
 
-class ParentClause : public Clause{
+class ParentClause 
+	: public SuchThatClause {
+
 public:
 	ParentClause(void);
 	~ParentClause(void);

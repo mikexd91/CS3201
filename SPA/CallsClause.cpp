@@ -2,7 +2,7 @@
 
 using namespace stringconst;
 
-CallsClause::CallsClause(void):Clause(CALLS_){
+CallsClause::CallsClause(void):SuchThatClause(CALLS_){
 	procTable = ProcTable::getInstance();
 }
 
