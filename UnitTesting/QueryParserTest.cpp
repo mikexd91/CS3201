@@ -82,27 +82,27 @@ void QueryParserTest::testDeclaration(){
 	CPPUNIT_ASSERT(decList2.at("a") == stringconst::ARG_ASSIGN);
 	CPPUNIT_ASSERT(decList2.at("a1") == stringconst::ARG_ASSIGN);
 }
-/*
+
 void QueryParserTest::testSelect(){
-	Query* result = new Query();
-	string const USER_INPUT1 = "prog_line a, a1;";
-	vector<string> testList = QueryParser::tokeniser(USER_INPUT1, ';');
-	QueryParser::parseDeclarations(result, testList);
-	unordered_map<string, string> decs = result->getDeclarationList();
-	CPPUNIT_ASSERT(decs.at("a") == stringconst::ARG_STATEMENT);
+	//Query* result = new Query();
+	//string const USER_INPUT1 = "prog_line a, a1;";
+	//vector<string> testList = QueryParser::tokeniser(USER_INPUT1, ';');
+	//QueryParser::parseDeclarations(result, testList);
+	//unordered_map<string, string> decs = result->getDeclarationList();
+	//CPPUNIT_ASSERT(decs.at("a") == stringconst::ARG_STATEMENT);
 
-	string const USER_INPUT2 = "Select <a, a1>";
-	queue<string> line = QueryParser::queueBuilder(USER_INPUT2);
+	//string const USER_INPUT2 = "Select <a, a1>";
+	//queue<string> line = QueryParser::queueBuilder(USER_INPUT2);
 
-	QueryParser::parseSelectSynonyms(result, line);
+	//QueryParser::parseSelectSynonyms(result, line);
 
-	unordered_map<string, string> decList = result->getDeclarationList();
-	CPPUNIT_ASSERT(decs.at("a") == decList.at("a"));
+	//unordered_map<string, string> decList = result->getDeclarationList();
+	//CPPUNIT_ASSERT(decs.at("a") == decList.at("a"));
 
-	string first = Utils::getWordAndPop(line);
-	CPPUNIT_ASSERT(first == stringconst::STRING_SELECT);
+	//string first = Utils::getWordAndPop(line);
+	//CPPUNIT_ASSERT(first == stringconst::STRING_SELECT);
 }
-*/
+
 void QueryParserTest::testClause(){
 	Query* ASSERTION = new Query();
 	string const DEC_LINE = "assign a, a1;";
