@@ -629,7 +629,7 @@ void ModifiesClauseTest::testFixedSynStmtPass() {
 	modifiesBuilder->setArg(1, "2");
 	modifiesBuilder->setArgFixed(1, true);
 	modifiesBuilder->setArgType(1, ARG_STATEMENT);
-	modifiesBuilder->setArg(2, "i");
+	modifiesBuilder->setArg(2, "v");
 	modifiesBuilder->setArgFixed(2, false);
 	modifiesBuilder->setArgType(2, ARG_VARIABLE);
 	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
@@ -819,7 +819,7 @@ void ModifiesClauseTest::testSynFixedProcFail() {
 	mod->setSecondArgType(ARG_VARIABLE);*/
 	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
 	modifiesBuilder->setArg(1, "p");
-	modifiesBuilder->setArgFixed(1, true);
+	modifiesBuilder->setArgFixed(1, false);
 	modifiesBuilder->setArgType(1, ARG_PROCEDURE);
 	modifiesBuilder->setArg(2, "l");
 	modifiesBuilder->setArgFixed(2, true);
@@ -867,7 +867,7 @@ void ModifiesClauseTest::testSynFixedWhileFail() {
 	mod->setSecondArgType(ARG_VARIABLE);*/
 	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
 	modifiesBuilder->setArg(1, "w");
-	modifiesBuilder->setArgFixed(1, true);
+	modifiesBuilder->setArgFixed(1, false);
 	modifiesBuilder->setArgType(1, ARG_WHILE);
 	modifiesBuilder->setArg(2, "j");
 	modifiesBuilder->setArgFixed(2, true);

@@ -1,6 +1,13 @@
-#include "SuchThatClause.h"
-
 #pragma once
+
+#include "SuchThatClause.h"
+#include "FollowsClause.h"
+#include "ParentClause.h"
+#include "ModifiesClause.h"
+#include "UsesClause.h"
+#include "FollowsStarClause.h"
+#include "ParentStarClause.h"
+
 class SuchThatClauseBuilder
 {
 public:

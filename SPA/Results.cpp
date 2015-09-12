@@ -319,11 +319,11 @@ bool Results::isClausePass() {
 }
 	
 void Results::setClausePass() {
-	clausePassed = true;
+	this->clausePassed = true;
 }
 
 void Results::setClauseFail() {
-	clausePassed = false;
+	this->clausePassed = false;
 }
 
 void Results::resetClauseFlags() {

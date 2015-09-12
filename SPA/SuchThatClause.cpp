@@ -142,6 +142,7 @@ bool SuchThatClause::isValidWhile(string whileStr) {
 
 bool SuchThatClause::evaluate(Results* res) {
 	//clause is pass at each stage
+	res->setClausePass();
 	res->setClauseFail();
 	if(!isBaseValidityCheck()) {
 		return false;
