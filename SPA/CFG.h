@@ -12,6 +12,8 @@ public:
 	~CFG();
 
 	static CFG* getInstance();
+
+	void addProcedure(CNode*);
 	
 private:
 	CFG();
@@ -19,4 +21,5 @@ private:
 	static bool hasInstance;
 	static CFG* instance;
 
-}
+
+};
