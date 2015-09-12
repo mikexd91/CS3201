@@ -201,6 +201,7 @@ void PDR::processElseStmt(ParsedData data) {
 	if(data.getNestingLevel() < currNestingLevel) {
 		for(int i = 0; i < currNestingLevel - data.getNestingLevel() - 1; i++) {
 			stmtParentNumStack.pop();
+			nodeStack.pop();
 		}
 	}
 
