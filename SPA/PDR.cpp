@@ -1,4 +1,5 @@
 #include "PDR.h"
+#include "DesignExtractor.h"
 
 using namespace std;
 
@@ -570,6 +571,9 @@ void PDR::processEndProgram() {
 	ast->addProcNode(procNodeToBeLinked);
 
 	nodeStack.pop();
+
+	DesignExtractor pop = DesignExtractor();
+	pop.executeSecondPass();
 }
 
 bool PDR::isInteger(string exp) {
