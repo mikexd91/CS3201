@@ -38,6 +38,8 @@ public:
 	typedef unordered_set<string> UsesSet;
 	typedef unordered_set<string> ModifiesSet;
 	typedef unordered_set<int> ChildrenSet;
+	typedef unordered_set<int> ParentStarSet;
+	typedef unordered_set<int> ChildrenStarSet;
 
 	// CONSTRUCTOR
 	Statement();
@@ -54,6 +56,8 @@ public:
 	int getFollowsBefore();				// get stmt that follows before this stmt
 	string getCalls();					// get proc name that stmt calls
 	const ChildrenSet& getChildren();	// get set of child nodes of this stmt
+	const ChildrenStarSet& getChildrenStar(); //get set of children star nodes of this stmt
+	const ParentStarSet& getParentStar();
 	int getParent();					// get parent of this stmt
 	int getNext();						// get stmt that is next of this stmt
 	int getPrev();						// get stmt whose next is this stmt
@@ -72,6 +76,8 @@ public:
 	void setParent(int parent);
 	void setNext(int next);
 	void setPrev(int prev);
+	void setParentStar(const ParentStarSet &parentStarSet);
+	void setChildrenStar(const ChildrenStarSet &childrenStarSet);
 
 private:
 	// PRIVATE ATTRIBUTES
@@ -90,5 +96,7 @@ private:
 	int				parent;
 	int				next;
 	int				prev;
+	ChildrenStarSet childrenStar;
+	ParentStarSet   parentStar;
 
 };

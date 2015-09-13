@@ -5,6 +5,7 @@
 
 class FrontEndTest : public CPPUNIT_NS::TestFixture { 
 	CPPUNIT_TEST_SUITE( FrontEndTest );
+	CPPUNIT_TEST( testParent );
 	CPPUNIT_TEST( testAddProc );
 	CPPUNIT_TEST( testAssign );
 	CPPUNIT_TEST( testFalseAddProc );
@@ -22,16 +23,17 @@ class FrontEndTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testProcedureUses );
 	CPPUNIT_TEST( testProcedureModifies );
 	CPPUNIT_TEST( testNestedProceduresUses );
+
 	CPPUNIT_TEST( testNestedProceduresModifies );
 	CPPUNIT_TEST( testIfStatement );
+	
 	CPPUNIT_TEST( testNestedIfStatement );
-	CPPUNIT_TEST( testUsingProc );
+	CPPUNIT_TEST( testUsingProc );						
 	CPPUNIT_TEST( testModifyingProc );
 	CPPUNIT_TEST( testUsingMultipleProc );
 	CPPUNIT_TEST( testModifyingMultipleProc );
 	CPPUNIT_TEST( testModifyingMultipleProcCall );
 	CPPUNIT_TEST( testUsingMultipleProcCall );
-
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -50,6 +52,7 @@ public:
 	void testFollows();
 	void testWhileUses();
 	void testWhileModifies();
+	void testParent();
 
 	void testStmtTableAllWhile();
 	void testConstTable();
