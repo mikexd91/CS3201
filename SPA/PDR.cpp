@@ -573,7 +573,7 @@ void PDR::processEndProgram() {
 	nodeStack.pop();
 
 	DesignExtractor pop = DesignExtractor();
-	pop.populateParentStar();
+	pop.executeSecondPass();
 }
 
 bool PDR::isInteger(string exp) {

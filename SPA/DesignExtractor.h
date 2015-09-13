@@ -10,8 +10,11 @@ using boost::unordered_set;
 class DesignExtractor {
 public: 
 	DesignExtractor();
-	void populateParentStar();
+	void executeSecondPass();
 private:
-	void recurse(StmtNode*, vector<int>&);
+	void populateParentStar();
+	void populateFollowStar();
+	void recurseParentStar(StmtNode*, vector<int>&);
+	void populateFollowInStmtLst(StmtLstNode*, queue<StmtLstNode*>&);
 
 };

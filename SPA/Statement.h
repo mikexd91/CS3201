@@ -40,6 +40,8 @@ public:
 	typedef unordered_set<int> ChildrenSet;
 	typedef unordered_set<int> ParentStarSet;
 	typedef unordered_set<int> ChildrenStarSet;
+	typedef unordered_set<int> FollowsStarBeforeSet;
+	typedef unordered_set<int> FollowsStarAfterSet;
 
 	// CONSTRUCTOR
 	Statement();
@@ -61,6 +63,9 @@ public:
 	int getParent();					// get parent of this stmt
 	int getNext();						// get stmt that is next of this stmt
 	int getPrev();						// get stmt whose next is this stmt
+	const FollowsStarBeforeSet& Statement::getFollowsStarBefore();
+	const FollowsStarAfterSet& Statement::getFollowsStarAfter();
+
 
 	// SETTERS
 	void setType(NodeType nodeType);
@@ -76,8 +81,10 @@ public:
 	void setParent(int parent);
 	void setNext(int next);
 	void setPrev(int prev);
-	void setParentStar(const ParentStarSet &parentStarSet);
-	void setChildrenStar(const ChildrenStarSet &childrenStarSet);
+	void setParentStar(const ParentStarSet&);
+	void setChildrenStar(const ChildrenStarSet&);
+	void setFollowsStarBefore(const FollowsStarBeforeSet&);
+	void setFollowsStarAfter(const FollowsStarAfterSet&);
 
 private:
 	// PRIVATE ATTRIBUTES
@@ -98,5 +105,7 @@ private:
 	int				prev;
 	ChildrenStarSet childrenStar;
 	ParentStarSet   parentStar;
+	FollowsStarBeforeSet followsStarBefore;
+	FollowsStarAfterSet followsStarAfter;
 
 };

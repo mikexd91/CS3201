@@ -23,6 +23,8 @@ Statement::Statement() {
 	prev = DEFAULT;
 	parentStar = ParentStarSet();
 	childrenStar = ChildrenStarSet();
+	followsStarBefore = FollowsStarBeforeSet();
+	followsStarAfter = FollowsStarAfterSet();
 }
 
 /*
@@ -109,11 +111,21 @@ const Statement::ParentStarSet& Statement::getParentStar() {
 	return parentStar;
 }
 
-// get parent of this stmt
+// get children star of this stmt
 const Statement::ChildrenStarSet& Statement::getChildrenStar() {
 	return childrenStar;
 }
 
+
+// get all previous follows of this stmt
+const Statement::FollowsStarBeforeSet& Statement::getFollowsStarBefore() {
+	return followsStarBefore;
+}
+
+// get all next follows of this stmt
+const Statement::FollowsStarAfterSet& Statement::getFollowsStarAfter() {
+	return followsStarAfter;
+}
 
 /* ----------------------------- */
 /* ---------- SETTERS ---------- */
@@ -159,16 +171,8 @@ void Statement::setChildren(const unordered_set<int> &childrenSet) {
 	children = childrenSet;
 }
 
-void Statement::setChildrenStar(const unordered_set<int> &childrenStarSet) {
-	childrenStar = childrenStarSet;
-}
-
 void Statement::setParent(int parent) {
 	this->parent = parent;
-}
-
-void Statement::setParentStar(const unordered_set<int> &parentStarSet) {
-	parentStar = parentStarSet;
 }
 
 void Statement::setNext(int nextSet) {
@@ -177,4 +181,19 @@ void Statement::setNext(int nextSet) {
 
 void Statement::setPrev(int prevSet) {
 	this->prev = prev;
+}
+
+void Statement::setParentStar(const unordered_set<int> &parentStarSet) {
+	parentStar = parentStarSet;
+}
+
+void Statement::setChildrenStar(const unordered_set<int> &childrenStarSet) {
+	childrenStar = childrenStarSet;
+}
+
+void Statement::setFollowsStarBefore(const FollowsStarBeforeSet &followsStarBeforeSet) {
+	followsStarBefore = followsStarBeforeSet;
+}
+void Statement::setFollowsStarAfter(const FollowsStarAfterSet &followsStarAfterSet) {
+	followsStarAfter = followsStarAfterSet;
 }

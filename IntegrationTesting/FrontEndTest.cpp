@@ -283,16 +283,43 @@ void FrontEndTest::testFollows() {
 	Statement* whileStmt = stmtTable1->getStmtObj(3);
 	Statement* thirdAssg = stmtTable1->getStmtObj(4);
 	Statement* fourthAssg = stmtTable1->getStmtObj(5);
+	//firstAssg
 	CPPUNIT_ASSERT(firstAssg->getFollowsBefore() == -1);
 	CPPUNIT_ASSERT(firstAssg->getFollowsAfter() == 2);
+	CPPUNIT_ASSERT(firstAssg->getFollowsStarBefore().empty());
+	int initFollowsStarAfter1[] = {2, 3, 5};
+	unordered_set<int> followsStarAfter1 = unordered_set<int>(initFollowsStarAfter1, initFollowsStarAfter1+3);
+	CPPUNIT_ASSERT(firstAssg->getFollowsStarAfter() == followsStarAfter1);
+	//secAssg
 	CPPUNIT_ASSERT(secAssg->getFollowsBefore() == 1);
 	CPPUNIT_ASSERT(secAssg->getFollowsAfter() == 3);
+	int initFollowsStarBefore2[] = {1};
+	unordered_set<int> followsStarBefore2 = unordered_set<int>(initFollowsStarBefore2, initFollowsStarBefore2+1);
+	CPPUNIT_ASSERT(secAssg->getFollowsStarBefore() == followsStarBefore2);
+	int initFollowsStarAfter2[] = {3, 5};
+	unordered_set<int> followsStarAfter2 = unordered_set<int>(initFollowsStarAfter2, initFollowsStarAfter2+2);
+	CPPUNIT_ASSERT(secAssg->getFollowsStarAfter() == followsStarAfter2);
+	//whileStmt
 	CPPUNIT_ASSERT(whileStmt->getFollowsBefore() == 2);
 	CPPUNIT_ASSERT(whileStmt->getFollowsAfter() == 5);
+	int initFollowsStarBeforeWhile[] = {1, 2};
+	unordered_set<int> followsStarBeforeWhile = unordered_set<int>(initFollowsStarBeforeWhile, initFollowsStarBeforeWhile+2);
+	CPPUNIT_ASSERT(whileStmt->getFollowsStarBefore() == followsStarBeforeWhile);
+	int initFollowsStarAfterWhile[] = {5};
+	unordered_set<int> followsStarAfterWhile = unordered_set<int>(initFollowsStarAfterWhile, initFollowsStarAfterWhile+1);
+	CPPUNIT_ASSERT(whileStmt->getFollowsStarAfter() == followsStarAfterWhile);
+	//thirdAssg
 	CPPUNIT_ASSERT(thirdAssg->getFollowsBefore() == -1);
 	CPPUNIT_ASSERT(thirdAssg->getFollowsAfter() == -1);
+	CPPUNIT_ASSERT(thirdAssg->getFollowsStarBefore().empty());
+	CPPUNIT_ASSERT(thirdAssg->getFollowsStarAfter().empty());
+	//fourthAssg
 	CPPUNIT_ASSERT(fourthAssg->getFollowsBefore() == 3);
 	CPPUNIT_ASSERT(fourthAssg->getFollowsAfter() == -1);
+	int initFollowsStarBefore4[] = {1, 2, 3};
+	unordered_set<int> followsStarBefore4 = unordered_set<int>(initFollowsStarBefore4, initFollowsStarBefore4+3);
+	CPPUNIT_ASSERT(fourthAssg->getFollowsStarBefore() == followsStarBefore4);
+	CPPUNIT_ASSERT(fourthAssg->getFollowsStarAfter().empty());
 }
 
 void FrontEndTest::testWhileUses() {
