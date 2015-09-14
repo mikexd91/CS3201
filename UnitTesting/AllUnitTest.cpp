@@ -40,6 +40,9 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("UsesClauseTest").m
 //unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("PatternAssgClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ModifiesClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ParentClauseTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("CallsClauseTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("CallsStarClauseTest").makeTest());
+
 // PQL Evaluator
 //unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ResultsTest").makeTest());
 //unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("QueryEvaluatorTest").makeTest());

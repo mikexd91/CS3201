@@ -76,6 +76,7 @@ void FrontEndTest::testAddProc() {
 	int initChildren4[] = {5, 6};
 	unordered_set<int> setChildren4(initChildren4, initChildren4 + 2);
 	CPPUNIT_ASSERT(stmt4->getChildren() == setChildren4);
+	CPPUNIT_ASSERT(stmt4->getChildrenStar() == setChildren4);
 
 	Statement* stmt5 = stmtTable1->getStmtObj(5);
 	string initModifies5[] = { "y" };
@@ -85,17 +86,21 @@ void FrontEndTest::testAddProc() {
 	unordered_set<string> strUses5(initUses5, initUses5 + 1);
 	CPPUNIT_ASSERT(stmt5->getUses() == strUses5);
 	CPPUNIT_ASSERT(stmt5->getParent() == 4);
-	
+	unordered_set<int> parentStar5 = unordered_set<int>();
+	parentStar5.insert(4);
+	CPPUNIT_ASSERT(stmt5->getParentStar() == parentStar5);
 	
 	Statement* stmt6 = stmtTable1->getStmtObj(6);
 	string initModifies6[] = { "a" };
 	unordered_set<string> strModifies6(initModifies6, initModifies6 + 1);
 	CPPUNIT_ASSERT(stmt6->getModifies() == strModifies6);
-	
 	string initUses6[] = { "a", "b" };
 	unordered_set<string> strUses6(initUses6, initUses6 + 2);
 	CPPUNIT_ASSERT(stmt6->getUses() == strUses6);
 	CPPUNIT_ASSERT(stmt6->getParent() == 4);
+	unordered_set<int> parentStar6 = unordered_set<int>();
+	parentStar6.insert(4);
+	CPPUNIT_ASSERT(stmt6->getParentStar() == parentStar6);
 
 	Variable* varX = varTable1->getVariable("x");
 	int initXUsedBy[] = {2, 3, 4, 5};
@@ -145,6 +150,7 @@ void FrontEndTest::testFalseAddProc() {
 	CPPUNIT_ASSERT(true);
 }
 
+//TO DO INVALIDATION!
 void FrontEndTest::testWhileAST() {
 	parser.parse("procedure whileTest {while x{}}");
 	CPPUNIT_ASSERT(ast->contains("whileTest"));
@@ -277,16 +283,43 @@ void FrontEndTest::testFollows() {
 	Statement* whileStmt = stmtTable1->getStmtObj(3);
 	Statement* thirdAssg = stmtTable1->getStmtObj(4);
 	Statement* fourthAssg = stmtTable1->getStmtObj(5);
+	//firstAssg
 	CPPUNIT_ASSERT(firstAssg->getFollowsBefore() == -1);
 	CPPUNIT_ASSERT(firstAssg->getFollowsAfter() == 2);
+	CPPUNIT_ASSERT(firstAssg->getFollowsStarBefore().empty());
+	int initFollowsStarAfter1[] = {2, 3, 5};
+	unordered_set<int> followsStarAfter1 = unordered_set<int>(initFollowsStarAfter1, initFollowsStarAfter1+3);
+	CPPUNIT_ASSERT(firstAssg->getFollowsStarAfter() == followsStarAfter1);
+	//secAssg
 	CPPUNIT_ASSERT(secAssg->getFollowsBefore() == 1);
 	CPPUNIT_ASSERT(secAssg->getFollowsAfter() == 3);
+	int initFollowsStarBefore2[] = {1};
+	unordered_set<int> followsStarBefore2 = unordered_set<int>(initFollowsStarBefore2, initFollowsStarBefore2+1);
+	CPPUNIT_ASSERT(secAssg->getFollowsStarBefore() == followsStarBefore2);
+	int initFollowsStarAfter2[] = {3, 5};
+	unordered_set<int> followsStarAfter2 = unordered_set<int>(initFollowsStarAfter2, initFollowsStarAfter2+2);
+	CPPUNIT_ASSERT(secAssg->getFollowsStarAfter() == followsStarAfter2);
+	//whileStmt
 	CPPUNIT_ASSERT(whileStmt->getFollowsBefore() == 2);
 	CPPUNIT_ASSERT(whileStmt->getFollowsAfter() == 5);
+	int initFollowsStarBeforeWhile[] = {1, 2};
+	unordered_set<int> followsStarBeforeWhile = unordered_set<int>(initFollowsStarBeforeWhile, initFollowsStarBeforeWhile+2);
+	CPPUNIT_ASSERT(whileStmt->getFollowsStarBefore() == followsStarBeforeWhile);
+	int initFollowsStarAfterWhile[] = {5};
+	unordered_set<int> followsStarAfterWhile = unordered_set<int>(initFollowsStarAfterWhile, initFollowsStarAfterWhile+1);
+	CPPUNIT_ASSERT(whileStmt->getFollowsStarAfter() == followsStarAfterWhile);
+	//thirdAssg
 	CPPUNIT_ASSERT(thirdAssg->getFollowsBefore() == -1);
 	CPPUNIT_ASSERT(thirdAssg->getFollowsAfter() == -1);
+	CPPUNIT_ASSERT(thirdAssg->getFollowsStarBefore().empty());
+	CPPUNIT_ASSERT(thirdAssg->getFollowsStarAfter().empty());
+	//fourthAssg
 	CPPUNIT_ASSERT(fourthAssg->getFollowsBefore() == 3);
 	CPPUNIT_ASSERT(fourthAssg->getFollowsAfter() == -1);
+	int initFollowsStarBefore4[] = {1, 2, 3};
+	unordered_set<int> followsStarBefore4 = unordered_set<int>(initFollowsStarBefore4, initFollowsStarBefore4+3);
+	CPPUNIT_ASSERT(fourthAssg->getFollowsStarBefore() == followsStarBefore4);
+	CPPUNIT_ASSERT(fourthAssg->getFollowsStarAfter().empty());
 }
 
 void FrontEndTest::testWhileUses() {
@@ -331,6 +364,77 @@ void FrontEndTest::testWhileModifies() {
 	unordered_set<string> thirdAssgModSet;
 	thirdAssgModSet.insert("z");
 	CPPUNIT_ASSERT(thirdAssg->getModifies() == thirdAssgModSet);
+}
+
+void FrontEndTest::testParent() {
+	parser.parse("procedure proc { while x { while y {x = 2; y = 2; z = x + y;} if b then {c = 3;} else {d = 4;} }} ");
+	Statement* firstWhile = stmtTable1->getStmtObj(1);
+	Statement* secWhile = stmtTable1->getStmtObj(2);
+	Statement* firstAssg = stmtTable1->getStmtObj(3);
+	Statement* secAssg = stmtTable1->getStmtObj(4);
+	Statement* thirdAssg = stmtTable1->getStmtObj(5);
+	Statement* firstIf = stmtTable1->getStmtObj(6);
+	Statement* fourthAssg = stmtTable1->getStmtObj(7);
+	Statement* fifthAssg = stmtTable1->getStmtObj(8);
+
+	//for firstWhile
+	int c1[] = {2, 6};
+	unordered_set<int> children1(c1, c1+2);
+	CPPUNIT_ASSERT(firstWhile->getChildren() == children1);
+	CPPUNIT_ASSERT(firstWhile->getParent() == -1);
+
+	int cStar1[] = {2, 3, 4, 5, 6, 7, 8};
+	unordered_set<int> childrenStar1(cStar1, cStar1+ 7);
+	CPPUNIT_ASSERT(firstWhile->getChildrenStar() == childrenStar1);
+	CPPUNIT_ASSERT(firstWhile->getParentStar().empty());
+
+	//for secondWhile
+	int c2[] = {3, 4, 5};
+	unordered_set<int> children2(c2, c2+3);
+	CPPUNIT_ASSERT(secWhile->getChildren() == children2);
+	CPPUNIT_ASSERT(secWhile->getParent() == 1);
+
+	int cStar2[] = {3, 4, 5};
+	unordered_set<int> childrenStar2(cStar2, cStar2+3);
+	CPPUNIT_ASSERT(secWhile->getChildrenStar() == childrenStar2);
+	int pStar2[] = {1};
+	unordered_set<int> parentStar2(pStar2, pStar2+1);
+	CPPUNIT_ASSERT(secWhile->getParentStar() == parentStar2);
+
+	//for firstAssg
+	CPPUNIT_ASSERT(firstAssg->getParent() == 2);
+	int pStar3[] = {1, 2};
+	unordered_set<int> parentStar3(pStar3, pStar3+2);
+	CPPUNIT_ASSERT(firstAssg->getParentStar() == parentStar3);
+
+	//for secAssg
+	CPPUNIT_ASSERT(secAssg->getParent() == 2);
+	CPPUNIT_ASSERT(secAssg->getParentStar() == parentStar3);
+
+	//for thirdAssg
+	CPPUNIT_ASSERT(thirdAssg->getParent() == 2);
+	CPPUNIT_ASSERT(thirdAssg->getParentStar() == parentStar3);
+
+	//for firstIf
+	int c6[] = {7, 8};
+	unordered_set<int> children6(c6, c6+2);
+	CPPUNIT_ASSERT(firstIf->getChildren() == children6);
+	CPPUNIT_ASSERT(firstIf->getParent() == 1);
+
+	CPPUNIT_ASSERT(firstIf->getChildrenStar() == children6);
+	int pStar6[] = {1};
+	unordered_set<int> parentStar6(pStar6, pStar6+1);
+	CPPUNIT_ASSERT(firstIf->getParentStar() == parentStar6);
+
+	//for fourthAssg
+	CPPUNIT_ASSERT(fourthAssg->getParent() == 6);
+	int pStar7[] = {1, 6};
+	unordered_set<int> parentStar7(pStar7, pStar7+2);
+	CPPUNIT_ASSERT(fourthAssg->getParentStar() == parentStar7);
+
+	//for fifthAssg
+	CPPUNIT_ASSERT(fifthAssg->getParent() == 6);
+	CPPUNIT_ASSERT(fifthAssg->getParentStar() == parentStar7);
 }
 
 void FrontEndTest::testStmtTableAllWhile() {

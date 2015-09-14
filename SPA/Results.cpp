@@ -380,7 +380,9 @@ unordered_set<string> Results::selectSyn(string syn) {
 		for (unordered_set<Row*>::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
 			results = *(*i);
 			value = results[syn];
-			rtnSet.insert(value);
+			if (value.length() > 0) {
+				rtnSet.insert(value);
+			}
 		}
 		
 	}
