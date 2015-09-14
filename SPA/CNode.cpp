@@ -4,12 +4,9 @@ using namespace std;
 
 CNode::CNode(CType type) {
 	this->nodeType = type;
-	this->firstChild = NULL;
-	this->secondChild = NULL;
-	this->firstParent = NULL;
-	this->secondParent = NULL;
 	this->startStmt = 0;
 	this->endStmt = 0;
+	this->nodeName = NULL;
 }
 
 CNode::~CNode() {
@@ -20,6 +17,10 @@ CType CNode::getNodeType() {
 	return this->nodeType;
 }
 
+string CNode::getName() {
+	return this->nodeName;
+}
+
 int CNode::getStartStmt() {
 	return this->startStmt;
 }
@@ -28,24 +29,20 @@ int CNode::getEndStmt() {
 	return this->endStmt;
 }
 
-CNode* CNode::getFirstChild() {
-	return this->firstChild;
+vector<CNode*>& CNode::getParents() {
+	return this->parents;
 }
 
-CNode* CNode::getSecondChild() {
-	return this->secondChild;
-}
-
-CNode* CNode::getFirstParent() {
-	return this->firstParent;
-}
-
-CNode* CNode::getSecondParent() {
-	return this->secondParent;
+vector<CNode*>& CNode::getChildren() {
+	return this->children;
 }
 
 void CNode::setNodeType(CType nodeType) {
 	this->nodeType = nodeType;
+}
+
+void CNode::setName(string name) {
+	this->nodeName = string;
 }
 
 void CNode::setStartStmt(int start) {
@@ -56,20 +53,46 @@ void CNode::setEndStmt(int end) {
 	this->endStmt = end;
 }
 
-void CNode::linkFirstChild(CNode* child) {
-	this->firstChild = child;
+void CNode::addChild(CNode* child) {
+	this->children.push_back(child);
 }
 
-void CNode::linkSecondChild(CNode* child) {
-	this->secondChild = child;
+void CNode::setFirstChild(CNode* child) {
+	if(this->children.size() < 1) {
+		this->children.push_back(child);
+	} else {
+		this->children.at(0) = child;
+	}
 }
 
-void CNode::linkFirstParent(CNode* parent) {
-	this->firstParent = parent;
+void CNode::setSecondChild(CNode* child) {
+	if(this->children.size() < 1) {
+		this->children.push_back(NULL);
+		this->children.push_back(child);
+	} else if(this->children.size() < 2) {
+		this->children.push_back(child);
+	} else {
+		this->children.at(1) = child;
+	}
 }
 
-void CNode::linkSecondParent(CNode* parent) {
-	this->secondParent = parent;
+void CNode::setFirstParent(CNode* parent) {
+	if(this->parents.size() < 1) {
+		this->parents.push_back(parent);
+	} else {
+		this->parents.at(0) = parent;
+	}
+}
+
+void CNode::setSecondParent(CNode* parent) {
+	if(this->parents.size() < 1) {
+		this->parents.push_back(NULL);
+		this->parents.push_back(parent);
+	} else if(this->parents.size() < 2) {
+		this->parents.push_back(parent);
+	} else {
+		this->parents.at(1) = parent;
+	}
 }
 
 bool CNode::isNodeType(CType type) {
