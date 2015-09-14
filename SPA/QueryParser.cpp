@@ -491,9 +491,6 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string patternType;
 
-	string wordPattern = Utils::getWordAndPop(line);
-	unexpectedEndCheck(line);
-
 	string synonym = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
 	if (decList.find(synonym) == decList.end()){
@@ -519,7 +516,6 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 	string openParen = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
 	if (openParen != "("){
-		cout << "exception thrown here 1\n";
 		throw InvalidSyntaxException();
 	}
 
@@ -531,7 +527,6 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 		var = Utils::getWordAndPop(line);
 		unexpectedEndCheck(line);
 		if (var == "\""){
-			cout << "exception thrown here 2\n";
 			throw InvalidSyntaxException();
 		}
 	} else if (var == stringconst::STRING_EMPTY){
@@ -548,7 +543,6 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 		string close = Utils::getWordAndPop(line);
 		unexpectedEndCheck(line);
 		if (close != "\""){
-			cout << "exception thrown here 3\n";
 			throw InvalidSyntaxException();
 		}
 	}
@@ -645,7 +639,6 @@ void QueryParser::parsePatternIf(Query* query, queue<string> line, string synony
 		string close = Utils::getWordAndPop(line);
 		unexpectedEndCheck(line);
 		if (close != "\""){
-			cout << "Exception thrown here 4\n";
 			throw InvalidSyntaxException();
 		}
 	} else {
@@ -703,16 +696,26 @@ Query QueryParser::parseQuery(string input){
 	queue<string> selectQueue = queueBuilder(selectStatement);
 	splitBySC.pop_back();
 	parseDeclarations(output, splitBySC);
+	bool expectPattern = false;
 	while(!selectQueue.empty()){
 		string current = selectQueue.front();
 		if (current == stringconst::STRING_SELECT){
+			expectPattern = false;
 			parseSelectSynonyms(output, selectQueue);
 		} else if (containsClauseType(current)){
+			expectPattern = false;
 			parseClause(output, selectQueue);
-		//} else if (contains(current, stringconst::TYPE_PATTERN)){
-			//parsePattern(output, selectQueue);
+		} else if (contains(current, stringconst::TYPE_PATTERN)){
+			string wordPattern = Utils::getWordAndPop(selectQueue);
+			unexpectedEndCheck(selectQueue);
+			parsePattern(output, selectQueue);
+			expectPattern = true;
+		} else if (current == stringconst::STRING_AND && expectPattern){
+			string wordAnd = Utils::getWordAndPop(selectQueue);
+			unexpectedEndCheck(selectQueue);
+			parsePattern(output, selectQueue);
 		} else if (containsKeyword(current)){
-			//selectQueue.pop();
+			expectPattern = false;
 		}
 		selectQueue.pop();
 	}
