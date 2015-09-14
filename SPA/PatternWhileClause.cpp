@@ -66,5 +66,5 @@ bool PatternWhileClause::matchStmtList(WhileNode* whileNode, string thenStr) {
 }
 
 bool PatternWhileClause::matchVar(WhileNode* whileNode, string varStr) {
-	return whileNode->getVarNode()->getName() == varStr;
+	return (varStr == stringconst::STRING_EMPTY) || whileNode->getVarNode()->getName() == varStr;
 }

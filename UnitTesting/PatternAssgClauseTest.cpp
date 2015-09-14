@@ -207,9 +207,16 @@ void PatternAssgClauseTest::evaulateVarWildExpr() {
 void PatternAssgClauseTest::evaluateVarFixedExprWild() {
 	//cout << "varfixedexprwild";
 	// pass
-	PatternAssgClause* p1 = new PatternAssgClause("a", "i", "_");
+	/*PatternAssgClause* p1 = new PatternAssgClause("a", "i", "_");
 	p1->setVarType(stringconst::ARG_VARIABLE);
-	p1->setVarFixed(true);
+	p1->setVarFixed(true);*/
+	PatternClauseBuilder* assgBuilder = new PatternClauseBuilder(PATTERNASSG_);
+	assgBuilder->setSynonym("a");
+	assgBuilder->setVar("i");
+	assgBuilder->setVarType(ARG_VARIABLE);
+	assgBuilder->setVarFixed(true);
+	assgBuilder->setExpr(1, "_");
+	PatternAssgClause* p1 = (PatternAssgClause*) assgBuilder->build();
 	CPPUNIT_ASSERT(p1->isValid());
 
 	Results* res = new Results();
@@ -229,9 +236,16 @@ void PatternAssgClauseTest::evaluateVarFixedExprWild() {
 	//CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == to_string(num));
 
 	// var fail
-	PatternAssgClause* p2 = new PatternAssgClause("a", "x", "_");
+	/*PatternAssgClause* p2 = new PatternAssgClause("a", "x", "_");
 	p2->setVarType(stringconst::ARG_VARIABLE);
-	p2->setVarFixed(true);
+	p2->setVarFixed(true);*/
+	PatternClauseBuilder* assgBuilder2 = new PatternClauseBuilder(PATTERNASSG_);
+	assgBuilder2->setSynonym("a");
+	assgBuilder2->setVar("x");
+	assgBuilder2->setVarType(ARG_VARIABLE);
+	assgBuilder2->setVarFixed(true);
+	assgBuilder2->setExpr(1, "_");
+	PatternAssgClause* p2 = (PatternAssgClause*) assgBuilder2->build();
 	CPPUNIT_ASSERT(p2->isValid());
 
 	Results* resFail = new Results();
@@ -243,9 +257,16 @@ void PatternAssgClauseTest::evaluateVarFixedExprWild() {
 void PatternAssgClauseTest::evaluateVarFixedExpr() {
 	//cout << "varfixedexpr";
 	// pass targeting j = 2+3+4
-	PatternAssgClause* p1 = new PatternAssgClause("a", "j", "_\"2 3 +\"_");
+	/*PatternAssgClause* p1 = new PatternAssgClause("a", "j", "_");
 	p1->setVarType(stringconst::ARG_VARIABLE);
-	p1->setVarFixed(true);
+	p1->setVarFixed(true);*/
+	PatternClauseBuilder* assgBuilder = new PatternClauseBuilder(PATTERNASSG_);
+	assgBuilder->setSynonym("a");
+	assgBuilder->setVar("j");
+	assgBuilder->setVarType(ARG_VARIABLE);
+	assgBuilder->setVarFixed(true);
+	assgBuilder->setExpr(1, "_\"2 3 +\"_");
+	PatternAssgClause* p1 = (PatternAssgClause*) assgBuilder->build();
 	CPPUNIT_ASSERT(p1->isValid());
 
 	Results* res = new Results();
@@ -258,19 +279,33 @@ void PatternAssgClauseTest::evaluateVarFixedExpr() {
 	CPPUNIT_ASSERT(res->selectSyn(expectedSyn1).size() == 1);
 	CPPUNIT_ASSERT(res->selectSyn(expectedSyn1).count(expectedNum) == 1);
 
-	// expr fail targeting j = 2+3+4
-	PatternAssgClause* p2 = new PatternAssgClause("a", "j", "_\"3 4 +\"_");
+	// expr fail targeting j=2+3+4 != j=x
+	/*PatternAssgClause* p2 = new PatternAssgClause("a", "j", _"x"_);
 	p2->setVarType(stringconst::ARG_VARIABLE);
-	p2->setVarFixed(true);
+	p2->setVarFixed(true);*/
+	PatternClauseBuilder* assgBuilder2 = new PatternClauseBuilder(PATTERNASSG_);
+	assgBuilder2->setSynonym("a");
+	assgBuilder2->setVar("j");
+	assgBuilder2->setVarType(ARG_VARIABLE);
+	assgBuilder2->setVarFixed(true);
+	assgBuilder2->setExpr(1, "_\"x\"_");
+	PatternAssgClause* p2 = (PatternAssgClause*) assgBuilder2->build();
 	CPPUNIT_ASSERT(p2->isValid());
 
 	Results* resFail = new Results();
 	CPPUNIT_ASSERT(!p2->evaluate(resFail));
 
 	// var fail
-	PatternAssgClause* p3 = new PatternAssgClause("a", "x", "_\"1 2 +\"_");
+	/*PatternAssgClause* p3 = new PatternAssgClause("a", "x", "_");
 	p3->setVarType(stringconst::ARG_VARIABLE);
-	p3->setVarFixed(true);
+	p3->setVarFixed(true);*/
+	PatternClauseBuilder* assgBuilder3 = new PatternClauseBuilder(PATTERNASSG_);
+	assgBuilder3->setSynonym("a");
+	assgBuilder3->setVar("x");
+	assgBuilder3->setVarType(ARG_VARIABLE);
+	assgBuilder3->setVarFixed(true);
+	assgBuilder3->setExpr(1, "_\"1 2 +\"_");
+	PatternAssgClause* p3 = (PatternAssgClause*) assgBuilder3->build();
 	CPPUNIT_ASSERT(p3->isValid());
 
 	Results* resFail2 = new Results();
@@ -281,9 +316,16 @@ void PatternAssgClauseTest::evaluateVarFixedExpr() {
 
 void PatternAssgClauseTest::evaluateVarExprWild() {
 	// pass, pattern a(v, "_");
-	PatternAssgClause* p1 = new PatternAssgClause("a", "v", "_");
+	/*PatternAssgClause* p1 = new PatternAssgClause("a", "v", "_");
 	p1->setVarType(stringconst::ARG_VARIABLE);
-	p1->setVarFixed(false);
+	p1->setVarFixed(false);*/
+	PatternClauseBuilder* assgBuilder = new PatternClauseBuilder(PATTERNASSG_);
+	assgBuilder->setSynonym("a");
+	assgBuilder->setVar("v");
+	assgBuilder->setVarType(ARG_VARIABLE);
+	assgBuilder->setVarFixed(false);
+	assgBuilder->setExpr(1, "_");
+	PatternAssgClause* p1 = (PatternAssgClause*) assgBuilder->build();
 	CPPUNIT_ASSERT(p1->isValid());
 
 	Results* res = new Results();
@@ -325,9 +367,16 @@ void PatternAssgClauseTest::evaluateVarExprWild() {
 void PatternAssgClauseTest::evaluateVarExpr() {
 	// pass targeting j = 2+3+4
 	// pattern a(v, "_2+3+4_");
-	PatternAssgClause* p1 = new PatternAssgClause("a", "v", "_\"2 3 +\"_");
+	/*PatternAssgClause* p1 = new PatternAssgClause("a", "v", "_\"2 3 +\"_");
 	p1->setVarType(stringconst::ARG_VARIABLE);
-	p1->setVarFixed(false);
+	p1->setVarFixed(false);*/
+	PatternClauseBuilder* assgBuilder = new PatternClauseBuilder(PATTERNASSG_);
+	assgBuilder->setSynonym("a");
+	assgBuilder->setVar("v");
+	assgBuilder->setVarType(ARG_VARIABLE);
+	assgBuilder->setVarFixed(false);
+	assgBuilder->setExpr(1, "_\"2 3 +\"_");
+	PatternAssgClause* p1 = (PatternAssgClause*) assgBuilder->build();
 	CPPUNIT_ASSERT(p1->isValid());
 
 	Results* res = new Results();
@@ -358,9 +407,16 @@ void PatternAssgClauseTest::evaluateVarExpr() {
 	//CPPUNIT_ASSERT(r1.getPairResults().at(0).second == "j");
 	
 	// expr fail
-	PatternAssgClause* p2 = new PatternAssgClause("a", "j", "_\"3 4 +\"_");
+	/*PatternAssgClause* p2 = new PatternAssgClause("a", "j", "_");
 	p2->setVarType(stringconst::ARG_VARIABLE);
-	p2->setVarFixed(false);
+	p2->setVarFixed(false);*/
+	PatternClauseBuilder* assgBuilder2 = new PatternClauseBuilder(PATTERNASSG_);
+	assgBuilder2->setSynonym("a");
+	assgBuilder2->setVar("j");
+	assgBuilder2->setVarType(ARG_VARIABLE);
+	assgBuilder2->setVarFixed(false);
+	assgBuilder2->setExpr(1, "_\"3 4 +\"_");
+	PatternAssgClause* p2 = (PatternAssgClause*) assgBuilder2->build();
 	CPPUNIT_ASSERT(p2->isValid());
 
 	Results* resFail = new Results();

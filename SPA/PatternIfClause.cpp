@@ -41,7 +41,7 @@ bool PatternIfClause::isElseListWild() {
 }
 bool PatternIfClause::isValid() {
 	string varType = this->getVarType();
-	bool checkVar = (varType == stringconst::ARG_VARIABLE);
+	bool checkVar = (varType == stringconst::ARG_VARIABLE) || (varType == stringconst::ARG_GENERIC);
 	bool checkThenList = isThenListWild();
 	bool checkElseList = isElseListWild();
 	bool valid = checkVar && checkThenList && checkElseList;
@@ -74,5 +74,5 @@ bool PatternIfClause::matchElseList(IfNode* ifNode, string elseStr) {
 }
 
 bool PatternIfClause::matchVar(IfNode* ifNode, string varStr) {
-	return ifNode->getVarNode()->getName() == varStr;
+	return (varStr == stringconst::STRING_EMPTY) || ifNode->getVarNode()->getName() == varStr;
 }
