@@ -15,6 +15,7 @@
 #include "PatternIfClause.h"
 #include "PatternAssgClause.h"
 #include "PatternWhileClause.h"
+#include "PatternClauseBuilder.h"
 #include "boost/unordered_map.hpp"
 #include "ExpressionParser.h"
 #include <queue>
@@ -504,7 +505,14 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 		parsePatternIf(query, line, synonym);
 	}
 }
-
+//TRY THIS NEW SHIT
+//PatternClauseBuilder* assgBuilder = new PatternClauseBuilder(PATTERNASSG_);
+//assgBuilder->setSynonym("a");
+//assgBuilder->setVar("_");
+//assgBuilder->setVarType(ARG_GENERIC);
+//assgBuilder->setVarFixed(false);
+//assgBuilder->setExpr(1, "_");
+//PatternAssgClause* p1 = (PatternAssgClause*) assgBuilder->build();
 void QueryParser::parsePatternOther(Query* query, queue<string> line, string synonym){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string patternType = decList.at(synonym);
@@ -604,14 +612,22 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 	}
 
 	if (patternType == stringconst::ARG_ASSIGN){
-		PatternAssgClause* newClause = new PatternAssgClause(synonym, var, expr);
-		newClause->setVarFixed(varFixed);
-		newClause->setVarType(varType);
+		PatternClauseBuilder* assgBuilder = new PatternClauseBuilder(PATTERNASSG_);
+		assgBuilder->setSynonym(synonym);
+		assgBuilder->setVar(var);
+		assgBuilder->setVarType(varType);
+		assgBuilder->setVarFixed(varFixed);
+		assgBuilder->setExpr(1, expr);
+		Clause* newClause = (Clause*)assgBuilder->build();
 		query->addClause(newClause);
 	} else if (patternType == stringconst::ARG_WHILE){
-		PatternWhileClause* newClause = new PatternWhileClause(synonym, var, expr);
-		newClause->setVarFixed(varFixed);
-		newClause->setVarType(varType);
+		PatternClauseBuilder* whileBuilder = new PatternClauseBuilder(PATTERNWHILE_);
+		whileBuilder->setSynonym(synonym);
+		whileBuilder->setVar(var);
+		whileBuilder->setVarType(varType);
+		whileBuilder->setVarFixed(varFixed);
+		whileBuilder->setExpr(1, expr);
+		Clause* newClause = (Clause*)whileBuilder->build();
 		query->addClause(newClause);
 	}
 }
@@ -682,9 +698,14 @@ void QueryParser::parsePatternIf(Query* query, queue<string> line, string synony
 		throw InvalidSyntaxException();
 	}
 
-	PatternIfClause* newClause = new PatternIfClause(synonym, var, expr1, expr2);
-	newClause->setVarFixed(varFixed);
-	newClause->setVarType(varType);
+	PatternClauseBuilder* ifBuilder = new PatternClauseBuilder(PATTERNIF_);
+	ifBuilder->setSynonym(synonym);
+	ifBuilder->setVar(var);
+	ifBuilder->setVarType(varType);
+	ifBuilder->setVarFixed(varFixed);
+	ifBuilder->setExpr(1, expr1);
+	ifBuilder->setExpr(2, expr2);
+	Clause* newClause = (Clause*)ifBuilder->build();
 	query->addClause(newClause);
 }
 
