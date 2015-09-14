@@ -74,8 +74,6 @@ bool PatternAssgClause::matchVar(AssgNode* assgnode, string var) {
 
 	// match var based on varnode name
 	VarNode* varnode = assgnode->getVarNode();
-	cout << varnode->getName() << endl;
-	cout << var << endl;
 	return varnode->getName() == var;
 }
 

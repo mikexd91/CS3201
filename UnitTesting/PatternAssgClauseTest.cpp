@@ -156,9 +156,9 @@ void PatternAssgClauseTest::evaluateVarWildExprWild() {
 	CPPUNIT_ASSERT(r1->selectSyn(syn1).size() == 3);
 	
 	unordered_set<string> v = r1->selectSyn(syn1);
-	BOOST_FOREACH(auto i, v) {
-		cout << i;
-	}
+	/*BOOST_FOREACH(auto i, v) {
+	cout << i;
+	}*/
 
 	return;
 }
