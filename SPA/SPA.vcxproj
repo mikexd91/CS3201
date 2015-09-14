@@ -36,7 +36,6 @@
     <ClCompile Include="ParentStarClause.cpp" />
     <ClCompile Include="ParsedData.cpp" />
     <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="PatternAssg.cpp" />
     <ClCompile Include="PDR.cpp" />
     <ClCompile Include="Procedure.cpp" />
     <ClCompile Include="ProcNode.cpp" />
@@ -79,7 +78,6 @@
     <ClInclude Include="ParentStarClause.h" />
     <ClInclude Include="ParsedData.h" />
     <ClInclude Include="Parser.h" />
-    <ClInclude Include="PatternAssg.h" />
     <ClInclude Include="PDR.h" />
     <ClInclude Include="PQLExceptions.h" />
     <ClInclude Include="Procedure.h" />

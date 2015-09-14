@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <string>
+#include "../SPA/SuchThatClauseBuilder.h"
 
 using namespace stringconst;
 using namespace std;
@@ -246,14 +247,22 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ParentClauseTest );
 
 
 void ParentClauseTest::testParentFixedFixedPass() {
-	Results res = Results();
+	Results res = Results();/*
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("1");
 	m1->setFirstArgFixed(true);
 	m1->setFirstArgType(ARG_STATEMENT);
 	m1->setSecondArg("6");
 	m1->setSecondArgFixed(true);
-	m1->setSecondArgType(ARG_STATEMENT);
+	m1->setSecondArgType(ARG_STATEMENT);*/
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "1");
+	parentBuilder->setArgFixed(1, true);
+	parentBuilder->setArgType(1, ARG_STATEMENT);
+	parentBuilder->setArg(2, "6");
+	parentBuilder->setArgFixed(2, true);
+	parentBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* m1 = (ParentClause*) parentBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 
 	bool result = m1->evaluate(&res);
@@ -262,14 +271,22 @@ void ParentClauseTest::testParentFixedFixedPass() {
 }
 
 void ParentClauseTest::testParentFixedFixedFail() {
-	Results res = Results();
+	Results res = Results();/*
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("2");
 	m1->setFirstArgFixed(true);
 	m1->setFirstArgType(ARG_STATEMENT);
 	m1->setSecondArg("3");
 	m1->setSecondArgFixed(true);
-	m1->setSecondArgType(ARG_STATEMENT);
+	m1->setSecondArgType(ARG_STATEMENT);*/
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "2");
+	parentBuilder->setArgFixed(1, true);
+	parentBuilder->setArgType(1, ARG_STATEMENT);
+	parentBuilder->setArg(2, "3");
+	parentBuilder->setArgFixed(2, true);
+	parentBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* m1 = (ParentClause*) parentBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 
 	bool result = m1->evaluate(&res);
@@ -279,14 +296,22 @@ void ParentClauseTest::testParentFixedFixedFail() {
 }
 
 void ParentClauseTest::testParentSynFixedPass() {
-	Results res = Results();
+	Results res = Results();/*
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("s");
 	m1->setFirstArgFixed(false);
 	m1->setFirstArgType(ARG_STATEMENT);
 	m1->setSecondArg("4");
 	m1->setSecondArgFixed(true);
-	m1->setSecondArgType(ARG_STATEMENT);
+	m1->setSecondArgType(ARG_STATEMENT);*/
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "s");
+	parentBuilder->setArgFixed(1, false);
+	parentBuilder->setArgType(1, ARG_STATEMENT);
+	parentBuilder->setArg(2, "4");
+	parentBuilder->setArgFixed(2, true);
+	parentBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* m1 = (ParentClause*) parentBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 
 	bool result = m1->evaluate(&res);
@@ -299,14 +324,22 @@ void ParentClauseTest::testParentSynFixedPass() {
 }
 
 void ParentClauseTest::testParentSynFixedFail() {
-	Results res = Results();
+	Results res = Results();/*
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("s");
 	m1->setFirstArgFixed(false);
 	m1->setFirstArgType(ARG_STATEMENT);
 	m1->setSecondArg("1");
 	m1->setSecondArgFixed(true);
-	m1->setSecondArgType(ARG_STATEMENT);
+	m1->setSecondArgType(ARG_STATEMENT);*/
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "s");
+	parentBuilder->setArgFixed(1, false);
+	parentBuilder->setArgType(1, ARG_STATEMENT);
+	parentBuilder->setArg(2, "1");
+	parentBuilder->setArgFixed(2, true);
+	parentBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* m1 = (ParentClause*) parentBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 
 	bool result =  m1->evaluate(&res);
@@ -315,14 +348,22 @@ void ParentClauseTest::testParentSynFixedFail() {
 }
 
 void ParentClauseTest::testParentFixedSynPass() {
-	Results res = Results();
+	Results res = Results();/*
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("1");
 	m1->setFirstArgFixed(true);
 	m1->setFirstArgType(ARG_PROGLINE);
 	m1->setSecondArg("s");
 	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_STATEMENT);
+	m1->setSecondArgType(ARG_STATEMENT);*/
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "1");
+	parentBuilder->setArgFixed(1, true);
+	parentBuilder->setArgType(1, ARG_PROGLINE);
+	parentBuilder->setArg(2, "s");
+	parentBuilder->setArgFixed(2, false);
+	parentBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* m1 = (ParentClause*) parentBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 
 	bool r1 = m1->evaluate(&res);
@@ -339,14 +380,22 @@ void ParentClauseTest::testParentFixedSynPass() {
 }
 
 void ParentClauseTest::testParentFixedSynPassWithWhile() {
-	Results res = Results();
+	Results res = Results();/*
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("1");
 	m1->setFirstArgFixed(true);
 	m1->setFirstArgType(ARG_STATEMENT);
 	m1->setSecondArg("w");
 	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_WHILE);
+	m1->setSecondArgType(ARG_WHILE);*/
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "1");
+	parentBuilder->setArgFixed(1, true);
+	parentBuilder->setArgType(1, ARG_STATEMENT);
+	parentBuilder->setArg(2, "w");
+	parentBuilder->setArgFixed(2, false);
+	parentBuilder->setArgType(2, ARG_WHILE);
+	ParentClause* m1 = (ParentClause*) parentBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 
 	CPPUNIT_ASSERT(m1->evaluate(&res));
@@ -358,14 +407,22 @@ void ParentClauseTest::testParentFixedSynPassWithWhile() {
 
 
 void ParentClauseTest::testParentFixedSynFail() {
-	Results res = Results();
+	Results res = Results();/*
 	ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("2");
 	m1->setFirstArgFixed(true);
 	m1->setFirstArgType(ARG_STATEMENT);
 	m1->setSecondArg("s");
 	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_STATEMENT);
+	m1->setSecondArgType(ARG_STATEMENT);*/
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "2");
+	parentBuilder->setArgFixed(1, true);
+	parentBuilder->setArgType(1, ARG_STATEMENT);
+	parentBuilder->setArg(2, "s");
+	parentBuilder->setArgFixed(2, false);
+	parentBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* m1 = (ParentClause*) parentBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 
 	bool r1 = m1->evaluate(&res);
@@ -376,13 +433,21 @@ void ParentClauseTest::testParentFixedSynFail() {
 
 void ParentClauseTest::testParentFixedSynFailWithWhile() {
 	Results res = Results();
-	ParentClause* m1 = new ParentClause();
+	/*ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("4");
 	m1->setFirstArgFixed(true);
 	m1->setFirstArgType(ARG_STATEMENT);
 	m1->setSecondArg("w");
 	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_WHILE);
+	m1->setSecondArgType(ARG_WHILE);*/
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "4");
+	parentBuilder->setArgFixed(1, true);
+	parentBuilder->setArgType(1, ARG_STATEMENT);
+	parentBuilder->setArg(2, "2");
+	parentBuilder->setArgFixed(2, false);
+	parentBuilder->setArgType(2, ARG_WHILE);
+	ParentClause* m1 = (ParentClause*) parentBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 
 	bool r1 = m1->evaluate(&res);
@@ -393,13 +458,21 @@ void ParentClauseTest::testParentFixedSynFailWithWhile() {
 
 void ParentClauseTest::testParentSynSynPass() {
 	Results res = Results();
-	ParentClause* m1 = new ParentClause();
+	/*ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("s1");
 	m1->setFirstArgFixed(false);
 	m1->setFirstArgType(ARG_STATEMENT);
 	m1->setSecondArg("s2");
 	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_STATEMENT);
+	m1->setSecondArgType(ARG_STATEMENT);*/
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "s1");
+	parentBuilder->setArgFixed(1, false);
+	parentBuilder->setArgType(1, ARG_STATEMENT);
+	parentBuilder->setArg(2, "s2");
+	parentBuilder->setArgFixed(2, false);
+	parentBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* m1 = (ParentClause*) parentBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 	CPPUNIT_ASSERT(m1->evaluate(&res));
 	CPPUNIT_ASSERT(res.getResultsTableSize() == 7);
@@ -452,13 +525,21 @@ void ParentClauseTest::testParentSynSynPass() {
 
 void ParentClauseTest::testParentSynSynPassWithWhile() {
 	Results res = Results();
-	ParentClause* m1 = new ParentClause();
+	/*ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("s1");
 	m1->setFirstArgFixed(false);
 	m1->setFirstArgType(ARG_STATEMENT);
 	m1->setSecondArg("s2");
 	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_WHILE);
+	m1->setSecondArgType(ARG_WHILE);*/
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "s1");
+	parentBuilder->setArgFixed(1, false);
+	parentBuilder->setArgType(1, ARG_STATEMENT);
+	parentBuilder->setArg(2, "s2");
+	parentBuilder->setArgFixed(2, false);
+	parentBuilder->setArgType(2, ARG_WHILE);
+	ParentClause* m1 = (ParentClause*) parentBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 	CPPUNIT_ASSERT(m1->evaluate(&res));
 	
@@ -475,13 +556,21 @@ void ParentClauseTest::testParentSynSynPassWithWhile() {
 
 void ParentClauseTest::testParentSynSynPassWithIf() {
 	Results res = Results();
-	ParentClause* m1 = new ParentClause();
+	/*ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("s1");
 	m1->setFirstArgFixed(false);
 	m1->setFirstArgType(ARG_IF);
 	m1->setSecondArg("s2");
 	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_STATEMENT);
+	m1->setSecondArgType(ARG_STATEMENT);*/
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "s1");
+	parentBuilder->setArgFixed(1, false);
+	parentBuilder->setArgType(1, ARG_IF);
+	parentBuilder->setArg(2, "s2");
+	parentBuilder->setArgFixed(2, false);
+	parentBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* m1 = (ParentClause*) parentBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 	CPPUNIT_ASSERT(m1->evaluate(&res));
 	
@@ -502,13 +591,21 @@ void ParentClauseTest::testParentSynSynPassWithIf() {
 
 void ParentClauseTest::testParentFirstUnderscorePass() {
 	Results res = Results();
-	ParentClause* m1 = new ParentClause();
+	/*ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("_");
 	m1->setFirstArgFixed(false);
 	m1->setFirstArgType(ARG_GENERIC);
 	m1->setSecondArg("s2");
 	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_STATEMENT);
+	m1->setSecondArgType(ARG_STATEMENT);*/
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "_");
+	parentBuilder->setArgFixed(1, false);
+	parentBuilder->setArgType(1, ARG_GENERIC);
+	parentBuilder->setArg(2, "s2");
+	parentBuilder->setArgFixed(2, false);
+	parentBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* m1 = (ParentClause*) parentBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 
 	CPPUNIT_ASSERT(m1->evaluate(&res));
@@ -526,13 +623,21 @@ void ParentClauseTest::testParentFirstUnderscorePass() {
 
 void ParentClauseTest::testParentSecondUnderscorePass() {
 	Results res = Results();
-	ParentClause* m1 = new ParentClause();
+	/*ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("s2");
 	m1->setFirstArgFixed(false);
 	m1->setFirstArgType(ARG_STATEMENT);
 	m1->setSecondArg("_");
 	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_GENERIC);
+	m1->setSecondArgType(ARG_GENERIC);*/
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "s2");
+	parentBuilder->setArgFixed(1, false);
+	parentBuilder->setArgType(1, ARG_STATEMENT);
+	parentBuilder->setArg(2, "_");
+	parentBuilder->setArgFixed(2, false);
+	parentBuilder->setArgType(2, ARG_GENERIC);
+	ParentClause* m1 = (ParentClause*) parentBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 
 	CPPUNIT_ASSERT(m1->evaluate(&res));
@@ -546,13 +651,21 @@ void ParentClauseTest::testParentSecondUnderscorePass() {
 
 void ParentClauseTest::testParentBothUnderscorePass() {
 	Results res = Results();
-	ParentClause* m1 = new ParentClause();
+	/*ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("_");
 	m1->setFirstArgFixed(false);
 	m1->setFirstArgType(ARG_GENERIC);
 	m1->setSecondArg("_");
 	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_GENERIC);
+	m1->setSecondArgType(ARG_GENERIC);*/
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "_");
+	parentBuilder->setArgFixed(1, false);
+	parentBuilder->setArgType(1, ARG_GENERIC);
+	parentBuilder->setArg(2, "_");
+	parentBuilder->setArgFixed(2, false);
+	parentBuilder->setArgType(2, ARG_GENERIC);
+	ParentClause* m1 = (ParentClause*) parentBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 
 	CPPUNIT_ASSERT(m1->evaluate(&res));
@@ -561,13 +674,21 @@ void ParentClauseTest::testParentBothUnderscorePass() {
 
 void ParentClauseTest::testParentCallPass() {
 	Results res = Results();
-	ParentClause* m1 = new ParentClause();
+	/*ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("s1");
 	m1->setFirstArgFixed(false);
 	m1->setFirstArgType(ARG_STATEMENT);
 	m1->setSecondArg("c");
 	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_CALL);
+	m1->setSecondArgType(ARG_CALL);*/
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "s1");
+	parentBuilder->setArgFixed(1, false);
+	parentBuilder->setArgType(1, ARG_STATEMENT);
+	parentBuilder->setArg(2, "c");
+	parentBuilder->setArgFixed(2, false);
+	parentBuilder->setArgType(2, ARG_CALL);
+	ParentClause* m1 = (ParentClause*) parentBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 
 	CPPUNIT_ASSERT(m1->evaluate(&res));
@@ -584,13 +705,21 @@ void ParentClauseTest::testParentCallPass() {
 
 void ParentClauseTest::testParentSameSyn() {
 	Results res = Results();
-	ParentClause* m1 = new ParentClause();
+	/*ParentClause* m1 = new ParentClause();
 	m1->setFirstArg("s");
 	m1->setFirstArgFixed(false);
 	m1->setFirstArgType(ARG_STATEMENT);
 	m1->setSecondArg("s");
 	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_STATEMENT);
+	m1->setSecondArgType(ARG_STATEMENT);*/
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "s");
+	parentBuilder->setArgFixed(1, false);
+	parentBuilder->setArgType(1, ARG_STATEMENT);
+	parentBuilder->setArg(2, "s");
+	parentBuilder->setArgFixed(2, false);
+	parentBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* m1 = (ParentClause*) parentBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 	CPPUNIT_ASSERT(!m1->evaluate(&res));
 }
