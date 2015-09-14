@@ -50,6 +50,9 @@ public:
 	string getVarType();
 	bool isVarFixed();
 
+	void setVarFixed(bool);
+	void setVarType(string);
+
 	bool evaluate(Results*);
 
 	//Check the validity of the specific clause

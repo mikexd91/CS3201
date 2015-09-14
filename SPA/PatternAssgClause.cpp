@@ -68,10 +68,14 @@ unordered_set<string> PatternAssgClause::getAllSynValues() {
 }
 
 bool PatternAssgClause::matchVar(AssgNode* assgnode, string var) {
+	if (var == STRING_EMPTY) {
+		return true;
+	}
 
 	// match var based on varnode name
 	VarNode* varnode = assgnode->getVarNode();
-
+	cout << varnode->getName() << endl;
+	cout << var << endl;
 	return varnode->getName() == var;
 }
 
@@ -88,7 +92,7 @@ bool PatternAssgClause::matchExpr(AssgNode* assg, string expr) {
 
 	// TODO
 	// account for both _"x+y"_ and "x+y"
-	// so far only got "x+y"
+	// so far only got _"x+y"_
 
 	int i = 0;
 
