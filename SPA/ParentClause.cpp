@@ -4,7 +4,7 @@
 #include <assert.h>
 #include <iostream>
 
-ParentClause::ParentClause(void):Clause(PARENT_){
+ParentClause::ParentClause(void):SuchThatClause(PARENT_){
 	stmtTable = StmtTable::getInstance();
 }
 

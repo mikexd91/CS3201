@@ -11,7 +11,7 @@ using namespace boost;
 
 
 
-ModifiesClause::ModifiesClause(void):Clause(MODIFIES_){
+ModifiesClause::ModifiesClause(void):SuchThatClause(MODIFIES_){
 	stmtTable = StmtTable::getInstance();
 	procTable = ProcTable::getInstance();
 	varTable = VarTable::getInstance();

@@ -22,8 +22,6 @@
     <ClCompile Include="AssgNode.cpp" />
     <ClCompile Include="AST.cpp" />
     <ClCompile Include="CallNode.cpp" />
-    <ClCompile Include="CallsClause.cpp" />
-    <ClCompile Include="CallsStarClause.cpp" />
     <ClCompile Include="Clause.cpp" />
     <ClCompile Include="Constant.cpp" />
     <ClCompile Include="ConstNode.cpp" />
@@ -38,26 +36,20 @@
     <ClCompile Include="ParentStarClause.cpp" />
     <ClCompile Include="ParsedData.cpp" />
     <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="PatternAssg.cpp" />
-    <ClCompile Include="PatternAssgClause.cpp" />
-    <ClCompile Include="PatternClause.cpp" />
-    <ClCompile Include="PatternIfClause.cpp" />
-    <ClCompile Include="PatternWhileClause.cpp" />
     <ClCompile Include="PDR.cpp" />
-    <ClCompile Include="PQLController.cpp" />
     <ClCompile Include="Procedure.cpp" />
     <ClCompile Include="ProcNode.cpp" />
     <ClCompile Include="ProcTable.cpp" />
     <ClCompile Include="ProgNode.cpp" />
     <ClCompile Include="Query.cpp" />
-    <ClCompile Include="QueryEvaluator.cpp" />
-    <ClCompile Include="QueryParser.cpp" />
     <ClCompile Include="Results.cpp" />
     <ClCompile Include="Statement.cpp" />
     <ClCompile Include="StmtLstNode.cpp" />
     <ClCompile Include="StmtNode.cpp" />
     <ClCompile Include="StmtTable.cpp" />
     <ClCompile Include="StringPair.cpp" />
+    <ClCompile Include="SuchThatClause.cpp" />
+    <ClCompile Include="SuchThatClauseBuilder.cpp" />
     <ClCompile Include="TNode.cpp" />
     <ClCompile Include="UsesClause.cpp" />
     <ClCompile Include="Utils.cpp" />
@@ -65,14 +57,11 @@
     <ClCompile Include="VarNode.cpp" />
     <ClCompile Include="VarTable.cpp" />
     <ClCompile Include="WhileNode.cpp" />
-    <ClCompile Include="WithClause.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssgNode.h" />
     <ClInclude Include="AST.h" />
     <ClInclude Include="CallNode.h" />
-    <ClInclude Include="CallsClause.h" />
-    <ClInclude Include="CallsStarClause.h" />
     <ClInclude Include="Clause.h" />
     <ClInclude Include="Constant.h" />
     <ClInclude Include="ConstNode.h" />
@@ -89,27 +78,21 @@
     <ClInclude Include="ParentStarClause.h" />
     <ClInclude Include="ParsedData.h" />
     <ClInclude Include="Parser.h" />
-    <ClInclude Include="PatternAssg.h" />
-    <ClInclude Include="PatternAssgClause.h" />
-    <ClInclude Include="PatternClause.h" />
-    <ClInclude Include="PatternIfClause.h" />
-    <ClInclude Include="PatternWhileClause.h" />
     <ClInclude Include="PDR.h" />
-    <ClInclude Include="PQLController.h" />
     <ClInclude Include="PQLExceptions.h" />
     <ClInclude Include="Procedure.h" />
     <ClInclude Include="ProcNode.h" />
     <ClInclude Include="ProcTable.h" />
     <ClInclude Include="ProgNode.h" />
     <ClInclude Include="Query.h" />
-    <ClInclude Include="QueryEvaluator.h" />
-    <ClInclude Include="QueryParser.h" />
     <ClInclude Include="Results.h" />
     <ClInclude Include="Statement.h" />
     <ClInclude Include="StmtLstNode.h" />
     <ClInclude Include="StmtNode.h" />
     <ClInclude Include="StmtTable.h" />
     <ClInclude Include="StringPair.h" />
+    <ClInclude Include="SuchThatClause.h" />
+    <ClInclude Include="SuchThatClauseBuilder.h" />
     <ClInclude Include="TNode.h" />
     <ClInclude Include="UsesClause.h" />
     <ClInclude Include="Utils.h" />
@@ -117,7 +100,6 @@
     <ClInclude Include="VarNode.h" />
     <ClInclude Include="VarTable.h" />
     <ClInclude Include="WhileNode.h" />
-    <ClInclude Include="WithClause.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>

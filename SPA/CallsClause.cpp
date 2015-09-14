@@ -2,7 +2,7 @@
 
 using namespace stringconst;
 
-CallsClause::CallsClause(void):Clause(CALLS_) {
+CallsClause::CallsClause(void):SuchThatClause(CALLS_){
 	procTable = ProcTable::getInstance();
 }
 
@@ -123,24 +123,8 @@ unordered_set<string> CallsClause::getAllS1() {
 
 //Calls(synonym, synonym)
 Results::ResultsTable* CallsClause::getAllS1AndS2() {
-	Results::ResultsTable* results = new Results::ResultsTable();
-	if (firstArg != secondArg) {
-		unordered_set<Procedure*> procSet = procTable->getAllProcs();
-		for (unordered_set<Procedure*>::iterator i = procSet.begin(); i != procSet.end(); ++i) {
-			Procedure* procObj = *i;
-			string objName = procObj->getProcName();
-			unordered_set<Procedure*> callProcSet = procObj->getCalls();
-			for (unordered_set<Procedure*>::iterator j = callProcSet.begin(); j != callProcSet.end(); ++j) {
-				Results::Row* pair = new Results::Row();
-				Procedure* callProcObj = *j;
-				string callProcName = callProcObj->getProcName();
-				(*pair)[firstArg] = objName;
-				(*pair)[secondArg] = callProcName;
-				results->insert(pair);
-			}
-		}
-	}
-	return results;
+
+	return new Results::ResultsTable();
 }
 
 bool CallsClause::isCalls(string proc1, string proc2) {
