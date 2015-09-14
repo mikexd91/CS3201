@@ -236,40 +236,40 @@ string QueryParser::getClauseString(string s){
 	return stringconst::STRING_EMPTY;
 }
 
-Clause* QueryParser::createCorrectClause(string type){
+SuchThatClauseBuilder* QueryParser::createCorrectClause(string type){
 	//if (type == stringconst::TYPE_FOLLOWS_STAR){
-		//FollowsStarClause* clause = new FollowsStarClause();
+		//SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(FOLLOWSSTAR_);
 		//return clause;		
 	/*} else if (type == stringconst::TYPE_PARENT_STAR){
-		ParentStarClause* clause = new ParentStarClause();
+		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(PARENTSTAR_);
 		return clause;
 	} else*/ if (type == stringconst::TYPE_FOLLOWS){
-		FollowsClause* clause = new FollowsClause();
+		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(FOLLOWS_);
 		return clause;		
 	} else if (type == stringconst::TYPE_PARENT){
-		ParentClause* clause = new ParentClause();
-		return clause;		
+		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(PARENT_);
+		return clause;			
 	} else if (type == stringconst::TYPE_MODIFIES){
-		ModifiesClause* clause = new ModifiesClause();
+		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(MODIFIES_);
 		return clause;		
 	} else if (type == stringconst::TYPE_USES){
-		UsesClause* clause = new UsesClause();
+		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(USES_);
 		return clause;
 	/*INSERT WHEN CLAUSES ARE DONE
 	} else if (type == stringconst::TYPE_CALLS){
-		CallsClause* clause = new CallsClause();
+		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(CALLS_);
 		return clause;
 	} else if (type == stringconst::TYPE_NEXT){
-		NextClause* clause = new NextClause();
+		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXT_);
 		return clause;
 	} else if (type == stringconst::TYPE_AFFECTS){
-		AffectsClause* clause = new AffectsClause();
+		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTS_);
 		return clause;
 	} else if (type == stringconst::TYPE_NEXT_STAR){
-		NextStarClause* clause = new NextStarClause();
+		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXTSTAR_);
 		return clause;
 	} else if (type == stringconst::TYPE_AFFECTS_STAR){
-		AffectsStarClause* clause = new AffectsStarClause();
+		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTSSTAR_);
 		return clause;
 	}
 	*/
@@ -383,7 +383,7 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 
 	string clauseType = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
-	Clause* newClause = createCorrectClause(clauseType);
+	SuchThatClauseBuilder* newClause = createCorrectClause(clauseType);
 
 	string openParen = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
@@ -401,28 +401,28 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 			throw InvalidSyntaxException();
 		}
 	}
-	newClause->setFirstArgFixed(expectFirstFixed);
+	newClause->setArgFixed(1, expectFirstFixed);
 	if (decList.find(firstVar) == decList.end()){
 		if (!Utils::isValidConstant(firstVar)){
 			if (!expectFirstFixed){
 				if (firstVar != stringconst::STRING_EMPTY){
 					throw MissingDeclarationException();
 				} else {
-					newClause->setFirstArg(stringconst::STRING_EMPTY);
-					newClause->setFirstArgType(stringconst::ARG_GENERIC);
+					newClause->setArg(1, stringconst::STRING_EMPTY);
+					newClause->setArgType(1, stringconst::ARG_GENERIC);
 				}
 			} else {
-				newClause->setFirstArg(firstVar);
-				newClause->setFirstArgType(stringconst::ARG_VARIABLE);
+				newClause->setArg(1, firstVar);
+				newClause->setArgType(1, stringconst::ARG_VARIABLE);
 			}
 		} else {
-			newClause->setFirstArg(firstVar);
-			newClause->setFirstArgType(stringconst::ARG_STATEMENT);
+			newClause->setArg(1, firstVar);
+			newClause->setArgType(1, stringconst::ARG_STATEMENT);
 		}
 	} else {
 		string firstArgType = decList.at(firstVar);
-		newClause->setFirstArg(firstVar);
-		newClause->setFirstArgType(firstArgType);
+		newClause->setArg(1, firstVar);
+		newClause->setArgType(1, firstArgType);
 	}
 	if (expectFirstFixed){
 		string closeFixed = Utils::getWordAndPop(line);
@@ -448,28 +448,28 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 			throw InvalidSyntaxException();
 		}
 	}
-	newClause->setSecondArgFixed(expectSecondFixed);
+	newClause->setArgFixed(2, expectSecondFixed);
 	if (decList.find(secondVar) == decList.end()){
 		if (!Utils::isValidConstant(secondVar)){
 			if (!expectSecondFixed){
 				if (secondVar != stringconst::STRING_EMPTY){
 					throw MissingDeclarationException();
 				} else {
-					newClause->setSecondArg(stringconst::STRING_EMPTY);
-					newClause->setSecondArgType(stringconst::ARG_GENERIC);
+					newClause->setArg(2, stringconst::STRING_EMPTY);
+					newClause->setArgType(2, stringconst::ARG_GENERIC);
 				}
 			} else {
-				newClause->setSecondArg(secondVar);
-				newClause->setSecondArgType(stringconst::ARG_VARIABLE);
+				newClause->setArg(2, secondVar);
+				newClause->setArgType(2, stringconst::ARG_VARIABLE);
 			}
 		} else {
-			newClause->setSecondArg(secondVar);
-			newClause->setSecondArgType(stringconst::ARG_STATEMENT);
+			newClause->setArg(2, secondVar);
+			newClause->setArgType(2, stringconst::ARG_STATEMENT);
 		}
 	} else {
 		string secondArgType = decList.at(secondVar);
-		newClause->setSecondArg(secondVar);
-		newClause->setSecondArgType(secondArgType);
+		newClause->setArg(2, secondVar);
+		newClause->setArgType(2, secondArgType);
 	}
 	if (expectSecondFixed){
 		string closeFixed = Utils::getWordAndPop(line);
@@ -483,8 +483,8 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 	if (closeParen != ")"){
 		throw InvalidSyntaxException();
 	}
-
-	query->addClause(newClause);
+	Clause* clause = (Clause*)newClause->build();
+	query->addClause(clause);
 }
 
 void QueryParser::parsePattern(Query* query, queue<string> line){
