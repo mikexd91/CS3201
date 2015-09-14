@@ -10,37 +10,22 @@ class PatternClause
 
 protected:
 	ClauseType clauseType;
-	string firstArg;
-	bool firstArgFixed;
-	string firstArgType;
-	string secondArg;
-	bool secondArgFixed;
-	string secondArgType;
-	string patternArg;
+	string syn;
+	string synType;
+	string var;
+	bool varFixed;
+	string varType;
 	Results::ResultsTable table;
 
 	StmtTable* stmtTable;
 	VarTable* varTable;
 	ProcTable* procTable;
 
-	//e.g. Parent(string,string)
-	virtual bool evaluateS1FixedS2Fixed(string, string)=0;
-	//e.g. Parent(_,_)
-	virtual bool evaluateS1GenericS2Generic()=0;
-	//e.g. Parent(_,string)
-	virtual bool evaluateS1GenericS2Fixed(string)=0;
-	//Parent(string,_)
-	virtual bool evaluateS1FixedS2Generic(string)=0;
-	//Parent(string,s2)
-	virtual unordered_set<string> getAllS2WithS1Fixed(string)=0;
-	//Parent(_,s2)
-	virtual unordered_set<string> getAllS2()=0;
-	//Parent(s1,string)
-	virtual unordered_set<string> getAllS1WithS2Fixed(string)=0;
-	//Parent(s1,__)
-	virtual unordered_set<string> getAllS1()=0;
-	//Parent(s1,s2)
-	virtual Results::ResultsTable* getAllS1AndS2()=0;
+	// given a stmt num (in string form) and a fixed varname, return true if the pattern matches for this stmt.
+	virtual bool matchPattern(string synVal, string varVal)=0;
+
+	// specific syn values depending on assg, while or if
+	virtual unordered_set<string> getAllSynValues()=0;
 
 private:
 	bool isBaseValidityCheck();
@@ -52,38 +37,23 @@ private:
 	bool isValidAssign(string);
 	bool isValidWhile(string);
 
+	// shud be the same across the board, just getvarnames from vartable
+	unordered_set<string> getAllVarValues();
+
 public:
+	PatternClause(void);
 	~PatternClause(void);
 
 	ClauseType getClauseType();
-	void setFirstArg(string);
-	void setSecondArg(string);
-	void setFirstArgType(string);
-	void setSecondArgType(string);
-	void setFirstArgFixed(bool);
-	void setSecondArgFixed(bool);
-
-	string getFirstArg();
-	string getSecondArg();
-	string getFirstArgType();
-	string getSecondArgType();
-	bool getFirstArgFixed();
-	bool getSecondArgFixed();
-
-	string getSynonym();
+	string getSyn();
 	string getVar();
 	string getVarType();
-	bool getVarFixed();
+	bool isVarFixed();
 
-	virtual bool evaluate(Results*)=0;
+	bool evaluate(Results*);
 
 	//Check the validity of the specific clause
 	//Substitute the original clause isValid for this one
 	virtual bool isValid(void)=0;
-
-	void setVar(string var);
-	void setVarType(string varType);
-	void setVarFixed(bool fixed);
-
 };
 
