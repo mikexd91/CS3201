@@ -11,8 +11,11 @@
 
 #include <iostream>
 #include <string>
+#include "../SPA/PatternClauseBuilder.h"
+#include "../SPA/Utils.h"
 
 using namespace std;
+using namespace stringconst;
 
 void PatternAssgClauseTest::setUp() {
 	/* testing this source
@@ -133,10 +136,17 @@ CPPUNIT_TEST_SUITE_REGISTRATION( PatternAssgClauseTest );
 
 void PatternAssgClauseTest::evaluateVarWildExprWild() {
 	//cout << "varwildexprwild";
-	PatternAssgClause* p1 = new PatternAssgClause("a", "_", "_");
+	/*PatternAssgClause* p1 = new PatternAssgClause("a", "_", "_");
 	p1->setSecondArgFixed(false);
-	p1->setSecondArgType(stringconst::ARG_GENERIC);
-
+	p1->setSecondArgType(stringconst::ARG_GENERIC);*/
+	PatternClauseBuilder* assgBuilder = new PatternClauseBuilder(PATTERNASSG_);
+	assgBuilder->setSynonym("a");
+	assgBuilder->setVar("_");
+	assgBuilder->setVarType(ARG_GENERIC);
+	assgBuilder->setVarFixed(false);
+	assgBuilder->setExpr(1, "_");
+	PatternAssgClause* p1 = (PatternAssgClause*) assgBuilder->build();
+	
 	CPPUNIT_ASSERT(p1->isValid());
 	Results *r1 = new Results();
 	CPPUNIT_ASSERT(p1->evaluate(r1));
@@ -146,18 +156,25 @@ void PatternAssgClauseTest::evaluateVarWildExprWild() {
 	CPPUNIT_ASSERT(r1->selectSyn(syn1).size() == 3);
 	
 	unordered_set<string> v = r1->selectSyn(syn1);
-	//BOOST_FOREACH(auto i, v) {
-	//	cout << i;
-	//}
+	BOOST_FOREACH(auto i, v) {
+		cout << i;
+	}
 
 	return;
 }
 
 void PatternAssgClauseTest::evaulateVarWildExpr() {
 	//cout << "varwildexpr";
-	PatternAssgClause* p1 = new PatternAssgClause("a", "_", "_\"1 2 +\"_");
+	/*PatternAssgClause* p1 = new PatternAssgClause("a", "_", "_\"1 2 +\"_");
 	p1->setVarType(stringconst::ARG_GENERIC);
-	p1->setVarFixed(false);
+	p1->setVarFixed(false);*/
+	PatternClauseBuilder* assgBuilder = new PatternClauseBuilder(PATTERNASSG_);
+	assgBuilder->setSynonym("a");
+	assgBuilder->setVar("_");
+	assgBuilder->setVarType(ARG_GENERIC);
+	assgBuilder->setVarFixed(false);
+	assgBuilder->setExpr(1, "_\"1 2 +\"_");
+	PatternAssgClause* p1 = (PatternAssgClause*) assgBuilder->build();
 	CPPUNIT_ASSERT(p1->isValid());
 	Results* res = new Results();
 	CPPUNIT_ASSERT(p1->evaluate(res));
@@ -169,9 +186,16 @@ void PatternAssgClauseTest::evaulateVarWildExpr() {
 	CPPUNIT_ASSERT(res->selectSyn(syn1).count("1") == 1);
 
 	// expr fail
-	PatternAssgClause* p2 = new PatternAssgClause("a", "_", "_\"3 4 +\"_");
+	/*PatternAssgClause* p2 = new PatternAssgClause("a", "_", "_\"3 4 +\"_");
 	p2->setVarType(stringconst::ARG_GENERIC);
-	p2->setVarFixed(false);
+	p2->setVarFixed(false);*/
+	PatternClauseBuilder* assgBuilder2 = new PatternClauseBuilder(PATTERNASSG_);
+	assgBuilder2->setSynonym("a");
+	assgBuilder2->setVar("_");
+	assgBuilder2->setVarType(ARG_GENERIC);
+	assgBuilder2->setVarFixed(false);
+	assgBuilder2->setExpr(1, "_\"3 4 +\"_");
+	PatternAssgClause* p2 = (PatternAssgClause*) assgBuilder2->build();
 	CPPUNIT_ASSERT(p2->isValid());
 	
 	Results* resFail = new Results();
@@ -260,7 +284,6 @@ void PatternAssgClauseTest::evaluateVarExprWild() {
 	PatternAssgClause* p1 = new PatternAssgClause("a", "v", "_");
 	p1->setVarType(stringconst::ARG_VARIABLE);
 	p1->setVarFixed(false);
-	p1->setExpression("_");
 	CPPUNIT_ASSERT(p1->isValid());
 
 	Results* res = new Results();

@@ -2,13 +2,14 @@
 #include "Utils.h"
 #include <boost/foreach.hpp>
 #include "boost/lexical_cast.hpp"
+#include <iostream>
 
 using namespace stringconst;
 
 PatternClause::PatternClause() {
-	this->stmtTable = StmtTable.getInstance();
-	this->varTable = VarTable.getInstance();
-	this->procTable = ProcTable.getInstance();
+	this->stmtTable = StmtTable::getInstance();
+	this->varTable = VarTable::getInstance();
+	this->procTable = ProcTable::getInstance();
 }
 
 PatternClause::~PatternClause(void) {
@@ -28,6 +29,14 @@ string PatternClause::getVarType() {
 
 bool PatternClause::isVarFixed() {
 	return this->varFixed;
+}
+
+void PatternClause::setVarFixed(bool fixed) {
+	this->varFixed = fixed;
+}
+
+void PatternClause::setVarType(string type) {
+	this->varType = type;
 }
 
 bool PatternClause::isBaseValidityCheck() {
@@ -94,7 +103,7 @@ bool PatternClause::isValidWhile(string whileStr) {
 }
 
 unordered_set<string> PatternClause::getAllVarValues() {
-	vector<string>* allVarVector = varTable->getAllVarNames();
+	vector<string> allVarVector = *(varTable->getAllVarNames());
 	unordered_set<string> allVarValues;
 	BOOST_FOREACH(string val, allVarVector) {
 		allVarValues.insert(val);

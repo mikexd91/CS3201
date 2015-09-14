@@ -18,11 +18,11 @@ void PatternClauseBuilder::setVar(string var) {
 	this->var = var;
 }
 
-void PatternClauseBuilder::setArgType(string varType) {
+void PatternClauseBuilder::setVarType(string varType) {
 	this->varType = varType;
 }
 
-void PatternClauseBuilder::setArgFixed(bool varFixed) {
+void PatternClauseBuilder::setVarFixed(bool varFixed) {
 	this->varFixed = varFixed;
 }
 

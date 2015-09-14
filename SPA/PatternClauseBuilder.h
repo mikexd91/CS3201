@@ -18,10 +18,10 @@ public:
 	void setVar(string var);
 
 	// setting the var type
-	void setArgType(string varType);
+	void setVarType(string varType);
 
 	// setting whether var is fixed or not ("" or syn basically)
-	void setArgFixed(bool varFixed);
+	void setVarFixed(bool varFixed);
 
 	// setting the expr value i.e. the _"x"_ in pattern a(v _"x"_ _)
 	void setExpr(int exprNum, string expr);
