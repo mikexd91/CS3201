@@ -94,6 +94,28 @@ public:
 	unordered_set<pair<string, string>> getAllIfParentChildPairs();			// gets all if parent-child pairs
 
 
+	/*----- PARENTSTAR -----*/
+	bool isStmtParentStar(int, int);										// evaluates whether s1 is parent star of s2
+	bool hasParentStar(int);												// evaluates whether stmt has a parent star
+	bool isParentStar(int);													// evaluates whether stmt is parent star of another stmt
+	bool isParentStarExist();												// evaluates whether a parent star stmt exists
+
+	unordered_set<string> getChildStarStmts(int);							// gets all child star stmts of this stmt
+	unordered_set<string> getParentStarStmt(int);							// get parent star stmt of this stmt
+	unordered_set<string> getAllChildStarStmts();							// get all child star stmts
+	unordered_set<string> getAllWhileChildStarStmts();						// get all child star stmts of while stmts
+	unordered_set<string> getAllIfChildStarStmts();							// get all child star stmts of if stmts
+	unordered_set<string> getAllParentStarStmts();							// get all parent star stmts
+	unordered_set<string> getAllWhileParentStarStmts();						// get all parent star stmts of while type
+	unordered_set<string> getAllIfParentStarStmts();						// get all parent star stmts of if type
+
+	unordered_set<pair<string, string>> getAllParentChildStarPairs();		// gets all parent-child star pairs
+	unordered_set<pair<string, string>> getAllWhileParentChildStarPairs();	// gets all while parent-child star pairs
+	unordered_set<pair<string, string>> getAllIfParentChildStarPairs();		// gets all if parent-child star pairs
+
 	/*----- FOLLOWS -----*/
+
+
+	/*----- FOLLOWSSTAR -----*/
 
 };
