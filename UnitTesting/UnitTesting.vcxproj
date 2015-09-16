@@ -130,9 +130,11 @@
     <ClCompile Include="AllUnitTest.cpp" />
     <ClCompile Include="AllUnitTest.cpp" />
     <ClCompile Include="CallsClauseTest.cpp" />
+    <ClCompile Include="CallsStartClauseTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CallsClauseTest.h" />
+    <ClInclude Include="CallsStartClauseTest.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
