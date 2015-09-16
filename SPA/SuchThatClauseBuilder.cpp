@@ -8,6 +8,7 @@
 #include "UsesClause.h"
 #include "FollowsStarClause.h"
 #include "ParentStarClause.h"
+#include "CallsClause.h"
 
 
 SuchThatClauseBuilder::SuchThatClauseBuilder(ClauseType clauseType) {
@@ -81,11 +82,14 @@ SuchThatClause* SuchThatClauseBuilder::build() {
 	} else if (this->clauseType == USES_){
 		clause = new UsesClause();
 		
-	/*INSERT WHEN CLAUSES ARE DONE
+	//INSERT WHEN CLAUSES ARE DONE
 	} else if (this->clauseType == CALLS_){
 		clause = new CallsClause();
+
+	} else if (this->clauseType == CALLSSTAR_){
+		clause = new CallsClause();
 		
-	} else if (this->clauseType == NEXT_){
+	/*} else if (this->clauseType == NEXT_){
 		clause = new NextClause();
 		
 	} else if (this->clauseType == AFFECTS_){
