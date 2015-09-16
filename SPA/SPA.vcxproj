@@ -26,6 +26,7 @@
     <ClCompile Include="Constant.cpp" />
     <ClCompile Include="ConstNode.cpp" />
     <ClCompile Include="ConstTable.cpp" />
+    <ClCompile Include="DesignExtractor.cpp" />
     <ClCompile Include="ExpressionParser.cpp" />
     <ClCompile Include="FollowsClause.cpp" />
     <ClCompile Include="FollowsStarClause.cpp" />
@@ -72,6 +73,7 @@
     <ClInclude Include="Constant.h" />
     <ClInclude Include="ConstNode.h" />
     <ClInclude Include="ConstTable.h" />
+    <ClInclude Include="DesignExtractor.h" />
     <ClInclude Include="ExpressionParser.h" />
     <ClInclude Include="FollowsClause.h" />
     <ClInclude Include="FollowsStarClause.h" />
