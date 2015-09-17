@@ -14,7 +14,8 @@ public:
 	//inserts the rows into the results table
 	void execute(Result::ResultTable&);
 	// for clauses with 1 synonym
-	bool insertSingleSyn(string syn, unordered_set<string> values);
+	bool setSyn(string);
+	bool insertValue(string);
 
 private:
 	string singleValue;

@@ -15,7 +15,8 @@ public:
 	void execute(Result::ResultTable&);
 	// for clauses with 2 or more synonyms
 	// the values follows the same order as that dictacted by the synList
-	bool insertMultiSyns(vector<string> syn, unordered_set<vector<string>> values);
+	bool setSyns(vector<string>);
+	bool insertValues(vector<string>);
 
 private:
 	vector<string> multiInsertSyns;
