@@ -164,23 +164,11 @@ void QueryParserTest::testClause(){
 	vector<Clause*> cls = ASSERTION->getClauseList();
 	
 	CPPUNIT_ASSERT(dec.at("a") == stringconst::ARG_ASSIGN);
-	//CPPUNIT_ASSERT(dec.at("a") == stringconst::ARG_VARIABLE);
 	CPPUNIT_ASSERT(sel.at(0).getFirst() == "a");
 	CPPUNIT_ASSERT(sel.at(0).getSecond() == stringconst::ARG_ASSIGN);
 	
 	Clause* TEST = cls.at(0);
-	//cout << TEST->getFirstArg();
-	//cout << TEST->getSecondArg();
-	/*
-	bool FIRST_FIXED = TEST->getFirstArgFixed();
-	CPPUNIT_ASSERT(FIRST_FIXED);
-	CPPUNIT_ASSERT(TEST->getFirstArg() == "a");
-	CPPUNIT_ASSERT(TEST->getFirstArgType() == stringconst::ARG_ASSIGN);
-	bool SECOND_FIXED = TEST->getSecondArgFixed();
-	CPPUNIT_ASSERT(!SECOND_FIXED);
-	CPPUNIT_ASSERT(TEST->getSecondArg() == "_");
-	CPPUNIT_ASSERT(TEST->getSecondArgType() == stringconst::ARG_GENERIC);
-	*/
+	TEST->getClauseType();
 }
 
 void QueryParserTest::testPatternAssign(){
@@ -255,6 +243,13 @@ void QueryParserTest::testPatternWhile(){
 	CPPUNIT_ASSERT(PATTERN_W->getVar() == "x");
 	CPPUNIT_ASSERT(PATTERN_W->isVarFixed() == true);
 	CPPUNIT_ASSERT(PATTERN_W->getStmtList() == stringconst::STRING_EMPTY);
+}
+
+void QueryParserTest::testWith(){
+	string const USER_IN = "p.progline = 2";
+	queue<string> WITH_Q = QueryParser::queueBuilder(USER_IN);
+	Query* ASSERTION = new Query();
+	QueryParser::parseWith(ASSERTION, WITH_Q);
 }
 
 void QueryParserTest::testParser(){

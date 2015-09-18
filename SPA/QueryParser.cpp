@@ -708,6 +708,42 @@ void QueryParser::parsePatternIf(Query* query, queue<string> line, string synony
 	Clause* newClause = (Clause*)ifBuilder->build();
 	query->addClause(newClause);
 }
+//FINISH PARSING WITH
+void QueryParser::parseWith(Query* query, queue<string> line){
+	//TO CHECK : EXCEPTONS AND OTHER GRAMMATICAL SHIT
+	//with a.asd = 2 and 
+	string leftVal = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	string rightVal;
+	string leftAttrCond;
+	string rightAttrCond;
+	string next = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (next == "."){
+		leftAttrCond = Utils::getWordAndPop(line);
+		unexpectedEndCheck(line);
+		string operand = Utils::getWordAndPop(line);
+		unexpectedEndCheck(line);
+		if (operand == "="){
+			rightVal = Utils::getWordAndPop(line);
+			if (!line.empty()){
+				next = line.front();
+				if (next == "."){
+					Utils::getWordAndPop(line); // pop the period
+					unexpectedEndCheck(line);
+					rightAttrCond = Utils::getWordAndPop(line);
+				} //else if next has an operator (and, such that, etc){
+				//}
+			}
+		} else {
+			throw InvalidSyntaxException();
+		}
+	} else if (next == "="){
+		leftAttrCond = stringconst::STRING_EMPTY;
+		rightVal = Utils::getWordAndPop(line);
+	}
+	
+}
 
 Query QueryParser::parseQuery(string input){
 	Query* output = new Query();
@@ -718,23 +754,36 @@ Query QueryParser::parseQuery(string input){
 	splitBySC.pop_back();
 	parseDeclarations(output, splitBySC);
 	bool expectPattern = false;
+	bool expectWith = false;
 	while(!selectQueue.empty()){
 		string current = selectQueue.front();
 		if (current == stringconst::STRING_SELECT){
 			expectPattern = false;
+			//expectWith = false;
 			parseSelectSynonyms(output, selectQueue);
 		} else if (containsClauseType(current)){
 			expectPattern = false;
+			//expectWith = false;
 			parseClause(output, selectQueue);
 		} else if (contains(current, stringconst::TYPE_PATTERN)){
 			string wordPattern = Utils::getWordAndPop(selectQueue);
 			unexpectedEndCheck(selectQueue);
 			parsePattern(output, selectQueue);
 			expectPattern = true;
+			//expectWith = false;
+		} else if (current == stringconst::TYPE_WITH){
+			//expectPattern = false;
+			//expectWith = true;
+			//string wordWith = Utils::getWordAndPop(selectQueue);
+			//parseWith(output, selectQueue);
 		} else if (current == stringconst::STRING_AND && expectPattern){
 			string wordAnd = Utils::getWordAndPop(selectQueue);
 			unexpectedEndCheck(selectQueue);
 			parsePattern(output, selectQueue);
+		} else if (current == stringconst::STRING_AND && expectWith){
+			string wordAnd = Utils::getWordAndPop(selectQueue);
+			unexpectedEndCheck(selectQueue);
+			//parsePattern(output, selectQueue);
 		} else if (containsKeyword(current)){
 			expectPattern = false;
 		}

@@ -61,6 +61,7 @@ namespace stringconst{
 	string const TYPE_PARENT_STAR = "Parent*";
 	string const TYPE_CALLS = "Calls";
 	string const TYPE_CALLS_STAR = "Calls*";
+	string const TYPE_WITH = "with";
 
 	string const ARG_WHILE = "while";
 	string const ARG_STATEMENT = "stmt";
