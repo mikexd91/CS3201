@@ -7,17 +7,17 @@
 
 using namespace std;
 using boost::unordered_set;
-
 class SingleSynInsert : InsertType
 {
 public:
 	//inserts the rows into the results table
-	void execute(Result::ResultTable&);
+	void execute(ResultTable&);
 	// for clauses with 1 synonym
 	bool setSyn(string);
 	bool insertValue(string);
 
 private:
-	string singleValue;
-	unordered_set<vector<string>> singleInsertValues;
-}
+	string singleSyn;
+	unordered_set<string> singleInsertValues;
+	bool toDelete(const Row&);
+};

@@ -5,19 +5,16 @@
 #include <vector>
 #include "boost/unordered_set.hpp"
 #include "InsertType.h"
+#include "ResultTable.h"
 
 using namespace std;
 using boost::unordered_set;
 
+class InsertType;
+
 class Result
 {
 public:
-	typedef vector<string> Row;
-
-	struct ResultTable {
-		vector<string> synList;
-		vector<Row> rows;
-	};
 
 	Result(void);
 	~Result(void); // how to clear all results, especially resultsTable.
@@ -41,4 +38,4 @@ private:
 	ResultTable resultTableTemp;
 	bool pass;
 
-}
+};

@@ -1,13 +1,11 @@
 #pragma once
-#include "Result.h"
-
+#include "ResultTable.h"
 using namespace std;
-using boost::unordered_set;
 
 class InsertType
 {
 public:
 	//result class to pass its result table inside here to mutate
-	virtual void execute(Result::ResultTable&)=0;
+	virtual void execute(ResultTable&)=0;
 
-}
+};

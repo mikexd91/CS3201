@@ -22,4 +22,4 @@ private:
 	vector<string> multiInsertSyns;
 	unordered_set<vector<string>> multiInsertValues;
 
-}
+};
