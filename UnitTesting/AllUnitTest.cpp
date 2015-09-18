@@ -50,6 +50,9 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("CallsStarClauseTes
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("QueryEvaluatorTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("QueryParserTest").makeTest());
 
+//Result
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("SingleSynInsertTest").makeTest());
+
 CppUnit::TestFactoryRegistry::getRegistry().addTestToSuite(unitSuite);
 CppUnit::TextUi::TestRunner runner;
 

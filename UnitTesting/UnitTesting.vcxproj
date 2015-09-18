@@ -152,6 +152,7 @@
     <ClCompile Include="QueryEvaluatorTest.cpp" />
     <ClCompile Include="QueryParserTest.cpp" />
     <ClCompile Include="ResultsTest.cpp" />
+    <ClCompile Include="SingleSynInsertTest.cpp" />
     <ClCompile Include="StmtLstNodeTest.cpp" />
     <ClCompile Include="StmtTableTest.cpp" />
     <ClCompile Include="TNodeTest.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="QueryEvaluatorTest.h" />
     <ClInclude Include="QueryParserTest.h" />
     <ClInclude Include="ResultsTest.h" />
+    <ClInclude Include="SingleSynInsertTest.h" />
     <ClInclude Include="StmtLstNodeTest.h" />
     <ClInclude Include="StmtTableTest.h" />
     <ClInclude Include="TNodeTest.h" />
