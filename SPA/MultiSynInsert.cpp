@@ -13,6 +13,10 @@ void MultiSynInsert::insertValues(vector<string> values) {
 
 
 void MultiSynInsert::execute(ResultTable& resultTable) {
+	if (multiInsertSyns.empty() || multiInsertValues.empty()) {
+		resultTable.synList.clear();
+		resultTable.rows.clear();
+	}
 	//get number of syns present
 	vector<string> existingSyns = resultTable.synList;
 	int numSynInTable = getNumSynsInTable(resultTable);

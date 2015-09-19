@@ -13,6 +13,10 @@ void SingleSynInsert::insertValue(string syn) {
 
 
 void SingleSynInsert::execute(ResultTable& resultTable) {
+	if (singleSyn.empty() || singleInsertValues.empty()) {
+		resultTable.synList.clear();
+		resultTable.rows.clear();
+	}
 	size_t pos = find(resultTable.synList.begin(), resultTable.synList.end(), singleSyn) - resultTable.synList.begin();
 	bool isSynPresent = pos < resultTable.synList.size();
 	if (isSynPresent) {

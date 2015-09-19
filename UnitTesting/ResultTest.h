@@ -5,6 +5,7 @@
 
 class ResultTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( ResultTest );
+	CPPUNIT_TEST( testFail );
 	CPPUNIT_TEST( testSingleInsertSynPresent );
 	CPPUNIT_TEST( testSingleInsertSynAbsent );
 	CPPUNIT_TEST( testMultiInsertBothSynsPresent );
@@ -15,7 +16,7 @@ class ResultTest : public CPPUNIT_NS::TestFixture {
 public:
 	void setUp();
 	void tearDown();
-
+	void testFail();
 	void testSingleInsertSynPresent();
 	void testSingleInsertSynAbsent();
 	void testMultiInsertBothSynsPresent();

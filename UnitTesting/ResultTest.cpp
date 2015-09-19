@@ -19,6 +19,31 @@ void ResultTest::tearDown() {
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ResultTest );
 
+void ResultTest::testFail() {
+	//table has <a,b> = <1,2> <1,3>, insert b = 3
+	ResultTable resultTable = ResultTable();
+	string tmpSyn[] = { "a", "b" };
+	vector<string> synVect(tmpSyn, tmpSyn+2);
+	resultTable.synList = synVect;
+
+	string tmpRow1[] = { "1", "2" };
+	Row row1(tmpRow1, tmpRow1+2);
+	string tmpRow2[] = { "1", "3" };
+	Row row2(tmpRow2, tmpRow2+2);
+	resultTable.rows.push_back(row1);
+	resultTable.rows.push_back(row2);
+
+	Result result = Result();
+	result.setResultTable(resultTable);
+	MultiSynInsert insert = MultiSynInsert();
+	string syn1[] = {"a", "b"};
+	insert.setSyns(vector<string>(syn1, syn1+2));
+	string tmpInsertRow[] = {"2", "3"};
+	insert.insertValues(vector<string>(tmpInsertRow, tmpInsertRow+2));
+	result.push(insert);
+	CPPUNIT_ASSERT(!result.isPass());
+}
+
 void ResultTest::testSingleInsertSynPresent() { 
 
 	//table has <a,b> = <1,2> <1,3>, insert b = 3
@@ -41,7 +66,7 @@ void ResultTest::testSingleInsertSynPresent() {
 	insert.insertValue("3");
 	result.push(insert);
 
-
+	CPPUNIT_ASSERT(result.isPass());
 	resultTable = result.getResultTable();
 	//Check syn
 	CPPUNIT_ASSERT_EQUAL(2, (int) resultTable.synList.size());
@@ -65,6 +90,7 @@ void ResultTest::testSingleInsertSynAbsent() {
 	insert.insertValue("4");
 	result.push(insert);
 
+	CPPUNIT_ASSERT(result.isPass());
 	ResultTable resultTable = result.getResultTable();
 	//Check syn
 	CPPUNIT_ASSERT_EQUAL(1, (int) resultTable.synList.size());
@@ -208,6 +234,7 @@ void ResultTest::testMultiInsertBothSynsPresent() {
 	string tmpInsertRow[] = {"1", "2"};
 	insert.insertValues(vector<string>(tmpInsertRow, tmpInsertRow+2));
 	result.push(insert);
+	CPPUNIT_ASSERT(result.isPass());
 
 	resultTable = result.getResultTable();
 	//Check syns
@@ -238,6 +265,7 @@ void ResultTest::testMultiInsertBothSynsAbsent() {
 	insert.insertValues(vector<string>(row1, row1+2));
 	insert.insertValues(vector<string>(row2, row2+2));
 	result.push(insert);
+	CPPUNIT_ASSERT(result.isPass());
 
 	ResultTable resultTable = result.getResultTable();
 	//Check syns
@@ -276,6 +304,7 @@ void ResultTest::testMultiInsertBothSynsAbsent() {
 	insert2.insertValues(vector<string>(row3, row3+2));
 	insert2.insertValues(vector<string>(row4, row4+2));
 	result.push(insert2);
+	CPPUNIT_ASSERT(result.isPass());
 
 	/**
 	outcome:
@@ -412,7 +441,8 @@ void ResultTest::testMultiInsertOneSynPresent() {
 	string tmpInsertRow2[] = {"2", "5"};
 	insert.insertValues(vector<string>(tmpInsertRow2, tmpInsertRow2+2));
 	result.push(insert);
-	
+	CPPUNIT_ASSERT(result.isPass());
+
 	//Check syns
 	resultTable = result.getResultTable();
 	CPPUNIT_ASSERT_EQUAL(3, (int) resultTable.synList.size());

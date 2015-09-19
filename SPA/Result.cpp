@@ -10,6 +10,7 @@ Result::~Result() {
 
 void Result::push(InsertType& insert) {
 	insert.execute(resultTable);
+	pass = !resultTable.synList.empty() && !resultTable.rows.empty();
 }
 
 ResultTable Result::getResultTable() {
@@ -19,3 +20,6 @@ void Result::setResultTable(ResultTable& table) {
 	resultTable = table;
 }
 
+bool Result::isPass() {
+	return pass;
+}
