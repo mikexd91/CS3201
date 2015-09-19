@@ -52,6 +52,7 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("QueryParserTest").
 
 //Result
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("SingleSynInsertTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("MultiSynInsertTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ResultTest").makeTest());
 
 CppUnit::TestFactoryRegistry::getRegistry().addTestToSuite(unitSuite);

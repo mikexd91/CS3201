@@ -32,6 +32,7 @@
     <ClCompile Include="FollowsStarClause.cpp" />
     <ClCompile Include="IfNode.cpp" />
     <ClCompile Include="ModifiesClause.cpp" />
+    <ClCompile Include="MultiSynInsert.cpp" />
     <ClCompile Include="OpNode.cpp" />
     <ClCompile Include="ParentClause.cpp" />
     <ClCompile Include="ParentStarClause.cpp" />
