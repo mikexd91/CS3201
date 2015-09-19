@@ -8,7 +8,7 @@
 using namespace std;
 using boost::unordered_set;
 
-class MultiSynInsert : InsertType
+class MultiSynInsert : public InsertType
 {
 public:
 	MultiSynInsert();
