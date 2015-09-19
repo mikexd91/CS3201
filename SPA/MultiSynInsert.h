@@ -24,7 +24,12 @@ private:
 	unordered_set<vector<string>> multiInsertValues;
 	int getNumSynsInTable(ResultTable);
 	vector<int> getSynPositionsInTable(ResultTable);
-	void addNewRows(list<Row>&);
-	void addSynToExistingRows(ResultTable, list<Row>&);
+	void addNewRows(ResultTable&);
+	void addSynToExistingRows(ResultTable&);
 	void removeRows(ResultTable&);
+	void combineRows(ResultTable&);
+	void categoriseSyns(ResultTable, vector<int>&, vector<int>&, vector<int>&);
+	void insertSyns(ResultTable&, vector<int>);
+	void addToRow(Row&, vector<int>, vector<string>);
+	bool toInsertRow(Row, vector<string>, vector<int>, vector<int>);		
 };
