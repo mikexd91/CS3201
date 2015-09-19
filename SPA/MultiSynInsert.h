@@ -23,6 +23,8 @@ private:
 	vector<string> multiInsertSyns;
 	unordered_set<vector<string>> multiInsertValues;
 	int getNumSynsInTable(ResultTable);
+	vector<int> getSynPositionsInTable(ResultTable);
 	void addNewRows(list<Row>&);
 	void addSynToExistingRows(ResultTable, list<Row>&);
+	void removeRows(ResultTable&);
 };

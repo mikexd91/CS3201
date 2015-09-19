@@ -169,3 +169,41 @@ void MultiSynInsertTest::testSynAbsent() {
 	}
 	return;
 }
+
+void MultiSynInsertTest::testBothSynsPresent() { 
+	ResultTable resultTable = ResultTable();
+	//initial rows: <a,b,c> = <1,2,3>, <1,3,4>
+	//insert<a,b> = <1,2>
+	//outcome: <a,b,c> = <1,2,3>
+	string tmpSyn[] = { "a", "b", "c" };
+	vector<string> synVect(tmpSyn, tmpSyn+3);
+	resultTable.synList = synVect;
+
+	string tmpRow1[] = { "1", "2", "5" };
+	Row row1(tmpRow1, tmpRow1+2);
+	string tmpRow2[] = { "1", "3", "4" };
+	Row row2(tmpRow2, tmpRow2+2);
+	resultTable.rows.push_back(row1);
+	resultTable.rows.push_back(row2);
+	MultiSynInsert insert = MultiSynInsert();
+	string syn1[] = {"a", "b"};
+	insert.setSyns(vector<string>(syn1, syn1+2));
+	string tmpInsertRow[] = {"1", "2"};
+	insert.insertValues(vector<string>(tmpInsertRow, tmpInsertRow+2));
+	insert.execute(resultTable);
+
+	//Check syns
+	CPPUNIT_ASSERT_EQUAL(3, (int) resultTable.synList.size());
+	CPPUNIT_ASSERT("a" == resultTable.synList.at(0));
+	CPPUNIT_ASSERT("b" == resultTable.synList.at(1));
+	CPPUNIT_ASSERT("c" == resultTable.synList.at(2));
+	//check values
+	CPPUNIT_ASSERT_EQUAL(1, (int) resultTable.rows.size());
+	/**
+	Row result = *(resultTable.rows.begin());
+	CPPUNIT_ASSERT(result.at(0) == "1");
+	CPPUNIT_ASSERT(result.at(1) == "2");
+	CPPUNIT_ASSERT(result.at(2) == "3");
+	**/
+	return;
+}
