@@ -19,6 +19,8 @@ void ResultTest::tearDown() {
 CPPUNIT_TEST_SUITE_REGISTRATION( ResultTest );
 
 void ResultTest::testSingleInsertSynPresent() { 
+
+	//table has <a,b> = <1,2> <1,3>, insert b = 3
 	ResultTable resultTable = ResultTable();
 	string tmpSyn[] = { "a", "b" };
 	vector<string> synVect(tmpSyn, tmpSyn+2);
@@ -54,6 +56,7 @@ void ResultTest::testSingleInsertSynPresent() {
 
 void ResultTest::testSingleInsertSynAbsent() { 
 
+	//result table is empty, insert b = 3, 4 
 	Result result = Result();
 	SingleSynInsert insert = SingleSynInsert();
 	insert.setSyn("b");
@@ -65,24 +68,117 @@ void ResultTest::testSingleInsertSynAbsent() {
 	//Check syn
 	CPPUNIT_ASSERT_EQUAL(1, (int) resultTable.synList.size());
 	CPPUNIT_ASSERT("b" == resultTable.synList.at(0));
-
-	//Check rows
+	//Check number of rows
 	CPPUNIT_ASSERT_EQUAL(2, (int) resultTable.rows.size());
-	bool isThreePresent;
-	bool isFourPresent;
+	//check first row
 	auto rowIter = resultTable.rows.begin();
-	//CHECK THAT FIRST ROW IS EITHER 3 OR 4
 	CPPUNIT_ASSERT_EQUAL(1, (int) (*rowIter).size());
-	isThreePresent = (*rowIter).at(0) == "3";
-	isFourPresent = (*rowIter).at(0) == "4";
+	bool isThreePresent = (*rowIter).at(0) == "3";
+	bool isFourPresent = (*rowIter).at(0) == "4";
 	CPPUNIT_ASSERT(isThreePresent || isFourPresent);
-
+	//check second row
 	advance(rowIter, 1);
 	CPPUNIT_ASSERT_EQUAL(1, (int) (*rowIter).size());
 	if (isThreePresent) {
 		CPPUNIT_ASSERT((*rowIter).at(0) == "4");
 	} else {
 		CPPUNIT_ASSERT((*rowIter).at(0) == "3");
+	}
+
+	//Result table has b = 3, 4, insert a = 1, 2
+	SingleSynInsert insert2 = SingleSynInsert();
+	insert2.setSyn("a");
+	insert2.insertValue("1");
+	insert2.insertValue("2");
+	result.push(insert2);
+
+	resultTable = result.getResultTable();
+	//Check syn
+	CPPUNIT_ASSERT_EQUAL(2, (int) resultTable.synList.size());
+	CPPUNIT_ASSERT("b" == resultTable.synList.at(0));
+	CPPUNIT_ASSERT("a" == resultTable.synList.at(1));
+	//Check number of rows
+	CPPUNIT_ASSERT_EQUAL(4, (int) resultTable.rows.size());
+	
+	//check first row
+	rowIter = resultTable.rows.begin();
+	CPPUNIT_ASSERT_EQUAL(2, (int) (*rowIter).size());
+	bool isThreeAndOnePresent = (*rowIter).at(0) == "3" && (*rowIter).at(1) == "1";
+	bool isThreeAndTwoPresent = (*rowIter).at(0) == "3" && (*rowIter).at(1) == "2";
+	bool isFourAndOnePresent = (*rowIter).at(0) == "4" && (*rowIter).at(1) == "1";
+	bool isFourAndTwoPresent = (*rowIter).at(0) == "4" && (*rowIter).at(1) == "2";
+	CPPUNIT_ASSERT(isThreeAndOnePresent || isThreeAndTwoPresent || isFourAndOnePresent || isFourAndTwoPresent);
+
+	//check second row
+	advance(rowIter, 1);
+	CPPUNIT_ASSERT_EQUAL(2, (int) (*rowIter).size());
+	if (isThreeAndOnePresent) {
+		isThreeAndTwoPresent = (*rowIter).at(0) == "3" && (*rowIter).at(1) == "2";
+		isFourAndOnePresent = (*rowIter).at(0) == "4" && (*rowIter).at(1) == "1";
+		isFourAndTwoPresent = (*rowIter).at(0) == "4" && (*rowIter).at(1) == "2";
+		CPPUNIT_ASSERT(isThreeAndTwoPresent || isFourAndOnePresent || isFourAndTwoPresent);
+	} else if (isThreeAndTwoPresent) {
+		isThreeAndOnePresent = (*rowIter).at(0) == "3" && (*rowIter).at(1) == "1";
+		isFourAndOnePresent = (*rowIter).at(0) == "4" && (*rowIter).at(1) == "1";
+		isFourAndTwoPresent = (*rowIter).at(0) == "4" && (*rowIter).at(1) == "2";
+		CPPUNIT_ASSERT(isThreeAndOnePresent || isFourAndOnePresent || isFourAndTwoPresent);
+	} else if (isFourAndOnePresent) {
+		isThreeAndOnePresent = (*rowIter).at(0) == "3" && (*rowIter).at(1) == "1";
+		isThreeAndTwoPresent = (*rowIter).at(0) == "3" && (*rowIter).at(1) == "2";
+		isFourAndTwoPresent = (*rowIter).at(0) == "4" && (*rowIter).at(1) == "2";
+		CPPUNIT_ASSERT(isThreeAndOnePresent || isThreeAndTwoPresent || isFourAndTwoPresent);
+	} else {
+		isThreeAndOnePresent = (*rowIter).at(0) == "3" && (*rowIter).at(1) == "1";
+		isThreeAndTwoPresent = (*rowIter).at(0) == "3" && (*rowIter).at(1) == "2";
+		isFourAndOnePresent = (*rowIter).at(0) == "4" && (*rowIter).at(1) == "1";
+		CPPUNIT_ASSERT(isThreeAndOnePresent || isThreeAndTwoPresent || isFourAndOnePresent);
+	}
+
+	//check third row
+	advance(rowIter, 1);
+	CPPUNIT_ASSERT_EQUAL(2, (int) (*rowIter).size());
+	if (isThreeAndOnePresent && isThreeAndTwoPresent) {
+		isFourAndOnePresent = (*rowIter).at(0) == "4" && (*rowIter).at(1) == "1";
+		isFourAndTwoPresent = (*rowIter).at(0) == "4" && (*rowIter).at(1) == "2";
+		CPPUNIT_ASSERT(isFourAndOnePresent || isFourAndTwoPresent);
+	} else if (isThreeAndOnePresent && isFourAndOnePresent) {
+		isThreeAndTwoPresent = (*rowIter).at(0) == "3" && (*rowIter).at(1) == "2";
+		isFourAndTwoPresent = (*rowIter).at(0) == "4" && (*rowIter).at(1) == "2";
+		CPPUNIT_ASSERT(isThreeAndTwoPresent || isFourAndTwoPresent);
+	} else if (isThreeAndOnePresent && isFourAndTwoPresent) {
+		isThreeAndTwoPresent = (*rowIter).at(0) == "3" && (*rowIter).at(1) == "2";
+		isFourAndOnePresent = (*rowIter).at(0) == "4" && (*rowIter).at(1) == "1";
+		CPPUNIT_ASSERT(isThreeAndTwoPresent || isFourAndOnePresent);
+	} else if (isThreeAndTwoPresent && isFourAndOnePresent) {
+		isThreeAndOnePresent = (*rowIter).at(0) == "3" && (*rowIter).at(1) == "1";
+		isFourAndTwoPresent = (*rowIter).at(0) == "4" && (*rowIter).at(1) == "2";
+		CPPUNIT_ASSERT(isThreeAndOnePresent || isFourAndTwoPresent);
+	} else if (isThreeAndTwoPresent && isFourAndTwoPresent) {
+		isThreeAndOnePresent = (*rowIter).at(0) == "3" && (*rowIter).at(1) == "1";
+		isFourAndOnePresent = (*rowIter).at(0) == "4" && (*rowIter).at(1) == "1";
+		CPPUNIT_ASSERT(isThreeAndOnePresent || isFourAndOnePresent);
+	} else {
+		isThreeAndOnePresent = (*rowIter).at(0) == "3" && (*rowIter).at(1) == "1";
+		isThreeAndTwoPresent = (*rowIter).at(0) == "3" && (*rowIter).at(1) == "2";
+		CPPUNIT_ASSERT(isThreeAndOnePresent || isThreeAndTwoPresent);
+	}
+	//check last row
+	advance(rowIter, 1);
+	CPPUNIT_ASSERT_EQUAL(2, (int) (*rowIter).size());
+	if (!isFourAndOnePresent) {
+		isFourAndOnePresent = (*rowIter).at(0) == "4" && (*rowIter).at(1) == "1";
+		CPPUNIT_ASSERT(isFourAndOnePresent);
+	} else if (!isFourAndTwoPresent) {
+		isFourAndTwoPresent = (*rowIter).at(0) == "4" && (*rowIter).at(1) == "2";
+		CPPUNIT_ASSERT(isFourAndTwoPresent);
+	} else if (!isThreeAndTwoPresent) {
+		isThreeAndTwoPresent = (*rowIter).at(0) == "3" && (*rowIter).at(1) == "2";
+		CPPUNIT_ASSERT(isThreeAndTwoPresent);
+	} else if (!isThreeAndOnePresent) {
+		isThreeAndOnePresent = (*rowIter).at(0) == "3" && (*rowIter).at(1) == "1";
+		CPPUNIT_ASSERT(isThreeAndOnePresent);
+	} else {
+		CPPUNIT_ASSERT(false);
 	}
 	return;
 }
