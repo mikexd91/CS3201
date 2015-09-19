@@ -51,6 +51,7 @@
     <ClCompile Include="Query.cpp" />
     <ClCompile Include="QueryEvaluator.cpp" />
     <ClCompile Include="QueryParser.cpp" />
+    <ClCompile Include="Result.cpp" />
     <ClCompile Include="Results.cpp" />
     <ClCompile Include="DesignExtractor.cpp" />
     <ClCompile Include="SingleSynInsert.cpp" />

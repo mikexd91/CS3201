@@ -7,7 +7,7 @@
 
 using namespace std;
 using boost::unordered_set;
-class SingleSynInsert : InsertType
+class SingleSynInsert : public InsertType
 {
 public:
 	SingleSynInsert(void);

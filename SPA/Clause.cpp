@@ -263,6 +263,9 @@ bool Clause::evaluate(Results* res) {
 					Results::Row* currentRow = *iter;
 					string firstValue = (*currentRow)[firstArgSyn];
 					string secondValue = (*currentRow)[secondArgSyn];
+					//produce a synList
+					//for each syn in the synlist, insert the value
+
 					if (evaluateS1FixedS2Fixed(firstValue, secondValue)) {
 						unordered_map<string, string>* newRow = new Results::Row();
 						(*newRow)[firstArgSyn] = firstValue;
