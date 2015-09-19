@@ -23,12 +23,21 @@ void SingleSynInsert::execute(ResultTable& resultTable) {
 		//add syns to all rows
 		list<Row> temp;
 		resultTable.synList.push_back(singleSyn);
-		Row row = Row();
-		for (auto rowIter = resultTable.rows.begin(); rowIter != resultTable.rows.end(); ++rowIter) {
+		if (resultTable.rows.empty()) {
 			for (auto valueIter = singleInsertValues.begin(); valueIter != singleInsertValues.end(); ++valueIter) {
-				row = *rowIter;
+				Row row = Row();
 				row.push_back(*valueIter);
 				temp.push_back(row);
+			}
+		} else {
+			//add on to existing rows
+			for (auto rowIter = resultTable.rows.begin(); rowIter != resultTable.rows.end(); ++rowIter) {
+				for (auto valueIter = singleInsertValues.begin(); valueIter != singleInsertValues.end(); ++valueIter) {
+					Row row = Row();
+					row = *rowIter;
+					row.push_back(*valueIter);
+					temp.push_back(row);
+				}
 			}
 		}
 		resultTable.rows = temp;

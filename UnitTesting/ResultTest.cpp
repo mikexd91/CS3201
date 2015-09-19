@@ -53,4 +53,36 @@ void ResultTest::testSingleInsertSynPresent() {
 }
 
 void ResultTest::testSingleInsertSynAbsent() { 
+
+	Result result = Result();
+	SingleSynInsert insert = SingleSynInsert();
+	insert.setSyn("b");
+	insert.insertValue("3");
+	insert.insertValue("4");
+	result.push(insert);
+
+	ResultTable resultTable = result.getResultTable();
+	//Check syn
+	CPPUNIT_ASSERT_EQUAL(1, (int) resultTable.synList.size());
+	CPPUNIT_ASSERT("b" == resultTable.synList.at(0));
+
+	//Check rows
+	CPPUNIT_ASSERT_EQUAL(2, (int) resultTable.rows.size());
+	bool isThreePresent;
+	bool isFourPresent;
+	auto rowIter = resultTable.rows.begin();
+	//CHECK THAT FIRST ROW IS EITHER 3 OR 4
+	CPPUNIT_ASSERT_EQUAL(1, (int) (*rowIter).size());
+	isThreePresent = (*rowIter).at(0) == "3";
+	isFourPresent = (*rowIter).at(0) == "4";
+	CPPUNIT_ASSERT(isThreePresent || isFourPresent);
+
+	advance(rowIter, 1);
+	CPPUNIT_ASSERT_EQUAL(1, (int) (*rowIter).size());
+	if (isThreePresent) {
+		CPPUNIT_ASSERT((*rowIter).at(0) == "4");
+	} else {
+		CPPUNIT_ASSERT((*rowIter).at(0) == "3");
+	}
+	return;
 }
