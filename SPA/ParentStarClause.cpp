@@ -8,7 +8,7 @@ using namespace std;
 using namespace boost;
 using namespace stringconst;
 
-ParentStarClause::ParentStarClause(void):ParentClause(){
+ParentStarClause::ParentStarClause(void):SuchThatClause(PARENTSTAR_){
 }
 
 ParentStarClause::~ParentStarClause(void){

@@ -10,7 +10,9 @@
 #include "boost\unordered_set.hpp"
 
 #include <string>
+#include "../SPA/SuchThatClauseBuilder.h"
 
+using namespace stringconst;
 using namespace std;
 using boost::unordered_set;
 
@@ -223,7 +225,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FollowsClauseTest );
 void FollowsClauseTest::testIsFollows() { 
 	// Test Follows(a1, a2) where a1 and a2 are both assign
 	Results* result = new Results();
-	FollowsClause* fol = new FollowsClause();
+	/*FollowsClause* fol = new FollowsClause();
 	fol->setFirstArg("2");
 	fol->setSecondArg("3");
 	
@@ -231,7 +233,15 @@ void FollowsClauseTest::testIsFollows() {
 	fol->setSecondArgFixed(true);
 
 	fol->setFirstArgType(stringconst::ARG_STATEMENT);
-	fol->setSecondArgType(stringconst::ARG_STATEMENT);
+	fol->setSecondArgType(stringconst::ARG_STATEMENT);*/
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	followsBuilder->setArg(1, "2");
+	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "3");
+	followsBuilder->setArgFixed(2, true);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* fol = (ParentClause*) followsBuilder->build();
 	
 	CPPUNIT_ASSERT(fol->isValid());
 	bool evalResult = fol->evaluate(result);

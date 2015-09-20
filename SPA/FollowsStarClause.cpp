@@ -9,7 +9,7 @@ using namespace stringconst;
 using namespace boost;
 using namespace std;
 
-FollowsStarClause::FollowsStarClause(void):Clause(FOLLOWSSTAR_){
+FollowsStarClause::FollowsStarClause(void):SuchThatClause(FOLLOWSSTAR_){
 }
 
 FollowsStarClause::~FollowsStarClause(void){

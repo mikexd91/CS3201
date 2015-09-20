@@ -3,6 +3,7 @@
 #include "../SPA/ProcTable.h"
 #include "../SPA/Utils.h"
 #include "../SPA/CallsStarClause.h"
+#include "../SPA/SuchThatClauseBuilder.h"
 
 using namespace stringconst;
 using namespace std;
@@ -132,13 +133,21 @@ CPPUNIT_TEST_SUITE_REGISTRATION( CallsStarClauseTest );
 
 void CallsStarClauseTest::testCallsStarFixedFixedPass() {
 	Results* result = new Results();
-	CallsStarClause* c1 = new CallsStarClause();
+	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("main");
 	c1->setFirstArgFixed(true);
 	c1->setFirstArgType(ARG_PROCEDURE);
 	c1->setSecondArg("private2");
 	c1->setSecondArgFixed(true);
-	c1->setSecondArgType(ARG_PROCEDURE);
+	c1->setSecondArgType(ARG_PROCEDURE);*/
+	SuchThatClauseBuilder* callsStarBuilder = new SuchThatClauseBuilder(CALLSSTAR_);
+	callsStarBuilder->setArg(1, "main");
+	callsStarBuilder->setArgFixed(1, true);
+	callsStarBuilder->setArgType(1, ARG_PROCEDURE);
+	callsStarBuilder->setArg(2, "private2");
+	callsStarBuilder->setArgFixed(2, true);
+	callsStarBuilder->setArgType(2, ARG_PROCEDURE);
+	CallsStarClause* c1 = (CallsStarClause*) callsStarBuilder->build();
 	CPPUNIT_ASSERT(c1->isValid());
 
 	bool evalResult = c1->evaluate(result);
@@ -148,13 +157,21 @@ void CallsStarClauseTest::testCallsStarFixedFixedPass() {
 
 void CallsStarClauseTest::testCallsStarFixedFixedFail() {
 	Results* result = new Results();
-	CallsStarClause* c1 = new CallsStarClause();
+	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("private1");
 	c1->setFirstArgFixed(true);
 	c1->setFirstArgType(ARG_PROCEDURE);
 	c1->setSecondArg("main");
 	c1->setSecondArgFixed(true);
-	c1->setSecondArgType(ARG_PROCEDURE);
+	c1->setSecondArgType(ARG_PROCEDURE);*/
+	SuchThatClauseBuilder* callsStarBuilder = new SuchThatClauseBuilder(CALLSSTAR_);
+	callsStarBuilder->setArg(1, "private1");
+	callsStarBuilder->setArgFixed(1, true);
+	callsStarBuilder->setArgType(1, ARG_PROCEDURE);
+	callsStarBuilder->setArg(2, "main");
+	callsStarBuilder->setArgFixed(2, true);
+	callsStarBuilder->setArgType(2, ARG_PROCEDURE);
+	CallsStarClause* c1 = (CallsStarClause*) callsStarBuilder->build();
 	CPPUNIT_ASSERT(c1->isValid());
 
 	bool evalResult = c1->evaluate(result);
@@ -164,13 +181,21 @@ void CallsStarClauseTest::testCallsStarFixedFixedFail() {
 
 void CallsStarClauseTest::testCallsStarSynFixedPass() {
 	Results* res = new Results();
-	CallsStarClause* c1 = new CallsStarClause();
+	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("a");
 	c1->setFirstArgFixed(false);
 	c1->setFirstArgType(ARG_PROCEDURE);
 	c1->setSecondArg("private2");
 	c1->setSecondArgFixed(true);
-	c1->setSecondArgType(ARG_PROCEDURE);
+	c1->setSecondArgType(ARG_PROCEDURE);*/
+	SuchThatClauseBuilder* callsStarBuilder = new SuchThatClauseBuilder(CALLSSTAR_);
+	callsStarBuilder->setArg(1, "a");
+	callsStarBuilder->setArgFixed(1, false);
+	callsStarBuilder->setArgType(1, ARG_PROCEDURE);
+	callsStarBuilder->setArg(2, "private2");
+	callsStarBuilder->setArgFixed(2, true);
+	callsStarBuilder->setArgType(2, ARG_PROCEDURE);
+	CallsStarClause* c1 = (CallsStarClause*) callsStarBuilder->build();
 	CPPUNIT_ASSERT(c1->isValid());
 
 	bool result = c1->evaluate(res);
@@ -181,13 +206,21 @@ void CallsStarClauseTest::testCallsStarSynFixedPass() {
 
 void CallsStarClauseTest::testCallsStarSynFixedFail() {
 	Results* res = new Results();
-	CallsStarClause* c1 = new CallsStarClause();
+	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("a");
 	c1->setFirstArgFixed(false);
 	c1->setFirstArgType(ARG_PROCEDURE);
 	c1->setSecondArg("main");
 	c1->setSecondArgFixed(true);
-	c1->setSecondArgType(ARG_PROCEDURE);
+	c1->setSecondArgType(ARG_PROCEDURE);*/
+	SuchThatClauseBuilder* callsStarBuilder = new SuchThatClauseBuilder(CALLSSTAR_);
+	callsStarBuilder->setArg(1, "a");
+	callsStarBuilder->setArgFixed(1, false);
+	callsStarBuilder->setArgType(1, ARG_PROCEDURE);
+	callsStarBuilder->setArg(2, "main");
+	callsStarBuilder->setArgFixed(2, true);
+	callsStarBuilder->setArgType(2, ARG_PROCEDURE);
+	CallsStarClause* c1 = (CallsStarClause*) callsStarBuilder->build();
 	CPPUNIT_ASSERT(c1->isValid());
 
 	bool result = c1->evaluate(res);
@@ -198,13 +231,21 @@ void CallsStarClauseTest::testCallsStarSynFixedFail() {
 
 void CallsStarClauseTest::testCallsStarFixedSynPass() {
 	Results* res = new Results();
-	CallsStarClause* c1 = new CallsStarClause();
+	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("childProc2");
 	c1->setFirstArgFixed(true);
 	c1->setFirstArgType(ARG_PROCEDURE);
 	c1->setSecondArg("b");
 	c1->setSecondArgFixed(false);
-	c1->setSecondArgType(ARG_PROCEDURE);
+	c1->setSecondArgType(ARG_PROCEDURE);*/
+	SuchThatClauseBuilder* callsStarBuilder = new SuchThatClauseBuilder(CALLSSTAR_);
+	callsStarBuilder->setArg(1, "childProc2");
+	callsStarBuilder->setArgFixed(1, true);
+	callsStarBuilder->setArgType(1, ARG_PROCEDURE);
+	callsStarBuilder->setArg(2, "b");
+	callsStarBuilder->setArgFixed(2, false);
+	callsStarBuilder->setArgType(2, ARG_PROCEDURE);
+	CallsStarClause* c1 = (CallsStarClause*) callsStarBuilder->build();
 	CPPUNIT_ASSERT(c1->isValid());
 
 	bool result = c1->evaluate(res);
@@ -215,13 +256,21 @@ void CallsStarClauseTest::testCallsStarFixedSynPass() {
 
 void CallsStarClauseTest::testCallsStarFixedSynFail() {
 	Results* res = new Results();
-	CallsStarClause* c1 = new CallsStarClause();
+	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("private2");
 	c1->setFirstArgFixed(true);
 	c1->setFirstArgType(ARG_PROCEDURE);
 	c1->setSecondArg("b");
 	c1->setSecondArgFixed(false);
-	c1->setSecondArgType(ARG_PROCEDURE);
+	c1->setSecondArgType(ARG_PROCEDURE);*/
+	SuchThatClauseBuilder* callsStarBuilder = new SuchThatClauseBuilder(CALLSSTAR_);
+	callsStarBuilder->setArg(1, "private2");
+	callsStarBuilder->setArgFixed(1, true);
+	callsStarBuilder->setArgType(1, ARG_PROCEDURE);
+	callsStarBuilder->setArg(2, "b");
+	callsStarBuilder->setArgFixed(2, false);
+	callsStarBuilder->setArgType(2, ARG_PROCEDURE);
+	CallsStarClause* c1 = (CallsStarClause*) callsStarBuilder->build();
 	CPPUNIT_ASSERT(c1->isValid());
 
 	bool result = c1->evaluate(res);
@@ -232,13 +281,21 @@ void CallsStarClauseTest::testCallsStarFixedSynFail() {
 
 void CallsStarClauseTest::testCallsStarFirstUnderscorePass() {
 	Results* res = new Results();
-	CallsStarClause* c1 = new CallsStarClause();
+	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("_");
 	c1->setFirstArgFixed(false);
 	c1->setFirstArgType(ARG_GENERIC);
 	c1->setSecondArg("p");
 	c1->setSecondArgFixed(false);
-	c1->setSecondArgType(ARG_PROCEDURE);
+	c1->setSecondArgType(ARG_PROCEDURE);*/
+	SuchThatClauseBuilder* callsStarBuilder = new SuchThatClauseBuilder(CALLSSTAR_);
+	callsStarBuilder->setArg(1, "_");
+	callsStarBuilder->setArgFixed(1, false);
+	callsStarBuilder->setArgType(1, ARG_GENERIC);
+	callsStarBuilder->setArg(2, "p");
+	callsStarBuilder->setArgFixed(2, false);
+	callsStarBuilder->setArgType(2, ARG_PROCEDURE);
+	CallsStarClause* c1 = (CallsStarClause*) callsStarBuilder->build();
 	CPPUNIT_ASSERT(c1->isValid());
 
 	bool result = c1->evaluate(res);
@@ -249,13 +306,21 @@ void CallsStarClauseTest::testCallsStarFirstUnderscorePass() {
 
 void CallsStarClauseTest::testCallsStarSecondUnderscorePass() {
 	Results* res = new Results();
-	CallsStarClause* c1 = new CallsStarClause();
+	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("p");
 	c1->setFirstArgFixed(false);
 	c1->setFirstArgType(ARG_PROCEDURE);
 	c1->setSecondArg("_");
 	c1->setSecondArgFixed(false);
-	c1->setSecondArgType(ARG_GENERIC);
+	c1->setSecondArgType(ARG_GENERIC);*/
+	SuchThatClauseBuilder* callsStarBuilder = new SuchThatClauseBuilder(CALLSSTAR_);
+	callsStarBuilder->setArg(1, "p");
+	callsStarBuilder->setArgFixed(1, false);
+	callsStarBuilder->setArgType(1, ARG_PROCEDURE);
+	callsStarBuilder->setArg(2, "_");
+	callsStarBuilder->setArgFixed(2, false);
+	callsStarBuilder->setArgType(2, ARG_GENERIC);
+	CallsStarClause* c1 = (CallsStarClause*) callsStarBuilder->build();
 	CPPUNIT_ASSERT(c1->isValid());
 
 	bool result = c1->evaluate(res);
@@ -266,13 +331,21 @@ void CallsStarClauseTest::testCallsStarSecondUnderscorePass() {
 
 void CallsStarClauseTest::testCallsStarBothUnderscorePass() {
 	Results* res = new Results();
-	CallsStarClause* c1 = new CallsStarClause();
+	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("_");
 	c1->setFirstArgFixed(false);
 	c1->setFirstArgType(ARG_GENERIC);
 	c1->setSecondArg("_");
 	c1->setSecondArgFixed(false);
-	c1->setSecondArgType(ARG_GENERIC);
+	c1->setSecondArgType(ARG_GENERIC);*/
+	SuchThatClauseBuilder* callsStarBuilder = new SuchThatClauseBuilder(CALLSSTAR_);
+	callsStarBuilder->setArg(1, "_");
+	callsStarBuilder->setArgFixed(1, false);
+	callsStarBuilder->setArgType(1, ARG_GENERIC);
+	callsStarBuilder->setArg(2, "_");
+	callsStarBuilder->setArgFixed(2, false);
+	callsStarBuilder->setArgType(2, ARG_GENERIC);
+	CallsStarClause* c1 = (CallsStarClause*) callsStarBuilder->build();
 	CPPUNIT_ASSERT(c1->isValid());
 
 	bool result = c1->evaluate(res);
@@ -281,13 +354,21 @@ void CallsStarClauseTest::testCallsStarBothUnderscorePass() {
 
 void CallsStarClauseTest::testCallsStarSynSynPass() {
 	Results* res = new Results();
-	CallsStarClause* c1 = new CallsStarClause();
+	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("p");
 	c1->setFirstArgFixed(false);
 	c1->setFirstArgType(ARG_PROCEDURE);
 	c1->setSecondArg("q");
 	c1->setSecondArgFixed(false);
-	c1->setSecondArgType(ARG_PROCEDURE);
+	c1->setSecondArgType(ARG_PROCEDURE);*/
+	SuchThatClauseBuilder* callsStarBuilder = new SuchThatClauseBuilder(CALLSSTAR_);
+	callsStarBuilder->setArg(1, "p");
+	callsStarBuilder->setArgFixed(1, false);
+	callsStarBuilder->setArgType(1, ARG_PROCEDURE);
+	callsStarBuilder->setArg(2, "q");
+	callsStarBuilder->setArgFixed(2, false);
+	callsStarBuilder->setArgType(2, ARG_PROCEDURE);
+	CallsStarClause* c1 = (CallsStarClause*) callsStarBuilder->build();
 	CPPUNIT_ASSERT(c1->isValid());
 
 	bool result = c1->evaluate(res);
@@ -299,13 +380,21 @@ void CallsStarClauseTest::testCallsStarSynSynPass() {
 
 void CallsStarClauseTest::testCallsStarSynSynSame() {
 	Results* res = new Results();
-	CallsStarClause* c1 = new CallsStarClause();
+	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("p");
 	c1->setFirstArgFixed(false);
 	c1->setFirstArgType(ARG_PROCEDURE);
 	c1->setSecondArg("p");
 	c1->setSecondArgFixed(false);
-	c1->setSecondArgType(ARG_PROCEDURE);
+	c1->setSecondArgType(ARG_PROCEDURE);*/
+	SuchThatClauseBuilder* callsStarBuilder = new SuchThatClauseBuilder(CALLSSTAR_);
+	callsStarBuilder->setArg(1, "p");
+	callsStarBuilder->setArgFixed(1, false);
+	callsStarBuilder->setArgType(1, ARG_PROCEDURE);
+	callsStarBuilder->setArg(2, "p");
+	callsStarBuilder->setArgFixed(2, false);
+	callsStarBuilder->setArgType(2, ARG_PROCEDURE);
+	CallsStarClause* c1 = (CallsStarClause*) callsStarBuilder->build();
 	CPPUNIT_ASSERT(c1->isValid());
 
 	bool result = c1->evaluate(res);
