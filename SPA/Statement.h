@@ -18,12 +18,16 @@ using boost::unordered_set;
 //		d. setGNodeRef
 //		e. setUses
 //		f. setModifies
-//		g. setFollows
-//		h. setFollowedBy
-//		i. setChildren
-//		j. setParent
-//		k. setNext
-//		l. setPrev
+//		g. setFollowsBefore
+//		h. setFollowedAfter
+//		i. setFollowsStarBefore
+//		j. setFollowsStarAfter
+//		k. setChildren
+//		l. setChildrenStar
+//		m. setParent
+//		n. setParentStar
+//		o. setNext
+//		p. setPrev
 // 3. Add to StmtTable:
 // -----------------------------------------------------------------
 */
@@ -48,23 +52,23 @@ public:
 	//Statement(NodeType type, int stmtNum, TNode *tRef, GNode *gRef);
 
 	// GETTERS
-	NodeType getType();					// get stmt type
-	int getStmtNum();					// get stmt num
-	TNode* getTNodeRef();				// get reference to stmt TNode
-	//GNode* getGNodeRef();				// get reference to stmt GNode
-	const UsesSet& getUses();			// get set of variables stmt uses
-	const ModifiesSet& getModifies();	// get set of variables stmt modifies
-	int getFollowsAfter();				// get stmt that follows after this stmt
-	int getFollowsBefore();				// get stmt that follows before this stmt
-	string getCalls();					// get proc name that stmt calls
-	const ChildrenSet& getChildren();	// get set of child nodes of this stmt
-	const ChildrenStarSet& getChildrenStar(); //get set of children star nodes of this stmt
-	const ParentStarSet& getParentStar();
-	int getParent();					// get parent of this stmt
-	int getNext();						// get stmt that is next of this stmt
-	int getPrev();						// get stmt whose next is this stmt
-	const FollowsStarBeforeSet& Statement::getFollowsStarBefore();
-	const FollowsStarAfterSet& Statement::getFollowsStarAfter();
+	NodeType getType();													// get stmt type
+	int getStmtNum();													// get stmt num
+	TNode* getTNodeRef();												// get reference to stmt TNode
+	//GNode* getGNodeRef();												// get reference to stmt GNode
+	const UsesSet& getUses();											// get set of variables stmt uses
+	const ModifiesSet& getModifies();									// get set of variables stmt modifies
+	int getFollowsAfter();												// get stmt that follows after this stmt
+	int getFollowsBefore();												// get stmt that follows before this stmt
+	string getCalls();													// get proc name that stmt calls
+	const ChildrenSet& getChildren();									// get set of child nodes of this stmt
+	const ChildrenStarSet& getChildrenStar();							// get set of children star stmts of this stmt
+	const ParentStarSet& getParentStar();								// get set of parent star stmts of this stmt
+	int getParent();													// get parent of this stmt
+	int getNext();														// get stmt that is next of this stmt
+	int getPrev();														// get stmt whose next is this stmt
+	const FollowsStarBeforeSet& Statement::getFollowsStarBefore();		// get set of follows star stmt before this stmt
+	const FollowsStarAfterSet& Statement::getFollowsStarAfter();		// get set of follows star stmt after this stmt
 
 
 	// SETTERS
