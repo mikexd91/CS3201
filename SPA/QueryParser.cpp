@@ -16,13 +16,16 @@
 #include "PatternAssgClause.h"
 #include "PatternWhileClause.h"
 #include "PatternClauseBuilder.h"
-#include "boost/unordered_map.hpp"
 #include "ExpressionParser.h"
+#include "WithClauseRef.h"
+#include "WithClause.h"
+#include "boost/unordered_map.hpp"
 #include <queue>
 #include <string>
 #include <vector>
 #include <sstream>
 #include <exception>
+#include <ios>
 
 using namespace std;
 using boost::unordered_map;
@@ -505,14 +508,7 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 		parsePatternIf(query, line, synonym);
 	}
 }
-//TRY THIS NEW SHIT
-//PatternClauseBuilder* assgBuilder = new PatternClauseBuilder(PATTERNASSG_);
-//assgBuilder->setSynonym("a");
-//assgBuilder->setVar("_");
-//assgBuilder->setVarType(ARG_GENERIC);
-//assgBuilder->setVarFixed(false);
-//assgBuilder->setExpr(1, "_");
-//PatternAssgClause* p1 = (PatternAssgClause*) assgBuilder->build();
+
 void QueryParser::parsePatternOther(Query* query, queue<string> line, string synonym){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string patternType = decList.at(synonym);
@@ -708,41 +704,65 @@ void QueryParser::parsePatternIf(Query* query, queue<string> line, string synony
 	Clause* newClause = (Clause*)ifBuilder->build();
 	query->addClause(newClause);
 }
-//FINISH PARSING WITH
+//TODO : check how to build with
 void QueryParser::parseWith(Query* query, queue<string> line){
-	//TO CHECK : EXCEPTONS AND OTHER GRAMMATICAL SHIT
-	//with a.asd = 2 and 
+	
+	WithClause with;
+	WithClauseRef leftEntity;
+	WithClauseRef rightEntity;
+
 	string leftVal = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
-	string rightVal;
-	string leftAttrCond;
-	string rightAttrCond;
-	string next = Utils::getWordAndPop(line);
+	leftEntity.setEntity(leftVal);
+
+	string firstOperand = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
-	if (next == "."){
-		leftAttrCond = Utils::getWordAndPop(line);
+
+	if (firstOperand == "."){
+		
+		string leftAttrCond = Utils::getWordAndPop(line);
 		unexpectedEndCheck(line);
-		string operand = Utils::getWordAndPop(line);
+		leftEntity.setAttr(leftAttrCond);
+
+		string equalOperand = Utils::getWordAndPop(line);
 		unexpectedEndCheck(line);
-		if (operand == "="){
-			rightVal = Utils::getWordAndPop(line);
-			if (!line.empty()){
-				next = line.front();
-				if (next == "."){
-					Utils::getWordAndPop(line); // pop the period
-					unexpectedEndCheck(line);
-					rightAttrCond = Utils::getWordAndPop(line);
-				} //else if next has an operator (and, such that, etc){
-				//}
-			}
-		} else {
+		if (equalOperand != "="){
 			throw InvalidSyntaxException();
 		}
-	} else if (next == "="){
-		leftAttrCond = stringconst::STRING_EMPTY;
-		rightVal = Utils::getWordAndPop(line);
+
+		string rightVal = Utils::getWordAndPop(line);
+		rightEntity.setEntity(rightVal);
+		
+		if (!line.empty()){
+			
+			string dotOperand = Utils::getWordAndPop(line);
+			unexpectedEndCheck(line);
+
+			string rightAttrCond = Utils::getWordAndPop(line);
+			rightEntity.setAttr(rightAttrCond);
+		}
+
+	} else if (firstOperand == "="){
+		
+		string rightVal = Utils::getWordAndPop(line);
+		rightEntity.setEntity(rightVal);
+
+		if (!line.empty()){
+
+			string dotOperand = Utils::getWordAndPop(line);
+			unexpectedEndCheck(line);
+
+			string rightAttrCond = Utils::getWordAndPop(line);
+			rightEntity.setAttr(rightAttrCond);
+		}
+
+	} else {
+		throw InvalidSyntaxException();
 	}
 	
+	with.setLeftRef(leftEntity);
+	with.setRightRef(rightEntity);
+	//query->addClause(with);
 }
 
 Query QueryParser::parseQuery(string input){

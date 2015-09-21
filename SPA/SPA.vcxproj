@@ -22,6 +22,8 @@
     <ClCompile Include="AssgNode.cpp" />
     <ClCompile Include="AST.cpp" />
     <ClCompile Include="CallNode.cpp" />
+    <ClCompile Include="CallsClause.cpp" />
+    <ClCompile Include="CallsStarClause.cpp" />
     <ClCompile Include="Clause.cpp" />
     <ClCompile Include="Constant.cpp" />
     <ClCompile Include="ConstNode.cpp" />
@@ -43,6 +45,7 @@
     <ClCompile Include="PatternIfClause.cpp" />
     <ClCompile Include="PatternWhileClause.cpp" />
     <ClCompile Include="PDR.cpp" />
+    <ClCompile Include="PQLController.cpp" />
     <ClCompile Include="Procedure.cpp" />
     <ClCompile Include="ProcNode.cpp" />
     <ClCompile Include="ProcTable.cpp" />
@@ -64,11 +67,15 @@
     <ClCompile Include="VarNode.cpp" />
     <ClCompile Include="VarTable.cpp" />
     <ClCompile Include="WhileNode.cpp" />
+    <ClCompile Include="WithClause.cpp" />
+    <ClCompile Include="WithClauseRef.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssgNode.h" />
     <ClInclude Include="AST.h" />
     <ClInclude Include="CallNode.h" />
+    <ClInclude Include="CallsClause.h" />
+    <ClInclude Include="CallsStarClause.h" />
     <ClInclude Include="Clause.h" />
     <ClInclude Include="Constant.h" />
     <ClInclude Include="ConstNode.h" />
@@ -92,6 +99,7 @@
     <ClInclude Include="PatternIfClause.h" />
     <ClInclude Include="PatternWhileClause.h" />
     <ClInclude Include="PDR.h" />
+    <ClInclude Include="PQLController.h" />
     <ClInclude Include="PQLExceptions.h" />
     <ClInclude Include="Procedure.h" />
     <ClInclude Include="ProcNode.h" />
@@ -114,6 +122,8 @@
     <ClInclude Include="VarNode.h" />
     <ClInclude Include="VarTable.h" />
     <ClInclude Include="WhileNode.h" />
+    <ClInclude Include="WithClause.h" />
+    <ClInclude Include="WithClauseRef.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>

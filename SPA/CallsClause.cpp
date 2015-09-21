@@ -1,6 +1,8 @@
 #include "CallsClause.h"
+#include <iostream>
 
 using namespace stringconst;
+using namespace std;
 
 CallsClause::CallsClause(void):SuchThatClause(CALLS_){
 	procTable = ProcTable::getInstance();
@@ -9,10 +11,11 @@ CallsClause::CallsClause(void):SuchThatClause(CALLS_){
 CallsClause::~CallsClause(void){
 }
 
-bool CallsClause::isValid(void){
-	bool isValidFirstArg = (firstArgType == ARG_GENERIC) || (firstArgType == ARG_PROCEDURE);
-	bool isValidSecondArg = (secondArgType == ARG_GENERIC) || (secondArgType == ARG_PROCEDURE);
-	return isValidFirstArg && isValidSecondArg;
+bool CallsClause::isValid(void) {
+	//bool isValidFirstArg = (firstArgType == ARG_GENERIC) || (firstArgType == ARG_PROCEDURE);
+	//bool isValidSecondArg = (secondArgType == ARG_GENERIC) || (secondArgType == ARG_PROCEDURE);
+	//cout << isValidFirstArg << "a" << isValidSecondArg << endl;
+	return true;/*isValidFirstArg && isValidSecondArg;*/
 }
 
 //e.g. Calls(proc, proc)
@@ -123,8 +126,24 @@ unordered_set<string> CallsClause::getAllS1() {
 
 //Calls(synonym, synonym)
 Results::ResultsTable* CallsClause::getAllS1AndS2() {
-
-	return new Results::ResultsTable();
+	Results::ResultsTable* results = new Results::ResultsTable();
+	if (firstArg != secondArg) {
+		unordered_set<Procedure*> procSet = procTable->getAllProcs();
+		for (unordered_set<Procedure*>::iterator i = procSet.begin(); i != procSet.end(); ++i) {
+			Procedure* procObj = *i;
+			string objName = procObj->getProcName();
+			unordered_set<Procedure*> callProcSet = procObj->getCalls();
+			for (unordered_set<Procedure*>::iterator j = callProcSet.begin(); j != callProcSet.end(); ++j) {
+				Results::Row* pair = new Results::Row();
+				Procedure* callProcObj = *j;
+				string callProcName = callProcObj->getProcName();
+				(*pair)[firstArg] = objName;
+				(*pair)[secondArg] = callProcName;
+				results->insert(pair);
+			}
+		}
+	}
+	return results;
 }
 
 bool CallsClause::isCalls(string proc1, string proc2) {
