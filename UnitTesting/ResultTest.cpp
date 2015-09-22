@@ -540,3 +540,95 @@ void ResultTest::testMultiInsertOneSynPresent() {
 	}
 	return;
 }
+
+void ResultTest::testGetMultiSynPass() {
+	//table has <a,b> = <1,2> <1,3>, insert b = 3
+	ResultTable resultTable = ResultTable();
+	string tmpSyn1[] = { "a", "b", "c", "d"};
+	vector<string> synVect1(tmpSyn1, tmpSyn1+4);
+	resultTable.synList = synVect1;
+
+	string tmpRow1[] = { "1", "alpha", "x", "y"};
+	Row row1(tmpRow1, tmpRow1+4);
+	string tmpRow2[] = { "1", "alpha", "y", "x"};
+	Row row2(tmpRow2, tmpRow2+4);
+	resultTable.rows.push_back(row1);
+	resultTable.rows.push_back(row2);
+
+	Result result = Result();
+	result.setResultTable(resultTable);
+	
+	// get synonym <a,b>
+	string tmpSyn2[] = { "d", "b" };
+	vector<string> synVect2(tmpSyn2, tmpSyn2+2);
+	unordered_set<vector<string>> tupleSet = result.getMultiSyn(synVect2);
+	CPPUNIT_ASSERT(tupleSet.size() == 2);
+}
+
+void ResultTest::testGetMultiSynFail() {
+	//table has <x,y> = <nice,1> <best,2>
+	ResultTable resultTable = ResultTable();
+	string tmpSyn1[] = { "x", "y"};
+	vector<string> synVect1(tmpSyn1, tmpSyn1+2);
+	resultTable.synList = synVect1;
+
+	string tmpRow1[] = { "nice", "1"};
+	Row row1(tmpRow1, tmpRow1+2);
+	string tmpRow2[] = { "best", "2"};
+	Row row2(tmpRow2, tmpRow2+2);
+	resultTable.rows.push_back(row1);
+	resultTable.rows.push_back(row2);
+
+	Result result = Result();
+	result.setResultTable(resultTable);
+
+	//get synonym <a,x>, where synonym a is not in resultTable
+	string tmpSyn2[] = { "x", "a" };
+	vector<string> synVect2(tmpSyn2, tmpSyn2+2);
+	unordered_set<vector<string>> tupleSet = result.getMultiSyn(synVect2);
+	CPPUNIT_ASSERT(tupleSet.size() == 0);
+}
+
+void ResultTest::testGetSynPass() {
+	//table has <x,y> = <nice,1> <best,2>
+	ResultTable resultTable = ResultTable();
+	string tmpSyn1[] = { "x", "y"};
+	vector<string> synVect1(tmpSyn1, tmpSyn1+2);
+	resultTable.synList = synVect1;
+
+	string tmpRow1[] = { "nice", "1"};
+	Row row1(tmpRow1, tmpRow1+2);
+	string tmpRow2[] = { "best", "2"};
+	Row row2(tmpRow2, tmpRow2+2);
+	resultTable.rows.push_back(row1);
+	resultTable.rows.push_back(row2);
+
+	Result result = Result();
+	result.setResultTable(resultTable);
+
+	//get synonym y
+	unordered_set<string> res = result.getSyn("y");
+	CPPUNIT_ASSERT(res.size() == 2);
+}
+
+void ResultTest::testGetSynFail() {
+	//table has <x,y> = <nice,1> <best,2>
+	ResultTable resultTable = ResultTable();
+	string tmpSyn1[] = { "x", "y"};
+	vector<string> synVect1(tmpSyn1, tmpSyn1+2);
+	resultTable.synList = synVect1;
+
+	string tmpRow1[] = { "nice", "1"};
+	Row row1(tmpRow1, tmpRow1+2);
+	string tmpRow2[] = { "best", "2"};
+	Row row2(tmpRow2, tmpRow2+2);
+	resultTable.rows.push_back(row1);
+	resultTable.rows.push_back(row2);
+
+	Result result = Result();
+	result.setResultTable(resultTable);
+
+	//get synonym y
+	unordered_set<string> res = result.getSyn("a");
+	CPPUNIT_ASSERT(res.size() == 0);
+}

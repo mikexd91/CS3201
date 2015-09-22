@@ -11,6 +11,10 @@ class ResultTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testMultiInsertBothSynsPresent );
 	CPPUNIT_TEST( testMultiInsertBothSynsAbsent );
 	CPPUNIT_TEST( testMultiInsertOneSynPresent );
+	CPPUNIT_TEST( testGetMultiSynPass );
+	CPPUNIT_TEST( testGetMultiSynFail );
+	CPPUNIT_TEST( testGetSynPass );
+	CPPUNIT_TEST( testGetSynFail );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -22,6 +26,10 @@ public:
 	void testMultiInsertBothSynsPresent();
 	void testMultiInsertBothSynsAbsent();
 	void testMultiInsertOneSynPresent();
+	void testGetMultiSynPass();
+	void testGetMultiSynFail();
+	void testGetSynPass();
+	void testGetSynFail();
 
 	void testLinks();
 };
