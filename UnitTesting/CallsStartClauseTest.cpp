@@ -132,7 +132,7 @@ void CallsStarClauseTest::tearDown() {
 CPPUNIT_TEST_SUITE_REGISTRATION( CallsStarClauseTest );
 
 void CallsStarClauseTest::testCallsStarFixedFixedPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("main");
 	c1->setFirstArgFixed(true);
@@ -152,11 +152,11 @@ void CallsStarClauseTest::testCallsStarFixedFixedPass() {
 
 	bool evalResult = c1->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void CallsStarClauseTest::testCallsStarFixedFixedFail() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("private1");
 	c1->setFirstArgFixed(true);
@@ -176,11 +176,11 @@ void CallsStarClauseTest::testCallsStarFixedFixedFail() {
 
 	bool evalResult = c1->evaluate(result);
 	CPPUNIT_ASSERT(!evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void CallsStarClauseTest::testCallsStarSynFixedPass() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("a");
 	c1->setFirstArgFixed(false);
@@ -200,12 +200,12 @@ void CallsStarClauseTest::testCallsStarSynFixedPass() {
 
 	bool result = c1->evaluate(res);
 	CPPUNIT_ASSERT(result);
-	CPPUNIT_ASSERT(res->hasResults("a"));
-	CPPUNIT_ASSERT(res->getResultsTableSize() == 4);
+	CPPUNIT_ASSERT(res->isSynPresent("a"));
+	CPPUNIT_ASSERT(res->getResultTableSize() == 4);
 }
 
 void CallsStarClauseTest::testCallsStarSynFixedFail() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("a");
 	c1->setFirstArgFixed(false);
@@ -225,12 +225,12 @@ void CallsStarClauseTest::testCallsStarSynFixedFail() {
 
 	bool result = c1->evaluate(res);
 	CPPUNIT_ASSERT(result == false);
-	CPPUNIT_ASSERT(res->getResultsTableSize() == 0);
-	CPPUNIT_ASSERT(res->hasResults("a") == false);
+	CPPUNIT_ASSERT(res->getResultTableSize() == 0);
+	CPPUNIT_ASSERT(res->isSynPresent("a") == false);
 }
 
 void CallsStarClauseTest::testCallsStarFixedSynPass() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("childProc2");
 	c1->setFirstArgFixed(true);
@@ -250,12 +250,12 @@ void CallsStarClauseTest::testCallsStarFixedSynPass() {
 
 	bool result = c1->evaluate(res);
 	CPPUNIT_ASSERT(result == true);
-	CPPUNIT_ASSERT(res->hasResults("b") == true);
-	CPPUNIT_ASSERT(res->getResultsTableSize() == 3);
+	CPPUNIT_ASSERT(res->isSynPresent("b") == true);
+	CPPUNIT_ASSERT(res->getResultTableSize() == 3);
 }
 
 void CallsStarClauseTest::testCallsStarFixedSynFail() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("private2");
 	c1->setFirstArgFixed(true);
@@ -275,12 +275,12 @@ void CallsStarClauseTest::testCallsStarFixedSynFail() {
 
 	bool result = c1->evaluate(res);
 	CPPUNIT_ASSERT(result == false);
-	CPPUNIT_ASSERT(res->getResultsTableSize() == 0);
-	CPPUNIT_ASSERT(res->hasResults("b") == false);
+	CPPUNIT_ASSERT(res->getResultTableSize() == 0);
+	CPPUNIT_ASSERT(res->isSynPresent("b") == false);
 }
 
 void CallsStarClauseTest::testCallsStarFirstUnderscorePass() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("_");
 	c1->setFirstArgFixed(false);
@@ -300,12 +300,12 @@ void CallsStarClauseTest::testCallsStarFirstUnderscorePass() {
 
 	bool result = c1->evaluate(res);
 	CPPUNIT_ASSERT(result == true);
-	CPPUNIT_ASSERT(res->getResultsTableSize() == 7);
-	CPPUNIT_ASSERT(res->hasResults("p") == true);
+	CPPUNIT_ASSERT(res->getResultTableSize() == 7);
+	CPPUNIT_ASSERT(res->isSynPresent("p") == true);
 }
 
 void CallsStarClauseTest::testCallsStarSecondUnderscorePass() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("p");
 	c1->setFirstArgFixed(false);
@@ -325,12 +325,12 @@ void CallsStarClauseTest::testCallsStarSecondUnderscorePass() {
 
 	bool result = c1->evaluate(res);
 	CPPUNIT_ASSERT(result == true);
-	CPPUNIT_ASSERT(res->getResultsTableSize() == 5);
-	CPPUNIT_ASSERT(res->hasResults("p") == true);
+	CPPUNIT_ASSERT(res->getResultTableSize() == 5);
+	CPPUNIT_ASSERT(res->isSynPresent("p") == true);
 }
 
 void CallsStarClauseTest::testCallsStarBothUnderscorePass() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("_");
 	c1->setFirstArgFixed(false);
@@ -353,7 +353,7 @@ void CallsStarClauseTest::testCallsStarBothUnderscorePass() {
 }
 
 void CallsStarClauseTest::testCallsStarSynSynPass() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("p");
 	c1->setFirstArgFixed(false);
@@ -373,13 +373,13 @@ void CallsStarClauseTest::testCallsStarSynSynPass() {
 
 	bool result = c1->evaluate(res);
 	CPPUNIT_ASSERT(result == true);
-	CPPUNIT_ASSERT(res->hasResults("p") == true);
-	CPPUNIT_ASSERT(res->hasResults("q") == true);
-	CPPUNIT_ASSERT(res->getResultsTableSize() == 14);
+	CPPUNIT_ASSERT(res->isSynPresent("p") == true);
+	CPPUNIT_ASSERT(res->isSynPresent("q") == true);
+	CPPUNIT_ASSERT(res->getResultTableSize() == 14);
 }
 
 void CallsStarClauseTest::testCallsStarSynSynSame() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsStarClause* c1 = new CallsStarClause();
 	c1->setFirstArg("p");
 	c1->setFirstArgFixed(false);
@@ -399,6 +399,6 @@ void CallsStarClauseTest::testCallsStarSynSynSame() {
 
 	bool result = c1->evaluate(res);
 	CPPUNIT_ASSERT(result == false);
-	CPPUNIT_ASSERT(res->hasResults("p") == false);
-	CPPUNIT_ASSERT(res->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(res->isSynPresent("p") == false);
+	CPPUNIT_ASSERT(res->getResultTableSize() == 0);
 }

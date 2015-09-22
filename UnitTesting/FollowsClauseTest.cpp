@@ -224,7 +224,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FollowsClauseTest );
 // Test argument-type combinations of Follows(a,b) where a and b are unfixed
 void FollowsClauseTest::testIsFollows() { 
 	// Test Follows(a1, a2) where a1 and a2 are both assign
-	Results* result = new Results();
+	Result* result = new Result();
 	/*FollowsClause* fol = new FollowsClause();
 	fol->setFirstArg("2");
 	fol->setSecondArg("3");
@@ -247,7 +247,7 @@ void FollowsClauseTest::testIsFollows() {
 	bool evalResult = fol->evaluate(result);
 	
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 
 	/*
 	// Test Follows(a1, a1) where a1 is assign

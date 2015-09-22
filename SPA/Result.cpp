@@ -8,8 +8,9 @@ Result::~Result() {
 }
 
 
-void Result::push(InsertType& insert) {
+bool Result::push(InsertType& insert) {
 	pass = insert.execute(resultTable);
+	return pass;
 }
 
 ResultTable Result::getResultTable() {
@@ -75,4 +76,8 @@ bool Result::isSynPresent(string syn) {
 int Result::getSynPosition(string syn) {
 	size_t pos = find(resultTable.synList.begin(), resultTable.synList.end(), syn) - resultTable.synList.begin();
 	return pos;
+}
+
+int Result::getResultTableSize() {
+	return resultTable.rows.size();
 }

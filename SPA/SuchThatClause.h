@@ -2,6 +2,7 @@
 #include "Clause.h"
 #include "ConstTable.h"
 #include "ProcTable.h"
+#include "Result.h"
 #include "Results.h"
 #include "StmtTable.h"
 #include "Utils.h"
@@ -26,7 +27,6 @@ protected:
 	bool secondArgFixed;
 	string secondArgType;
 	string patternArg;
-	Results::ResultsTable table;
 
 	StmtTable* stmtTable;
 	VarTable* varTable;
@@ -80,7 +80,7 @@ public:
 	bool getFirstArgFixed();
 	bool getSecondArgFixed();
 
-	bool evaluate(Results*); 
+	bool evaluate(Result*); 
 
 	//Check the validity of the specific clause
 	//Substitute the original clause isValid for this one

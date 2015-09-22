@@ -112,25 +112,21 @@ unordered_set<string> PatternClause::getAllVarValues() {
 	return allVarValues;
 }
 
-bool PatternClause::evaluate(Results* res) {
+bool PatternClause::evaluate(Result* res) {
 
-	if (!isBaseValidityCheck()) {
-		res->setClauseFail();
-		return false;
-	}
-
-	if (!isValid()) {
-		res->setClauseFail();
+	if(!isBaseValidityCheck() || !isValid()) {
 		return false;
 	}
 
 	// a("v", ?)
 	if (isVarFixed() && getVarType() == ARG_VARIABLE) {
 		//if syn is in table
-		if (res->hasResults(getSyn())) {
+		if (res->isSynPresent(getSyn())) {
 			//get values of syn from the table
-			unordered_set<string> synValues = res->selectSyn(getSyn());
+			unordered_set<string> synValues = res->getSyn(getSyn());
 			//for each syn value, if it passes, add it back to table
+			SingleSynInsert insert = SingleSynInsert();
+			insert.setSyn(synValue);
 			for (unordered_set<string>::iterator it = synValues.begin(); it != synValues.end(); ++it) {
 				string synValue = *it;
 				string varValue = getVar();

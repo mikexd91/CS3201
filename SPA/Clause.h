@@ -1,4 +1,8 @@
 #pragma once
+#include "NoSynInsert.h"
+#include "SingleSynInsert.h"
+#include "MultiSynInsert.h"
+#include "Result.h"
 #include "Results.h"
 #include "Utils.h"
 
@@ -28,7 +32,7 @@ public:
 
 	ClauseType getClauseType();
 	
-	virtual bool evaluate(Results*)=0;
+	virtual bool evaluate(Result*)=0;
 
 	//Check the validity of the specific clause
 	//Substitute the original clause isValid for this one

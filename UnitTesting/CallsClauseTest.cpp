@@ -132,7 +132,7 @@ void CallsClauseTest::tearDown() {
 CPPUNIT_TEST_SUITE_REGISTRATION( CallsClauseTest );
 
 void CallsClauseTest::testCallsFixedFixedPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*CallsClause* c1 = new CallsClause();
 	c1->setFirstArg("main");
 	c1->setFirstArgFixed(true);
@@ -152,11 +152,11 @@ void CallsClauseTest::testCallsFixedFixedPass() {
 
 	bool evalResult = true;/*c1->evaluate(result);*/
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void CallsClauseTest::testCallsFixedFixedFail() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*CallsClause* c1 = new CallsClause();
 	c1->setFirstArg("main");
 	c1->setFirstArgFixed(true);
@@ -176,11 +176,11 @@ void CallsClauseTest::testCallsFixedFixedFail() {
 
 	bool evalResult = c1->evaluate(result);
 	CPPUNIT_ASSERT(!evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void CallsClauseTest::testCallsSynFixedPass() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsClause* c1 = new CallsClause();
 	c1->setFirstArg("a");
 	c1->setFirstArgFixed(false);
@@ -200,15 +200,15 @@ void CallsClauseTest::testCallsSynFixedPass() {
 
 	bool result = c1->evaluate(res);
 	CPPUNIT_ASSERT(result);
-	CPPUNIT_ASSERT(res->getResultsTableSize() == 2);
-	CPPUNIT_ASSERT(res->hasResults("a"));
-	CPPUNIT_ASSERT(res->hasResults("s") == false);
-	unordered_set<string> s = res->selectSyn("s");
+	CPPUNIT_ASSERT(res->getResultTableSize() == 2);
+	CPPUNIT_ASSERT(res->isSynPresent("a"));
+	CPPUNIT_ASSERT(res->isSynPresent("s") == false);
+	unordered_set<string> s = res->getSyn("s");
 	CPPUNIT_ASSERT(s.size() == 0);
 }
 
 void CallsClauseTest::testCallsSynFixedFail() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsClause* c1 = new CallsClause();
 	c1->setFirstArg("a");
 	c1->setFirstArgFixed(false);
@@ -228,12 +228,12 @@ void CallsClauseTest::testCallsSynFixedFail() {
 
 	bool result = c1->evaluate(res);
 	CPPUNIT_ASSERT(result == false);
-	CPPUNIT_ASSERT(res->getResultsTableSize() == 0);
-	CPPUNIT_ASSERT(res->hasResults("a") == false);
+	CPPUNIT_ASSERT(res->getResultTableSize() == 0);
+	CPPUNIT_ASSERT(res->isSynPresent("a") == false);
 }
 
 void CallsClauseTest::testCallsFixedSynPass() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsClause* c1 = new CallsClause();
 	c1->setFirstArg("main");
 	c1->setFirstArgFixed(true);
@@ -253,12 +253,12 @@ void CallsClauseTest::testCallsFixedSynPass() {
 
 	bool result = c1->evaluate(res);
 	CPPUNIT_ASSERT(result == true);
-	CPPUNIT_ASSERT(res->getResultsTableSize() == 3);
-	CPPUNIT_ASSERT(res->hasResults("b") == true);
+	CPPUNIT_ASSERT(res->getResultTableSize() == 3);
+	CPPUNIT_ASSERT(res->isSynPresent("b") == true);
 }
 
 void CallsClauseTest::testCallsFixedSynFail() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsClause* c1 = new CallsClause();
 	c1->setFirstArg("private2");
 	c1->setFirstArgFixed(true);
@@ -278,12 +278,12 @@ void CallsClauseTest::testCallsFixedSynFail() {
 
 	bool result = c1->evaluate(res);
 	CPPUNIT_ASSERT(result == false);
-	CPPUNIT_ASSERT(res->getResultsTableSize() == 0);
-	CPPUNIT_ASSERT(res->hasResults("b") == false);
+	CPPUNIT_ASSERT(res->getResultTableSize() == 0);
+	CPPUNIT_ASSERT(res->isSynPresent("b") == false);
 }
 
 void CallsClauseTest::testCallsFirstUnderscorePass() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsClause* c1 = new CallsClause();
 	c1->setFirstArg("_");
 	c1->setFirstArgFixed(false);
@@ -303,12 +303,12 @@ void CallsClauseTest::testCallsFirstUnderscorePass() {
 
 	bool result = c1->evaluate(res);
 	CPPUNIT_ASSERT(result == true);
-	CPPUNIT_ASSERT(res->getResultsTableSize() == 7);
-	CPPUNIT_ASSERT(res->hasResults("p") == true);
+	CPPUNIT_ASSERT(res->getResultTableSize() == 7);
+	CPPUNIT_ASSERT(res->isSynPresent("p") == true);
 }
 
 void CallsClauseTest::testCallsSecondUnderscorePass() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsClause* c1 = new CallsClause();
 	c1->setFirstArg("p");
 	c1->setFirstArgFixed(false);
@@ -328,12 +328,12 @@ void CallsClauseTest::testCallsSecondUnderscorePass() {
 
 	bool result = c1->evaluate(res);
 	CPPUNIT_ASSERT(result == true);
-	CPPUNIT_ASSERT(res->getResultsTableSize() == 5);
-	CPPUNIT_ASSERT(res->hasResults("p") == true);
+	CPPUNIT_ASSERT(res->getResultTableSize() == 5);
+	CPPUNIT_ASSERT(res->isSynPresent("p") == true);
 }
 
 void CallsClauseTest::testCallsBothUnderscorePass() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsClause* c1 = new CallsClause();
 	c1->setFirstArg("_");
 	c1->setFirstArgFixed(false);
@@ -356,7 +356,7 @@ void CallsClauseTest::testCallsBothUnderscorePass() {
 }
 
 void CallsClauseTest::testCallsSynSynPass() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsClause* c1 = new CallsClause();
 	c1->setFirstArg("p");
 	c1->setFirstArgFixed(false);
@@ -376,13 +376,13 @@ void CallsClauseTest::testCallsSynSynPass() {
 
 	bool result = c1->evaluate(res);
 	CPPUNIT_ASSERT(result == true);
-	CPPUNIT_ASSERT(res->hasResults("p") == true);
-	CPPUNIT_ASSERT(res->hasResults("q") == true);
-	CPPUNIT_ASSERT(res->getResultsTableSize() == 9);
+	CPPUNIT_ASSERT(res->isSynPresent("p") == true);
+	CPPUNIT_ASSERT(res->isSynPresent("q") == true);
+	CPPUNIT_ASSERT(res->getResultTableSize() == 9);
 }
 
 void CallsClauseTest::testCallsSynSynSame() {
-	Results* res = new Results();
+	Result* res = new Result();
 	/*CallsClause* c1 = new CallsClause();
 	c1->setFirstArg("p");
 	c1->setFirstArgFixed(false);
@@ -402,6 +402,6 @@ void CallsClauseTest::testCallsSynSynSame() {
 
 	bool result = c1->evaluate(res);
 	CPPUNIT_ASSERT(result == false);
-	CPPUNIT_ASSERT(res->hasResults("p") == false);
-	CPPUNIT_ASSERT(res->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(res->isSynPresent("p") == false);
+	CPPUNIT_ASSERT(res->getResultTableSize() == 0);
 }

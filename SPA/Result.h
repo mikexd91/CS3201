@@ -29,13 +29,14 @@ public:
 	unordered_set<string> getSyn(string);
 
 	// called after all results have been inserted. push tells me what to delete
-	void push(InsertType&);
+	bool push(InsertType&);
 	void setFail();
 	void setPass();
 
 	//for testing
 	ResultTable getResultTable();
 	void setResultTable(ResultTable&);
+	int getResultTableSize();
 
 	//for food! :D
 
