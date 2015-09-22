@@ -14,7 +14,7 @@ using namespace std;
 using namespace stringconst;
 using boost::unordered_set;
 
-UsesClause::UsesClause(void):Clause(USES_){
+UsesClause::UsesClause(void) : SuchThatClause(USES_) {
 	stmtTable = StmtTable::getInstance();
 	varTable = VarTable::getInstance();
 	procTable = ProcTable::getInstance();

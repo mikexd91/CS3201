@@ -1,9 +1,10 @@
 #pragma once
-#include "Clause.h"
+#include "SuchThatClause.h"
 #include "ProcTable.h"
 #include "Results.h"
 
-class CallsClause : public Clause {
+class CallsClause 
+	: public SuchThatClause {
 
 public:
 	CallsClause(void);
