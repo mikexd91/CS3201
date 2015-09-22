@@ -7,17 +7,18 @@
 
 using namespace std;
 using boost::unordered_set;
-class SingleSynInsert : public InsertType
+
+class NoSynInsert : public InsertType
 {
 public:
-	SingleSynInsert(void);
+	NoSynInsert();
 	//inserts the rows into the results table
 	bool execute(ResultTable&);
-	// for clauses with 1 synonym
-	void setSyn(string);
-	void insertValue(string);
+	// for clauses with 2 or more synonyms
+	// the values follows the same order as that dictacted by the synList
+	void setPass(bool);
+	bool isPass();
 
 private:
-	string singleSyn;
-	unordered_set<string> singleInsertValues;
+	bool pass;	
 };

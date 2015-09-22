@@ -13,7 +13,7 @@ class MultiSynInsert : public InsertType
 public:
 	MultiSynInsert();
 	//inserts the rows into the results table
-	void execute(ResultTable&);
+	bool execute(ResultTable&);
 	// for clauses with 2 or more synonyms
 	// the values follows the same order as that dictacted by the synList
 	void setSyns(vector<string>);

@@ -6,6 +6,6 @@ class InsertType
 {
 public:
 	//result class to pass its result table inside here to mutate
-	virtual void execute(ResultTable&)=0;
+	virtual bool execute(ResultTable&)=0;
 
 };

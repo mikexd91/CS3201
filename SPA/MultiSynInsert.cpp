@@ -12,32 +12,34 @@ void MultiSynInsert::insertValues(vector<string> values) {
 }
 
 
-void MultiSynInsert::execute(ResultTable& resultTable) {
+bool MultiSynInsert::execute(ResultTable& resultTable) {
 	if (multiInsertSyns.empty() || multiInsertValues.empty()) {
 		resultTable.synList.clear();
 		resultTable.rows.clear();
-	}
-	//get number of syns present
-	vector<string> existingSyns = resultTable.synList;
-	int numSynInTable = getNumSynsInTable(resultTable);
-	if (numSynInTable == 0) {
-		//add all into table
-		for (auto synIter = multiInsertSyns.begin(); synIter != multiInsertSyns.end(); synIter++) {
-			resultTable.synList.push_back(*synIter);
-		}
-		if (resultTable.rows.empty()) {
-			addNewRows(resultTable);
-		} else {
-			addSynToExistingRows(resultTable);
-		}
-	} else if (numSynInTable == multiInsertSyns.size()) {
-		//all syns are present in table
-		//remove rows as needed
-		removeRows(resultTable);
 	} else {
-		//some syns are present in table
-		combineRows(resultTable);
+		//get number of syns present
+		vector<string> existingSyns = resultTable.synList;
+		int numSynInTable = getNumSynsInTable(resultTable);
+		if (numSynInTable == 0) {
+			//add all into table
+			for (auto synIter = multiInsertSyns.begin(); synIter != multiInsertSyns.end(); synIter++) {
+				resultTable.synList.push_back(*synIter);
+			}
+			if (resultTable.rows.empty()) {
+				addNewRows(resultTable);
+			} else {
+				addSynToExistingRows(resultTable);
+			}
+		} else if (numSynInTable == multiInsertSyns.size()) {
+			//all syns are present in table
+			//remove rows as needed
+			removeRows(resultTable);
+		} else {
+			//some syns are present in table
+			combineRows(resultTable);
+		}
 	}
+	return !(resultTable.synList.empty() || resultTable.rows.empty());
 }
 
 int MultiSynInsert::getNumSynsInTable(ResultTable resultTable){

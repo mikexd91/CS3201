@@ -23,6 +23,7 @@
     <ClCompile Include="AST.cpp" />
     <ClCompile Include="CallNode.cpp" />
     <ClCompile Include="CallsClause.cpp" />
+    <ClCompile Include="CallsStarClause.cpp" />
     <ClCompile Include="Clause.cpp" />
     <ClCompile Include="Constant.cpp" />
     <ClCompile Include="ConstNode.cpp" />
@@ -34,6 +35,7 @@
     <ClCompile Include="IfNode.cpp" />
     <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="MultiSynInsert.cpp" />
+    <ClCompile Include="NoSynInsert.cpp" />
     <ClCompile Include="OpNode.cpp" />
     <ClCompile Include="ParentClause.cpp" />
     <ClCompile Include="ParentStarClause.cpp" />
@@ -93,6 +95,7 @@
     <ClInclude Include="InvalidExpressionException.h" />
     <ClInclude Include="ModifiesClause.h" />
     <ClInclude Include="MultiSynInsert.h" />
+    <ClInclude Include="NoSynInsert.h" />
     <ClInclude Include="OpNode.h" />
     <ClInclude Include="ParentClause.h" />
     <ClInclude Include="ParentStarClause.h" />

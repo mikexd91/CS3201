@@ -9,8 +9,7 @@ Result::~Result() {
 
 
 void Result::push(InsertType& insert) {
-	insert.execute(resultTable);
-	pass = !resultTable.synList.empty() && !resultTable.rows.empty();
+	pass = insert.execute(resultTable);
 }
 
 ResultTable Result::getResultTable() {
