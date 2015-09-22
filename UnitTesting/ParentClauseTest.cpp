@@ -477,26 +477,25 @@ void ParentClauseTest::testParentSynSynPass() {
 	CPPUNIT_ASSERT(m1->evaluate(&res));
 	CPPUNIT_ASSERT(res.getResultTableSize() == 7);
 	
-	/**
 	CPPUNIT_ASSERT(res.isSynPresent("s1"));
 	CPPUNIT_ASSERT(res.isSynPresent("s2"));
-	unordered_set<string> syns;
-	syns.insert("s1");
-	syns.insert("s2");
+	vector<string> syns;
+	syns.push_back("s1");
+	syns.push_back("s2");
 	//TODO: change this monstrosity
 	//we want to check if the row exists, and also prevent duplicates from happening
 	bool rowAppeared[7];
 	fill(rowAppeared, rowAppeared + 7, false);
-	Result::ResultTable pairTable = res.selectMultiSyn(syns);
-	for (Result::ResultTable::iterator i = pairTable.begin(); i != pairTable.end(); ++i) {
-		Result::Row row = *(*i);
-		bool isRow1 = row["s1"] == "1" && row["s2"] == "2" && !rowAppeared[0];
-		bool isRow2 = row["s1"] == "1" && row["s2"] == "3" && !rowAppeared[1];
-		bool isRow3 = row["s1"] == "3" && row["s2"] == "4" && !rowAppeared[2];
-		bool isRow4 = row["s1"] == "3" && row["s2"] == "5" && !rowAppeared[3];
-		bool isRow5 = row["s1"] == "1" && row["s2"] == "6" && !rowAppeared[4];
-		bool isRow6 = row["s1"] == "6" && row["s2"] == "7" && !rowAppeared[5];
-		bool isRow7 = row["s1"] == "6" && row["s2"] == "8" && !rowAppeared[6];
+	unordered_set<vector<string>> pairTable = res.getMultiSyn(syns);
+	for (auto i = pairTable.begin(); i != pairTable.end(); ++i) {
+		vector<string> row = *i;
+		bool isRow1 = row.at(0) == "1" && row.at(1) == "2" && !rowAppeared[0];
+		bool isRow2 = row.at(0) == "1" && row.at(1) == "3" && !rowAppeared[1];
+		bool isRow3 = row.at(0) == "3" && row.at(1) == "4" && !rowAppeared[2];
+		bool isRow4 = row.at(0) == "3" && row.at(1) == "5" && !rowAppeared[3];
+		bool isRow5 = row.at(0) == "1" && row.at(1) == "6" && !rowAppeared[4];
+		bool isRow6 = row.at(0) == "6" && row.at(1) == "7" && !rowAppeared[5];
+		bool isRow7 = row.at(0) == "6" && row.at(1) == "8" && !rowAppeared[6];
 		if (isRow1) {
 			rowAppeared[0] = true;
 			CPPUNIT_ASSERT(true);
@@ -522,7 +521,6 @@ void ParentClauseTest::testParentSynSynPass() {
 			CPPUNIT_ASSERT(false);
 		}
 	}
-	**/
 }
 
 void ParentClauseTest::testParentSynSynPassWithWhile() {
@@ -548,14 +546,12 @@ void ParentClauseTest::testParentSynSynPassWithWhile() {
 	CPPUNIT_ASSERT(res.getResultTableSize() == 1);
 	CPPUNIT_ASSERT(res.isSynPresent("s1"));
 	CPPUNIT_ASSERT(res.isSynPresent("s2"));
-	/**
-	unordered_set<string> syns;
-	syns.insert("s1");
-	syns.insert("s2");
-	Result::ResultTable pairTable = res.selectMultiSyn(syns);
-	Result::Row row = *(*pairTable.begin());
-	CPPUNIT_ASSERT(row["s1"] == "1" && row["s2"] == "3");
-	**/
+	vector<string> syns;
+	syns.push_back("s1");
+	syns.push_back("s2");
+	unordered_set<vector<string>> pairTable = res.getMultiSyn(syns);
+	vector<string> row = *(pairTable.begin());
+	CPPUNIT_ASSERT(row.at(0) == "1" && row.at(1)== "3");
 }
 
 void ParentClauseTest::testParentSynSynPassWithIf() {
@@ -581,17 +577,15 @@ void ParentClauseTest::testParentSynSynPassWithIf() {
 	CPPUNIT_ASSERT(res.getResultTableSize() == 2);
 	CPPUNIT_ASSERT(res.isSynPresent("s1"));
 	CPPUNIT_ASSERT(res.isSynPresent("s2"));
-	unordered_set<string> syns;
-	syns.insert("s1");
-	syns.insert("s2");
-	/**
-	Result::ResultTable pairTable = res.selectMultiSyn(syns);
+	vector<string> syns;
+	syns.push_back("s1");
+	syns.push_back("s2");
+	unordered_set<vector<string>> pairTable = res.getMultiSyn(syns);
 
-	for (Result::ResultTable::iterator i = pairTable.begin(); i != pairTable.end(); ++i) {
-		Result::Row row = *(*i);
-		CPPUNIT_ASSERT((row["s1"] == "6" && row["s2"] == "7")  ||  (row["s1"] == "6" && row["s2"] == "8"));
+	for (auto i = pairTable.begin(); i != pairTable.end(); ++i) {
+		vector<string> row = *(pairTable.begin());
+		CPPUNIT_ASSERT((row.at(0) == "6" && row.at(1) == "7")  || (row.at(0) == "6" && row.at(1) == "8"));
 	}
-	**/
 }
 
 
