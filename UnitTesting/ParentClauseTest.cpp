@@ -583,7 +583,7 @@ void ParentClauseTest::testParentSynSynPassWithIf() {
 	unordered_set<vector<string>> pairTable = res.getMultiSyn(syns);
 
 	for (auto i = pairTable.begin(); i != pairTable.end(); ++i) {
-		vector<string> row = *(pairTable.begin());
+		vector<string> row = *i;
 		CPPUNIT_ASSERT((row.at(0) == "6" && row.at(1) == "7")  || (row.at(0) == "6" && row.at(1) == "8"));
 	}
 }

@@ -311,7 +311,8 @@ bool SuchThatClause::evaluate(Result* res) {
 				for (auto iter = firstSecondValues.begin();
 					iter != firstSecondValues.end();
 					++iter) {
-						insert.insertValues(*iter);
+						vector<string> values = *iter;
+						insert.insertValues(values);
 				}
 			}
 			return res->push(insert);
