@@ -2,7 +2,6 @@
 
 Result::Result() {
 	resultTable = ResultTable();
-	synPosition = vector<string>();
 }
 
 Result::~Result() {

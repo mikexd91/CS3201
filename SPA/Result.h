@@ -42,7 +42,6 @@ public:
 private:
 	ResultTable resultTable;
 	ResultTable resultTableTemp;
-	vector<string> synPosition;
 	bool pass;
  
 	int getSynPosition(string);
