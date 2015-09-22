@@ -306,19 +306,13 @@ bool SuchThatClause::evaluate(Result* res) {
 				}
 				//both absent in table
 			} else {
-				/**
 				//generate all a1 and a2 values
-				Results::ResultsTable* firstSecondValues = getAllS1AndS2();
-				for (Results::ResultsTable::iterator iter = firstSecondValues->begin();
-					iter != firstSecondValues->end();
+				unordered_set<vector<string>> firstSecondValues = getAllS1AndS2();
+				for (auto iter = firstSecondValues.begin();
+					iter != firstSecondValues.end();
 					++iter) {
-						Results::Row* row = *iter;
-						string firstValue = (*row)[firstArgSyn];
-						string secondValue = (*row)[secondArgSyn];
-						res->insertMultiResult(row);
+						insert.insertValues(*iter);
 				}
-				firstSecondValues->clear();
-				**/
 			}
 			return res->push(insert);
 		} else {
