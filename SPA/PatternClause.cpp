@@ -126,73 +126,86 @@ bool PatternClause::evaluate(Result* res) {
 			unordered_set<string> synValues = res->getSyn(getSyn());
 			//for each syn value, if it passes, add it back to table
 			SingleSynInsert insert = SingleSynInsert();
-			insert.setSyn(synValue);
+			insert.setSyn(getSyn());
 			for (unordered_set<string>::iterator it = synValues.begin(); it != synValues.end(); ++it) {
 				string synValue = *it;
 				string varValue = getVar();
 				// check if this specific syn value matches the pattern of this specific var value (and its exprs)
 				if (matchPattern(synValue, varValue)) {
-					res->insertResult(syn, synValue);
+					insert.insertValue(synValue);
 				}
 			}
+			return res->push(insert);
 		//else syn is not in table, generate all possible values of a
 		} else {
+			SingleSynInsert insert = SingleSynInsert();
+			insert.setSyn(this->getSyn());
 			unordered_set<string> allSynValues = getAllSynValues();
 			string varValue = getVar();
 			BOOST_FOREACH(string testSynValue, allSynValues) {
 				if (matchPattern(testSynValue, varValue)) {
-					res->insertResult(getSyn(), testSynValue);
+					insert.insertValue(testSynValue);
 				}
 			}
+			return res->push(insert);
 		}
 
 	// a(_, ?)
 	} else if (!isVarFixed() && getVarType() == ARG_GENERIC) {
 		//if syn is in table
-		if (res->hasResults(getSyn())) {
+		if (res->isSynPresent(getSyn())) {
+			SingleSynInsert insert = SingleSynInsert();
+			insert.setSyn(getSyn());
 			//get values of syn from the table
-			unordered_set<string> synValues = res->selectSyn(getSyn());
+			unordered_set<string> synValues = res->getSyn(getSyn());
 			string underscore = getVar();
 			//for each syn value, if it passes, add it back to table
 			for (unordered_set<string>::iterator it = synValues.begin(); it != synValues.end(); ++it) {
 				string synValue = *it;
 				// check if this specific syn value matches the pattern of _ var (and its exprs)
 				if (matchPattern(synValue, underscore)) {
-					res->insertResult(getSyn(), synValue);
+					insert.insertValue(synValue);
 				}
 			}
-			//else syn is not in table, generate all possible values of a
+			return res->push(insert);
+		//else syn is not in table, generate all possible values of a
 		} else {
+			SingleSynInsert insert = SingleSynInsert();
+			insert.setSyn(getSyn());
 			unordered_set<string> allSynValues = getAllSynValues();
 			string underscore = getVar();
 			BOOST_FOREACH(string testSynValue, allSynValues) {
 				if (matchPattern(testSynValue, underscore)) {
-					res->insertResult(getSyn(), testSynValue);
+					insert.insertValue(testSynValue);
 				}
-			}			
+			}
+			return res->push(insert);	
 		}
 
 	// a(v, ?)
 	} else if (!varFixed && varType == ARG_VARIABLE) {
-		bool isSynInTable = res->hasResults(getSyn());
-		bool isVarInTable = res->hasResults(getVar());
+		MultiSynInsert insert = MultiSynInsert();
+		string synArray[] = {getSyn(), getVar()};
+		vector<string> syns = vector<string>(synArray, synArray+2);
+		insert.setSyns(syns);
+		bool isSynInTable = res->isSynPresent(getSyn());
+		bool isVarInTable = res->isSynPresent(getVar());
 		//both are in table
 		if (isSynInTable && isVarInTable) {
 			//get all a and v value 
-			unordered_set<string> synList;
-			synList.insert(getSyn());
-			synList.insert(getVar());
-			Results::ResultsTable pairs = res->selectMultiSyn(synList);
+			vector<string> synList;
+			synList[0] = (getSyn());
+			synList[1] = (getVar());
+			unordered_set<vector<string>> pairs = res->getMultiSyn(synList);
 			//check if true, if true insert into table 
-			for (Results::ResultsTable::iterator iter = pairs.begin(); iter != pairs.end(); iter++) {
-				Results::Row* currentRow = *iter;
-				string synValue = (*currentRow)[getSyn()];
-				string varValue = (*currentRow)[getVar()];
+			BOOST_FOREACH(vector<string> pair, pairs) {
+				string synValue = pair[0];
+				string varValue = pair[1];
 				if (matchPattern(synValue, varValue)) {
-					unordered_map<string, string>* newRow = new Results::Row();
-					(*newRow)[getSyn()] = synValue;
-					(*newRow)[getVar()] = varValue;
-					res->insertMultiResult(newRow);
+					vector<string> newRow = vector<string>();
+					newRow.push_back(synValue);
+					newRow.push_back(varValue);
+					insert.insertValues(newRow);
 				}
 			}
 			//prevent memroy leak
@@ -200,46 +213,34 @@ bool PatternClause::evaluate(Result* res) {
 		//only syn in table
 		} else if (isSynInTable) {
 			//get all a1 values
-			unordered_set<string> synValues = res->selectSyn(getSyn());
+			unordered_set<string> synValues = res->getSyn(getSyn());
 			//for each a1 value, get all a2 values
 			for (unordered_set<string>::iterator iter = synValues.begin(); iter != synValues.end(); ++iter) {
 				string synValue = *iter;
 				unordered_set<string> allVarValues = getAllVarValues();
 				BOOST_FOREACH(string testVarValue, allVarValues) {
-					unordered_set<string> validVarValues;
 					if (matchPattern(synValue, testVarValue)) {
-						validVarValues.insert(testVarValue);
-					}
-					//add each row of a1 and a2 into the results table
-					for (unordered_set<string>::iterator iter2 = validVarValues.begin(); iter!= validVarValues.end(); ++iter) {
-						string validVarValue = *iter2;
-						unordered_map<string, string>* newRow = new Results::Row();
-						(*newRow)[getSyn()] = synValue;
-						(*newRow)[getVar()] = validVarValue;
-						res->insertMultiResult(newRow);
+						vector<string> newRow = vector<string>();
+						newRow.push_back(synValue);
+						newRow.push_back(testVarValue);
+						insert.insertValues(newRow);
 					}
 				}
 			}
 		//only var in table
 		} else if (isVarInTable) {
 			//get all a2 values
-			unordered_set<string> varValues = res->selectSyn(getVar());
+			unordered_set<string> varValues = res->getSyn(getVar());
 			//for each a1 value, get all a2 values
 			for (unordered_set<string>::iterator iter = varValues.begin(); iter != varValues.end(); ++iter) {
 				string varValue = *iter;
 				unordered_set<string> allSynValues = getAllSynValues();
 				BOOST_FOREACH(string testSynValue, allSynValues) {
-					unordered_set<string> validSynValues;
 					if (matchPattern(testSynValue, varValue)) {
-						validSynValues.insert(testSynValue);
-					}
-					//add each row of a1 and a2 into the results table
-					for (unordered_set<string>::iterator iter2 = validSynValues.begin(); iter!= validSynValues.end(); ++iter) {
-						string validSynValue = *iter2;
-						unordered_map<string, string>* newRow = new Results::Row();
-						(*newRow)[getSyn()] = validSynValue;
-						(*newRow)[getVar()] = varValue;
-						res->insertMultiResult(newRow);
+						vector<string> newRow = vector<string>();
+						newRow.push_back(testSynValue);
+						newRow.push_back(varValue);
+						insert.insertValues(newRow);
 					}
 				}
 			}
@@ -248,33 +249,24 @@ bool PatternClause::evaluate(Result* res) {
 			//generate all a1 and a2 values
 			unordered_set<string> allSynValues = getAllSynValues();
 			unordered_set<string> allVarValues = getAllVarValues();
-			Results::ResultsTable* synAndVarValues = new Results::ResultsTable();
 
 			BOOST_FOREACH(string testSynValue, allSynValues) {
 				BOOST_FOREACH(string testVarValue, allVarValues) {
 					if (matchPattern(testSynValue, testVarValue)) {
-						// TODO add pair result;
-						Results::Row* pair = new Results::Row();
-						(*pair)[getSyn()] = testSynValue;
-						(*pair)[getVar()] = testVarValue;
-						synAndVarValues->insert(pair);
+						vector<string> newRow = vector<string>();
+						newRow.push_back(testSynValue);
+						newRow.push_back(testVarValue);
+						insert.insertValues(newRow);
 					}
 				}
 			}
-			for (Results::ResultsTable::iterator iter = synAndVarValues->begin(); iter != synAndVarValues->end(); ++iter) {
-					Results::Row* row = *iter;
-					string firstValue = (*row)[getSyn()];
-					string secondValue = (*row)[getVar()];
-					res->insertMultiResult(row);
-			}
-			synAndVarValues->clear();
 		}
+		return res->push(insert);
 
 	} else {
 		// fail, no such combi
-		res->setClauseFail();
-		return false;
+		NoSynInsert insert = NoSynInsert();
+		insert.setPass(false);
+		return res->push(insert);
 	}
-
-	return res->push();
 }
