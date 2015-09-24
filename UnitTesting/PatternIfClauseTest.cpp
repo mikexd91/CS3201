@@ -94,25 +94,25 @@ void PatternIfClauseTest::evaluateVarWild() {
 	PatternAssgClause* p1 = (PatternAssgClause*) ifBuilder->build();
 	
 	CPPUNIT_ASSERT(p1->isValid());
-	Results *r1 = new Results();
+	Result *r1 = new Result();
 	CPPUNIT_ASSERT(p1->evaluate(r1));
 
-	CPPUNIT_ASSERT(r1->hasResults(syn1));
-	CPPUNIT_ASSERT(r1->selectSyn(syn1).size() == 1);
+	CPPUNIT_ASSERT(r1->isSynPresent(syn1));
+	CPPUNIT_ASSERT(r1->getSyn(syn1).size() == 1);
 
 	//PatternIfClause* p1 = new PatternIfClause("a", "_", "_");
 	//p1->setSecondArgFixed(false);
 	//p1->setSecondArgType(stringconst::ARG_GENERIC);
 
 	//CPPUNIT_ASSERT(p1->isValid());
-	//Results *r1 = new Results();
+	//Result *r1 = new Result();
 	//CPPUNIT_ASSERT(p1->evaluate(r1));
 	//string syn1 = "a";
 
-	//CPPUNIT_ASSERT(r1->hasResults(syn1));
-	//CPPUNIT_ASSERT(r1->selectSyn(syn1).size() == 3);
+	//CPPUNIT_ASSERT(r1->isSynPresent(syn1));
+	//CPPUNIT_ASSERT(r1->getSyn(syn1).size() == 3);
 	//
-	//unordered_set<string> v = r1->selectSyn(syn1);
+	//unordered_set<string> v = r1->getSyn(syn1);
 	////BOOST_FOREACH(auto i, v) {
 	////	cout << i;
 	////}
@@ -137,12 +137,12 @@ void PatternIfClauseTest::evaluateVarFixed() {
 	PatternAssgClause* p1 = (PatternAssgClause*) ifBuilder->build();
 
 	CPPUNIT_ASSERT(p1->isValid());
-	Results *r1 = new Results();
+	Result *r1 = new Result();
 	CPPUNIT_ASSERT(p1->evaluate(r1));
 
-	CPPUNIT_ASSERT(r1->hasResults(syn1));
-	CPPUNIT_ASSERT(r1->selectSyn(syn1).size() == 1);
-	CPPUNIT_ASSERT(r1->selectSyn(syn1).count("1") == 1);
+	CPPUNIT_ASSERT(r1->isSynPresent(syn1));
+	CPPUNIT_ASSERT(r1->getSyn(syn1).size() == 1);
+	CPPUNIT_ASSERT(r1->getSyn(syn1).count("1") == 1);
 
 
 	// var fail, not the control var
@@ -159,7 +159,7 @@ void PatternIfClauseTest::evaluateVarFixed() {
 	PatternAssgClause* p2 = (PatternAssgClause*) ifBuilder2->build();
 	CPPUNIT_ASSERT(p2->isValid());
 
-	Results* resFail = new Results();
+	Result* resFail = new Result();
 	CPPUNIT_ASSERT(!p2->evaluate(resFail));
 
 	//PatternIfClause* p1 = new PatternIfClause("a", "i", "_");
@@ -173,9 +173,9 @@ void PatternIfClauseTest::evaluateVarFixed() {
 	//string syn1 = "a";
 	//long long num = 1;
 
-	//CPPUNIT_ASSERT(res->hasResults(syn1));
-	//CPPUNIT_ASSERT(res->selectSyn(syn1).size() == 1);
-	//CPPUNIT_ASSERT(res->selectSyn(syn1).count("1") == 1);
+	//CPPUNIT_ASSERT(res->isSynPresent(syn1));
+	//CPPUNIT_ASSERT(res->getSyn(syn1).size() == 1);
+	//CPPUNIT_ASSERT(res->getSyn(syn1).count("1") == 1);
 
 	////cout << r1.getFirstClauseSyn() << endl;
 	////CPPUNIT_ASSERT(r1.isClausePassed());
@@ -189,7 +189,7 @@ void PatternIfClauseTest::evaluateVarFixed() {
 	//p2->setVarFixed(true);
 	//CPPUNIT_ASSERT(p2->isValid());
 
-	//Results* resFail = new Results();
+	//Result* resFail = new Result();
 	//CPPUNIT_ASSERT(!p2->evaluate(resFail));
 	
 	return;
@@ -213,20 +213,20 @@ void PatternIfClauseTest::evaluateVarSyn() {
 	PatternAssgClause* p1 = (PatternAssgClause*) ifBuilder->build();
 
 	CPPUNIT_ASSERT(p1->isValid());
-	Results *r1 = new Results();
+	Result *r1 = new Result();
 	CPPUNIT_ASSERT(p1->evaluate(r1));
 
-	CPPUNIT_ASSERT(r1->hasResults(syn1));
-	CPPUNIT_ASSERT(r1->hasResults(syn2));
-	CPPUNIT_ASSERT(r1->selectSyn(syn1).size() == 1);
-	CPPUNIT_ASSERT(r1->selectSyn(syn1).count("1") == 1);
+	CPPUNIT_ASSERT(r1->isSynPresent(syn1));
+	CPPUNIT_ASSERT(r1->isSynPresent(syn2));
+	CPPUNIT_ASSERT(r1->getSyn(syn1).size() == 1);
+	CPPUNIT_ASSERT(r1->getSyn(syn1).count("1") == 1);
 	// HOW TO CHECK THE PAIR RESULTS
 	// 1. make unordered set of the syns you want to check
 	// 2. select them as resultstable and see size
-	unordered_set<string> synList = unordered_set<string>();
-	synList.insert(syn1);
-	synList.insert(syn2);
-	Results::ResultsTable multiSynResults = r1->selectMultiSyn(synList);
+	vector<string> synList = vector<string>();
+	synList.push_back(syn1);
+	synList.push_back(syn2);
+	unordered_set<vector<string>> multiSynResults = r1->getMultiSyn(synList);
 	CPPUNIT_ASSERT(multiSynResults.size() == 1);
 
 	// pass, pattern a(v, "_");
@@ -243,15 +243,15 @@ void PatternIfClauseTest::evaluateVarSyn() {
 	//string expectedSyn2 = "v";
 	//int expectedSize = 3;
 
-	//CPPUNIT_ASSERT(res->hasResults(expectedSyn1));
-	//CPPUNIT_ASSERT(res->hasResults(expectedSyn2));
+	//CPPUNIT_ASSERT(res->isSynPresent(expectedSyn1));
+	//CPPUNIT_ASSERT(res->isSynPresent(expectedSyn2));
 	//// HOW TO CHECK THE PAIR RESULTS
 	//// 1. make unordered set of the syns you want to check
 	//// 2. select them as resultstable and see size
 	//unordered_set<string> synList = unordered_set<string>();
 	//synList.insert(expectedSyn1);
 	//synList.insert(expectedSyn2);
-	//Results::ResultsTable multiSynResults = res->selectMultiSyn(synList);
+	//Results::ResultsTable multiSynResults = res->getMultiSyn(synList);
 	//CPPUNIT_ASSERT(multiSynResults.size() == expectedSize);
 
 	//cout << "print the thing" << endl;
