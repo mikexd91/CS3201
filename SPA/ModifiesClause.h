@@ -1,8 +1,8 @@
 #pragma once
+#include "SuchThatClause.h"
 
-#include "Clause.h"
-
-class ModifiesClause : public Clause {
+class ModifiesClause 
+	: public SuchThatClause {
 
 public :
 	ModifiesClause(void);

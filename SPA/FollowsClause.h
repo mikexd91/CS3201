@@ -1,9 +1,10 @@
 #pragma once
-#include "Clause.h"
+#include "SuchThatClause.h"
 #include "TNode.h"
 
-class FollowsClause : public Clause
-{
+class FollowsClause 
+	: public SuchThatClause {
+
 public:
 	FollowsClause(void);
 	~FollowsClause(void);

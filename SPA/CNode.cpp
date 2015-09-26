@@ -6,7 +6,7 @@ CNode::CNode(CType type) {
 	this->nodeType = type;
 	this->startStmt = 0;
 	this->endStmt = 0;
-	this->nodeName = NULL;
+	this->nodeName = "";
 }
 
 CNode::~CNode() {
@@ -42,7 +42,7 @@ void CNode::setNodeType(CType nodeType) {
 }
 
 void CNode::setName(string name) {
-	this->nodeName = string;
+	this->nodeName = name;
 }
 
 void CNode::setStartStmt(int start) {

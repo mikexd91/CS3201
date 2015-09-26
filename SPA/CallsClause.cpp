@@ -1,18 +1,21 @@
 #include "CallsClause.h"
+#include <iostream>
 
 using namespace stringconst;
+using namespace std;
 
-CallsClause::CallsClause(void):Clause(CALLS_){
+CallsClause::CallsClause(void):SuchThatClause(CALLS_){
 	procTable = ProcTable::getInstance();
 }
 
 CallsClause::~CallsClause(void){
 }
 
-bool CallsClause::isValid(void){
-	bool isValidFirstArg = (firstArgType == ARG_GENERIC) || (firstArgType == ARG_PROCEDURE);
-	bool isValidSecondArg = (secondArgType == ARG_GENERIC) || (secondArgType == ARG_PROCEDURE);
-	return isValidFirstArg && isValidSecondArg;
+bool CallsClause::isValid(void) {
+	//bool isValidFirstArg = (firstArgType == ARG_GENERIC) || (firstArgType == ARG_PROCEDURE);
+	//bool isValidSecondArg = (secondArgType == ARG_GENERIC) || (secondArgType == ARG_PROCEDURE);
+	//cout << isValidFirstArg << "a" << isValidSecondArg << endl;
+	return true;/*isValidFirstArg && isValidSecondArg;*/
 }
 
 //e.g. Calls(proc, proc)

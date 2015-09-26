@@ -19,6 +19,7 @@ using namespace std;
 Parser::Parser() {
 	nestingLevel = 0;
 	parsedDataReceiver = PDR::getInstance();
+	cfgBuilder = CFGBuilder::getInstance();
 	stmtCount = 0;
 }
 
@@ -97,6 +98,7 @@ void Parser::procedure() {
 	ParsedData procedure = ParsedData(ParsedData::PROCEDURE, this->nestingLevel);
 	procedure.setProcName(procName);
 	parsedDataReceiver->processParsedData(procedure);
+	cfgBuilder->processParsedData(procedure);
 	existingProcedures.push_back(procName);
 	match("{");
 	stmtLst();
@@ -135,6 +137,7 @@ void Parser::assign() {
 	assignment.setAssignVar(var);
 	assignment.setAssignExpression(getExpression());
 	parsedDataReceiver->processParsedData(assignment);
+	cfgBuilder->processParsedData(assignment);
 }
 
 /**
@@ -174,6 +177,7 @@ void Parser::call() {
 	ParsedData callStmt = ParsedData(ParsedData::CALL, this->nestingLevel);
 	callStmt.setProcName(procName);
 	parsedDataReceiver->processParsedData(callStmt);
+	cfgBuilder->processParsedData(callStmt);
 	calledProcedures.push_back(procName);
 	match(";");
 }
@@ -184,6 +188,7 @@ void Parser::parseWhile() {
 	ParsedData whileStmt = ParsedData(ParsedData::WHILE, nestingLevel);
 	whileStmt.setWhileVar(conditionVar);
 	parsedDataReceiver->processParsedData(whileStmt);
+	cfgBuilder->processParsedData(whileStmt);
 	match("{");
 	stmtLst();
 	match("}");
@@ -201,6 +206,7 @@ void Parser::parseIf(){
 	ParsedData ifStmt = ParsedData(ParsedData::IF, nestingLevel);
 	ifStmt.setIfVar(conditionVar);
 	parsedDataReceiver->processParsedData(ifStmt);
+	cfgBuilder->processParsedData(ifStmt);
 }
 
 void Parser::parseThen(){
@@ -214,6 +220,7 @@ void Parser::parseElse() {
 	match ("else");
 	ParsedData elseStmt = ParsedData(ParsedData::ELSE, nestingLevel);
 	parsedDataReceiver->processParsedData(elseStmt);
+	cfgBuilder->processParsedData(elseStmt);
 	match ("{");
 	stmtLst();
 	match("}");
@@ -232,6 +239,7 @@ void Parser::validateCallStmts() {
 void Parser::endParse() {
 	ParsedData endData = ParsedData(ParsedData::END, nestingLevel);
 	parsedDataReceiver->processParsedData(endData);
+	cfgBuilder->processParsedData(endData);
 }
 
 void Parser::throwException(int lineNumber) {

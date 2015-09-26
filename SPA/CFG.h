@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "CNode.h"
 
 class CFG {
 
@@ -14,6 +15,12 @@ public:
 	static CFG* getInstance();
 
 	void addProcedure(CNode*);
+	vector<CNode*> getAllProcedures();
+	CNode* getProcedure(string);
+	bool hasProcedure(string);
+
+	//clear
+	static void reset();
 	
 private:
 	CFG();
@@ -21,5 +28,6 @@ private:
 	static bool hasInstance;
 	static CFG* instance;
 
+	vector<CNode*> procedures;
 
 };

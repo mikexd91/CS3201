@@ -1,7 +1,7 @@
 #include "ProcCNode.h"
 
 ProcCNode::ProcCNode(const string& name)
-	: CNode(PROCEDURE_) {
+	: CNode(PROC_) {
 	this->nodeName = name;
 }
 

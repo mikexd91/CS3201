@@ -6,8 +6,8 @@
 using namespace std;
 
 enum CType {
-	PROGRAM_, PROCEDURE_, WHILE_, IF_,
-	ASSIGN_CALL_, DUMMY_
+	PROG_, PROC_, WHILE_, IF_,
+	ASSIGN_CALL_, DUMMY_, END_
 };
 
 class CNode {

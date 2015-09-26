@@ -1,10 +1,11 @@
 #pragma once
-
-#include "Clause.h"
+#include "SuchThatClause.h"
 #include "Statement.h"
 #include "Procedure.h"
 
-class UsesClause : public Clause{
+class UsesClause 
+	: public SuchThatClause {
+
 public:
 	UsesClause(void);
 	~UsesClause(void);
