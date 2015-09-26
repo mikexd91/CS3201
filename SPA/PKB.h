@@ -14,7 +14,7 @@ using boost::unordered_set;
 class PKB {
 
 public:
-	static PKB* getInstance();												// get instance of PKB
+	static const PKB& getInstance();												// get instance of PKB
 
 	/*----- USES -----*/
 	bool isStmtUsingVar(int, string);										// evaluates whether stmt uses variable
@@ -117,5 +117,13 @@ public:
 
 
 	/*----- FOLLOWSSTAR -----*/
+
+
+private:
+	// SINGLETON
+	static bool instanceFlag;
+
+	// SINGLETON CONSTRUCTOR
+	PKB();
 
 };

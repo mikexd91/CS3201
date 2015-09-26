@@ -45,6 +45,7 @@
     <ClCompile Include="PatternIfClause.cpp" />
     <ClCompile Include="PatternWhileClause.cpp" />
     <ClCompile Include="PDR.cpp" />
+    <ClCompile Include="PKB.cpp" />
     <ClCompile Include="Procedure.cpp" />
     <ClCompile Include="ProcNode.cpp" />
     <ClCompile Include="ProcTable.cpp" />
