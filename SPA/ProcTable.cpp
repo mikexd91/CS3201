@@ -1,5 +1,3 @@
-#pragma once
-
 #include <set>
 #include "boost/unordered_map.hpp"
 #include "boost/foreach.hpp"

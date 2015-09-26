@@ -118,4 +118,13 @@ public:
 
 	/*----- FOLLOWSSTAR -----*/
 
+
+private:
+	// SINGLETON
+	static bool instanceFlag;
+	static PKB* pkbInstance;
+
+	// SINGLETON CONSTRUCTOR
+	PKB();
+
 };
