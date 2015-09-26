@@ -49,6 +49,7 @@
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="PatternAssgClause.cpp" />
     <ClCompile Include="PatternClause.cpp" />
+    <ClCompile Include="PatternClauseBuilder.cpp" />
     <ClCompile Include="PatternIfClause.cpp" />
     <ClCompile Include="PatternWhileClause.cpp" />
     <ClCompile Include="PDR.cpp" />
@@ -67,6 +68,8 @@
     <ClCompile Include="StmtNode.cpp" />
     <ClCompile Include="StmtTable.cpp" />
     <ClCompile Include="StringPair.cpp" />
+    <ClCompile Include="SuchThatClause.cpp" />
+    <ClCompile Include="SuchThatClauseBuilder.cpp" />
     <ClCompile Include="TNode.cpp" />
     <ClCompile Include="UsesClause.cpp" />
     <ClCompile Include="Utils.cpp" />
@@ -76,6 +79,7 @@
     <ClCompile Include="WhileCNode.cpp" />
     <ClCompile Include="WhileNode.cpp" />
     <ClCompile Include="WithClause.cpp" />
+    <ClCompile Include="WithClauseRef.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssgCallCNode.h" />
@@ -109,9 +113,11 @@
     <ClInclude Include="Parser.h" />
     <ClInclude Include="PatternAssgClause.h" />
     <ClInclude Include="PatternClause.h" />
+    <ClInclude Include="PatternClauseBuilder.h" />
     <ClInclude Include="PatternIfClause.h" />
     <ClInclude Include="PatternWhileClause.h" />
     <ClInclude Include="PDR.h" />
+    <ClInclude Include="PKB.h" />
     <ClInclude Include="PQLController.h" />
     <ClInclude Include="PQLExceptions.h" />
     <ClInclude Include="ProcCNode.h" />
@@ -128,6 +134,8 @@
     <ClInclude Include="StmtNode.h" />
     <ClInclude Include="StmtTable.h" />
     <ClInclude Include="StringPair.h" />
+    <ClInclude Include="SuchThatClause.h" />
+    <ClInclude Include="SuchThatClauseBuilder.h" />
     <ClInclude Include="TNode.h" />
     <ClInclude Include="UsesClause.h" />
     <ClInclude Include="Utils.h" />
@@ -137,6 +145,7 @@
     <ClInclude Include="WhileCNode.h" />
     <ClInclude Include="WhileNode.h" />
     <ClInclude Include="WithClause.h" />
+    <ClInclude Include="WithClauseRef.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>
