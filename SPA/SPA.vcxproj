@@ -23,7 +23,6 @@
     <ClCompile Include="AST.cpp" />
     <ClCompile Include="CallNode.cpp" />
     <ClCompile Include="CallsClause.cpp" />
-    <ClCompile Include="CallsStarClause.cpp" />
     <ClCompile Include="Clause.cpp" />
     <ClCompile Include="Constant.cpp" />
     <ClCompile Include="ConstNode.cpp" />
@@ -75,7 +74,6 @@
     <ClInclude Include="AST.h" />
     <ClInclude Include="CallNode.h" />
     <ClInclude Include="CallsClause.h" />
-    <ClInclude Include="CallsStarClause.h" />
     <ClInclude Include="Clause.h" />
     <ClInclude Include="Constant.h" />
     <ClInclude Include="ConstNode.h" />

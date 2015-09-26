@@ -1,0 +1,20 @@
+1 - USES: p.procName (has results)
+procedure p;
+Select p.procName such that Uses(p, "battle1")
+pokemon
+5000
+2 - USES: p.procName (no results)
+procedure p;
+Select p.procName such that Uses(p, "a")
+none
+5000
+3 - USES: a.stmt# (has results)
+assign a;
+Select a such that Uses(a, "charmeleon") and a.stmt# = 12
+12
+5000
+4 - USES: a.stmt# (no results)
+assign a;
+Select a such that Uses(a, "charmeleon") and a.stmt# = 12 and s.stmt# = 11
+none
+5000
