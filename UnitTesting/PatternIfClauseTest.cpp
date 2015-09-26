@@ -12,8 +12,10 @@
 
 #include <iostream>
 #include <string>
+#include "../SPA/PatternClauseBuilder.h"
 
 using namespace std;
+using namespace stringconst;
 
 void PatternIfClauseTest::setUp() {
 	/* testing this source
@@ -79,9 +81,17 @@ CPPUNIT_TEST_SUITE_REGISTRATION( PatternIfClauseTest );
 void PatternIfClauseTest::evaluateVarWild() {
 	//cout << "varwild";
 	string syn1 = "if";
-	PatternIfClause* p1 = new PatternIfClause(syn1, "_", "_", "_");
+	/*PatternIfClause* p1 = new PatternIfClause(syn1, "_", "_", "_");
 	p1->setVarFixed(false);
-	p1->setVarType(stringconst::ARG_GENERIC);
+	p1->setVarType(stringconst::ARG_GENERIC);*/
+	PatternClauseBuilder* ifBuilder = new PatternClauseBuilder(PATTERNIF_);
+	ifBuilder->setSynonym(syn1);
+	ifBuilder->setVar("_");
+	ifBuilder->setVarType(ARG_GENERIC);
+	ifBuilder->setVarFixed(false);
+	ifBuilder->setExpr(1, "_");
+	ifBuilder->setExpr(2, "_");
+	PatternAssgClause* p1 = (PatternAssgClause*) ifBuilder->build();
 	
 	CPPUNIT_ASSERT(p1->isValid());
 	Results *r1 = new Results();
@@ -114,9 +124,17 @@ void PatternIfClauseTest::evaluateVarFixed() {
 	//cout << "varfixed";
 	// pass pattern if("x", "_", "_");
 	string syn1 = "if";
-	PatternIfClause* p1 = new PatternIfClause(syn1, "x", "_", "_");
+	/*PatternIfClause* p1 = new PatternIfClause(syn1, "x", "_", "_");
 	p1->setVarFixed(true);
-	p1->setVarType(stringconst::ARG_VARIABLE);
+	p1->setVarType(stringconst::ARG_VARIABLE);*/
+	PatternClauseBuilder* ifBuilder = new PatternClauseBuilder(PATTERNIF_);
+	ifBuilder->setSynonym(syn1);
+	ifBuilder->setVar("x");
+	ifBuilder->setVarType(ARG_VARIABLE);
+	ifBuilder->setVarFixed(true);
+	ifBuilder->setExpr(1, "_");
+	ifBuilder->setExpr(2, "_");
+	PatternAssgClause* p1 = (PatternAssgClause*) ifBuilder->build();
 
 	CPPUNIT_ASSERT(p1->isValid());
 	Results *r1 = new Results();
@@ -128,9 +146,17 @@ void PatternIfClauseTest::evaluateVarFixed() {
 
 
 	// var fail, not the control var
-	PatternIfClause* p2 = new PatternIfClause(syn1, "y", "_", "_");
+	/*PatternIfClause* p2 = new PatternIfClause(syn1, "y", "_", "_");
 	p2->setVarType(stringconst::ARG_VARIABLE);
-	p2->setVarFixed(true);
+	p2->setVarFixed(true);*/
+	PatternClauseBuilder* ifBuilder2 = new PatternClauseBuilder(PATTERNIF_);
+	ifBuilder2->setSynonym(syn1);
+	ifBuilder2->setVar("y");
+	ifBuilder2->setVarType(ARG_VARIABLE);
+	ifBuilder2->setVarFixed(true);
+	ifBuilder2->setExpr(1, "_");
+	ifBuilder2->setExpr(2, "_");
+	PatternAssgClause* p2 = (PatternAssgClause*) ifBuilder2->build();
 	CPPUNIT_ASSERT(p2->isValid());
 
 	Results* resFail = new Results();
@@ -174,9 +200,17 @@ void PatternIfClauseTest::evaluateVarSyn() {
 	// pass pattern if(x, "_", "_");
 	string syn1 = "if";
 	string syn2 = "x";
-	PatternIfClause* p1 = new PatternIfClause(syn1, syn2, "_", "_");
+	/*PatternIfClause* p1 = new PatternIfClause(syn1, syn2, "_", "_");
 	p1->setVarFixed(false);
-	p1->setVarType(stringconst::ARG_VARIABLE);
+	p1->setVarType(stringconst::ARG_VARIABLE);*/
+	PatternClauseBuilder* ifBuilder = new PatternClauseBuilder(PATTERNIF_);
+	ifBuilder->setSynonym(syn1);
+	ifBuilder->setVar(syn2);
+	ifBuilder->setVarType(ARG_VARIABLE);
+	ifBuilder->setVarFixed(false);
+	ifBuilder->setExpr(1, "_");
+	ifBuilder->setExpr(2, "_");
+	PatternAssgClause* p1 = (PatternAssgClause*) ifBuilder->build();
 
 	CPPUNIT_ASSERT(p1->isValid());
 	Results *r1 = new Results();

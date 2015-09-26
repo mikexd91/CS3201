@@ -14,6 +14,8 @@
 #include "../SPA/PatternClause.h"
 #include "../SPA/UsesClause.h"
 #include "../SPA/PatternAssgClause.h"
+#include "../SPA/PatternWhileClause.h"
+#include "../SPA/PatternIfClause.h"
 #include "boost/unordered_map.hpp"
 #include <queue>
 #include <string>
@@ -40,8 +42,7 @@ void QueryParserTest::tearDown(){
 CPPUNIT_TEST_SUITE_REGISTRATION( QueryParserTest);
 
 void QueryParserTest::testTokeniser(){
-	// passes
-	/*string testString = "this is  the   string     to be   split";
+	string testString = "  this is  the   string     to be   split";
 	vector<string> testResult = QueryParser::tokeniser(testString, ' ');
 	CPPUNIT_ASSERT("this" == testResult.at(0));
 	CPPUNIT_ASSERT("is" == testResult.at(1));
@@ -49,183 +50,240 @@ void QueryParserTest::testTokeniser(){
 	CPPUNIT_ASSERT("string" == testResult.at(3));
 	CPPUNIT_ASSERT("to" == testResult.at(4));
 	CPPUNIT_ASSERT("be" == testResult.at(5));
-	CPPUNIT_ASSERT("split" == testResult.at(6));*/
+	CPPUNIT_ASSERT("split" == testResult.at(6));
+	//string test = "assign a, a1; Select my balls";
+	//vector<string> result = QueryParser::tokeniser(test, ';');
+	//CPPUNIT_ASSERT(result.at(0) == "assign a, a1");
+	//CPPUNIT_ASSERT(result.at(1) == " Select my balls");
 }
 
 void QueryParserTest::testQueueBuilder(){
-	// passes
-	/*string testString = "Select a such that wtf(a,b)";
+	string testString = "Select a such that pattern a(_  , _) and a1(_,_)";
 	queue<string> testQueue = QueryParser::queueBuilder(testString);
 	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "Select");
 	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "a");
 	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "such");
 	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "that");
-	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "wtf");
-	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "(");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "pattern");
 	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "a");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "(");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "_");
 	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == ",");
-	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "b");
-	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == ")");*/
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "_");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == ")");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "and");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "a1");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "(");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "_");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == ",");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == "_");
+	CPPUNIT_ASSERT(Utils::getWordAndPop(testQueue) == ")");
 }
 
 void QueryParserTest::testDeclaration(){
-	cout << "testdec";;
-	// passes
-	/*Query* result2 = new Query();
-	string const USER_INPUT2 = "constant c; prog_line p";
+	
+	Query* result2 = new Query();
+	string const USER_INPUT2 = "constant c; prog_line p; assign a, a1;";
 	
 	vector<string> testList2 = QueryParser::tokeniser(USER_INPUT2, ';');
 	QueryParser::parseDeclarations(result2, testList2);
 
 	boost::unordered_map<string, string> decList2 = result2->getDeclarationList();
 	CPPUNIT_ASSERT(decList2.at("c") == stringconst::ARG_CONSTANT);
-	CPPUNIT_ASSERT(decList2.at("p") == stringconst::ARG_STATEMENT);*/
-
+	CPPUNIT_ASSERT(decList2.at("p") == stringconst::ARG_STATEMENT);
+	CPPUNIT_ASSERT(decList2.at("a") == stringconst::ARG_ASSIGN);
+	CPPUNIT_ASSERT(decList2.at("a1") == stringconst::ARG_ASSIGN);
 }
 
 void QueryParserTest::testSelect(){
-	cout << "test select";
-	// passes
-	/*Query* result = new Query();
-	string const USER_INPUT1 = "prog_line a;";
+	Query* result = new Query();
+	string const USER_INPUT1 = "prog_line a, a1;";
 	vector<string> testList = QueryParser::tokeniser(USER_INPUT1, ';');
 	QueryParser::parseDeclarations(result, testList);
 	unordered_map<string, string> decs = result->getDeclarationList();
 	CPPUNIT_ASSERT(decs.at("a") == stringconst::ARG_STATEMENT);
 
-	string const USER_INPUT2 = "Select a";
+	//string const USER_INPUT2 = "Select BOOLEAN";
+	string const USER_INPUT2 = "Select <a, a1>";
+	//string const USER_INPUT2 = "Select a";
+	//string const USER_INPUT2 = "Select a.dongers";
 	queue<string> line = QueryParser::queueBuilder(USER_INPUT2);
-
+	/*
+	while (!line.empty()){
+		string asd = Utils::getWordAndPop(line);
+		cout << asd << "\n";
+	}
+	*/
 	QueryParser::parseSelectSynonyms(result, line);
+	vector<StringPair> asd = result->getSelectList();
+	
+	//test bool
+	//StringPair boolpair = asd.at(0);
+	//CPPUNIT_ASSERT(boolpair.getFirst() == "BOOLEAN");
+	//CPPUNIT_ASSERT(boolpair.getSecond() == stringconst::ARG_BOOLEAN);
+	
+	//test tuple
+	StringPair tuplepair1 = asd.at(0);
+	StringPair tuplepair2 = asd.at(1);
+	CPPUNIT_ASSERT(tuplepair1.getFirst() == "a");
+	CPPUNIT_ASSERT(tuplepair1.getSecond() == stringconst::ARG_STATEMENT);
+	CPPUNIT_ASSERT(tuplepair2.getFirst() == "a1");
+	CPPUNIT_ASSERT(tuplepair2.getSecond() == stringconst::ARG_STATEMENT);
 
-	unordered_map<string, string> decList = result->getDeclarationList();
-	CPPUNIT_ASSERT(decs.at("a") == decList.at("a"));
+	//test single
+	//StringPair single = asd.at(0);
+	//CPPUNIT_ASSERT(single.getFirst() == "a");
+	//CPPUNIT_ASSERT(single.getSecond() == stringconst::ARG_STATEMENT);
 
-	string first = Utils::getWordAndPop(line);
-	CPPUNIT_ASSERT(first == stringconst::STRING_SELECT);*/
+	//test attr
+	//StringPair single = asd.at(0);
+	//CPPUNIT_ASSERT(single.getFirst() == "a");
+	//CPPUNIT_ASSERT(single.getSecond() == stringconst::ARG_STATEMENT);
+	//CPPUNIT_ASSERT(single.getAttribute() == "dongers");
 }
 
 void QueryParserTest::testClause(){
-	cout << "testclause" ;
-	// unable to find key in unordered map
 	Query* ASSERTION = new Query();
-	string const DEC_LINE = "assign a;";
+	string const DEC_LINE = "assign a, a1;";
 	string const SEL_LINE = "Select a";
-	string const CLS_LINE = "Follows(a, _)";
-
+	string const CLS_LINE = "Follows(\"a\", \"a1\")";
+	
 	vector<string> DEC_LIST = QueryParser::tokeniser(DEC_LINE, ';');
 	QueryParser::parseDeclarations(ASSERTION, DEC_LIST);
 	boost::unordered_map<string, string> declist = ASSERTION->getDeclarationList();
 	CPPUNIT_ASSERT(declist.at("a") == stringconst::ARG_ASSIGN);
-
+	
 	queue<string> SEL_Q = QueryParser::queueBuilder(SEL_LINE);
 	QueryParser::parseSelectSynonyms(ASSERTION, SEL_Q);
-
+	
 	queue<string> CLS_Q = QueryParser::queueBuilder(CLS_LINE);
 	QueryParser::parseClause(ASSERTION, CLS_Q);
-
+	
 	unordered_map<string, string> dec = ASSERTION->getDeclarationList();
 	vector<StringPair> sel = ASSERTION->getSelectList();
 	vector<Clause*> cls = ASSERTION->getClauseList();
-
+	
 	CPPUNIT_ASSERT(dec.at("a") == stringconst::ARG_ASSIGN);
-	//CPPUNIT_ASSERT(dec.at("v") == stringconst::ARG_VARIABLE);
-	//CPPUNIT_ASSERT(sel.at(0).getFirst() == "a");
-	//CPPUNIT_ASSERT(sel.at(0).getSecond() == stringconst::ARG_ASSIGN);
+	//CPPUNIT_ASSERT(dec.at("a") == stringconst::ARG_VARIABLE);
+	CPPUNIT_ASSERT(sel.at(0).getFirst() == "a");
+	CPPUNIT_ASSERT(sel.at(0).getSecond() == stringconst::ARG_ASSIGN);
+	
+	Clause* TEST = cls.at(0);
+	//cout << TEST->getFirstArg();
+	//cout << TEST->getSecondArg();
+	/*
+	bool FIRST_FIXED = TEST->getFirstArgFixed();
+	CPPUNIT_ASSERT(FIRST_FIXED);
+	CPPUNIT_ASSERT(TEST->getFirstArg() == "a");
+	CPPUNIT_ASSERT(TEST->getFirstArgType() == stringconst::ARG_ASSIGN);
+	bool SECOND_FIXED = TEST->getSecondArgFixed();
+	CPPUNIT_ASSERT(!SECOND_FIXED);
+	CPPUNIT_ASSERT(TEST->getSecondArg() == "_");
+	CPPUNIT_ASSERT(TEST->getSecondArgType() == stringconst::ARG_GENERIC);
+	*/
+}
 
-	//Clause* TEST = cls.at(0);
-	//bool FIRST_FIXED = TEST->getFirstArgFixed();
-	//CPPUNIT_ASSERT(!FIRST_FIXED);
-	//CPPUNIT_ASSERT(TEST->getFirstArg() == "a");
-	//CPPUNIT_ASSERT(TEST->getFirstArgType() == stringconst::ARG_ASSIGN);
-	//bool SECOND_FIXED = TEST->getSecondArgFixed();
-	//CPPUNIT_ASSERT(!SECOND_FIXED);
-	//CPPUNIT_ASSERT(TEST->getSecondArg() == "_");
-	//CPPUNIT_ASSERT(TEST->getSecondArgType() == stringconst::ARG_GENERIC);
+void QueryParserTest::testPatternAssign(){
+	string const DECLARATION = "assign a;";
+	string const SELECT = "Select a such that";
+	string const PATTERN = "a(\"x\", \"x + y \")";
+
+	Query* ASSERTION = new Query();
+
+	vector<string> DEC_LIST = QueryParser::tokeniser(DECLARATION, ';');
+	QueryParser::parseDeclarations(ASSERTION, DEC_LIST);
+
+	queue<string> SEL_Q = QueryParser::queueBuilder(SELECT);
+	QueryParser::parseSelectSynonyms(ASSERTION, SEL_Q);
+
+	queue<string> PAT_Q = QueryParser::queueBuilder(PATTERN);
+	QueryParser::parsePattern(ASSERTION, PAT_Q);
+	
+	Clause* c = ASSERTION->getClauseList().at(0);
+	PatternAssgClause* PATTERN_ASS = dynamic_cast<PatternAssgClause*>(c);
+	string EXPR = PATTERN_ASS->getExpression();
+	/*cout << EXPR << "\n";
+	cout << PATTERN_ASS->getFirstArg() << "\n";
+	cout << PATTERN_ASS->getSecondArg() << "\n";*/
+	//CPPUNIT_ASSERT(EXPR == stringconst::STRING_EMPTY);
+	//fix pattern parsing other expressions.
+	string token = "a(_, _\"";
+	queue<string> q = QueryParser::queueBuilder(token);
+	string one = Utils::getWordAndPop(q);
+	string two = Utils::getWordAndPop(q);
 	
 }
 
-void QueryParserTest::testPattern(){
-	cout << "test pattern";
-	// pattern error
-	//string const DECLARATION = "assign a;";
-	//string const SELECT = "Select a such that";
-	//string const PATTERN = "pattern a(\"v\", _)";
+void QueryParserTest::testPatternIf(){
+	string const DECLARATION = "if i;";
+	string const SELECT = "Select i such that";
+	string const PATTERN = "i (\"x\", _,_)";
 
-	//Query* ASSERTION = new Query();
+	Query* ASSERTION = new Query();
+	
+	vector<string> DEC_LIST = QueryParser::tokeniser(DECLARATION, ';');
+	QueryParser::parseDeclarations(ASSERTION, DEC_LIST);
 
-	//vector<string> DEC_LIST = QueryParser::tokeniser(DECLARATION, ';');
-	//QueryParser::parseDeclarations(ASSERTION, DEC_LIST);
+	queue<string> SEL_Q = QueryParser::queueBuilder(SELECT);
+	QueryParser::parseSelectSynonyms(ASSERTION, SEL_Q);
 
-	//queue<string> SEL_Q = QueryParser::queueBuilder(SELECT);
-	//QueryParser::parseSelectSynonyms(ASSERTION, SEL_Q);
+	queue<string> PAT_Q = QueryParser::queueBuilder(PATTERN);
+	QueryParser::parsePattern(ASSERTION, PAT_Q);
 
-	//queue<string> PAT_Q = QueryParser::queueBuilder(PATTERN);
-	//QueryParser::parsePattern(ASSERTION, PAT_Q);
-	//
-	//Clause* c = ASSERTION->getClauseList().at(0);
-	//PatternAssgClause* PATTERN_ASS = dynamic_cast<PatternAssgClause*>(c);
-	//string EXPR = PATTERN_ASS->getExpression();
-	//CPPUNIT_ASSERT(EXPR == stringconst::STRING_EMPTY);
-	////fix pattern parsing other expressions.
-	//string token = "a(v, _\"";
-	//queue<string> q = QueryParser::queueBuilder(token);
-	//string one = Utils::getWordAndPop(q);
-	//string two = Utils::getWordAndPop(q);
-	//CPPUNIT_ASSERT(! (!contains(two, "_") || !contains(two, "\"")));
+	Clause* c = ASSERTION->getClauseList().at(0);
+	PatternIfClause* PATTERN_IF = dynamic_cast<PatternIfClause*>(c);
+	CPPUNIT_ASSERT(PATTERN_IF->getFirstArg() == "i");
+	CPPUNIT_ASSERT(PATTERN_IF->getSecondArg() == "x");
+	CPPUNIT_ASSERT(PATTERN_IF->getSecondArgFixed() == true);
+	CPPUNIT_ASSERT(PATTERN_IF->getThenList() == stringconst::STRING_EMPTY);
+	CPPUNIT_ASSERT(PATTERN_IF->getElseList() == stringconst::STRING_EMPTY);
+}
+
+void QueryParserTest::testPatternWhile(){
+	string const DECLARATION = "while w;";
+	string const SELECT = "Select w such that";
+	string const PATTERN = "w (\"x\", _)";
+
+	Query* ASSERTION = new Query();
+	
+	vector<string> DEC_LIST = QueryParser::tokeniser(DECLARATION, ';');
+	QueryParser::parseDeclarations(ASSERTION, DEC_LIST);
+
+	queue<string> SEL_Q = QueryParser::queueBuilder(SELECT);
+	QueryParser::parseSelectSynonyms(ASSERTION, SEL_Q);
+
+	queue<string> PAT_Q = QueryParser::queueBuilder(PATTERN);
+	QueryParser::parsePattern(ASSERTION, PAT_Q);
+
+	Clause* c = ASSERTION->getClauseList().at(0);
+	PatternWhileClause* PATTERN_W = dynamic_cast<PatternWhileClause*>(c);
+	CPPUNIT_ASSERT(PATTERN_W->getFirstArg() == "w");
+	CPPUNIT_ASSERT(PATTERN_W->getSecondArg() == "x");
+	CPPUNIT_ASSERT(PATTERN_W->getSecondArgFixed() == true);
+	CPPUNIT_ASSERT(PATTERN_W->getStmtList() == stringconst::STRING_EMPTY);
 }
 
 void QueryParserTest::testParser(){
-	cout << "test parser";
 	//string const USER_INPUT1 = "assign a; variable v; Select a pattern a(\"v\", _\"x+y\"_) and Modifies(a, v) and pattern a(v, _)";
-	string const USER_INPUT1 = "prog_line p; variable v; Select p such that Uses(p, v)";
-	Query q1 = QueryParser::parseQuery(USER_INPUT1);
+	string const USER_INPUT1 = "assign a, a1; Select a such that pattern a(_, _) and a1(_, _)";
+	
+	Query output = QueryParser::parseQuery(USER_INPUT1);
+	unordered_map<string, string> decList = output.getDeclarationList();
+	CPPUNIT_ASSERT(decList.at("a") == stringconst::ARG_ASSIGN);
+	CPPUNIT_ASSERT(decList.at("a1") == stringconst::ARG_ASSIGN);
 
-	Query* Q1 = new Query();
-	StringPair dec1a = StringPair();
-	StringPair dec1b = StringPair();
-	StringPair syn1a = StringPair();
-	syn1a.setFirst("p"); syn1a.setSecond(stringconst::ARG_STATEMENT);
-	dec1a.setFirst("p"); dec1a.setSecond(stringconst::ARG_STATEMENT);
-	dec1b.setFirst("v"); dec1b.setSecond(stringconst::ARG_VARIABLE);
+	Clause* c1 = output.getClauseList().at(0);
+	Clause* c2 = output.getClauseList().at(1);
+	PatternAssgClause* a1 = dynamic_cast<PatternAssgClause*>(c1);
+	PatternAssgClause* a2 = dynamic_cast<PatternAssgClause*>(c2);
 
-	Q1->addSelectSynonym(syn1a);
-	Q1->addDeclaration(dec1a);
-	Q1->addDeclaration(dec1b);
+	CPPUNIT_ASSERT(a1->getFirstArg() == "a");
+	CPPUNIT_ASSERT(a1->getFirstArgType() == stringconst::ARG_ASSIGN);
+	CPPUNIT_ASSERT(a1->getSecondArg() == stringconst::STRING_EMPTY);
+	CPPUNIT_ASSERT(a1->getExpression() == stringconst::STRING_EMPTY);
 
-	unordered_map<string, string> dec_Q1 = Q1->getDeclarationList();
-	unordered_map<string, string> dec_q1 = q1.getDeclarationList();
-	vector<StringPair> sel_Q1 = Q1->getSelectList();
-	vector<StringPair> sel_q1 = q1.getSelectList();
-
-	string q1_dec_a = dec_q1.at("p");
-	string Q1_dec_a = dec_Q1.at("p");
-	string q1_dec_b = dec_q1.at("v");
-	string Q1_dec_b = dec_Q1.at("v");
-	StringPair q1_sel_a = sel_q1.at(0);
-	StringPair Q1_sel_a = sel_Q1.at(0);
-
-	CPPUNIT_ASSERT(q1_dec_a == Q1_dec_a);
-	CPPUNIT_ASSERT(q1_dec_b == Q1_dec_b);
-	CPPUNIT_ASSERT(q1_sel_a.getFirst() == Q1_sel_a.getFirst());
-	CPPUNIT_ASSERT(q1_sel_a.getSecond() == Q1_sel_a.getSecond());
-
-	vector<Clause*> cls_q1 = q1.getClauseList();
-
-	UsesClause* use1_q1 = dynamic_cast<UsesClause*>(cls_q1.at(0));
-	CPPUNIT_ASSERT(use1_q1->getFirstArg() == "p");
-	CPPUNIT_ASSERT(use1_q1->getFirstArgType() == stringconst::ARG_STATEMENT);
-	CPPUNIT_ASSERT(use1_q1->getSecondArg() == "v");
-
-	//PatternAssgClause* pac1_q1 = dynamic_cast<PatternAssgClause*>(cls_q1.at(0));
-	///*CPPUNIT_ASSERT(pac1_q1->getExpression() == "_\"x y +\"_");
-	//CPPUNIT_ASSERT(pac1_q1->getSynonym() == "a");*/
-
-	//ModifiesClause* mod1_q1 = dynamic_cast<ModifiesClause*>(cls_q1.at(1));
-	///*CPPUNIT_ASSERT(mod1_q1->getSecondArg() == "v");
-	//CPPUNIT_ASSERT(mod1_q1->getFirstArg() == "a");*/
-
-	//PatternAssgClause* pac2_q1 = dynamic_cast<PatternAssgClause*>(cls_q1.at(2));
-	///*CPPUNIT_ASSERT(pac2_q1->getExpression() == stringconst::STRING_EMPTY);
-	//CPPUNIT_ASSERT(pac2_q1->getSynonym() == "a");*/
+	CPPUNIT_ASSERT(a2->getFirstArg() == "a1");
+	CPPUNIT_ASSERT(a2->getFirstArgType() == stringconst::ARG_ASSIGN);
+	CPPUNIT_ASSERT(a2->getSecondArg() == stringconst::STRING_EMPTY);
+	CPPUNIT_ASSERT(a2->getExpression() == stringconst::STRING_EMPTY);
 }

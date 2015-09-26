@@ -15,7 +15,7 @@ using boost::lexical_cast;
 
 StmtTable* stmtTable = StmtTable::getInstance();
 
-FollowsClause::FollowsClause(void):Clause(FOLLOWS_){
+FollowsClause::FollowsClause(void):SuchThatClause(FOLLOWS_){
 }
 
 FollowsClause::~FollowsClause(void){

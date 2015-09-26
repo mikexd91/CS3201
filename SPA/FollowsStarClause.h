@@ -1,6 +1,9 @@
 #pragma once
-#include "Clause.h"
-class FollowsStarClause : public Clause{
+#include "SuchThatClause.h"
+
+class FollowsStarClause 
+	: public SuchThatClause {
+
 public:
 	FollowsStarClause(void);
 	~FollowsStarClause(void);

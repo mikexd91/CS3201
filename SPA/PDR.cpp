@@ -1,4 +1,5 @@
 #include "PDR.h"
+#include "DesignExtractor.h"
 
 using namespace std;
 
@@ -201,6 +202,7 @@ void PDR::processElseStmt(ParsedData data) {
 	if(data.getNestingLevel() < currNestingLevel) {
 		for(int i = 0; i < currNestingLevel - data.getNestingLevel() - 1; i++) {
 			stmtParentNumStack.pop();
+			nodeStack.pop();
 		}
 	}
 
@@ -569,6 +571,9 @@ void PDR::processEndProgram() {
 	ast->addProcNode(procNodeToBeLinked);
 
 	nodeStack.pop();
+
+	DesignExtractor pop = DesignExtractor();
+	pop.executeSecondPass();
 }
 
 bool PDR::isInteger(string exp) {

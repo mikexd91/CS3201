@@ -2,6 +2,7 @@
 #include "Query.h"
 #include "Clause.h"
 #include "StringPair.h"
+#include "SuchThatClauseBuilder.h"
 #include <queue>
 #include <string>
 #include <vector>
@@ -31,7 +32,7 @@ public:
 	static bool containsClauseType(string);
 	static bool containsKeyword(string);
 	static string getClauseString(string);
-	static Clause* createCorrectClause(string);
+	static SuchThatClauseBuilder* createCorrectClause(string);
 	static vector<string> splitByDelims(vector<string>, string);
 	static void unexpectedEndCheck(queue<string>);
 
@@ -39,6 +40,8 @@ public:
 	static void parseSelectSynonyms(Query*, queue<string>);
 	static void parseClause(Query*, queue<string>);
 	static void parsePattern(Query*, queue<string>);
+	static void parsePatternOther(Query*, queue<string>, string);
+	static void parsePatternIf(Query*, queue<string>, string);
 
 	static Query parseQuery(string);
 };

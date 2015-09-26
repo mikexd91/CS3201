@@ -1,9 +1,9 @@
 #pragma once
-
-#include "Clause.h"
+#include "SuchThatClause.h"
 #include "ParentClause.h"
 
-class ParentStarClause : public ParentClause{
+class ParentStarClause 
+	: public SuchThatClause {
 public:
 	ParentStarClause(void);
 	~ParentStarClause(void);
