@@ -1,7 +1,7 @@
 
 #include <stack>
 #include <queue>
-#include <boost\unordered_set.hpp>
+#include <boost/unordered_set.hpp>
 
 #ifndef PDR_HEADER
 #define PDR_HEADER
@@ -28,6 +28,7 @@
 #include "AST.h"
 #include "Constant.h"
 #include "ConstTable.h"
+#include "DesignExtractor.h"
 
 using namespace std;
 using boost::unordered_set;

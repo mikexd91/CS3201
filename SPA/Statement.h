@@ -3,7 +3,7 @@
 #include <set>
 #include "TNode.h"
 //#include "GNode.h"
-#include <boost\unordered_set.hpp>
+#include <boost/unordered_set.hpp>
 
 using boost::unordered_set;
 
@@ -46,6 +46,8 @@ public:
 	typedef unordered_set<int> ChildrenStarSet;
 	typedef unordered_set<int> FollowsStarBeforeSet;
 	typedef unordered_set<int> FollowsStarAfterSet;
+	typedef unordered_set<int> PreviousSet;
+	typedef unordered_set<int> NextSet;
 
 	// CONSTRUCTOR
 	Statement();
@@ -65,11 +67,10 @@ public:
 	const ChildrenStarSet& getChildrenStar();							// get set of children star stmts of this stmt
 	const ParentStarSet& getParentStar();								// get set of parent star stmts of this stmt
 	int getParent();													// get parent of this stmt
-	int getNext();														// get stmt that is next of this stmt
-	int getPrev();														// get stmt whose next is this stmt
+	const NextSet& getNext();													// get stmt that is next of this stmt
+	const PreviousSet& getPrev();														// get stmt whose next is this stmt
 	const FollowsStarBeforeSet& Statement::getFollowsStarBefore();		// get set of follows star stmt before this stmt
 	const FollowsStarAfterSet& Statement::getFollowsStarAfter();		// get set of follows star stmt after this stmt
-
 
 	// SETTERS
 	void setType(NodeType nodeType);
@@ -83,8 +84,8 @@ public:
 	void setCalls(string calls);
 	void setChildren(const ChildrenSet &childrenSet);
 	void setParent(int parent);
-	void setNext(int next);
-	void setPrev(int prev);
+	void setNext(const NextSet &next);
+	void setPrev(const PreviousSet &prev);
 	void setParentStar(const ParentStarSet&);
 	void setChildrenStar(const ChildrenStarSet&);
 	void setFollowsStarBefore(const FollowsStarBeforeSet&);
@@ -105,8 +106,8 @@ private:
 	string			calls;
 	ChildrenSet		children;
 	int				parent;
-	int				next;
-	int				prev;
+	NextSet			next;
+	PreviousSet		prev;
 	ChildrenStarSet childrenStar;
 	ParentStarSet   parentStar;
 	FollowsStarBeforeSet followsStarBefore;
