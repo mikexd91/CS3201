@@ -14,6 +14,7 @@
 #include <boost/unordered_set.hpp>
 
 using boost::unordered_set;
+using namespace stringconst;
 
 class PKB {
 
@@ -31,14 +32,13 @@ public:
 
 	unordered_set<string> getVarsUsedByStmt(int);														// gets all variables used by stmt
 	unordered_set<string> getVarsUsedByProc(string);													// gets all variables used by proc
-	unordered_set<string> getStmtsUsingVar(string argType, string var);									// gets all stmts of argType using the variable				
-	unordered_set<string> getStmtsUsingVar(string);														// gets all stmts using the variable
+	unordered_set<string> getStmtsUsingVar(string var, string argType=ARG_STATEMENT);					// gets all stmts of argType using the variable				
 	unordered_set<string> getProcsUsingVar(string);														// gets all procs using the variable
 	unordered_set<string> getVarsBeingUsed();															// gets all variables used by anything
-	unordered_set<string> getStmtsUsingAny(string argType);												// gets all stmts of argType using anything
+	unordered_set<string> getStmtsUsingAny(string argType=ARG_STATEMENT);								// gets all stmts of argType using anything
 	unordered_set<string> getProcsUsingAny();															// gets all procs using anything
 
-	unordered_set<pair<string, string>> getAllStmtVarUsePairs(string argType);							// gets all stmt(of argType)-var use pairs
+	unordered_set<pair<string, string>> getAllStmtVarUsePairs(string argType=ARG_STATEMENT);			// gets all stmt(of argType)-var use pairs
 	unordered_set<pair<string, string>> getAllProcVarUsePairs();										// gets all proc-var use pairs
 
 
@@ -52,13 +52,13 @@ public:
 
 	unordered_set<string> getVarsModifiedByStmt(int);													// gets all variables modified by stmt
 	unordered_set<string> getVarsModifiedByProc(string);												// gets all variables modifiedby proc
-	unordered_set<string> getStmtsModifyingVar(string argType, string var);								// gets all stmts modifying the variable
+	unordered_set<string> getStmtsModifyingVar(string var, string argType=ARG_STATEMENT);				// gets all stmts modifying the variable
 	unordered_set<string> getProcsModifyingVar(string);													// gets all procs modifying the variable
 	unordered_set<string> getVarsBeingModified();														// gets all variables modifiedby anything
-	unordered_set<string> getStmtsModifyingAny(string argType);											// gets all stmts of argType modifying anything
+	unordered_set<string> getStmtsModifyingAny(string argType=ARG_STATEMENT);							// gets all stmts of argType modifying anything
 	unordered_set<string> getProcsModifyingAny();														// gets all procs modifying anything
 
-	unordered_set<pair<string, string>> getAllStmtVarModifyPairs(string argType);						// gets all stmt-var modify pairs
+	unordered_set<pair<string, string>> getAllStmtVarModifyPairs(string argType=ARG_STATEMENT);			// gets all stmt-var modify pairs
 	unordered_set<pair<string, string>> getAllProcVarModifyPairs();										// gets all proc-var modify pairs
 
 
@@ -70,8 +70,8 @@ public:
 
 	unordered_set<string> getChildStmts(int);															// gets all child stmts of this stmt
 	unordered_set<string> getParentStmt(int);															// get parent stmt of this stmt
-	unordered_set<string> getAllChildStmts(string argType);												// get all child stmts of argType
-	unordered_set<string> getAllParentStmts(string argType);											// get all parent stmts of argType
+	unordered_set<string> getAllChildStmts(string argType=ARG_STATEMENT);								// get all child stmts of argType
+	unordered_set<string> getAllParentStmts(string argType=ARG_STATEMENT);								// get all parent stmts of argType
 
 	unordered_set<pair<string, string>> getAllParentChildPairs(string parentType, string childType);	// gets all parent-child pairs of respective types
 
@@ -84,8 +84,8 @@ public:
 
 	unordered_set<string> getChildStarStmts(int);														// gets all child star stmts of this stmt
 	unordered_set<string> getParentStarStmt(int);														// get parent star stmt of this stmt
-	unordered_set<string> getAllChildStarStmts(string argType);											// get all child star stmts of argType
-	unordered_set<string> getAllParentStarStmts(string argType);										// get all parent star stmts of argType
+	unordered_set<string> getAllChildStarStmts(string argType=ARG_STATEMENT);							// get all child star stmts of argType
+	unordered_set<string> getAllParentStarStmts(string argType=ARG_STATEMENT);							// get all parent star stmts of argType
 
 	unordered_set<pair<string, string>> getAllParentChildStarPairs(string parentType, string childType);// gets all parent-child star pairs of respective types
 
@@ -94,6 +94,15 @@ public:
 
 
 	/*----- FOLLOWSSTAR -----*/
+
+
+	/*----- CALLS -----*/
+
+
+	/*----- CALLSSTAR -----*/
+
+
+
 
 
 private:
