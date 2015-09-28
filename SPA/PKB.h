@@ -6,7 +6,6 @@
 #include "Statement.h"
 #include "Variable.h"
 #include "Procedure.h"
-#include "PDR.h"
 #include "ParsedData.h"
 #include "Utils.h"
 
@@ -91,9 +90,31 @@ public:
 
 
 	/*----- FOLLOWS -----*/
+	bool isFollows(int, int);																			// evaluates whether s1 follows before s2
+	bool hasFollowsBefore(int);																			// evaluates whether statement follows after any statements
+	bool hasFollowsAfter(int);																			// evaluates whether statement follows before any statements
+	bool isFollowsExist();																				// evaluates whether any statement has statements following after
+
+	string getFollowsBefore(int stmt, string argType=ARG_STATEMENT);									// gets statement of argType that follows before the statement
+	string getFollowsAfter(int stmt, string argType=ARG_STATEMENT);										// gets statement of argType that follows after the statement
+	unordered_set<string> getAllFollowsBefore(string argType=ARG_STATEMENT);							// gets all statements of argType that has statements following after
+	unordered_set<string> getAllFollowsAfter(string argType=ARG_STATEMENT);								// gets all statements of argType that has statements following before
+
+	unordered_set<pair<string, string>> getAllFollowsPairs(string s1Type, string s2Type);				// gets all follows pairs of respective type
 
 
 	/*----- FOLLOWSSTAR -----*/
+	bool isFollowsStar(int, int);																		// evaluates whether s1 follows star before s2
+	bool hasFollowsStarBefore(int);																		// evaluates whether statement follows star after any statements
+	bool hasFollowsStarAfter(int);																		// evaluates whether statement follows star before any statements
+	bool isFollowsStarExist();																			// evaluates whether any statement has statements following star after
+
+	string getFollowsStarBefore(int stmt, string argType=ARG_STATEMENT);								// gets statement of argType that follows star before the statement
+	string getFollowsStarAfter(int stmt, string argType=ARG_STATEMENT);									// gets statement of argType that follows star after the statement
+	unordered_set<string> getAllFollowsStarBefore(string argType=ARG_STATEMENT);						// gets all statements of argType that has statements following star after
+	unordered_set<string> getAllFollowsStarAfter(string argType=ARG_STATEMENT);							// gets all statements of argType that has statements following star before
+
+	unordered_set<pair<string, string>> getAllFollowsStarPairs(string s1Type, string s2Type);			// gets all follows star pairs of respective type
 
 
 	/*----- CALLS -----*/
