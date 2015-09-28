@@ -69,7 +69,7 @@ public:
 	bool isParentExist();																				// evaluates whether a parent stmt exists
 
 	unordered_set<string> getChildStmts(int);															// gets all child stmts of this stmt
-	unordered_set<string> getParentStmt(int);															// get parent stmt of this stmt
+	string getParentStmt(int);															// get parent stmt of this stmt
 	unordered_set<string> getAllChildStmts(string argType=ARG_STATEMENT);								// get all child stmts of argType
 	unordered_set<string> getAllParentStmts(string argType=ARG_STATEMENT);								// get all parent stmts of argType
 
