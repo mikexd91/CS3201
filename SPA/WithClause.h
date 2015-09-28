@@ -25,9 +25,9 @@ public:
 	void setLeftRef(WithClauseRef);
 	void setRightRef(WithClauseRef);
 
-private:
 	bool evaluate(Result*);
 
+private:
 	ClauseType clauseType;
 	WithClauseRef leftRef;
 	WithClauseRef rightRef;

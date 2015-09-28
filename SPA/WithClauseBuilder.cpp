@@ -58,22 +58,6 @@ void WithClauseBuilder::setEntityType(int argNum, string type)
 	}
 }
 
-void WithClauseBuilder::setAttr(int argNum, string attr)
-{
-	switch (argNum) {
-	case 1 :
-		this->firstAttr = attr;
-		break;
-
-	case 2 :
-		this->secondAttr = attr;
-		break;
-
-	default :
-		return;
-	}
-}
-
 void WithClauseBuilder::setAttrType(int argNum, AttrType type)
 {
 	switch (argNum) {
@@ -100,7 +84,6 @@ WithClause* WithClauseBuilder::build()
 	WithClauseRef firstRef = WithClauseRef(firstRefType);
 	firstRef.setEntity(firstEntity);
 	firstRef.setEntityType(firstEntityType);
-	firstRef.setAttr(firstAttr);
 	firstRef.setAttrType(firstAttrType);
 	w->setLeftRef(firstRef);
 
@@ -109,7 +92,6 @@ WithClause* WithClauseBuilder::build()
 	WithClauseRef secondRef = WithClauseRef(secondRefType);
 	secondRef.setEntity(secondEntity);
 	secondRef.setEntityType(secondEntityType);
-	secondRef.setAttr(secondAttr);
 	secondRef.setAttrType(secondAttrType);
 	w->setRightRef(secondRef);
 
