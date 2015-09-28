@@ -8,25 +8,32 @@ public:
 	WithClauseBuilder(ClauseType clauseType);
 	~WithClauseBuilder(void);
 
-	// setting the arg value
+	// setting the ref type
+	void setRefType(int, RefType);
+
+	// setting the entity 
 	void setEntity(int, string);
 	void setEntityType(int, string);
 
-	// setting the arg type
-	void setArgType(int argNum, string argType);
-
-	// setting whether arg is fixed or not ("" or syn basically)
-	void setArgFixed(int argNum, bool argFixed);
+	// setting the attribute
+	void setAttr(int, string);
+	void setAttrType(int, AttrType);
 
 	WithClause* build();
 
 private:
 	ClauseType clauseType;
-	string firstArg;
-	bool firstArgFixed;
-	string firstArgType;
-	string secondArg;
-	bool secondArgFixed;
-	string secondArgType;
+
+	RefType firstRefType;
+	string firstEntity;
+	string firstEntityType;
+	string firstAttr;
+	AttrType firstAttrType;
+
+	RefType secondRefType;
+	string secondEntity;
+	string secondEntityType;
+	string secondAttr;
+	AttrType secondAttrType;
 };
 

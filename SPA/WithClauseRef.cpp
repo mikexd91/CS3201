@@ -64,16 +64,16 @@ ReturnType WithClauseRef::getReturnType()
 	switch (getRefType()) {
 	case ATTRREF_ :
 		switch (getAttrType()) {
-		case PROCNAME_ :
-		case VARNAME_ :
-			return RETURNSTRING_;
+			case PROCNAME_ :
+			case VARNAME_ :
+				return RETURNSTRING_;
 
-		case VALUE_ :
-		case STMTNUM_ :
-			return RETURNINTEGER_;
+			case VALUE_ :
+			case STMTNUM_ :
+				return RETURNINTEGER_;
 
-		default :
-			return RETURNINVALID_;
+			default :
+				return RETURNINVALID_;
 		}
 
 	case SYNONYM_ :

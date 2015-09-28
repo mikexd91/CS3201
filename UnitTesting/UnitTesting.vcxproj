@@ -159,6 +159,7 @@
     <ClCompile Include="VarNodeTest.cpp" />
     <ClCompile Include="VarTableTest.cpp" />
     <ClCompile Include="WhileNodeTest.cpp" />
+    <ClCompile Include="WithClauseTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssgNodeTest.h" />
@@ -191,6 +192,7 @@
     <ClInclude Include="VarNodeTest.h" />
     <ClInclude Include="VarTableTest.h" />
     <ClInclude Include="WhileNodeTest.h" />
+    <ClInclude Include="WithClauseTest.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

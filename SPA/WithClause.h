@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Clause.h"
-#include "Results.h"
+#include "Result.h"
 #include "boost\unordered_set.hpp"
 #include "WithClauseRef.h"
 
@@ -12,7 +12,7 @@ using boost::unordered_set;
 class WithClause : public Clause {
 
 public:
-	WithClause(void);
+	WithClause(ClauseType);
 	~WithClause(void);
 
 	bool isValid(void);
@@ -26,8 +26,9 @@ public:
 	void setRightRef(WithClauseRef);
 
 private:
-	bool evaluate(Results*);
+	bool evaluate(Result*);
 
+	ClauseType clauseType;
 	WithClauseRef leftRef;
 	WithClauseRef rightRef;
 };

@@ -1,7 +1,8 @@
 #include "WithClause.h"
 #include "Utils.h"
 
-WithClause::WithClause(void) {
+WithClause::WithClause(ClauseType clauseType) {
+	this->clauseType = clauseType;
 }
 
 WithClause::~WithClause(void)
@@ -37,7 +38,7 @@ void WithClause::setRightRef(WithClauseRef rightRef)
 	this->rightRef = rightRef;
 }
 
-bool WithClause::evaluate(Results*)
+bool WithClause::evaluate(Result*)
 {
 	// TODO
 	// 
