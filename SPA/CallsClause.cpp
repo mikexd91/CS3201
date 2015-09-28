@@ -125,8 +125,8 @@ unordered_set<string> CallsClause::getAllS1() {
 }
 
 //Calls(synonym, synonym)
-Results::ResultsTable* CallsClause::getAllS1AndS2() {
-	Results::ResultsTable* results = new Results::ResultsTable();
+unordered_set<vector<string>>  CallsClause::getAllS1AndS2() {
+	unordered_set<vector<string>> results = unordered_set<vector<string>>();
 	if (firstArg != secondArg) {
 		unordered_set<Procedure*> procSet = procTable->getAllProcs();
 		for (unordered_set<Procedure*>::iterator i = procSet.begin(); i != procSet.end(); ++i) {
@@ -134,12 +134,12 @@ Results::ResultsTable* CallsClause::getAllS1AndS2() {
 			string objName = procObj->getProcName();
 			unordered_set<Procedure*> callProcSet = procObj->getCalls();
 			for (unordered_set<Procedure*>::iterator j = callProcSet.begin(); j != callProcSet.end(); ++j) {
-				Results::Row* pair = new Results::Row();
+				vector<string> pair = vector<string>();
 				Procedure* callProcObj = *j;
 				string callProcName = callProcObj->getProcName();
-				(*pair)[firstArg] = objName;
-				(*pair)[secondArg] = callProcName;
-				results->insert(pair);
+				pair.push_back(objName);
+				pair.push_back(callProcName);
+				results.insert(pair);
 			}
 		}
 	}

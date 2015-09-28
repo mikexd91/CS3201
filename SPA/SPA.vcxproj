@@ -25,8 +25,6 @@
     <ClCompile Include="CallNode.cpp" />
     <ClCompile Include="CallsClause.cpp" />
     <ClCompile Include="CallsStarClause.cpp" />
-    <ClCompile Include="CFG.cpp" />
-    <ClCompile Include="CFGBuilder.cpp" />
     <ClCompile Include="Clause.cpp" />
     <ClCompile Include="CNode.cpp" />
     <ClCompile Include="Constant.cpp" />
@@ -40,8 +38,9 @@
     <ClCompile Include="FollowsStarClause.cpp" />
     <ClCompile Include="IfCNode.cpp" />
     <ClCompile Include="IfNode.cpp" />
-    <ClCompile Include="Main.cpp" />
     <ClCompile Include="ModifiesClause.cpp" />
+    <ClCompile Include="MultiSynInsert.cpp" />
+    <ClCompile Include="NoSynInsert.cpp" />
     <ClCompile Include="OpNode.cpp" />
     <ClCompile Include="ParentClause.cpp" />
     <ClCompile Include="ParentStarClause.cpp" />
@@ -64,7 +63,9 @@
     <ClCompile Include="Query.cpp" />
     <ClCompile Include="QueryEvaluator.cpp" />
     <ClCompile Include="QueryParser.cpp" />
-    <ClCompile Include="Results.cpp" />
+    <ClCompile Include="Result.cpp" />
+    <ClCompile Include="DesignExtractor.cpp" />
+    <ClCompile Include="SingleSynInsert.cpp" />
     <ClCompile Include="Statement.cpp" />
     <ClCompile Include="StmtLstNode.cpp" />
     <ClCompile Include="StmtNode.cpp" />
@@ -90,8 +91,6 @@
     <ClInclude Include="CallNode.h" />
     <ClInclude Include="CallsClause.h" />
     <ClInclude Include="CallsStarClause.h" />
-    <ClInclude Include="CFG.h" />
-    <ClInclude Include="CFGBuilder.h" />
     <ClInclude Include="Clause.h" />
     <ClInclude Include="CNode.h" />
     <ClInclude Include="Constant.h" />
@@ -105,9 +104,12 @@
     <ClInclude Include="FollowsStarClause.h" />
     <ClInclude Include="IfCNode.h" />
     <ClInclude Include="IfNode.h" />
+    <ClInclude Include="InsertType.h" />
     <ClInclude Include="InvalidCodeException.h" />
     <ClInclude Include="InvalidExpressionException.h" />
     <ClInclude Include="ModifiesClause.h" />
+    <ClInclude Include="MultiSynInsert.h" />
+    <ClInclude Include="NoSynInsert.h" />
     <ClInclude Include="OpNode.h" />
     <ClInclude Include="ParentClause.h" />
     <ClInclude Include="ParentStarClause.h" />
@@ -131,7 +133,10 @@
     <ClInclude Include="Query.h" />
     <ClInclude Include="QueryEvaluator.h" />
     <ClInclude Include="QueryParser.h" />
-    <ClInclude Include="Results.h" />
+    <ClInclude Include="Result.h" />
+    <ClInclude Include="DesignExtractor.h" />
+    <ClInclude Include="ResultTable.h" />
+    <ClInclude Include="SingleSynInsert.h" />
     <ClInclude Include="Statement.h" />
     <ClInclude Include="StmtLstNode.h" />
     <ClInclude Include="StmtNode.h" />

@@ -398,7 +398,6 @@ unordered_set<string> FollowsClause::getAllS1(){
 //Follows(s1,s2)
 //is this necessary for follows???
 
-Results::ResultsTable* FollowsClause::getAllS1AndS2(){
-	Results::ResultsTable* asd = new Results::ResultsTable();
-	return asd;
+unordered_set<vector<string>> FollowsClause::getAllS1AndS2(){
+	return unordered_set<vector<string>>();
 }

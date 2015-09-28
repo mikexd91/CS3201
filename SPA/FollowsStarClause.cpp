@@ -63,8 +63,8 @@ unordered_set<string> FollowsStarClause::getAllS1() {
 	return unordered_set<string>();
 }
 
-Results::ResultsTable* FollowsStarClause::getAllS1AndS2() {
-	return new Results::ResultsTable;
+unordered_set<vector<string>> FollowsStarClause::getAllS1AndS2() {
+	return unordered_set<vector<string>>();
 }
 
 

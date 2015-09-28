@@ -1,5 +1,6 @@
 #include "QueryEvaluator.h"
 #include "Utils.h"
+#include "InsertType.h"
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <string>
@@ -17,10 +18,10 @@ QueryEvaluator::~QueryEvaluator(void)
 {
 }
 
-// If clauseList is empty, insert values from table of the right type into results obj.
+// If clauseList is empty, insert values from table of the right type into Result obj.
 // Else, evaluate all clauses.
-Results* QueryEvaluator::evaluateQuery(Query query) {
-	Results *obj = new Results();
+Result* QueryEvaluator::evaluateQuery(Query query) {
+	Result *obj = new Result();
 	setClauseList(query.getClauseList());
 	setSelectList(query.getSelectList());
 	obj = evaluateClauses(obj, clauseList);
@@ -28,7 +29,7 @@ Results* QueryEvaluator::evaluateQuery(Query query) {
 }
 
 // Return values to be printed.
-unordered_set<string> QueryEvaluator::getValuesToPrint(Results* obj, vector<StringPair> selectList) {
+unordered_set<string> QueryEvaluator::getValuesToPrint(Result* obj, vector<StringPair> selectList) {
 	unordered_set<string> resultSet = unordered_set<string>();
 	int numOfSyn = selectList.size();
 	if (numOfSyn == 1) {
@@ -40,31 +41,26 @@ unordered_set<string> QueryEvaluator::getValuesToPrint(Results* obj, vector<Stri
 	return resultSet;
 }
 
-unordered_set<string> QueryEvaluator::printSingleSynValues(Results &obj, string syn) {
-	Results::ResultsTable resultsTable = obj.getResultsTable();
-	unordered_set<string> resultSet;
-	for (Results::ResultsTable::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
-		Results::Row row = *(*i);
-		string value = row[syn];
-		resultSet.insert(value);
-	}
+unordered_set<string> QueryEvaluator::printSingleSynValues(Result &obj, string syn) {
+	unordered_set<string> resultSet = obj.getSyn(syn);
 	return resultSet;
 }
 
-unordered_set<string> QueryEvaluator::printTupleSynValues(Results &obj, vector<StringPair> selectList) {
-	Results::ResultsTable resultsTable = obj.getResultsTable();
+unordered_set<string> QueryEvaluator::printTupleSynValues(Result &obj, vector<StringPair> selectList) {
+	vector<string> synList;
 	unordered_set<string> resultSet;
-	for (Results::ResultsTable::iterator i = resultsTable.begin(); i != resultsTable.end(); ++i) {
-		Results::Row row = *(*i);
+	for (auto iter = selectList.begin(); iter != selectList.end(); ++iter) {
+		synList.push_back(iter->getFirst());
+	}
+	unordered_set<vector<string>> resSet = obj.getMultiSyn(synList);
+	for (auto rowIter = resSet.begin(); rowIter != resSet.end(); ++rowIter) {
 		string tuple = "";
-		for (vector<StringPair>::iterator j = selectList.begin(); j != selectList.end(); ++j) {
-			string syn = j->getFirst();
-			if (j == selectList.end() - 1) {
-				tuple.append(row[syn]);
-			} else {
-				tuple.append(row[syn]);
+		vector<string> tupleList = *rowIter;
+		for (auto valueIter = tupleList.begin(); valueIter != tupleList.end(); ++valueIter) {
+			if (valueIter != tupleList.end() - 1) {
+				tuple.append(*valueIter);
 				tuple.append(" ");
-			}
+			} 
 		}
 		resultSet.insert(tuple);
 	}
@@ -81,11 +77,11 @@ void QueryEvaluator::setSelectList(vector<StringPair> selectList) {
 
 // evalute clauses in clause List
 // inserts in synonyms that appear in select list but not in clause list
-Results* QueryEvaluator::evaluateClauses(Results* obj, vector<Clause*> clauseList) {
+Result* QueryEvaluator::evaluateClauses(Result* obj, vector<Clause*> clauseList) {
 	for (vector<Clause*>::iterator i = clauseList.begin(); i != clauseList.end(); ++i) {
 		Clause* c = *i;
 		c->evaluate(obj);
-		if (obj->isClausePass() == false) {
+		if (obj->isPass() == false) {
 			break;
 		} 
 	}
@@ -93,11 +89,11 @@ Results* QueryEvaluator::evaluateClauses(Results* obj, vector<Clause*> clauseLis
 	return obj;
 }
 
-void QueryEvaluator::getRemainingSynValuesFromTable(Results &obj) {
+void QueryEvaluator::getRemainingSynValuesFromTable(Result &obj) {
 	for (vector<StringPair>::iterator i = selectList.begin(); i != selectList.end(); ++i) {
 		string syn = i->getFirst();
-		if ((!obj.hasResults(syn) && obj.isClausePass() == true) ||
-			(!obj.hasResults(syn) && clauseList.empty())) {
+		if ((!obj.isSynPresent(syn) && obj.isPass() == true) ||
+			(!obj.isSynPresent(syn) && clauseList.empty())) {
 			string type = i->getSecond();
 			unordered_set<string> values = getTableValues(type);
 			insertSetValues(syn, values, obj);
@@ -105,12 +101,14 @@ void QueryEvaluator::getRemainingSynValuesFromTable(Results &obj) {
 	}
 }
 
-void QueryEvaluator::insertSetValues(string syn, unordered_set<string> values, Results &obj) {
+void QueryEvaluator::insertSetValues(string syn, unordered_set<string> values, Result &obj) {
+	SingleSynInsert insert;
+	insert.setSyn(syn);
 	for (unordered_set<string>::iterator i = values.begin(); i != values.end(); ++i) {
 		string val = *i;
-		obj.insertResult(syn, val);
+		insert.insertValue(val);
 	}
-	obj.push();
+	obj.push(insert);
 }
 
 unordered_set<string> QueryEvaluator::getTableValues(string type) {
