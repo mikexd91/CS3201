@@ -62,6 +62,7 @@
     <ClCompile Include="ProgNode.cpp" />
     <ClCompile Include="ProgramCNode.cpp" />
     <ClCompile Include="Query.cpp" />
+    <ClCompile Include="QueryEvaluator.cpp" />
     <ClCompile Include="QueryParser.cpp" />
     <ClCompile Include="Results.cpp" />
     <ClCompile Include="Statement.cpp" />
@@ -128,6 +129,7 @@
     <ClInclude Include="ProgNode.h" />
     <ClInclude Include="ProgramCNode.h" />
     <ClInclude Include="Query.h" />
+    <ClInclude Include="QueryEvaluator.h" />
     <ClInclude Include="QueryParser.h" />
     <ClInclude Include="Results.h" />
     <ClInclude Include="Statement.h" />
