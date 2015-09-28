@@ -69,7 +69,7 @@ public:
 	bool isParentExist();																				// evaluates whether a parent stmt exists
 
 	unordered_set<string> getChildStmts(int);															// gets all child stmts of this stmt
-	string getParentStmt(int);															// get parent stmt of this stmt
+	string getParentStmt(int);																			// get parent stmt of this stmt
 	unordered_set<string> getAllChildStmts(string argType=ARG_STATEMENT);								// get all child stmts of argType
 	unordered_set<string> getAllParentStmts(string argType=ARG_STATEMENT);								// get all parent stmts of argType
 
@@ -83,7 +83,7 @@ public:
 	bool isParentStarExist();																			// evaluates whether a parent star stmt exists
 
 	unordered_set<string> getChildStarStmts(int);														// gets all child star stmts of this stmt
-	unordered_set<string> getParentStarStmt(int);														// get parent star stmt of this stmt
+	unordered_set<string> getParentStarStmts(int);														// get parent star stmt of this stmt
 	unordered_set<string> getAllChildStarStmts(string argType=ARG_STATEMENT);							// get all child star stmts of argType
 	unordered_set<string> getAllParentStarStmts(string argType=ARG_STATEMENT);							// get all parent star stmts of argType
 
@@ -97,12 +97,31 @@ public:
 
 
 	/*----- CALLS -----*/
+	bool isCalls(string, string);																		// evaluates whether p1 calls p2
+	bool hasCaller(string);																				// evaluates whether proc is called by another proc
+	bool isCaller(string);																				// evaluates whether proc calls another proc
+	bool isCallsExist();																				// evaluates whether any proc calls another proc
+
+	unordered_set<string> getProcsCalled(string);														// gets all procs called by this proc
+	unordered_set<string> getProcCallers(string);														// gets all procs that calls this proc
+	unordered_set<string> getAllProcsCalled();															// gets all procs that are called by any proc
+	unordered_set<string> getAllProcCallers();															// gets all procs that call any proc
+
+	unordered_set<pair<string, string>> getAllCallsPairs();												// gets all proc-proc calls pairs
 
 
 	/*----- CALLSSTAR -----*/
+	bool isCallsStar(string, string);																		// evaluates whether p1 calls star p2
+	bool hasCallerStar(string);																				// evaluates whether proc is called star by another proc
+	bool isCallerStar(string);																				// evaluates whether proc calls star another proc
+	bool isCallsStarExist();																				// evaluates whether any proc calls star another proc
 
+	unordered_set<string> getProcsCalledStar(string);														// gets all procs called star by this proc
+	unordered_set<string> getProcCallersStar(string);														// gets all procs that calls star this proc
+	unordered_set<string> getAllProcsCalledStar();															// gets all procs that are called star by any proc
+	unordered_set<string> getAllProcCallersStar();															// gets all procs that call star any proc
 
-
+	unordered_set<pair<string, string>> getAllCallsStarPairs();												// gets all proc-proc calls star pairs
 
 
 private:
