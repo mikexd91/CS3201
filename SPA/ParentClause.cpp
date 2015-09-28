@@ -110,8 +110,8 @@ unordered_set<string> ParentClause::getAllS1() {
 }
 
 //Parent(s1, s2)
-Results::ResultsTable* ParentClause::getAllS1AndS2() {
-	Results::ResultsTable* results = new Results::ResultsTable();
+unordered_set<vector<string>> ParentClause::getAllS1AndS2() {
+	unordered_set<vector<string>> results = unordered_set<vector<string>>();
 	//handle case where first and second args are the same -> they should not be
 	if (firstArg != secondArg) {
 		if (firstArgType == stringconst::ARG_STATEMENT || firstArgType == stringconst::ARG_WHILE) {
@@ -158,17 +158,17 @@ int ParentClause::getParent(int stmtNum, string argType) {
 }
 
 
-void ParentClause::insertParentAndChildrenIntoResult(Results::ResultsTable* results, unordered_set<Statement*> stmts){
+void ParentClause::insertParentAndChildrenIntoResult(unordered_set<vector<string>> &results, unordered_set<Statement*> stmts){
 	for (unordered_set<Statement*>::iterator iter = stmts.begin(); iter != stmts.end(); ++iter) {
 			Statement* stmt = *iter;
 			Statement::ChildrenSet children = getChildren(stmt->getStmtNum(), this->secondArgType);
 			for (Statement::ChildrenSet::iterator iter = children.begin(); iter != children.end(); iter++) {
-				Results::Row* pair = new Results::Row();
+				vector<string> pair = vector<string>();
 				int child = *iter;
 				int stmtNum = stmt->getStmtNum();
-				(*pair)[firstArg] = boost::lexical_cast<string>(stmt->getStmtNum());
-				(*pair)[secondArg] = boost::lexical_cast<string>(child);
-				results->insert(pair);
+				pair.push_back(boost::lexical_cast<string>(stmt->getStmtNum()));
+				pair.push_back(boost::lexical_cast<string>(child));
+				results.insert(pair);
 			}
 		}
 }

@@ -139,6 +139,7 @@
     <ClCompile Include="FollowsClauseTest.cpp" />
     <ClCompile Include="IfNodeTest.cpp" />
     <ClCompile Include="ModifiesClauseTest.cpp" />
+    <ClCompile Include="MultiSynInsertTest.cpp" />
     <ClCompile Include="OpNodeTest.cpp" />
     <ClCompile Include="ParentClauseTest.cpp" />
     <ClCompile Include="ParserTest.cpp" />
@@ -149,7 +150,8 @@
     <ClCompile Include="ProcNodeTest.cpp" />
     <ClCompile Include="ProcTableTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
-    <ClCompile Include="ResultsTest.cpp" />
+    <ClCompile Include="ResultTest.cpp" />
+    <ClCompile Include="SingleSynInsertTest.cpp" />
     <ClCompile Include="StmtLstNodeTest.cpp" />
     <ClCompile Include="StmtTableTest.cpp" />
     <ClCompile Include="TNodeTest.cpp" />
@@ -169,6 +171,7 @@
     <ClInclude Include="FollowsClauseTest.h" />
     <ClInclude Include="IfNodeTest.h" />
     <ClInclude Include="ModifiesClauseTest.h" />
+    <ClInclude Include="MultiSynInsertTest.h" />
     <ClInclude Include="OpNodeTest.h" />
     <ClInclude Include="ParentClauseTest.h" />
     <ClInclude Include="ParserTest.h" />
@@ -179,7 +182,8 @@
     <ClInclude Include="ProcNodeTest.h" />
     <ClInclude Include="ProcTableTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
-    <ClInclude Include="ResultsTest.h" />
+    <ClInclude Include="ResultTest.h" />
+    <ClInclude Include="SingleSynInsertTest.h" />
     <ClInclude Include="StmtLstNodeTest.h" />
     <ClInclude Include="StmtTableTest.h" />
     <ClInclude Include="TNodeTest.h" />

@@ -255,8 +255,8 @@ unordered_set<string> UsesClause::getAllS1() {
 }
 
 //Uses(s1,s2)
-Results::ResultsTable* UsesClause::getAllS1AndS2() {
-	Results::ResultsTable* results = new Results::ResultsTable();
+unordered_set<vector<string>> UsesClause::getAllS1AndS2() {
+	unordered_set<vector<string>> results = unordered_set<vector<string>>();
 
 	//Uses(s,v)
 	if(isStmtType(firstArgType)) {
@@ -279,11 +279,10 @@ Results::ResultsTable* UsesClause::getAllS1AndS2() {
 			Statement::UsesSet vars = s->getUses();
 			BOOST_FOREACH(auto v, vars) {
 				// create tuple
-				Results::Row* tuple = new Results::Row();
-				(*tuple)[firstArg] = lexical_cast<string>(s->getStmtNum());
-				(*tuple)[secondArg] = v;
-
-				results->insert(tuple);
+				vector<string> tuple = vector<string>();
+				tuple.push_back(lexical_cast<string>(s->getStmtNum()));
+				tuple.push_back(v);
+				results.insert(tuple);
 			}
 		}
 
@@ -296,11 +295,10 @@ Results::ResultsTable* UsesClause::getAllS1AndS2() {
 			Procedure::UsesSet vars = p->getUses();
 			BOOST_FOREACH(auto v, vars) {
 				// create tuple
-				Results::Row* tuple = new Results::Row();
-				(*tuple)[firstArg] = p->getProcName();
-				(*tuple)[secondArg] = v;
-
-				results->insert(tuple);
+				vector<string> tuple = vector<string>();
+				tuple.push_back(p->getProcName());
+				tuple.push_back(v);
+				results.insert(tuple);
 			}
 		}
 	}

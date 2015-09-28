@@ -34,10 +34,10 @@ protected:
 	//Parent(s1,__)
 	unordered_set<string> getAllS1();
 	//Parent(s1,s2)
-	Results::ResultsTable* getAllS1AndS2();
+	unordered_set<vector<string>> getAllS1AndS2();
 
 private:
-	void insertParentAndChildrenIntoResult(Results::ResultsTable*, unordered_set<Statement*>);
+	void insertParentAndChildrenIntoResult(unordered_set<vector<string>>&, unordered_set<Statement*>);
 	void insertChildrenIntoStmtNum(unordered_set<string> &, unordered_set<Statement*>, string);
 	void insertParentIntoStmtNum(unordered_set<string> &, unordered_set<Statement*>, string);
 	int getParent(int, string);	
