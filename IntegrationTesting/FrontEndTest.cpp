@@ -748,3 +748,43 @@ void FrontEndTest::testUsingMultipleProcCall() {
 	unordered_set<string> firstSet(first, first + 2);
 	CPPUNIT_ASSERT(varX->getUsedByProc() == firstSet);
 }
+
+void FrontEndTest::testCFGSingleAssg() {
+	/*
+	procedure proc {
+		x = 1;
+	}
+	*/
+	parser.parse("procedure proc { x = 1; }");
+
+	Statement* assgStmt = stmtTable1->getStmtObj(1);
+	CPPUNIT_ASSERT(assgStmt->getNext().empty());
+	CPPUNIT_ASSERT(assgStmt->getPrev().empty());
+}
+
+void FrontEndTest::testCFGMultAssg() {
+	/*
+	procedure proc {
+		x = 1;
+		y = 2;
+		z = 3;
+	}
+	*/
+
+	parser.parse("procedure proc { x = 1; y = 2; z = 3; }");
+
+	Statement* assg1 = stmtTable1->getStmtObj(1);
+	Statement* assg2 = stmtTable1->getStmtObj(2);
+	Statement* assg3 = stmtTable1->getStmtObj(3);
+
+	int assg1Next[] = {2};
+	int assg2Prev[] = {1};
+	int assg2Next[] = {3};
+	int assg3Prev[] = {2};
+	unordered_set<int> assg1NextSet(assg1Next, assg1Next + 1);
+	unordered_set<int> assg2PrevSet(assg2Prev, assg2Prev + 1);
+	unordered_set<int> assg2NextSet(assg2Next, assg2Next + 1);
+	unordered_set<int> assg3PrevSet(assg3Prev, assg3Prev + 1);
+
+	CPPUNIT_ASSERT(assg1->getNext() == assg1NextSet);
+}

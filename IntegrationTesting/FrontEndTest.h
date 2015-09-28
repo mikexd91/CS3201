@@ -34,6 +34,9 @@ class FrontEndTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testModifyingMultipleProcCall );
 	CPPUNIT_TEST( testUsingMultipleProcCall );
 
+	CPPUNIT_TEST( testCFGSingleAssg );
+	CPPUNIT_TEST( testCFGMultAssg );
+
 	//CPPUNIT_TEST( testFalseAddProc );
 
 	CPPUNIT_TEST_SUITE_END();
@@ -77,5 +80,6 @@ public:
 	void testModifyingMultipleProcCall();
 	void testUsingMultipleProcCall();
 
-	void testCFGProcAssig();
+	void testCFGSingleAssg();
+	void testCFGMultAssg();
 };
