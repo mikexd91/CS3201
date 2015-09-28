@@ -140,15 +140,8 @@ bool SuchThatClause::isValidWhile(string whileStr) {
 	return stmtTable->getStmtObj(stmtNum)->getType() == WHILE_STMT_;
 }
 
-bool SuchThatClause::evaluate(Results* res) {
-	//clause is pass at each stage
-	res->setClausePass();
-	res->setClauseFail();
-	if(!isBaseValidityCheck()) {
-		return false;
-	}
-
-	if(!isValid()) {
+bool SuchThatClause::evaluate(Result* res) {
+	if(!isBaseValidityCheck() || !isValid()) {
 		return false;
 	}
 
@@ -161,39 +154,41 @@ bool SuchThatClause::evaluate(Results* res) {
 	if (this->isValid()) {
 		//Parent(1,2)
 		if (isFirstFixed && isSecondFixed) {
-			if(evaluateS1FixedS2Fixed(firstArgSyn, secondArgSyn)) {
-				res->setClausePass();
-			} 
-			//Parent(_,_)
+			NoSynInsert insert = NoSynInsert();
+			insert.setPass(evaluateS1FixedS2Fixed(firstArgSyn, secondArgSyn));
+			return res->push(insert);
+		//Parent(_,_)
 		} else if (firstArgType == stringconst::ARG_GENERIC && secondArgType == stringconst::ARG_GENERIC) {
-			if (evaluateS1GenericS2Generic()) {
-				res->setClausePass();
-			}
-			//Parent(_,2)
+			NoSynInsert insert = NoSynInsert();
+			insert.setPass(evaluateS1GenericS2Generic());
+			return res->push(insert);
+		//Parent(_,2)
 		} else if (firstArgType == stringconst::ARG_GENERIC && isSecondFixed) {
-			if (evaluateS1GenericS2Fixed(secondArgSyn)) {
-				res->setClausePass();
-			}
-			//Parent(2,_)
+			NoSynInsert insert = NoSynInsert();
+			insert.setPass(evaluateS1GenericS2Fixed(secondArgSyn));
+			return res->push(insert);
+		//Parent(2,_)
 		} else if (isFirstFixed && secondArgType == stringconst::ARG_GENERIC) {
-			if (evaluateS1FixedS2Generic(firstArgSyn)) {
-				res->setClausePass();
-			}
-			//Parent(2,a) or Parent (_,a)
+			NoSynInsert insert = NoSynInsert();
+			insert.setPass(evaluateS1FixedS2Generic(firstArgSyn));
+			return res->push(insert);
+		//Parent(2,a) or Parent (_,a)
 		} else if (!isSecondFixed && secondArgType != stringconst::ARG_GENERIC && (isFirstFixed || firstArgType == stringconst::ARG_GENERIC)) {
 			//find if second syn is in table
-			bool hasSecondSynInTable = res->hasResults(secondArgSyn);
+			SingleSynInsert insert = SingleSynInsert();
+			insert.setSyn(secondArgSyn);
+			bool hasSecondSynInTable = res->isSynPresent(secondArgSyn);
 			//second syn is in table
 			if (hasSecondSynInTable) {
 				//get values of a from the table
-				unordered_set<string> secondValues = res->selectSyn(secondArgSyn);
+				unordered_set<string> secondValues = res->getSyn(secondArgSyn);
 				//for each value of a, if it passes (Parent (2,a) is correct or Parent(_,a) is corect), add it back to table (insertSingleSyn)
 				for (unordered_set<string>::iterator it = secondValues.begin(); it != secondValues.end(); ++it) {
 					string secondArgValue = *it;
 					bool fixedPass = isFirstFixed && evaluateS1FixedS2Fixed(firstArgSyn, secondArgValue);
 					bool genericPass = !isFirstFixed && evaluateS1GenericS2Fixed(secondArgValue);
 					if (fixedPass || genericPass) {
-						res->insertResult(secondArgSyn, secondArgValue);
+						insert.insertValue(secondArgValue);
 					}
 				}
 				//second syn is not in table
@@ -207,24 +202,27 @@ bool SuchThatClause::evaluate(Results* res) {
 				}
 				//for each value of a, add it back to table 
 				for (unordered_set<string>::iterator it = secondValues.begin(); it != secondValues.end(); ++it) {
-					res->insertResult(secondArgSyn, *it);
+					insert.insertValue(*it);
 				}				
 			}
-			//Parent(a,2) or Parent(a,_)
+			return res->push(insert);
+		//Parent(a,2) or Parent(a,_)
 		} else if (!isFirstFixed && firstArgType != stringconst::ARG_GENERIC && (isSecondFixed || secondArgType == stringconst::ARG_GENERIC)) {
+			SingleSynInsert insert = SingleSynInsert();
+			insert.setSyn(firstArgSyn);
 			//find if firstSyn is in table
-			bool hasFirstSynInTable = res->hasResults(firstArgSyn);
+			bool hasFirstSynInTable = res->isSynPresent(firstArgSyn);
 			//firstSyn is in table
 			if (hasFirstSynInTable) {
 				//get values of a from the table
-				unordered_set<string> firstValues = res->selectSyn(firstArgSyn);
+				unordered_set<string> firstValues = res->getSyn(firstArgSyn);
 				//for each value of a, if it passes (Parent (a,2) is correct or Parent(a,_) is corect), add it back to table (insertSingleSyn)
 				for (unordered_set<string>::iterator it = firstValues.begin(); it != firstValues.end(); ++it) {
 					string firstArgValue = *it;
 					bool fixedPass = isSecondFixed && evaluateS1FixedS2Fixed(firstArgValue, secondArgSyn);
 					bool genericPass = !isSecondFixed && evaluateS1FixedS2Generic(firstArgValue);
 					if (fixedPass || genericPass) {
-						res->insertResult(firstArgSyn, firstArgValue);
+						insert.insertValue(firstArgValue);
 					}
 				}
 				//firstSyn is not in table, generate all possible values of a
@@ -239,30 +237,35 @@ bool SuchThatClause::evaluate(Results* res) {
 				}
 				//for each value of a, add it back to table 
 				for (unordered_set<string>::iterator firstValue = firstValues.begin(); firstValue != firstValues.end(); ++firstValue) {
-					res->insertResult(firstArgSyn, *firstValue);
+					insert.insertValue(*firstValue);
 				}				
 			}
+			return res->push(insert);
 			//Parent(a1,a2)
 		} else if(!isFirstFixed && firstArgType != stringconst::ARG_GENERIC && !isSecondFixed && secondArgType != stringconst::ARG_GENERIC) {
-			bool isFirstInTable = res->hasResults(firstArgSyn);
-			bool isSecondInTable = res->hasResults(secondArgSyn);
+			MultiSynInsert insert = MultiSynInsert();
+			string synArray[] = {firstArgSyn, secondArgSyn};
+			vector<string> syns = vector<string>(synArray, synArray+2);
+			insert.setSyns(syns);
+			bool isFirstInTable = res->isSynPresent(firstArgSyn);
+			bool isSecondInTable = res->isSynPresent(secondArgSyn);
 			//both are in table
 			if (isFirstInTable && isSecondInTable) {
 				//get all a1 and a2 value 
-				unordered_set<string> synList;
-				synList.insert(firstArgSyn);
-				synList.insert(secondArgSyn);
-				Results::ResultsTable pairs = res->selectMultiSyn(synList);
+				vector<string> synList;
+				synList.push_back(firstArgSyn);
+				synList.push_back(secondArgSyn);
+				unordered_set<vector<string>> pairs = res->getMultiSyn(synList);
 				//check if true, if true insert into table 
-				for (Results::ResultsTable::iterator iter = pairs.begin(); iter != pairs.end(); iter++) {
-					Results::Row* currentRow = *iter;
-					string firstValue = (*currentRow)[firstArgSyn];
-					string secondValue = (*currentRow)[secondArgSyn];
+				for (auto iter = pairs.begin(); iter != pairs.end(); iter++) {
+					vector<string> currentRow = *iter;
+					string firstValue = currentRow.at(0);
+					string secondValue = currentRow.at(1);
 					if (evaluateS1FixedS2Fixed(firstValue, secondValue)) {
-						unordered_map<string, string>* newRow = new Results::Row();
-						(*newRow)[firstArgSyn] = firstValue;
-						(*newRow)[secondArgSyn] = secondValue;
-						res->insertMultiResult(newRow);
+						vector<string> newRow = vector<string>();
+						newRow.push_back(firstValue);
+						newRow.push_back(secondValue);
+						insert.insertValues(newRow);
 					}
 				}
 				//prevent memroy leak
@@ -270,7 +273,7 @@ bool SuchThatClause::evaluate(Results* res) {
 				//left in table
 			} else if (isFirstInTable) {
 				//get all a1 values
-				unordered_set<string> firstValues = res->selectSyn(firstArgSyn);
+				unordered_set<string> firstValues = res->getSyn(firstArgSyn);
 				//for each a1 value, get all a2 values
 				for (unordered_set<string>::iterator iter = firstValues.begin(); iter != firstValues.end(); ++iter) {
 					string firstValue = *iter;
@@ -278,16 +281,16 @@ bool SuchThatClause::evaluate(Results* res) {
 					//add each row of a1 and a2 into the results table
 					for (unordered_set<string>::iterator iter2 = secondValues.begin(); iter!= secondValues.end(); ++iter) {
 						string secondValue = *iter2;
-						unordered_map<string, string>* newRow = new Results::Row();
-						(*newRow)[firstArgSyn] = firstValue;
-						(*newRow)[secondArgSyn] = secondValue;
-						res->insertMultiResult(newRow);
+						vector<string> newRow = vector<string>();
+						newRow.push_back(firstValue);
+						newRow.push_back(secondValue);
+						insert.insertValues(newRow);
 					}
 				}
 				//right in table
 			} else if (isSecondInTable) {
 				//get all a2 values
-				unordered_set<string> secondValues = res->selectSyn(secondArgSyn);
+				unordered_set<string> secondValues = res->getSyn(secondArgSyn);
 				//for each a1 value, get all a2 values
 				for (unordered_set<string>::iterator iter = secondValues.begin(); iter != secondValues.end(); ++iter) {
 					string secondValue = *iter;
@@ -295,32 +298,34 @@ bool SuchThatClause::evaluate(Results* res) {
 					//add each row of a1 and a2 into the results table
 					for (unordered_set<string>::iterator iter2 = firstValues.begin(); iter!= firstValues.end(); ++iter) {
 						string firstValue = *iter2;
-						unordered_map<string, string>* newRow = new Results::Row();
-						(*newRow)[firstArgSyn] = firstValue;
-						(*newRow)[secondArgSyn] = secondValue;
-						res->insertMultiResult(newRow);
+						vector<string> newRow = vector<string>();
+						newRow.push_back(firstValue);
+						newRow.push_back(secondValue);
+						insert.insertValues(newRow);
 					}
 				}
 				//both absent in table
 			} else {
 				//generate all a1 and a2 values
-				Results::ResultsTable* firstSecondValues = getAllS1AndS2();
-				for (Results::ResultsTable::iterator iter = firstSecondValues->begin();
-					iter != firstSecondValues->end();
+				unordered_set<vector<string>> firstSecondValues = getAllS1AndS2();
+				for (auto iter = firstSecondValues.begin();
+					iter != firstSecondValues.end();
 					++iter) {
-						Results::Row* row = *iter;
-						string firstValue = (*row)[firstArgSyn];
-						string secondValue = (*row)[secondArgSyn];
-						res->insertMultiResult(row);
+						vector<string> values = *iter;
+						insert.insertValues(values);
 				}
-				firstSecondValues->clear();
 			}
+			return res->push(insert);
 		} else {
+			NoSynInsert insert = NoSynInsert();
+			insert.setPass(false);
+			return res->push(insert);
 			//throw error, all cases should be covered
 			//or we should improve the conditions more to prevent such a situtation from happening
 		}
 	} else {
-		res->setClauseFail();
+		NoSynInsert insert = NoSynInsert();
+		insert.setPass(false);
+		return res->push(insert);
 	}
-	return res->push();
 }

@@ -1,12 +1,13 @@
-#include <cppunit/config/SourcePrefix.h>
+ #include <cppunit/config/SourcePrefix.h>
 #include "QueryEvaluatorTest.h"
 #include "../SPA/ParentStarClause.h"
 #include "../SPA/PatternAssgClause.h"
 #include "../SPA/ModifiesClause.h"
-#include "../SPA/Results.h"
+#include "../SPA/Result.h"
 #include "../SPA/QueryEvaluator.h"
 #include "../SPA/StmtTable.h"
 #include "../SPA/VarTable.h"
+#include "../SPA/ProcTable.h"
 #include "../SPA/Utils.h"
 #include "../SPA/AST.h"
 #include "../SPA/AssgNode.h"
@@ -16,6 +17,8 @@
 #include "../SPA/IfNode.h"
 #include "../SPA/ConstTable.h"
 #include "../SPA/CallNode.h"
+#include "../SPA/SuchThatClauseBuilder.h"
+#include "../SPA/Clause.h"
 #include <boost\foreach.hpp>
 
 using namespace stringconst;
@@ -402,9 +405,9 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectAssignSyn() {
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
 
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("a") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 9);
+	Result* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->isSynPresent("a") == true);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 9);
 
 	vector<StringPair> selectList = q->getSelectList();
 	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
@@ -425,9 +428,9 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectStmtSyn() {
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
 
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("b") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 11);
+	Result* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->isSynPresent("b") == true);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 11);
 	
 	delete qe;
 	delete p;
@@ -444,9 +447,9 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectWhileSyn() {
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
 
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("c") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	Result* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->isSynPresent("c") == true);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 	
 	delete qe;
 	delete p;
@@ -463,9 +466,9 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectIfSyn() {
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
 
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("d") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	Result* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->isSynPresent("d") == true);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 	
 	delete qe;
 	delete p;
@@ -483,9 +486,9 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectCallSyn() {
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
 
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("e") == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	Result* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->isSynPresent("e") == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 	
 	delete qe;
 	delete p;
@@ -503,9 +506,9 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectVarSyn() {
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
 
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("g") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 7);
+	Result* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->isSynPresent("g") == true);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
 	
 	delete qe;
 	delete p;
@@ -522,9 +525,9 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectProcSyn() {
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
 
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("g") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	Result* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->isSynPresent("g") == true);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 	
 	delete qe;
 	delete p;
@@ -541,9 +544,9 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectConstSyn() {
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
 
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("g") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 5);
+	Result* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->isSynPresent("g") == true);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 5);
 	
 	delete qe;
 	delete p;
@@ -560,7 +563,17 @@ void QueryEvaluatorTest::testModifiesEvaluateFixedSynProcPass() {
 	p->setSecond(ARG_VARIABLE);
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
-	
+
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "zumba");
+	modifiesBuilder->setArgFixed(1, true);
+	modifiesBuilder->setArgType(1, ARG_PROCEDURE);
+	modifiesBuilder->setArg(2, "v");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* m1 = (ModifiesClause*) modifiesBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+	/*
 	ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("zumba");
 	mod->setFirstArgFixed(true);
@@ -568,12 +581,12 @@ void QueryEvaluatorTest::testModifiesEvaluateFixedSynProcPass() {
 	mod->setSecondArg("v");
 	mod->setSecondArgFixed(false);
 	mod->setSecondArgType(ARG_VARIABLE);
+	*/
+	q->addClause((Clause*) m1);
 
-	q->addClause(mod);
-
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("v") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 7);
+	Result* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->isSynPresent("v") == true);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
 	
 	delete qe;
 	delete p;
@@ -589,7 +602,17 @@ void QueryEvaluatorTest::testModifiesEvaluateSynFixedWhilePass() {
 	p->setSecond(ARG_WHILE);
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
-	
+
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "w");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_WHILE);
+	modifiesBuilder->setArg(2, "x");
+	modifiesBuilder->setArgFixed(2, true);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* m1 = (ModifiesClause*) modifiesBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+	/*
 	ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("w");
 	mod->setFirstArgFixed(false);
@@ -597,12 +620,12 @@ void QueryEvaluatorTest::testModifiesEvaluateSynFixedWhilePass() {
 	mod->setSecondArg("x");
 	mod->setSecondArgFixed(true);
 	mod->setSecondArgType(ARG_VARIABLE);
+	*/
+	q->addClause((Clause*) m1);
 
-	q->addClause(mod);
-
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("w") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	Result* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->isSynPresent("w") == true);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 	
 	delete qe;
 	delete p;
@@ -624,6 +647,16 @@ void QueryEvaluatorTest::testModifiesEvaluateSynSynAssgPass() {
 	q->addSelectSynonym(*p1);
 	q->addSelectSynonym(*p2);
 	
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "a");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_ASSIGN);
+	modifiesBuilder->setArg(2, "v");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* m1 = (ModifiesClause*) modifiesBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+	/*
 	ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("a");
 	mod->setFirstArgFixed(false);
@@ -631,13 +664,13 @@ void QueryEvaluatorTest::testModifiesEvaluateSynSynAssgPass() {
 	mod->setSecondArg("v");
 	mod->setSecondArgFixed(false);
 	mod->setSecondArgType(ARG_VARIABLE);
+	*/
+	q->addClause((Clause*) m1);
 
-	q->addClause(mod);
-
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("a") == true);
-	CPPUNIT_ASSERT(result->hasResults("v") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 9);
+	Result* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->isSynPresent("a") == true);
+	CPPUNIT_ASSERT(result->isSynPresent("v") == true);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 9);
 
 	vector<StringPair> selectList = q->getSelectList();
 	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
@@ -674,7 +707,17 @@ void QueryEvaluatorTest::testHalfInClauseWithModifiesSynSynStmtPass() {
 	q->addSelectSynonym(*p2);
 	q->addSelectSynonym(*n1);
 	q->addSelectSynonym(*n2);
-	
+
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "s");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_STATEMENT);
+	modifiesBuilder->setArg(2, "v");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* m1 = (ModifiesClause*) modifiesBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+	/*
 	ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("s");
 	mod->setFirstArgFixed(false);
@@ -682,15 +725,15 @@ void QueryEvaluatorTest::testHalfInClauseWithModifiesSynSynStmtPass() {
 	mod->setSecondArg("v");
 	mod->setSecondArgFixed(false);
 	mod->setSecondArgType(ARG_VARIABLE);
+	*/
+	q->addClause((Clause*) m1);
 
-	q->addClause(mod);
-
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("s") == true);
-	CPPUNIT_ASSERT(result->hasResults("v") == true);
-	CPPUNIT_ASSERT(result->hasResults("s1") == true);
-	CPPUNIT_ASSERT(result->hasResults("v1") == true);
-	//CPPUNIT_ASSERT(result->getResultsTableSize() == 924);
+	Result* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->isSynPresent("s") == true);
+	CPPUNIT_ASSERT(result->isSynPresent("v") == true);
+	CPPUNIT_ASSERT(result->isSynPresent("s1") == true);
+	CPPUNIT_ASSERT(result->isSynPresent("v1") == true);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 924);
 	
 	delete qe;
 	delete p1;
@@ -710,6 +753,17 @@ void QueryEvaluatorTest::testModifiesEvaluateSynGenericStmtPass() {
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
 	
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "s");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_STATEMENT);
+	modifiesBuilder->setArg(2, "_");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_GENERIC);
+	ModifiesClause* m1 = (ModifiesClause*) modifiesBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+	
+	/*
 	ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("s");
 	mod->setFirstArgFixed(false);
@@ -717,12 +771,12 @@ void QueryEvaluatorTest::testModifiesEvaluateSynGenericStmtPass() {
 	mod->setSecondArg("_");
 	mod->setSecondArgFixed(false);
 	mod->setSecondArgType(ARG_GENERIC);
+	*/
+	q->addClause((Clause*) m1);
 
-	q->addClause(mod);
-
-	Results* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->hasResults("p") == true);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 11);
+	Result* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->isSynPresent("p") == true);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 11);
 	vector<StringPair> selectList = q->getSelectList();
 	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
 	CPPUNIT_ASSERT(toPrint.size() == 1);

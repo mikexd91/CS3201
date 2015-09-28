@@ -2,7 +2,7 @@
 #include "boost/unordered_set.hpp"
 
 using namespace std;
-using boost::unordered_set;
+using namespace boost;
 
 class PQLController {
 

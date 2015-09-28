@@ -360,7 +360,7 @@ void ModifiesClauseTest::tearDown() {
 CPPUNIT_TEST_SUITE_REGISTRATION( ModifiesClauseTest );
 
 void ModifiesClauseTest::testFixedFixedStmtPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
 	modifiesBuilder->setArg(1, "1");
 	modifiesBuilder->setArgFixed(1, true);
@@ -373,11 +373,11 @@ void ModifiesClauseTest::testFixedFixedStmtPass() {
 
 	bool evalResult = m1->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedFixedStmtFail() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("3");
 	mod->setFirstArgFixed(true);
@@ -397,11 +397,11 @@ void ModifiesClauseTest::testFixedFixedStmtFail() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedFixedProcPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("zumba");
 	mod->setFirstArgFixed(true);
@@ -421,11 +421,11 @@ void ModifiesClauseTest::testFixedFixedProcPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedFixedProcFail() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("zumba");
 	mod->setFirstArgFixed(true);
@@ -445,11 +445,11 @@ void ModifiesClauseTest::testFixedFixedProcFail() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testGenericGenericPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("_");
 	mod->setFirstArgFixed(false);
@@ -469,11 +469,11 @@ void ModifiesClauseTest::testGenericGenericPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testGenericFixedPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("_");
 	mod->setFirstArgFixed(false);
@@ -493,11 +493,11 @@ void ModifiesClauseTest::testGenericFixedPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testGenericFixedFail() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("_");
 	mod->setFirstArgFixed(false);
@@ -517,11 +517,11 @@ void ModifiesClauseTest::testGenericFixedFail() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedGenericStmtPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("7");
 	mod->setFirstArgFixed(true);
@@ -541,11 +541,11 @@ void ModifiesClauseTest::testFixedGenericStmtPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedGenericStmtFail() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("15");
 	mod->setFirstArgFixed(true);
@@ -565,11 +565,11 @@ void ModifiesClauseTest::testFixedGenericStmtFail() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedGenericProcPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("zumba");
 	mod->setFirstArgFixed(true);
@@ -589,11 +589,11 @@ void ModifiesClauseTest::testFixedGenericProcPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedGenericProcFail() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("hello");
 	mod->setFirstArgFixed(true);
@@ -613,11 +613,11 @@ void ModifiesClauseTest::testFixedGenericProcFail() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedSynStmtPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("2");
 	mod->setFirstArgFixed(true);
@@ -637,11 +637,11 @@ void ModifiesClauseTest::testFixedSynStmtPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void ModifiesClauseTest::testFixedSynStmtFail() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("12");
 	mod->setFirstArgFixed(true);
@@ -661,11 +661,11 @@ void ModifiesClauseTest::testFixedSynStmtFail() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedSynProcPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("zumba");
 	mod->setFirstArgFixed(true);
@@ -685,11 +685,11 @@ void ModifiesClauseTest::testFixedSynProcPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 7);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
 }
 
 void ModifiesClauseTest::testFixedSynProcFail() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("hello");
 	mod->setFirstArgFixed(true);
@@ -709,11 +709,11 @@ void ModifiesClauseTest::testFixedSynProcFail() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testGenericSynPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("_");
 	mod->setFirstArgFixed(false);
@@ -733,11 +733,11 @@ void ModifiesClauseTest::testGenericSynPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 7);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
 }
 
 void ModifiesClauseTest::testSynFixedStmtPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("s");
 	mod->setFirstArgFixed(false);
@@ -757,11 +757,11 @@ void ModifiesClauseTest::testSynFixedStmtPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 3);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 3);
 }
 
 void ModifiesClauseTest::testSynFixedStmtFail() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("s");
 	mod->setFirstArgFixed(false);
@@ -781,11 +781,11 @@ void ModifiesClauseTest::testSynFixedStmtFail() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testSynFixedProcPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("p");
 	mod->setFirstArgFixed(false);
@@ -805,11 +805,11 @@ void ModifiesClauseTest::testSynFixedProcPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void ModifiesClauseTest::testSynFixedProcFail() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("p");
 	mod->setFirstArgFixed(false);
@@ -829,11 +829,11 @@ void ModifiesClauseTest::testSynFixedProcFail() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testSynFixedWhilePass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("w");
 	mod->setFirstArgFixed(false);
@@ -853,11 +853,11 @@ void ModifiesClauseTest::testSynFixedWhilePass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void ModifiesClauseTest::testSynFixedWhileFail() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("w");
 	mod->setFirstArgFixed(false);
@@ -877,11 +877,11 @@ void ModifiesClauseTest::testSynFixedWhileFail() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testSynFixedIfPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("if");
 	mod->setFirstArgFixed(false);
@@ -901,11 +901,11 @@ void ModifiesClauseTest::testSynFixedIfPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void ModifiesClauseTest::testSynFixedIfFail() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("if");
 	mod->setFirstArgFixed(false);
@@ -925,11 +925,11 @@ void ModifiesClauseTest::testSynFixedIfFail() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testSynFixedAssgPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("a");
 	mod->setFirstArgFixed(false);
@@ -949,11 +949,11 @@ void ModifiesClauseTest::testSynFixedAssgPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 2);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
 }
 
 void ModifiesClauseTest::testSynFixedAssgFail() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("s");
 	mod->setFirstArgFixed(false);
@@ -973,11 +973,11 @@ void ModifiesClauseTest::testSynFixedAssgFail() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testSynGenericProcPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("p");
 	mod->setFirstArgFixed(false);
@@ -997,11 +997,11 @@ void ModifiesClauseTest::testSynGenericProcPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void ModifiesClauseTest::testSynGenericIfPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("if");
 	mod->setFirstArgFixed(false);
@@ -1021,11 +1021,11 @@ void ModifiesClauseTest::testSynGenericIfPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void ModifiesClauseTest::testSynGenericWhilePass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("if");
 	mod->setFirstArgFixed(false);
@@ -1045,11 +1045,11 @@ void ModifiesClauseTest::testSynGenericWhilePass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void ModifiesClauseTest::testSynGenericStmtPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("s");
 	mod->setFirstArgFixed(false);
@@ -1069,11 +1069,11 @@ void ModifiesClauseTest::testSynGenericStmtPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 11);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 11);
 }
 
 void ModifiesClauseTest::testSynGenericAssgPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("a");
 	mod->setFirstArgFixed(false);
@@ -1093,11 +1093,11 @@ void ModifiesClauseTest::testSynGenericAssgPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 9);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 9);
 }
 
 void ModifiesClauseTest::testSynSynProcPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("p");
 	mod->setFirstArgFixed(false);
@@ -1117,11 +1117,11 @@ void ModifiesClauseTest::testSynSynProcPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 7);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
 }
 
 void ModifiesClauseTest::testSynSynIfPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("if");
 	mod->setFirstArgFixed(false);
@@ -1141,11 +1141,11 @@ void ModifiesClauseTest::testSynSynIfPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 2);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
 }
 
 void ModifiesClauseTest::testSynSynWhilePass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("w");
 	mod->setFirstArgFixed(false);
@@ -1165,11 +1165,11 @@ void ModifiesClauseTest::testSynSynWhilePass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void ModifiesClauseTest::testSynSynStmtPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("s");
 	mod->setFirstArgFixed(false);
@@ -1189,11 +1189,11 @@ void ModifiesClauseTest::testSynSynStmtPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 12);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 12);
 }
 
 void ModifiesClauseTest::testSynSynAssgPass() {
-	Results* result = new Results();
+	Result* result = new Result();
 	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("a");
 	mod->setFirstArgFixed(false);
@@ -1213,5 +1213,5 @@ void ModifiesClauseTest::testSynSynAssgPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 9);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 9);
 }
