@@ -50,6 +50,11 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("PatternWhileClause
 //unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("QueryEvaluatorTest").makeTest());
 //unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("QueryParserTest").makeTest());
 
+//Result
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("SingleSynInsertTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("MultiSynInsertTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ResultTest").makeTest());
+
 CppUnit::TestFactoryRegistry::getRegistry().addTestToSuite(unitSuite);
 CppUnit::TextUi::TestRunner runner;
 

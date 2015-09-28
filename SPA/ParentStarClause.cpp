@@ -56,8 +56,8 @@ unordered_set<string> ParentStarClause::getAllS1() {
 	return unordered_set<string>();
 }
 //Parent(s1,s2)
-Results::ResultsTable* ParentStarClause::getAllS1AndS2() {
-	return new Results::ResultsTable;
+unordered_set<vector<string>> ParentStarClause::getAllS1AndS2() {
+	return unordered_set<vector<string>>();
 }
 
 

@@ -37,7 +37,7 @@ CNode* CFG::getProcedure(string procName) {
 		return NULL;
 	}
 
-	for(int i = 0; i < procedures.size(); i++) {
+	for(size_t i = 0; i < procedures.size(); i++) {
 		CNode* proc = procedures.at(i);
 		if(proc->getName() == procName) {
 			return proc;
@@ -53,7 +53,7 @@ bool CFG::hasProcedure(string procName) {
 		return false;
 	}
 
-	for(int i = 0; i < procedures.size(); i++) {
+	for(size_t i = 0; i < procedures.size(); i++) {
 		CNode* proc = procedures.at(i);
 		if(proc->getName() == procName) {
 			return true;

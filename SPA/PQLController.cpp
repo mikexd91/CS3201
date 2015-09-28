@@ -1,12 +1,9 @@
 #include "PQLController.h"
 #include "QueryParser.h"
 #include "QueryEvaluator.h"
+#include "Result.h"
 #include <string>
 #include <iostream>
-#include <set>
-
-using namespace std;
-
 
 PQLController::PQLController(void) {
 
@@ -27,10 +24,10 @@ unordered_set<string> PQLController::parse(string query) {
 		Query q= QueryParser::parseQuery(query);
 		cout << "parsed query";
 		QueryEvaluator* qe = new QueryEvaluator();
-		Results* resObj = qe->evaluateQuery(q);
+		Result* resObj = qe->evaluateQuery(q);
 		vector<StringPair> selectList = q.getSelectList();
-		cout << resObj->getResultsTableSize() << endl;
-		unordered_set<string> valueSet = qe->getValuesToPrint(resObj, selectList);
+		cout << resObj->getResultTableSize() << endl;
+		boost::unordered_set<string> valueSet = qe->getValuesToPrint(resObj, selectList);
 		cout << "vauesetsize = " << valueSet.size() << endl;
 		//delete q;
 		//delete resObj;
