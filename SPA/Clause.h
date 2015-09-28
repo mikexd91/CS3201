@@ -21,7 +21,8 @@ enum ClauseType{
 	AFFETCSSTAR_,
 	PATTERNASSG_,
 	PATTERNIF_,
-	PATTERNWHILE_
+	PATTERNWHILE_,
+	WITH_
 };
 
 class Clause {
