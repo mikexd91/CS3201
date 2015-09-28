@@ -1,9 +1,9 @@
 #pragma once
-
-#include "Clause.h"
+#include "SuchThatClause.h"
 #include "ParentClause.h"
 
-class ParentStarClause : public ParentClause{
+class ParentStarClause 
+	: public SuchThatClause {
 public:
 	ParentStarClause(void);
 	~ParentStarClause(void);
@@ -28,7 +28,7 @@ protected:
 	//Parent(s1,__)
 	unordered_set<string> getAllS1();
 	//Parent(s1,s2)
-	Results::ResultsTable* getAllS1AndS2();
+	unordered_set<vector<string>> getAllS1AndS2();
 
 
 private:

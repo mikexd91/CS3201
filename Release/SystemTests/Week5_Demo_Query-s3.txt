@@ -48,7 +48,7 @@ while w;
 Select w such that Parent(_, w)
 17, 18
 5000
-3 - uses-modifies: multiple clauses
+14 - uses-modifies: multiple clauses
 assign a; variable v;
 Select a such that Uses(a, v) and Modifies(a, v)
 6, 7, 8

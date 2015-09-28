@@ -28,7 +28,7 @@ class QueryEvaluatorTest: public CPPUNIT_NS::TestFixture {
 	
 	// Testing Modifies clause, 1 clause in query
 	// Not all synonyms in select list are appearing in clause list
-	//CPPUNIT_TEST( testHalfInClauseWithModifiesSynSynStmtPass );
+	CPPUNIT_TEST( testHalfInClauseWithModifiesSynSynStmtPass );
 	
 	// Testing Modifies clause, 1 clause in query
 	// No synonyms in select list match synonyms in clause list

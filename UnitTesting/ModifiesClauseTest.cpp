@@ -1,5 +1,6 @@
 #include <cppunit/config/SourcePrefix.h>
 #include "ModifiesClauseTest.h"
+#include "../SPA/SuchThatClauseBuilder.h"
 #include "../SPA/ModifiesClause.h"
 #include "../SPA/AST.h"
 #include "../SPA/AssgNode.h"
@@ -359,577 +360,858 @@ void ModifiesClauseTest::tearDown() {
 CPPUNIT_TEST_SUITE_REGISTRATION( ModifiesClauseTest );
 
 void ModifiesClauseTest::testFixedFixedStmtPass() {
-	Results* result = new Results();
-	ModifiesClause* m1 = new ModifiesClause();
-	m1->setFirstArg("1");
-	m1->setFirstArgFixed(true);
-	m1->setFirstArgType(ARG_STATEMENT);
-	m1->setSecondArg("i");
-	m1->setSecondArgFixed(true);
-	m1->setSecondArgType(ARG_VARIABLE);
+	Result* result = new Result();
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "1");
+	modifiesBuilder->setArgFixed(1, true);
+	modifiesBuilder->setArgType(1, ARG_STATEMENT);
+	modifiesBuilder->setArg(2, "i");
+	modifiesBuilder->setArgFixed(2, true);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* m1 = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 
 	bool evalResult = m1->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedFixedStmtFail() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("3");
 	mod->setFirstArgFixed(true);
 	mod->setFirstArgType(ARG_STATEMENT);
 	mod->setSecondArg("i");
 	mod->setSecondArgFixed(true);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "3");
+	modifiesBuilder->setArgFixed(1, true);
+	modifiesBuilder->setArgType(1, ARG_STATEMENT);
+	modifiesBuilder->setArg(2, "i");
+	modifiesBuilder->setArgFixed(2, true);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedFixedProcPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("zumba");
 	mod->setFirstArgFixed(true);
 	mod->setFirstArgType(ARG_PROCEDURE);
 	mod->setSecondArg("w");
 	mod->setSecondArgFixed(true);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "zumba");
+	modifiesBuilder->setArgFixed(1, true);
+	modifiesBuilder->setArgType(1, ARG_PROCEDURE);
+	modifiesBuilder->setArg(2, "w");
+	modifiesBuilder->setArgFixed(2, true);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedFixedProcFail() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("zumba");
 	mod->setFirstArgFixed(true);
 	mod->setFirstArgType(ARG_PROCEDURE);
 	mod->setSecondArg("a");
 	mod->setSecondArgFixed(true);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "zumba");
+	modifiesBuilder->setArgFixed(1, true);
+	modifiesBuilder->setArgType(1, ARG_PROCEDURE);
+	modifiesBuilder->setArg(2, "a");
+	modifiesBuilder->setArgFixed(2, true);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testGenericGenericPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("_");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_GENERIC);
 	mod->setSecondArg("_");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_GENERIC);
+	mod->setSecondArgType(ARG_GENERIC);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "_");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_GENERIC);
+	modifiesBuilder->setArg(2, "_");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_GENERIC);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testGenericFixedPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("_");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_GENERIC);
 	mod->setSecondArg("i");
 	mod->setSecondArgFixed(true);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "_");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_GENERIC);
+	modifiesBuilder->setArg(2, "i");
+	modifiesBuilder->setArgFixed(2, true);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testGenericFixedFail() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("_");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_GENERIC);
 	mod->setSecondArg("f");
 	mod->setSecondArgFixed(true);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "_");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_GENERIC);
+	modifiesBuilder->setArg(2, "f");
+	modifiesBuilder->setArgFixed(2, true);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedGenericStmtPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("7");
 	mod->setFirstArgFixed(true);
 	mod->setFirstArgType(ARG_STATEMENT);
 	mod->setSecondArg("_");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_GENERIC);
+	mod->setSecondArgType(ARG_GENERIC);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "7");
+	modifiesBuilder->setArgFixed(1, true);
+	modifiesBuilder->setArgType(1, ARG_STATEMENT);
+	modifiesBuilder->setArg(2, "_");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_GENERIC);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedGenericStmtFail() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("15");
 	mod->setFirstArgFixed(true);
 	mod->setFirstArgType(ARG_STATEMENT);
 	mod->setSecondArg("_");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_GENERIC);
+	mod->setSecondArgType(ARG_GENERIC);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "15");
+	modifiesBuilder->setArgFixed(1, true);
+	modifiesBuilder->setArgType(1, ARG_STATEMENT);
+	modifiesBuilder->setArg(2, "_");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_GENERIC);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedGenericProcPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("zumba");
 	mod->setFirstArgFixed(true);
 	mod->setFirstArgType(ARG_PROCEDURE);
 	mod->setSecondArg("_");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_GENERIC);
+	mod->setSecondArgType(ARG_GENERIC);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "zumba");
+	modifiesBuilder->setArgFixed(1, true);
+	modifiesBuilder->setArgType(1, ARG_PROCEDURE);
+	modifiesBuilder->setArg(2, "_");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_GENERIC);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedGenericProcFail() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("hello");
 	mod->setFirstArgFixed(true);
 	mod->setFirstArgType(ARG_PROCEDURE);
 	mod->setSecondArg("_");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_GENERIC);
+	mod->setSecondArgType(ARG_GENERIC);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "hello");
+	modifiesBuilder->setArgFixed(1, true);
+	modifiesBuilder->setArgType(1, ARG_PROCEDURE);
+	modifiesBuilder->setArg(2, "_");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_GENERIC);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedSynStmtPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("2");
 	mod->setFirstArgFixed(true);
 	mod->setFirstArgType(ARG_STATEMENT);
 	mod->setSecondArg("v");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "2");
+	modifiesBuilder->setArgFixed(1, true);
+	modifiesBuilder->setArgType(1, ARG_STATEMENT);
+	modifiesBuilder->setArg(2, "v");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void ModifiesClauseTest::testFixedSynStmtFail() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("12");
 	mod->setFirstArgFixed(true);
 	mod->setFirstArgType(ARG_STATEMENT);
 	mod->setSecondArg("v");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "12");
+	modifiesBuilder->setArgFixed(1, true);
+	modifiesBuilder->setArgType(1, ARG_STATEMENT);
+	modifiesBuilder->setArg(2, "v");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testFixedSynProcPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("zumba");
 	mod->setFirstArgFixed(true);
 	mod->setFirstArgType(ARG_PROCEDURE);
 	mod->setSecondArg("v");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "zumba");
+	modifiesBuilder->setArgFixed(1, true);
+	modifiesBuilder->setArgType(1, ARG_PROCEDURE);
+	modifiesBuilder->setArg(2, "v");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 7);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
 }
 
 void ModifiesClauseTest::testFixedSynProcFail() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("hello");
 	mod->setFirstArgFixed(true);
 	mod->setFirstArgType(ARG_PROCEDURE);
 	mod->setSecondArg("v");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "hello");
+	modifiesBuilder->setArgFixed(1, true);
+	modifiesBuilder->setArgType(1, ARG_PROCEDURE);
+	modifiesBuilder->setArg(2, "v");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testGenericSynPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("_");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_GENERIC);
 	mod->setSecondArg("v");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "_");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_GENERIC);
+	modifiesBuilder->setArg(2, "v");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 7);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
 }
 
 void ModifiesClauseTest::testSynFixedStmtPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("s");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_STATEMENT);
 	mod->setSecondArg("x");
 	mod->setSecondArgFixed(true);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "s");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_STATEMENT);
+	modifiesBuilder->setArg(2, "x");
+	modifiesBuilder->setArgFixed(2, true);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 3);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 3);
 }
 
 void ModifiesClauseTest::testSynFixedStmtFail() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("s");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_STATEMENT);
 	mod->setSecondArg("a");
 	mod->setSecondArgFixed(true);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "s");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_STATEMENT);
+	modifiesBuilder->setArg(2, "a");
+	modifiesBuilder->setArgFixed(2, true);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testSynFixedProcPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("p");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_PROCEDURE);
 	mod->setSecondArg("z");
 	mod->setSecondArgFixed(true);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "p");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_PROCEDURE);
+	modifiesBuilder->setArg(2, "z");
+	modifiesBuilder->setArgFixed(2, true);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void ModifiesClauseTest::testSynFixedProcFail() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("p");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_PROCEDURE);
 	mod->setSecondArg("l");
 	mod->setSecondArgFixed(true);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "p");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_PROCEDURE);
+	modifiesBuilder->setArg(2, "l");
+	modifiesBuilder->setArgFixed(2, true);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testSynFixedWhilePass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("w");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_WHILE);
 	mod->setSecondArg("x");
 	mod->setSecondArgFixed(true);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "w");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_WHILE);
+	modifiesBuilder->setArg(2, "x");
+	modifiesBuilder->setArgFixed(2, true);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void ModifiesClauseTest::testSynFixedWhileFail() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("w");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_WHILE);
 	mod->setSecondArg("j");
 	mod->setSecondArgFixed(true);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "w");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_WHILE);
+	modifiesBuilder->setArg(2, "j");
+	modifiesBuilder->setArgFixed(2, true);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testSynFixedIfPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("if");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_IF);
 	mod->setSecondArg("z");
 	mod->setSecondArgFixed(true);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "if");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_IF);
+	modifiesBuilder->setArg(2, "z");
+	modifiesBuilder->setArgFixed(2, true);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void ModifiesClauseTest::testSynFixedIfFail() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("if");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_IF);
 	mod->setSecondArg("a");
 	mod->setSecondArgFixed(true);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "if");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_IF);
+	modifiesBuilder->setArg(2, "a");
+	modifiesBuilder->setArgFixed(2, true);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testSynFixedAssgPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("a");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_ASSIGN);
 	mod->setSecondArg("x");
 	mod->setSecondArgFixed(true);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "a");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_ASSIGN);
+	modifiesBuilder->setArg(2, "x");
+	modifiesBuilder->setArgFixed(2, true);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 2);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
 }
 
 void ModifiesClauseTest::testSynFixedAssgFail() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("s");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_ASSIGN);
 	mod->setSecondArg("a");
 	mod->setSecondArgFixed(true);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "s");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_ASSIGN);
+	modifiesBuilder->setArg(2, "a");
+	modifiesBuilder->setArgFixed(2, true);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
 void ModifiesClauseTest::testSynGenericProcPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("p");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_PROCEDURE);
 	mod->setSecondArg("_");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_GENERIC);
+	mod->setSecondArgType(ARG_GENERIC);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "p");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_PROCEDURE);
+	modifiesBuilder->setArg(2, "_");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_GENERIC);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void ModifiesClauseTest::testSynGenericIfPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("if");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_IF);
 	mod->setSecondArg("_");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_GENERIC);
+	mod->setSecondArgType(ARG_GENERIC);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "if");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_IF);
+	modifiesBuilder->setArg(2, "_");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_GENERIC);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void ModifiesClauseTest::testSynGenericWhilePass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("if");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_IF);
 	mod->setSecondArg("_");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_GENERIC);
+	mod->setSecondArgType(ARG_GENERIC);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "if");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_IF);
+	modifiesBuilder->setArg(2, "_");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_GENERIC);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void ModifiesClauseTest::testSynGenericStmtPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("s");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_STATEMENT);
 	mod->setSecondArg("_");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_GENERIC);
+	mod->setSecondArgType(ARG_GENERIC);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "s");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_STATEMENT);
+	modifiesBuilder->setArg(2, "_");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_GENERIC);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 11);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 11);
 }
 
 void ModifiesClauseTest::testSynGenericAssgPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("a");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_ASSIGN);
 	mod->setSecondArg("_");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_GENERIC);
+	mod->setSecondArgType(ARG_GENERIC);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "a");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_ASSIGN);
+	modifiesBuilder->setArg(2, "_");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_GENERIC);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 9);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 9);
 }
 
 void ModifiesClauseTest::testSynSynProcPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("p");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_PROCEDURE);
 	mod->setSecondArg("v");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "p");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_PROCEDURE);
+	modifiesBuilder->setArg(2, "v");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 7);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
 }
 
 void ModifiesClauseTest::testSynSynIfPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("if");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_IF);
 	mod->setSecondArg("v");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "if");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_IF);
+	modifiesBuilder->setArg(2, "v");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 2);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
 }
 
 void ModifiesClauseTest::testSynSynWhilePass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("w");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_WHILE);
 	mod->setSecondArg("v");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "w");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_WHILE);
+	modifiesBuilder->setArg(2, "v");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void ModifiesClauseTest::testSynSynStmtPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("s");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_STATEMENT);
 	mod->setSecondArg("v");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "s");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_STATEMENT);
+	modifiesBuilder->setArg(2, "v");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 12);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 12);
 }
 
 void ModifiesClauseTest::testSynSynAssgPass() {
-	Results* result = new Results();
-	ModifiesClause* mod = new ModifiesClause();
+	Result* result = new Result();
+	/*ModifiesClause* mod = new ModifiesClause();
 	mod->setFirstArg("a");
 	mod->setFirstArgFixed(false);
 	mod->setFirstArgType(ARG_ASSIGN);
 	mod->setSecondArg("v");
 	mod->setSecondArgFixed(false);
-	mod->setSecondArgType(ARG_VARIABLE);
+	mod->setSecondArgType(ARG_VARIABLE);*/
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "a");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_ASSIGN);
+	modifiesBuilder->setArg(2, "v");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
 	CPPUNIT_ASSERT(mod->isValid());
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultsTableSize() == 9);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 9);
 }
