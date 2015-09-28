@@ -14,3 +14,8 @@ PKB* PKB::getInstance() {
 	return pkbInstance;
 }
 
+// pass parsed data to PDR
+void PKB::processParsedData(ParsedData data) {
+	PDR* pdr = PDR.getInstance();
+	pdr->processParsedData(data);
+}

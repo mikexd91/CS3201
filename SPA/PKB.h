@@ -6,6 +6,9 @@
 #include "Statement.h"
 #include "Variable.h"
 #include "Procedure.h"
+#include "PDR.h"
+#include "ParsedData.h"
+
 #include <utility>
 #include <boost/unordered_set.hpp>
 
@@ -15,6 +18,7 @@ class PKB {
 
 public:
 	static PKB* getInstance();												// get instance of PKB
+	void processParsedData(ParsedData);										// pass parsed data to PDR
 
 	/*----- USES -----*/
 	bool isStmtUsingVar(int, string);										// evaluates whether stmt uses variable
