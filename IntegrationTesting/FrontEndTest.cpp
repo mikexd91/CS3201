@@ -29,6 +29,8 @@ void FrontEndTest::setUp() {
 void FrontEndTest::tearDown() {
 	PDR::resetInstanceFlag();
 	AST::reset();
+	CFG::reset();
+	CFGBuilder::resetInstanceFlag();
 	constTable->clearTable();
 	VarTable::reset();
 	procTable->clearTable();
@@ -40,9 +42,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FrontEndTest );
 // method to test adding of proc to table
 void FrontEndTest::testAddProc() {
 	parser.parse("procedure test {x = 2; y=x+z; z=x+y+z; while i {y=x+1; a=a+b;} }");
-	//ProcTable* procTable = ProcTable::getInstance();
-	//StmtTable* stmtTable1 = StmtTable::getInstance();
-	//VarTable* varTable1 = VarTable::getInstance();
+	ProcTable* procTable = ProcTable::getInstance();
+	StmtTable* stmtTable1 = StmtTable::getInstance();
+	VarTable* varTable1 = VarTable::getInstance();
 	CPPUNIT_ASSERT(procTable->contains("test"));
 	
 	Statement* stmt1 = stmtTable1->getStmtObj(1);
@@ -152,7 +154,7 @@ void FrontEndTest::testFalseAddProc() {
 
 //TO DO INVALIDATION!
 void FrontEndTest::testWhileAST() {
-	parser.parse("procedure whileTest {while x{}}");
+	parser.parse("procedure whileTest {while x{y = x;}}");
 	CPPUNIT_ASSERT(ast->contains("whileTest"));
 	CPPUNIT_ASSERT(ast->getProcNode("whileTest")->hasChildren() == true);
 	CPPUNIT_ASSERT(ast->getProcNode("whileTest")->getStmtLstNode()->getChildren().at(0)->getNodeType() == WHILE_STMT_);
@@ -259,7 +261,7 @@ void FrontEndTest::testSiblingsAST() {
 }
 
 void FrontEndTest::testMultipleProcAST() {
-	parser.parse("procedure proc1{} procedure proc2{} procedure proc3{}");
+	parser.parse("procedure proc1{x = 1;} procedure proc2{x = 1;} procedure proc3{x = 1;}");
 	CPPUNIT_ASSERT(ast->contains("proc1"));
 	CPPUNIT_ASSERT(ast->contains("proc2"));
 	CPPUNIT_ASSERT(ast->contains("proc3"));
@@ -438,7 +440,7 @@ void FrontEndTest::testParent() {
 }
 
 void FrontEndTest::testStmtTableAllWhile() {
-	parser.parse("procedure proc3 { while x {} while y{} while z{x = 2; while w {}} }");
+	parser.parse("procedure proc3 { while x {x = 2;} while y{x = 3;} while z{x = 2; while w {x = 2;}} }");
 
 	unordered_set<Statement*> whileStmts = stmtTable1->getWhileStmts();
 	CPPUNIT_ASSERT(whileStmts.size() == 4);
@@ -455,19 +457,19 @@ void FrontEndTest::testStmtTableAllWhile() {
 				CPPUNIT_ASSERT(stmt->getUses() == usesSet);
 				break;
 			}
-			case 2: {
+			case 3: {
 				string arrInit[] = {"y"};
 				unordered_set<string> usesSet(arrInit, arrInit + 1);
 				CPPUNIT_ASSERT(stmt->getUses() == usesSet);
 				break;
 			}
-			case 3: {
+			case 5: {
 				string arrInit[] = {"w", "z"};
 				unordered_set<string> usesSet(arrInit, arrInit + 2);
 				CPPUNIT_ASSERT(stmt->getUses() == usesSet);
 				break;
 			}
-			case 5: {
+			case 7: {
 				string arrInit[] = {"w"};
 				unordered_set<string> usesSet(arrInit, arrInit + 1);
 				stmt->getUses();

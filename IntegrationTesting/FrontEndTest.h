@@ -8,7 +8,6 @@ class FrontEndTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testParent );
 	CPPUNIT_TEST( testAddProc );
 	CPPUNIT_TEST( testAssign );
-	CPPUNIT_TEST( testFalseAddProc );
 	CPPUNIT_TEST( testWhileAST );
 	CPPUNIT_TEST( testNestedWhileAST );
 	CPPUNIT_TEST( testSiblingsAST );
@@ -34,6 +33,9 @@ class FrontEndTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testModifyingMultipleProc );
 	CPPUNIT_TEST( testModifyingMultipleProcCall );
 	CPPUNIT_TEST( testUsingMultipleProcCall );
+
+	//CPPUNIT_TEST( testFalseAddProc );
+
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -74,4 +76,6 @@ public:
 	void testModifyingMultipleProc();
 	void testModifyingMultipleProcCall();
 	void testUsingMultipleProcCall();
+
+	void testCFGProcAssig();
 };
