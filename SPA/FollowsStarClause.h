@@ -2,18 +2,16 @@
 #include "SuchThatClause.h"
 #include "StmtTable.h"
 
-class FollowsStarClause : public SuchThatClause {
+class FollowsStarClause 
+	: public SuchThatClause {
 
 public:
 	FollowsStarClause(void);
 	~FollowsStarClause(void);
 	bool isValid(void);
-	
-private:
-	
+
 protected:
 	StmtTable* stmtTable;
-
 	//e.g. Parent(string,string)
 	bool evaluateS1FixedS2Fixed(string, string);
 	//e.g. Parent(_,_)
@@ -32,6 +30,8 @@ protected:
 	unordered_set<string> getAllS1();
 	//Parent(s1,s2)
 	unordered_set<vector<string>> getAllS1AndS2();
+
+private:
 
 };
 

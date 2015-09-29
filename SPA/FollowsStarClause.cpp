@@ -1,4 +1,4 @@
- #include "FollowsStarClause.h"
+#include "FollowsStarClause.h"
 #include "Utils.h"
 #include "StmtTable.h"
 #include <iostream>
@@ -32,13 +32,12 @@ bool FollowsStarClause::isValid(void){
 	return (firstArg && secondArg);
 }
 
-// e.g. Follows*(s1,s2)
 bool FollowsStarClause::evaluateS1FixedS2Fixed(string s1, string s2) {
 	int stmtNum1 = atoi(s1.c_str());
 	int stmtNum2 = atoi(s2.c_str());
 	Statement* stmtObj1 = stmtTable->getStmtObj(stmtNum1);
 	unordered_set<int> followsStarSet = stmtObj1->getFollowsStarAfter();
-	bool isExist = followsStarSet.find(stmtNum2) == followsStarSet.end();
+	bool isExist = followsStarSet.find(stmtNum2) != followsStarSet.end();
 	return isExist;
 };
 
@@ -130,6 +129,19 @@ unordered_set<string> FollowsStarClause::getAllS1() {
 	return res;
 }
 
-Results::ResultsTable* FollowsStarClause::getAllS1AndS2() {
-	return new Results::ResultsTable;
+unordered_set<vector<string>> FollowsStarClause::getAllS1AndS2() {
+	unordered_set<vector<string>> result = unordered_set<vector<string>>();
+	unordered_set<Statement*> stmtSet = stmtTable->getAllStmts();
+	for (auto iter1 = stmtSet.begin(); iter1 != stmtSet.end(); ++iter1) {
+		Statement* stmtPtr = *iter1;
+		unordered_set<int> followsStarAfterSet = stmtPtr->getFollowsStarAfter();
+		for (auto iter2 = followsStarAfterSet.begin(); iter2 != followsStarAfterSet.end(); ++iter2) {
+			vector<string> values = vector<string>();
+			string s1 = boost::lexical_cast<string>(stmtPtr->getStmtNum());
+			values.push_back(s1);
+			values.push_back(boost::lexical_cast<string>(*iter2));
+			result.insert(values);
+		}
+	}
+	return result;
 }

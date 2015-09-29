@@ -65,13 +65,13 @@ void SuchThatClauseBuilder::setArgFixed(int argNum, bool argFixed) {
 
 SuchThatClause* SuchThatClauseBuilder::build() {
 	SuchThatClause* clause;
-	/*if (this->clauseType == FOLLOWSSTAR_){
+	if (this->clauseType == FOLLOWSSTAR_){
 		clause = new FollowsStarClause();
 	
 	} else if (this->clauseType == PARENTSTAR_){
 		clause = new ParentStarClause();
 	
-	} else */if (this->clauseType == FOLLOWS_){
+	} else if (this->clauseType == FOLLOWS_){
 		clause = new FollowsClause();
 		
 	} else if (this->clauseType == PARENT_){
