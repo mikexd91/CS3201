@@ -142,7 +142,6 @@
     <ClCompile Include="ProcNodeTest.cpp" />
     <ClCompile Include="ProcTableTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
-    <ClCompile Include="ResultsTest.cpp" />
     <ClCompile Include="StmtLstNodeTest.cpp" />
     <ClCompile Include="StmtTableTest.cpp" />
     <ClCompile Include="TNodeTest.cpp" />
@@ -165,7 +164,6 @@
     <ClInclude Include="ProcNodeTest.h" />
     <ClInclude Include="ProcTableTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
-    <ClInclude Include="ResultsTest.h" />
     <ClInclude Include="StmtLstNodeTest.h" />
     <ClInclude Include="StmtTableTest.h" />
     <ClInclude Include="TNodeTest.h" />
