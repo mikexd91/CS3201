@@ -14,6 +14,7 @@ class FollowsStarClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testFollowsStarFixedSynPass );
 	CPPUNIT_TEST( testFollowsStarFixedSynFail );
 	CPPUNIT_TEST( testFollowsStarSynSynPass );
+	CPPUNIT_TEST( testFollowsStarSynSynSameFail );
 	CPPUNIT_TEST( testFollowsStarFirstUnderscoreFixedPass );
 	CPPUNIT_TEST( testFollowsStarFirstUnderscoreSynPass );
 	CPPUNIT_TEST( testFollowsStarFixedSecondUnderscorePass );
@@ -35,12 +36,12 @@ public:
 	void testFollowsStarFixedSynPass();
 	void testFollowsStarFixedSynFail();
 	void testFollowsStarSynSynPass();
+	void testFollowsStarSynSynSameFail();
 	void testFollowsStarFirstUnderscoreFixedPass();
 	void testFollowsStarFirstUnderscoreSynPass();
 	void testFollowsStarFixedSecondUnderscorePass();
 	void testFollowsStarSynSecondUnderscorePass();
 	void testFollowsStarBothUnderscorePass();
 	void testFollowsStarStmtOverflow();
-
 };
     

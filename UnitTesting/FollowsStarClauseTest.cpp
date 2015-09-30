@@ -303,6 +303,10 @@ void FollowsStarClauseTest::setUp() {
 	Statement* stmt10 = new Statement();
 	stmt10->setStmtNum(10);
 	stmt10->setType(ASSIGN_STMT_);
+	stmt10->setFollowsAfter(11);
+	int followsStarAfterArr10[] = {11, 12};
+	unordered_set<int> followsStarAfter10(followsStarAfterArr10, followsStarAfterArr10 + 2);
+	stmt10->setFollowsStarAfter(followsStarAfter10);
 	unordered_set<string> mods10;
 	mods10.insert("z");
 	stmt10->setModifies(mods10);
@@ -312,7 +316,11 @@ void FollowsStarClauseTest::setUp() {
 	Statement* stmt11 = new Statement();
 	stmt11->setStmtNum(11);
 	stmt11->setType(ASSIGN_STMT_);
+	stmt11->setFollowsBefore(10);
 	stmt11->setFollowsAfter(12);
+	int followsStarBeforeArr11[] = {10};
+	unordered_set<int> followsStarBefore11(followsStarBeforeArr11, followsStarBeforeArr11 + 1);
+	stmt11->setFollowsStarBefore(followsStarBefore11);
 	int followsStarAfterArr11[] = {12};
 	unordered_set<int> followsStarAfter11(followsStarAfterArr11, followsStarAfterArr11 + 1);
 	stmt11->setFollowsStarAfter(followsStarAfter11);
@@ -326,8 +334,8 @@ void FollowsStarClauseTest::setUp() {
 	stmt12->setStmtNum(12);
 	stmt12->setType(ASSIGN_STMT_);
 	stmt12->setFollowsBefore(11);
-	int followsStarBeforeArr12[] = {11};
-	unordered_set<int> followsStarBefore12(followsStarBeforeArr12, followsStarBeforeArr12 + 1);
+	int followsStarBeforeArr12[] = {10, 11};
+	unordered_set<int> followsStarBefore12(followsStarBeforeArr12, followsStarBeforeArr12 + 2);
 	stmt12->setFollowsStarBefore(followsStarBefore12);
 	unordered_set<string> mods12;
 	mods12.insert("x");
@@ -435,7 +443,7 @@ void FollowsStarClauseTest::testFollowsStarSynFixedPass() {
 	
 	bool evalResult = c1->evaluate(&result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 2);
 	CPPUNIT_ASSERT(result.isSynPresent("a"));
 }
 void FollowsStarClauseTest::testFollowsStarSynFixedFail() {
@@ -445,7 +453,7 @@ void FollowsStarClauseTest::testFollowsStarSynFixedFail() {
 	followsStarBuilder->setArg(1, "a");
 	followsStarBuilder->setArgFixed(1, false);
 	followsStarBuilder->setArgType(1, ARG_STATEMENT);
-	followsStarBuilder->setArg(2, "11");
+	followsStarBuilder->setArg(2, "10");
 	followsStarBuilder->setArgFixed(2, true);
 	followsStarBuilder->setArgType(2, ARG_STATEMENT);
 	
@@ -509,10 +517,33 @@ void FollowsStarClauseTest::testFollowsStarSynSynPass() {
 	
 	bool evalResult = c1->evaluate(&result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result.getResultTableSize() == 29);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 31);
 	CPPUNIT_ASSERT(result.isSynPresent("donkey"));
 	CPPUNIT_ASSERT(result.isSynPresent("kong"));
 }
+
+void FollowsStarClauseTest::testFollowsStarSynSynSameFail() {
+	/*
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "a");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_STATEMENT);
+	followsStarBuilder->setArg(2, "a");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	//CPPUNIT_ASSERT(result.getResultTableSize() == 29);
+	CPPUNIT_ASSERT(result.isSynPresent("a"));
+	*/
+}
+
 void FollowsStarClauseTest::testFollowsStarFirstUnderscoreFixedPass() {
 	Result result = Result();
 	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
@@ -547,7 +578,7 @@ void FollowsStarClauseTest::testFollowsStarFirstUnderscoreSynPass() {
 	
 	bool evalResult = c1->evaluate(&result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result.getResultTableSize() == 8);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 9);
 	CPPUNIT_ASSERT(result.isSynPresent("lala"));
 }
 void FollowsStarClauseTest::testFollowsStarFixedSecondUnderscorePass() {
@@ -584,7 +615,7 @@ void FollowsStarClauseTest::testFollowsStarSynSecondUnderscorePass() {
 	
 	bool evalResult = c1->evaluate(&result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result.getResultTableSize() == 8);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 9);
 	CPPUNIT_ASSERT(result.isSynPresent("dodo"));
 }
 void FollowsStarClauseTest::testFollowsStarBothUnderscorePass() {
@@ -610,10 +641,10 @@ void FollowsStarClauseTest::testFollowsStarStmtOverflow() {
 	Result result = Result();
 	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
 	
-	followsStarBuilder->setArg(1, "11");
+	followsStarBuilder->setArg(1, "-1");
 	followsStarBuilder->setArgFixed(1, true);
 	followsStarBuilder->setArgType(1, ARG_STATEMENT);
-	followsStarBuilder->setArg(2, "15");
+	followsStarBuilder->setArg(2, "1");
 	followsStarBuilder->setArgFixed(2, true);
 	followsStarBuilder->setArgType(2, ARG_STATEMENT);
 	

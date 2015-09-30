@@ -1,20 +1,23 @@
 #include <cppunit/config/SourcePrefix.h>
 #include "FollowsClauseTest.h"
+#include "../SPA/FollowsClause.h"
+#include "../SPA/StmtTable.h"
+#include "../SPA/SuchThatClauseBuilder.h"
+#include "../SPA/Clause.h"
+#include "../SPA/Utils.h"
 #include "../SPA/AST.h"
 #include "../SPA/AssgNode.h"
 #include "../SPA/ConstNode.h"
 #include "../SPA/OpNode.h"
-#include "../SPA/FollowsClause.h"
-#include "../SPA/Utils.h"
-#include "../SPA/StmtTable.h"
-#include "boost\unordered_set.hpp"
+#include "../SPA/WhileNode.h"
+#include "../SPA/IfNode.h"
+#include "../SPA/CallNode.h"
 
-#include <string>
-#include "../SPA/SuchThatClauseBuilder.h"
+#include <iostream>
+#include <boost/foreach.hpp>
 
 using namespace stringconst;
 using namespace std;
-using boost::unordered_set;
 
 void FollowsClauseTest::setUp() {
 	/* testing this source
@@ -25,6 +28,15 @@ void FollowsClauseTest::setUp() {
 		w = i;		//4
 		x = w+k;	//5
 		i = i;		//6
+		while j {	//7
+			x = 4;	//8
+		}
+		if w then { //9
+			z = 2;	//10
+		} else {
+			y = 6;	//11
+			x = 9;  //12
+		}
 	}
 	*/
 
@@ -93,6 +105,38 @@ void FollowsClauseTest::setUp() {
 	assg6->linkExprNode(i6_2);
 	procsl->linkStmtNode(assg6);
 
+	WhileNode* whileNode = new WhileNode(7);
+	VarNode* j7 = new VarNode("j");
+	whileNode->linkVarNode(j7);
+	StmtLstNode* whileStmtLst = new StmtLstNode();
+	whileNode->linkStmtLstNode(whileStmtLst);
+	procsl->linkStmtNode(whileNode);
+
+	AssgNode* assg8 = new AssgNode(8);
+	VarNode* x8 = new VarNode("x");
+	assg8->linkVarNode(x8);
+	whileStmtLst->linkChild(assg8);
+
+	IfNode* ifNode = new IfNode(9);
+	VarNode* w9 = new VarNode("w");
+	ifNode->linkVarNode(w9);
+	StmtLstNode* thenStmtLst = new StmtLstNode();
+	ifNode->linkThenStmtLstNode(thenStmtLst);
+	procsl->linkStmtNode(ifNode);
+
+	AssgNode* assg10 = new AssgNode(10);
+	VarNode* z10 = new VarNode("z");
+	assg10->linkVarNode(z10);
+	thenStmtLst->linkChild(assg10);
+
+	StmtLstNode* elseStmtLst = new StmtLstNode();
+	ifNode->linkElseStmtLstNode(elseStmtLst);
+
+	AssgNode* assg11 = new AssgNode(11);
+	VarNode* y11 = new VarNode("y");
+	assg11->linkVarNode(y11);
+	elseStmtLst->linkChild(assg11);
+
 	ast->addProcNode(proc);
 
 	// to set up the stmttable manually
@@ -102,8 +146,11 @@ void FollowsClauseTest::setUp() {
 	stmt1->setStmtNum(1);
 	stmt1->setType(ASSIGN_STMT_);
 	stmt1->setFollowsAfter(2);
+	int followsStarArr1[] = {2, 3, 4, 5, 6, 7, 9};
+	unordered_set<int> followsStarAfter1(followsStarArr1, followsStarArr1 + 7);
+	stmt1->setFollowsStarAfter(followsStarAfter1);
 	string ivar = "i";
-	unordered_set<string> mods1 = unordered_set<string>();
+	unordered_set<string> mods1;
 	mods1.emplace(ivar);
 	stmt1->setModifies(mods1);
 	stmt1->setTNodeRef(assg1);
@@ -114,8 +161,14 @@ void FollowsClauseTest::setUp() {
 	stmt2->setType(ASSIGN_STMT_);
 	stmt2->setFollowsBefore(1);
 	stmt2->setFollowsAfter(3);
+	int followsStarBeforeArr2[] = {1};
+	unordered_set<int> followsStarBefore2(followsStarBeforeArr2, followsStarBeforeArr2 + 1);
+	stmt2->setFollowsStarBefore(followsStarBefore2);
+	int followsStarAfterArr2[] = {3, 4, 5, 6, 7, 9};
+	unordered_set<int> followsStarAfter2(followsStarAfterArr2, followsStarAfterArr2 + 6);
+	stmt2->setFollowsStarAfter(followsStarAfter2);
 	string jvar = "j";
-	unordered_set<string> mods2 = unordered_set<string>();
+	unordered_set<string> mods2;
 	mods2.emplace(jvar);
 	stmt2->setModifies(mods2);
 	stmt2->setTNodeRef(assg2);
@@ -124,9 +177,16 @@ void FollowsClauseTest::setUp() {
 	Statement* stmt3 = new Statement();
 	stmt3->setStmtNum(3);
 	stmt3->setType(ASSIGN_STMT_);
-	stmt3->setFollowsBefore(2);
+	stmt3->setFollowsBefore(2); 
+	stmt3->setFollowsAfter(4);
+	int followsStarBeforeArr3[] = {1, 2};
+	unordered_set<int> followsStarBefore3(followsStarBeforeArr3, followsStarBeforeArr3 + 2);
+	stmt3->setFollowsStarBefore(followsStarBefore3);
+	int followsStarAfterArr3[] = {4, 5, 6, 7, 9};
+	unordered_set<int> followsStarAfter3(followsStarAfterArr3, followsStarAfterArr3 + 5);
+	stmt3->setFollowsStarAfter(followsStarAfter3);
 	string kvar = "k";
-	unordered_set<string> mods3 = unordered_set<string>();
+	unordered_set<string> mods3;
 	mods3.emplace(kvar);
 	stmt3->setModifies(mods3);
 	stmt3->setTNodeRef(assg3);
@@ -137,11 +197,17 @@ void FollowsClauseTest::setUp() {
 	stmt4->setType(ASSIGN_STMT_);
 	stmt4->setFollowsBefore(3);
 	stmt4->setFollowsAfter(5);
+	int followsStarBeforeArr4[] = {1, 2, 3};
+	unordered_set<int> followsStarBefore4(followsStarBeforeArr4, followsStarBeforeArr4 + 3);
+	stmt4->setFollowsStarBefore(followsStarBefore4);
+	int followsStarAfterArr4[] = {5, 6, 7, 9};
+	unordered_set<int> followsStarAfter4(followsStarAfterArr4, followsStarAfterArr4 + 4);
+	stmt4->setFollowsStarAfter(followsStarAfter4);
 	string wvar = "w";
-	unordered_set<string> mods4 = unordered_set<string>();
+	unordered_set<string> mods4;
 	mods4.emplace(wvar);
 	stmt4->setModifies(mods4);
-	unordered_set<string> uses4 = unordered_set<string>();
+	unordered_set<string> uses4;
 	uses4.emplace(ivar);
 	stmt4->setUses(uses4);
 	stmt4->setTNodeRef(assg4);
@@ -152,11 +218,17 @@ void FollowsClauseTest::setUp() {
 	stmt5->setType(ASSIGN_STMT_);
 	stmt5->setFollowsBefore(4);
 	stmt5->setFollowsAfter(6);
+	int followsStarBeforeArr5[] = {1, 2, 3, 4};
+	unordered_set<int> followsStarBefore5(followsStarBeforeArr5, followsStarBeforeArr5 + 4);
+	stmt5->setFollowsStarBefore(followsStarBefore5);
+	int followsStarAfterArr5[] = {6, 7, 9};
+	unordered_set<int> followsStarAfter5(followsStarAfterArr5, followsStarAfterArr5 + 3);
+	stmt5->setFollowsStarAfter(followsStarAfter5);
 	string xvar = "x";
-	unordered_set<string> mods5 = unordered_set<string>();
+	unordered_set<string> mods5;
 	mods5.emplace(xvar);
 	stmt5->setModifies(mods5);
-	unordered_set<string> uses5 = unordered_set<string>();
+	unordered_set<string> uses5;
 	uses5.emplace(wvar);
 	uses5.emplace(kvar);
 	stmt5->setUses(uses5);
@@ -167,335 +239,424 @@ void FollowsClauseTest::setUp() {
 	stmt6->setStmtNum(6);
 	stmt6->setType(ASSIGN_STMT_);
 	stmt6->setFollowsBefore(5);
-	unordered_set<string> mods6 = unordered_set<string>();
+	stmt6->setFollowsAfter(7);
+	int followsStarBeforeArr6[] = {1, 2, 3, 4, 5};
+	unordered_set<int> followsStarBefore6(followsStarBeforeArr6, followsStarBeforeArr6 + 5);
+	stmt6->setFollowsStarBefore(followsStarBefore6);
+	int followsStarAfterArr6[] = {7, 9};
+	unordered_set<int> followsStarAfter6(followsStarAfterArr6, followsStarAfterArr6 + 2);
+	stmt6->setFollowsStarAfter(followsStarAfter6);
+	unordered_set<string> mods6;
 	mods6.emplace(ivar);
 	stmt6->setModifies(mods6);
-	unordered_set<string> uses6 = unordered_set<string>();
+	unordered_set<string> uses6;
 	uses6.emplace(ivar);
 	stmt6->setUses(uses6);
 	stmt6->setTNodeRef(assg6);
 	stable->addStmt(stmt6);
 
-	// to set up the vartable manually
-	VarTable* vtable = VarTable::getInstance();
+	Statement* stmt7 = new Statement();
+	stmt7->setStmtNum(7);
+	stmt7->setType(WHILE_STMT_);
+	stmt7->setFollowsBefore(6);
+	stmt7->setFollowsAfter(9);
+	int followsStarBeforeArr7[] = {1, 2, 3, 4, 5, 6};
+	unordered_set<int> followsStarBefore7(followsStarBeforeArr7, followsStarBeforeArr7 + 6);
+	stmt7->setFollowsStarBefore(followsStarBefore7);
+	int followsStarAfterArr7[] = {9};
+	unordered_set<int> followsStarAfter7(followsStarAfterArr7, followsStarAfterArr7 + 1);
+	stmt7->setFollowsStarAfter(followsStarAfter7);
+	unordered_set<string> mods7;
+	mods7.emplace(xvar);
+	stmt7->setModifies(mods7);
+	unordered_set<string> uses7;
+	uses7.emplace(jvar);
+	stmt7->setUses(uses7);
+	stmt7->setTNodeRef(whileNode);
+	stable->addStmt(stmt7);
 
-	Variable* vi = new Variable("i");
-	vi->addModifyingStmt(1);
-	vi->addModifyingStmt(6);
-	vi->addUsingStmt(4);
-	vi->addUsingStmt(6);
-	vi->addTNode(i1);
-	vi->addTNode(i4);
-	vtable->addVariable(vi);
+	Statement* stmt8 = new Statement();
+	stmt8->setStmtNum(8);
+	stmt8->setType(ASSIGN_STMT_);
+	unordered_set<string> mods8;
+	mods8.emplace(xvar);
+	stmt8->setModifies(mods8);
+	stmt8->setTNodeRef(assg8);
+	stable->addStmt(stmt8);
 
-	Variable* vj = new Variable("j");
-	vj->addModifyingStmt(2);
-	vj->addTNode(j2);
-	vtable->addVariable(vj);
+	Statement* stmt9 = new Statement();
+	stmt9->setStmtNum(9);
+	stmt9->setType(IF_STMT_);
+	stmt9->setFollowsBefore(7);
+	int followsStarBeforeArr9[] = {1, 2, 3, 4, 5, 6, 7};
+	unordered_set<int> followsStarBefore9(followsStarBeforeArr9, followsStarBeforeArr9 + 7);
+	stmt9->setFollowsStarBefore(followsStarBefore9);
+	unordered_set<string> mods9;
+	mods9.emplace("z");
+	mods9.emplace("y");
+	unordered_set<string> uses9;
+	uses9.emplace("w");
+	stmt9->setModifies(mods9);
+	stmt9->setUses(uses9);
+	stable->addStmt(stmt9);
 
-	Variable* vk = new Variable("k");
-	vk->addModifyingStmt(3);
-	vk->addUsingStmt(5);
-	vk->addTNode(k3);
-	vtable->addVariable(vk);
+	Statement* stmt10 = new Statement();
+	stmt10->setStmtNum(10);
+	stmt10->setType(ASSIGN_STMT_);
+	stmt10->setFollowsAfter(11);
+	int followsStarAfterArr10[] = {11};
+	unordered_set<int> followsStarAfter10(followsStarAfterArr10, followsStarAfterArr10 + 1);
+	stmt10->setFollowsStarAfter(followsStarAfter10);
+	unordered_set<string> mods10;
+	mods10.insert("z");
+	stmt10->setModifies(mods10);
+	stmt10->setTNodeRef(assg10);
+	stable->addStmt(stmt10);
 
-	Variable* vw = new Variable("w");
-	vw->addModifyingStmt(4);
-	vw->addUsingStmt(5);
-	vw->addTNode(w4);
-	vtable->addVariable(vw);
+	Statement* stmt11 = new Statement();
+	stmt11->setStmtNum(11);
+	stmt11->setType(ASSIGN_STMT_);
+	stmt11->setFollowsBefore(10);
+	stmt11->setFollowsAfter(12);
+	int followsStarBeforeArr11[] = {10};
+	unordered_set<int> followsStarBefore11(followsStarBeforeArr11, followsStarBeforeArr11 + 1);
+	stmt11->setFollowsStarBefore(followsStarBefore11);
+	int followsStarAfterArr11[] = {12};
+	unordered_set<int> followsStarAfter11(followsStarAfterArr11, followsStarAfterArr11 + 1);
+	stmt11->setFollowsStarAfter(followsStarAfter11);
+	unordered_set<string> mods11;
+	mods11.insert("y");
+	stmt11->setModifies(mods11);
+	stmt11->setTNodeRef(assg11);
+	stable->addStmt(stmt11);
 
-	Variable* vx = new Variable("x");
-	vx->addModifyingStmt(5);
-	vx->addTNode(x5);
-	vtable->addVariable(vx);
+	Statement* stmt12 = new Statement();
+	stmt12->setStmtNum(12);
+	stmt12->setType(ASSIGN_STMT_);
+	stmt12->setFollowsBefore(11);
+	int followsStarBeforeArr12[] = {10, 11};
+	unordered_set<int> followsStarBefore12(followsStarBeforeArr12, followsStarBeforeArr12 + 2);
+	stmt12->setFollowsStarBefore(followsStarBefore12);
+	unordered_set<string> mods12;
+	mods12.insert("x");
+	stmt12->setModifies(mods12);
+	stable->addStmt(stmt12);
 }
 
 void FollowsClauseTest::tearDown() {
 	// to clear the pkb
 	AST::reset();
 	StmtTable::getInstance()->clearTable();
-	VarTable::reset();
 }
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( FollowsClauseTest );
-
-// Test argument-type combinations of Follows(a,b) where a and b are unfixed
-void FollowsClauseTest::testIsFollows() { 
-	// Test Follows(a1, a2) where a1 and a2 are both assign
-	Result* result = new Result();
-	/*FollowsClause* fol = new FollowsClause();
-	fol->setFirstArg("2");
-	fol->setSecondArg("3");
-	
-	fol->setFirstArgFixed(true);
-	fol->setSecondArgFixed(true);
-
-	fol->setFirstArgType(stringconst::ARG_STATEMENT);
-	fol->setSecondArgType(stringconst::ARG_STATEMENT);*/
+void FollowsClauseTest::testFollowsFixedFixedPass() {
+	Result result = Result();
 	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
-	followsBuilder->setArg(1, "2");
+	
+	followsBuilder->setArg(1, "7");
 	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "9");
+	followsBuilder->setArgFixed(2, true);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
+
+void FollowsClauseTest::testFollowsFixedFixedFailWrongOrder() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "3");
+	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "2");
+	followsBuilder->setArgFixed(2, true);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
+
+void FollowsClauseTest::testFollowsFixedFixedFailNestingLevel() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "7");
+	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "8");
+	followsBuilder->setArgFixed(2, true);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
+
+void FollowsClauseTest::testFollowsFixedFixedFailSameStmt() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "1");
+	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "1");
+	followsBuilder->setArgFixed(2, true);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
+
+void FollowsClauseTest::testFollowsSynFixedPass() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "a");
+	followsBuilder->setArgFixed(1, false);
 	followsBuilder->setArgType(1, ARG_STATEMENT);
 	followsBuilder->setArg(2, "3");
 	followsBuilder->setArgFixed(2, true);
 	followsBuilder->setArgType(2, ARG_STATEMENT);
-	ParentClause* fol = (ParentClause*) followsBuilder->build();
 	
-	CPPUNIT_ASSERT(fol->isValid());
-	bool evalResult = fol->evaluate(result);
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
 	
+	bool evalResult = c1->evaluate(&result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+}
 
+void FollowsClauseTest::testFollowsSynFixedFail() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "a");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "1");
+	followsBuilder->setArgFixed(2, true);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+	CPPUNIT_ASSERT(result.isSynPresent("a") == false);
+}
+
+void FollowsClauseTest::testFollowsFixedSynPass() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "1");
+	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "a");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+	CPPUNIT_ASSERT(result.isSynPresent("a") == true);
+}
+
+void FollowsClauseTest::testFollowsFixedSynFail() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "12");
+	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "a");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+	CPPUNIT_ASSERT(result.isSynPresent("a") == false);
+}
+void FollowsClauseTest::testFollowsSynSynPass() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "b");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "a");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 9);
+	CPPUNIT_ASSERT(result.isSynPresent("a") == true);
+	CPPUNIT_ASSERT(result.isSynPresent("b") == true);
+}
+
+void FollowsClauseTest::testFollowsSynSynSameFail() {
 	/*
-	// Test Follows(a1, a1) where a1 is assign
-	fol.setFirstArg("a1");
-	fol.setSecondArg("a1");
-
-	fol.setFirstArgType(stringconst::ARG_ASSIGN);
-	fol.setSecondArgType(stringconst::ARG_ASSIGN);
-
-	Results r2 = fol.evaluate();
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
 	
-	// Test Follows(a1, s1) where a1 is assign and s1 is statement
-	fol.setFirstArg("a1");
-	fol.setSecondArg("s1");
-
-	fol.setFirstArgType(stringconst::ARG_ASSIGN);
-	fol.setSecondArgType(stringconst::ARG_STATEMENT);
-
-	Results r3 = fol.evaluate();
-
-	CPPUNIT_ASSERT(r3.isClausePassed());
-	CPPUNIT_ASSERT(r3.getPairResults().size() == 2);
-	CPPUNIT_ASSERT(r3.getPairResults().at(1).first == res2);
-	CPPUNIT_ASSERT(r3.getPairResults().at(1).second == res3);
-
-	// Test Follows(s1, a1) where a1 is assign and s1 is statement
-	fol.setFirstArg("s1");
-	fol.setSecondArg("a1");
-
-	fol.setFirstArgType(stringconst::ARG_STATEMENT);
-	fol.setSecondArgType(stringconst::ARG_ASSIGN);
-
-	Results r4 = fol.evaluate();
-
-	CPPUNIT_ASSERT(r4.isClausePassed());
-	CPPUNIT_ASSERT(r4.getPairResults().size() == 2);
-	CPPUNIT_ASSERT(r4.getPairResults().at(1).first == res1);
-	CPPUNIT_ASSERT(r4.getPairResults().at(1).second == res2);
-
-	// Test Follows(s,s) where s is a statement
-	fol.setFirstArg("s");
-	fol.setSecondArg("s");
-
-	fol.setFirstArgType(stringconst::ARG_STATEMENT);
-	fol.setSecondArgType(stringconst::ARG_STATEMENT);
-
-	Results r5 = fol.evaluate();
-	CPPUNIT_ASSERT(!r5.isClausePassed());
-
-	// Test Follows(_,_) where _ is a generic statement
-	FollowsClause fol2 = *new FollowsClause();
-
-	fol2.setFirstArgFixed(false);
-	fol2.setSecondArgFixed(false);
-
-	fol2.setFirstArgType(stringconst::ARG_GENERIC);
-	fol2.setSecondArgType(stringconst::ARG_GENERIC);
-
-	Results r6 = fol2.evaluate();
-	CPPUNIT_ASSERT(r6.isClausePassed());
-	//cout << r6.getPairResults().size() << "lala";
-
-	// test follow (s, _)
-	fol2.setFirstArg("s");
-	fol2.setFirstArgFixed(false);
-	fol2.setSecondArgFixed(false);
-
-	fol2.setFirstArgType(stringconst::ARG_STATEMENT);
-	fol2.setSecondArgType(stringconst::ARG_GENERIC);
-
-	Results r7 = fol2.evaluate();
-	CPPUNIT_ASSERT(r6.isClausePassed());
-
-	//cout <<	"singles Result size: " << r7.getSinglesResults().size() << endl;
-	vector<string> resultSet = r7.getSinglesResults();
-	/*for (size_t i = 0; i < resultSet.size(); i++) {
-		cout << "result: " << resultSet.at(i) << "!";
-	}*/
-
-	//CPPUNIT_ASSERT(r7.getSinglesResults().size() == 2);
-}
-/*
-// Test augument-type combinations of Follows (1, a) where a is unfixed
-void FollowsClauseTest::testIsFollows2() {
-	FollowsClause fol = *new FollowsClause();
+	followsBuilder->setArg(1, "b");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "b");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
 	
-	// Test Follows(1, a) where a is an assign type
-	fol.setFirstArg("1");
-	fol.setSecondArg("a");
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
 	
-	fol.setFirstArgFixed(true);
-	fol.setSecondArgFixed(false);
-
-	fol.setFirstArgType(stringconst::ARG_ASSIGN);
-	fol.setSecondArgType(stringconst::ARG_ASSIGN);
-	
-	Results r = fol.evaluate();
-
-	string res1 = "1";
-	string res2 = "2";
-	string res3 = "3";
-
-	CPPUNIT_ASSERT(r.isClausePassed());
-	CPPUNIT_ASSERT(r.getSinglesResults().at(0) == res2);
-
-	// Test Follows(2, a) where a is an assign type
-	fol.setFirstArg("2");
-	fol.setSecondArg("a");
-
-	fol.setFirstArgType(stringconst::ARG_STATEMENT);
-	fol.setSecondArgType(stringconst::ARG_ASSIGN);
-	
-	Results r1 = fol.evaluate();
-
-	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == res3);
-
-	// Test Follows(2, a) where a is an assign type
-	fol.setFirstArg("3");
-	fol.setSecondArg("a");
-
-	fol.setFirstArgType(stringconst::ARG_STATEMENT);
-	fol.setSecondArgType(stringconst::ARG_ASSIGN);
-	
-	Results r2 = fol.evaluate();
-
-	CPPUNIT_ASSERT(!r2.isClausePassed());
-
-	// Test Follows(2,_) where _ is a generic type
-	fol.setFirstArg("2");
-	fol.setSecondArg("_");
-
-	fol.setFirstArgType(stringconst::ARG_STATEMENT);
-	fol.setSecondArgType(stringconst::ARG_GENERIC);
-
-	Results r3 = fol.evaluate();
-
-	CPPUNIT_ASSERT(r3.isClausePassed());
-
-	return ;
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+	*/
 }
 
-// Test augument-type combinations of Follows (a, 1) where a is unfixed
-void FollowsClauseTest::testIsFollows3() {
-	FollowsClause fol = *new FollowsClause();
+void FollowsClauseTest::testFollowsFirstUnderscoreFixedPass() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
 	
-	// Test Follows(a, 1) where a is an assign type
-	fol.setFirstArg("a");
-	fol.setSecondArg("2");
+	followsBuilder->setArg(1, "_");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_GENERIC);
+	followsBuilder->setArg(2, "9");
+	followsBuilder->setArgFixed(2, true);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
 	
-	fol.setFirstArgFixed(false);
-	fol.setSecondArgFixed(true);
-
-	fol.setFirstArgType(stringconst::ARG_STATEMENT);
-	fol.setSecondArgType(stringconst::ARG_ASSIGN);
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
 	
-	Results r = fol.evaluate();
-
-	string res1 = "1";
-	string res2 = "2";
-	string res3 = "3";
-
-	CPPUNIT_ASSERT(r.isClausePassed());
-	CPPUNIT_ASSERT(r.getSinglesResults().at(0) == res1);
-
-	// Test Follows(a, 1) where a is an assign type
-	fol.setFirstArg("a");
-	fol.setSecondArg("1");
-
-	fol.setFirstArgType(stringconst::ARG_STATEMENT);
-	fol.setSecondArgType(stringconst::ARG_ASSIGN);
-	
-	Results r2 = fol.evaluate();
-
-	CPPUNIT_ASSERT(!r2.isClausePassed());
-
-	// Test Follows(_,3) where _ is a generic type
-	fol.setFirstArg("_");
-	fol.setSecondArg("3");
-
-	fol.setFirstArgType(stringconst::ARG_GENERIC);
-	fol.setSecondArgType(stringconst::ARG_STATEMENT);
-
-	Results r3 = fol.evaluate();
-	/*
-	cout <<	"singles Result size: " << r3.getSinglesResults().size() << endl;
-	vector<string> resultSet = r3.getSinglesResults();
-	for (size_t i = 0; i < resultSet.size(); i++) {
-		cout << "result: " << resultSet.at(i) << "!";
-	}
-	*//*
-	CPPUNIT_ASSERT(r3.isClausePassed());
-	
-	return ;
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
 }
 
-// Test Follows (1, 2)
-void FollowsClauseTest::testIsFollows4() {
-	FollowsClause fol = *new FollowsClause();
+void FollowsClauseTest::testFollowsFirstUnderscoreSynPass() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
 	
-	// Test Follows(a, 1) where a is an assign type
-	fol.setFirstArg("1");
-	fol.setSecondArg("2");
+	followsBuilder->setArg(1, "_");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_GENERIC);
+	followsBuilder->setArg(2, "bal");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
 	
-	fol.setFirstArgFixed(true);
-	fol.setSecondArgFixed(true);
-
-	Results r = fol.evaluate();
-
-	string res1 = "1";
-	string res2 = "2";
-	string res3 = "3";
-
-	CPPUNIT_ASSERT(r.isClausePassed());
-
-	// Test Follows(1, 3) where a is an assign type
-	fol.setFirstArg("1");
-	fol.setSecondArg("3");
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
 	
-	fol.setFirstArgFixed(true);
-	fol.setSecondArgFixed(true);
-
-	Results r2 = fol.evaluate();
-
-	CPPUNIT_ASSERT(!r2.isClausePassed());
-
-	// Test out of bounds
-	fol.setFirstArg("-1");
-	fol.setSecondArg("0");
-
-	fol.setFirstArgFixed(true);
-	fol.setSecondArgFixed(true);
-
-	Results r3 = fol.evaluate();
-
-	CPPUNIT_ASSERT(!r3.isClausePassed());
-
-	return;
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 9);
 }
 
-void FollowsClauseTest::testIsFollowsStar() {
+void FollowsClauseTest::testFollowsFixedSecondUnderscorePass() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
 	
-	/*Follows fol = *new Follows();
-	CPPUNIT_ASSERT(fol.isFollowsStar(1, 2));
-	CPPUNIT_ASSERT(fol.isFollowsStar(1, 3));
-	CPPUNIT_ASSERT(fol.isFollowsStar(2, 3));
-	CPPUNIT_ASSERT(!fol.isFollowsStar(2, 1));
-	CPPUNIT_ASSERT(!fol.isFollowsStar(3, 3));*/
+	followsBuilder->setArg(1, "11");
+	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "_");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_GENERIC);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
 
-	//return;
-//}
+void FollowsClauseTest::testFollowsSynSecondUnderscorePass() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "a");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "_");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_GENERIC);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 9);
+}
+
+void FollowsClauseTest::testFollowsBothUnderscorePass() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "_");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_GENERIC);
+	followsBuilder->setArg(2, "_");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_GENERIC);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
+
+void FollowsClauseTest::testFollowsStmtOverflow() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "-1");
+	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "1");
+	followsBuilder->setArgFixed(2, true);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
