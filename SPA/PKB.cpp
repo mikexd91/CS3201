@@ -1,4 +1,6 @@
 #include "PKB.h"
+#include "PDR.h"
+#include "CFGBuilder.h"
 
 bool PKB::instanceFlag = false;				// instance flag
 
@@ -17,5 +19,8 @@ PKB* PKB::getInstance() {
 // pass parsed data to PDR
 void PKB::processParsedData(ParsedData data) {
 	PDR* pdr = PDR::getInstance();
+	CFGBuilder* cfg = CFGBuilder::getInstance();
+
 	pdr->processParsedData(data);
+	cfg->processParsedData(data);
 }

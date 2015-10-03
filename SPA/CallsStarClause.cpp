@@ -137,25 +137,25 @@ unordered_set<string> CallsStarClause::getAllS1() {
 }
 
 //Calls*(s1,s2)
-Results::ResultsTable* CallsStarClause::getAllS1AndS2() {
-	Results::ResultsTable* resTable = new Results::ResultsTable();
+unordered_set<vector<string>>  CallsStarClause::getAllS1AndS2() {
+	unordered_set<vector<string>>  resTable = unordered_set<vector<string>>();
 	if (firstArg != secondArg) {
 		unordered_set<Procedure*> procSet = procTable->getAllProcs();
 		for (unordered_set<Procedure*>::iterator i = procSet.begin(); i != procSet.end(); ++i) {
 			Procedure* procObj = *i;
 			string name = procObj->getProcName();
 			unordered_set<string> calledSet = getAllS2WithS1Fixed(name);
-			insertS1AndS2IntoResTable(name, calledSet, *resTable);
+			insertS1AndS2IntoResTable(name, calledSet, resTable);
 		}
 	}
 	return resTable;
 }
 
-void CallsStarClause::insertS1AndS2IntoResTable(string procName, unordered_set<string>& calledSet, Results::ResultsTable& resTable) {
+void CallsStarClause::insertS1AndS2IntoResTable(string procName, unordered_set<string>& calledSet, unordered_set<vector<string>>& resTable) {
 	for (unordered_set<string>::iterator i = calledSet.begin(); i != calledSet.end(); ++i) {
-		Results::Row* pair = new Results::Row();
-		(*pair)[firstArg] = procName;
-		(*pair)[secondArg] = *i;
+		vector<string> pair = vector<string>();
+		pair.push_back(procName);
+		pair.push_back(*i);
 		resTable.insert(pair);
 	}
 }

@@ -53,7 +53,7 @@ public:
 	void setVarFixed(bool);
 	void setVarType(string);
 
-	bool evaluate(Results*);
+	bool evaluate(Result*);
 
 	//Check the validity of the specific clause
 	//Substitute the original clause isValid for this one

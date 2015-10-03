@@ -15,7 +15,7 @@ private:
 	bool isCallsStar(Procedure&, Procedure&);
 	bool isProcObjNull(string);
 	bool isCalls(Procedure&, Procedure&);
-	void insertS1AndS2IntoResTable(string, unordered_set<string>&, Results::ResultsTable&);
+	void insertS1AndS2IntoResTable(string, unordered_set<string>&, unordered_set<vector<string>>&);
 	void getAllS1WithS2FixedHelper(Procedure&, unordered_set<string>&);
 	void getAllS2WithS1FixedHelper(Procedure&, unordered_set<string>&);
 
@@ -39,6 +39,6 @@ protected:
 	//Parent(s1,__)
 	unordered_set<string> getAllS1();
 	//Parent(s1,s2)
-	Results::ResultsTable* getAllS1AndS2();
+	unordered_set<vector<string>> getAllS1AndS2();
 };
 
