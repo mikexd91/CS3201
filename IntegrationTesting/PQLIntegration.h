@@ -12,7 +12,7 @@ class PQLIntegration : public CPPUNIT_NS::TestFixture {
 	//CPPUNIT_TEST( testSelectFollowsStar );
 	CPPUNIT_TEST( testSelectParent );
 	//CPPUNIT_TEST( testSelectParentStar );
-	CPPUNIT_TEST( testSelectPattern );
+	CPPUNIT_TEST( testSelectPatternAssg );
 	//CPPUNIT_TEST( testSelectModifiesPattern );
 	//CPPUNIT_TEST( testSelectFollowsPattern );
 	CPPUNIT_TEST( testSelectUsesPattern );
@@ -27,14 +27,19 @@ public:
 	void setUp();
 	void tearDown();
 
+	// select single syn, 1 clause
 	void testSelectOnly();
+	void testSelectCalls(); // new
 	void testSelectModifies();
 	void testSelectUses();
 	void testSelectFollows();
 	void testSelectFollowsStar();
 	void testSelectParent();
-	void testSelectParentStar();
-	void testSelectPattern();
+	void testSelectParentStar(); // incomplete
+	void testSelectPatternAssg();
+	void testSelectPatternIf(); // new
+	void testSelectPatternWhile(); // new
+	// select single syn, 1++ clauses
 	void testSelectModifiesPattern();
 	void testSelectFollowsPattern();
 	void testSelectUsesPattern();

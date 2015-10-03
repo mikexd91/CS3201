@@ -569,7 +569,7 @@ void PQLIntegration::testSelectParentStar() {
 	CPPUNIT_ASSERT(6 == r.size());
 }
 
-void PQLIntegration::testSelectPattern() {
+void PQLIntegration::testSelectPatternAssg() {
 	string QUERY_STRING = "assign a; Select a pattern a(\"a\", _)";
 	PQLController* pcc = new PQLController();
 	unordered_set<string> r;

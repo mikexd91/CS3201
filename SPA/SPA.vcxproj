@@ -84,6 +84,7 @@
     <ClCompile Include="WhileCNode.cpp" />
     <ClCompile Include="WhileNode.cpp" />
     <ClCompile Include="WithClause.cpp" />
+    <ClCompile Include="WithClauseBuilder.cpp" />
     <ClCompile Include="WithClauseRef.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +158,7 @@
     <ClInclude Include="WhileCNode.h" />
     <ClInclude Include="WhileNode.h" />
     <ClInclude Include="WithClause.h" />
+    <ClInclude Include="WithClauseBuilder.h" />
     <ClInclude Include="WithClauseRef.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
