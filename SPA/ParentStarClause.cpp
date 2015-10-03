@@ -9,6 +9,7 @@ using namespace boost;
 using namespace stringconst;
 
 ParentStarClause::ParentStarClause(void):SuchThatClause(PARENTSTAR_){
+	stmtTable = StmtTable::getInstance();
 }
 
 ParentStarClause::~ParentStarClause(void){
@@ -17,18 +18,34 @@ ParentStarClause::~ParentStarClause(void){
 bool ParentStarClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
-	bool firstArg = ((firstType == ARG_GENERIC) || (firstType == ARG_WHILE) || (firstType == ARG_STATEMENT) || (firstType == ARG_PROGLINE) || (firstType == ARG_ASSIGN));
-	bool secondArg = ((secondType == ARG_GENERIC) || (secondType == ARG_WHILE) || (secondType == ARG_ASSIGN) || (secondType == ARG_STATEMENT) || (secondType == ARG_PROGLINE));
-	return (firstArg && secondArg);
+	bool firstArg = (firstType == stringconst::ARG_WHILE) || (firstType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_PROGLINE) || (firstType == stringconst::ARG_GENERIC) || (firstType == stringconst::ARG_IF);
+	bool secondArg = (secondType == stringconst::ARG_WHILE) || (secondType == stringconst::ARG_STATEMENT) || (secondType == stringconst::ARG_ASSIGN) || (secondType == stringconst::ARG_PROGLINE) || (secondType == stringconst::ARG_GENERIC) || (secondType == stringconst::ARG_CALL) || (secondType == stringconst::ARG_IF);
+	return firstArg && secondArg;
 }
 
 
-//e.g. Parent(string,string)
+//e.g. Parent*(string,string)
 bool ParentStarClause::evaluateS1FixedS2Fixed(string s1, string s2) {
-	return false;
+	return isParentStar(s1, s2);
 };
-//e.g. Parent(_,_)
+//e.g. Parent*(_,_)
 bool ParentStarClause::evaluateS1GenericS2Generic() {
+	//get all while statements
+	unordered_set<Statement*> whileStmts = stmtTable->getWhileStmts();
+	//check if while stmt has children
+	for (unordered_set<Statement*>::iterator iter = whileStmts.begin(); iter != whileStmts.end(); ++iter) {
+		Statement* whileStmt = *iter;
+		if (!whileStmt->getChildrenStar().empty()) {
+			return true;
+		}
+	}
+	unordered_set<Statement*> ifStmts = stmtTable->getIfStmts();
+	for (unordered_set<Statement*>::iterator iter = ifStmts.begin(); iter != ifStmts.end(); ++iter) {
+		Statement* ifStmt = *iter;
+		if (!ifStmt->getChildrenStar().empty()) {
+			return true;
+		}
+	}
 	return false;
 };
 //e.g. Parent(_,string)
@@ -45,7 +62,14 @@ unordered_set<string> ParentStarClause::getAllS2WithS1Fixed(string s1) {
 }
 //Parent(_,s2)
 unordered_set<string> ParentStarClause::getAllS2() {
-	return unordered_set<string>();
+	unordered_set<string> stmtNumSet;
+	//get all while statements
+	unordered_set<Statement*> whileStmts = stmtTable->getWhileStmts();
+	unordered_set<Statement*> ifStmts = stmtTable->getIfStmts();
+	//check if while stmt has children
+	insertChildrenStarIntoStmtNum(stmtNumSet, whileStmts, this->secondArgType);
+	insertChildrenStarIntoStmtNum(stmtNumSet, ifStmts, this->secondArgType);
+	return stmtNumSet;
 }
 //Parent(s1,string)
 unordered_set<string> ParentStarClause::getAllS1WithS2Fixed(string s2) {
@@ -59,6 +83,48 @@ unordered_set<string> ParentStarClause::getAllS1() {
 unordered_set<vector<string>> ParentStarClause::getAllS1AndS2() {
 	return unordered_set<vector<string>>();
 }
+
+bool ParentStarClause::isParentStar(string stmt1, string stmt2) {
+	//a statement cannot be a parent star of itself
+	if (stmt1 == stmt2) {
+		return false;
+	}
+	int stmtNum1 = atoi(stmt1.c_str());
+	int stmtNum2 = atoi(stmt2.c_str());
+	Statement::ParentStarSet stmts = getParentStar(stmtNum2, stringconst::ARG_STATEMENT);
+	return stmts.find(stmtNum1) != stmts.end(); 
+}
+
+Statement::ParentStarSet ParentStarClause::getParentStar(int stmtNum, string argType) {
+	NodeType nodeType = Utils::convertArgTypeToNodeType(argType);
+	Statement* stmtObj = stmtTable->getStmtObj(stmtNum);
+	if (stmtObj == nullptr || (nodeType != NULL_ && stmtObj->getType() != nodeType)) {
+		return Statement::ParentStarSet();
+	} else {
+		 return stmtObj->getParentStar();
+	}
+}
+
+Statement::ChildrenSet ParentStarClause::getChildrenStar(int stmtNum, string stmtArgType) {
+	Statement* stmtObj = stmtTable->getStmtObj(stmtNum);
+	if (stmtObj == nullptr) {
+		return unordered_set<int>();
+	} else {
+		Statement::ChildrenSet stmtSet = stmtObj->getChildrenStar();
+		return Utils::filterStatements(stmtSet, Utils::convertArgTypeToNodeType(stmtArgType));
+	}
+}
+
+void ParentStarClause::insertChildrenStarIntoStmtNum(unordered_set<string> &stmtNumSet, unordered_set<Statement*> stmts, string argType){
+	for (unordered_set<Statement*>::iterator iter = stmts.begin(); iter != stmts.end(); ++iter) {
+		Statement* stmt = *iter;
+		Statement::ChildrenSet children = getChildrenStar(stmt->getStmtNum(), argType);
+		for (Statement::ChildrenSet::iterator childIter = children.begin(); childIter != children.end(); childIter++) {
+			stmtNumSet.insert(boost::lexical_cast<string>(*childIter));
+		}
+	}
+}
+
 
 
 /**
