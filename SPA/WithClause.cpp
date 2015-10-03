@@ -39,8 +39,8 @@ void WithClause::setRightRef(WithClauseRef rightRef)
 
 bool WithClause::evaluate(Results*)
 {
-	// TODO
-	// 
+	WithClauseRef leftEntity = this->getLeftRef();
+	WithClauseRef rightEntity = this->getRightRef();
 	return false;
 }
 
