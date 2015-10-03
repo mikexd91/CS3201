@@ -1,0 +1,85 @@
+1 - MODIFIES: 2 clauses (similar) - fixed-fixed, fixed-fixed
+
+Select BOOLEAN such that Modifies(12, "battle1") and Modifies(17, "ivysaur")
+true
+5000
+2 - MODIFIES: 2 clauses (similar) - syn-syn, syn-syn
+stmt s1, s2; variable v;
+Select <s1,s2> such that Modifies(s1, v) and Modifies(s2, v)
+1 1, 5 5, 6 6, 1 5, 5 1, 1 6, 6 1, 5 6, 6 5, 2 2, 8 8, 2 5, 5 2, 2 8, 8 2, 5 8, 8 5, 3 3, 7 7, 3 5, 5 3, 3 7, 7 3, 5 7, 7 4, 4 4, 9 9, 16 16, 9 16, 16 9, 10 10, 15 15, 17 17, 20 20, 21 21, 22 22, 10 15, 15 10, 10 17, 17 10, 10 20, 20 10, 10 21, 21 10, 10 22, 22 10, 15 17, 17 15, 15 20, 20 15, 15 21, 21 15, 15 22, 22 15, 17 20, 20 17, 17 21, 21 17, 17 22, 22 17, 20 21, 21 20, 20 22, 22 20, 21 22, 22 21, 11 11, 18 18, 19 19, 11 15, 15 11, 11 17, 17 11, 11 18, 18 11, 15 18, 18 15, 17 18, 18 17, 17 19, 19 17, 18 19, 19 18, 23 23
+5000
+3 - MODIFIES: 2 clauses (similar) - fixed-syn, fixed-syn
+variable v;
+Select v such that Modifies(11, v) and Modifies(15, v)
+ivysaur
+5000
+4 - MODIFIES: 2 clauses (similar) - syn-fixed, syn-fixed
+stmt s; assign a;
+Select s such that Modifies(s, "ivysaur") and Modifies(a, "battle2")
+11, 15, 17, 18, 19
+5000
+5 - MODIFIES: 2 clauses (similar) - fixed-generic, fixed-generic
+
+Select BOOLEAN such that Modifies(23, _) and Modifies(20, _)
+true
+5000
+6 - MODIFIES: 2 clauses (similar) - generic-fixed, generic-fixed
+stmt s;
+Select s such that Modifies(_, "battle2") and Modifies(_, "battle3")
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23
+5000
+7 - MODIFIES: 2 clauses (similar) - syn-generic, syn-generic
+if i; while w;
+Select <i,w> such that Modifies(i, _) and Modifies(w, _)
+20 15, 20 17, 20 18
+5000
+8 - MODIFIES: 2 clauses (similar) - generic-syn, generic-syn
+variable v1, v2;
+Select v1 such that Modifies(_, v1) and Modifies(_, v2)
+charmander, squirtle, bulbasaur, firstStageEvolution, charmeleon, wartortle, ivysaur, battle1, battle2, battle3, lastPokemon
+5000
+9 - MODIFIES: 2 clauses (mixed) - fixed-fixed, fixed-syn
+variable v;
+Select v such that Modifies(17, "ivysaur") and Modifies("18", v)
+ivysaur
+5000
+10 - MODIFIES: 2 clauses (mixed) - syn-syn, syn-fixed
+stmt s; variable v;
+Select s such that Modifies(s, v) and Modifies(s, "lastPokemon")
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23
+5000
+11 - MODIFIES: 2 clauses (mixed) - generic-generic, fixed-generic
+
+Select BOOLEAN such that Modifies(_, _) and Modifies(23 , _)
+true
+5000
+12 - MODIFIES: 2 clauses (mixed) - fixed-syn, generic-fixed
+variable v;
+Select v such that Modifies(15, v) and Modifies(_, "lastPokemon")
+charmeleon, ivysaur, wartortle, lastPokemon
+5000
+13 - MODIFIES: 2 clauses (mixed) - syn-fixed, syn-generic
+stmt s;
+Select s such that Modifies(s, "squirtle") and Modifies(s, _)
+2, 5, 8
+5000
+14 - MODIFIES: 2 clauses (mixed) - fixed-generic, generic-syn
+variable v;
+Select v such that Modifies(23, _) and Modifies(_, v)
+charmander, squirtle, bulbasaur, firstStageEvolution, charmeleon, wartortle, ivysaur, battle1, battle2, battle3, lastPokemon
+5000
+15 - MODIFIES: 2 clauses (mixed) - generic-fixed, syn-generic
+stmt s;
+Select s such that Modifies(_, "wartortle") and Modifies(s, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23
+5000
+16 - MODIFIES: 2 clauses (mixed) - syn-generic, generic-syn
+stmt s; variable v;
+Select v such that Modifies(s, _) and Modifies(_, v)
+charmander, squirtle, bulbasaur, firstStageEvolution, charmeleon, wartortle, ivysaur, battle1, battle2, battle3, lastPokemon
+5000
+17 - MODIFIES: 2 clauses (mixed) - generic-fixed, generic-syn
+variable v;
+Select BOOLEAN such that Modifies(_, "secondStageEvolution") and Modifies(_, v)
+false
+5000

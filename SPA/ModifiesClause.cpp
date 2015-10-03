@@ -11,7 +11,7 @@ using namespace boost;
 
 
 
-ModifiesClause::ModifiesClause(void):Clause(MODIFIES_){
+ModifiesClause::ModifiesClause(void):SuchThatClause(MODIFIES_){
 	stmtTable = StmtTable::getInstance();
 	procTable = ProcTable::getInstance();
 	varTable = VarTable::getInstance();
@@ -189,8 +189,8 @@ unordered_set<string> ModifiesClause::getAllS1() {
 }
 
 // Modifies(p, v) or Modifies(s, v) or Modifies(if, v) or Modifies(w, v)
-Results::ResultsTable* ModifiesClause::getAllS1AndS2() {
-	Results::ResultsTable* results = new Results::ResultsTable();
+unordered_set<vector<string>> ModifiesClause::getAllS1AndS2() {
+	unordered_set<vector<string>> results = unordered_set<vector<string>>();
 
 	if(firstArgType == ARG_PROCEDURE) {
 		unordered_set<Procedure*> allProc = procTable->getAllProcs();
@@ -199,10 +199,10 @@ Results::ResultsTable* ModifiesClause::getAllS1AndS2() {
 			unordered_set<string> modifies = proc->getModifies();
 			for(auto j = modifies.begin(); j != modifies.end(); j++) {
 				string var = *j;
-				Results::Row* tuple = new Results::Row();
-				(*tuple)[firstArg] = proc->getProcName();
-				(*tuple)[secondArg] = var;
-				results->insert(tuple);
+				vector<string> tuple = vector<string>();
+				tuple.push_back(proc->getProcName());
+				tuple.push_back(var);
+				results.insert(tuple);
 			}
 		}
 	} else {
@@ -222,10 +222,10 @@ Results::ResultsTable* ModifiesClause::getAllS1AndS2() {
 			unordered_set<string> modifies = statement->getModifies();
 			for(auto j = modifies.begin(); j != modifies.end(); j++) {
 				string var = *j;
-				Results::Row* tuple = new Results::Row();
-				(*tuple)[firstArg] = lexical_cast<string>(statement->getStmtNum());
-				(*tuple)[secondArg] = var;
-				results->insert(tuple);
+				vector<string> tuple = vector<string>();
+				tuple.push_back(lexical_cast<string>(statement->getStmtNum()));
+				tuple.push_back(var);
+				results.insert(tuple);
 			}
 		}
 	}

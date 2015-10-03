@@ -19,8 +19,12 @@ Statement::Statement() {
 	calls = DEFAULT;
 	children = ChildrenSet();
 	parent = DEFAULT;
-	next = DEFAULT;
-	prev = DEFAULT;
+	next = NextSet();
+	prev = PreviousSet();
+	parentStar = ParentStarSet();
+	childrenStar = ChildrenStarSet();
+	followsStarBefore = FollowsStarBeforeSet();
+	followsStarAfter = FollowsStarAfterSet();
 }
 
 /*
@@ -93,15 +97,35 @@ int Statement::getParent() {
 }
 
 // get stmt that is next of this stmt
-int Statement::getNext() {
+const Statement::NextSet& Statement::getNext() {
 	return next;
 }
 
 // get stmt whose next is this stmt
-int Statement::getPrev() {
+const Statement::PreviousSet& Statement::getPrev() {
 	return prev;
 }
 
+// get parent star of this stmt
+const Statement::ParentStarSet& Statement::getParentStar() {
+	return parentStar;
+}
+
+// get children star of this stmt
+const Statement::ChildrenStarSet& Statement::getChildrenStar() {
+	return childrenStar;
+}
+
+
+// get all previous follows of this stmt
+const Statement::FollowsStarBeforeSet& Statement::getFollowsStarBefore() {
+	return followsStarBefore;
+}
+
+// get all next follows of this stmt
+const Statement::FollowsStarAfterSet& Statement::getFollowsStarAfter() {
+	return followsStarAfter;
+}
 
 /* ----------------------------- */
 /* ---------- SETTERS ---------- */
@@ -151,10 +175,25 @@ void Statement::setParent(int parent) {
 	this->parent = parent;
 }
 
-void Statement::setNext(int nextSet) {
-	this->next = next;
+void Statement::setNext(const unordered_set<int> &nextSet) {
+	this->next = nextSet;
 }
 
-void Statement::setPrev(int prevSet) {
-	this->prev = prev;
+void Statement::setPrev(const unordered_set<int> &prevSet) {
+	this->prev = prevSet;
+}
+
+void Statement::setParentStar(const unordered_set<int> &parentStarSet) {
+	parentStar = parentStarSet;
+}
+
+void Statement::setChildrenStar(const unordered_set<int> &childrenStarSet) {
+	childrenStar = childrenStarSet;
+}
+
+void Statement::setFollowsStarBefore(const FollowsStarBeforeSet &followsStarBeforeSet) {
+	followsStarBefore = followsStarBeforeSet;
+}
+void Statement::setFollowsStarAfter(const FollowsStarAfterSet &followsStarAfterSet) {
+	followsStarAfter = followsStarAfterSet;
 }

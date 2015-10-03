@@ -1,10 +1,11 @@
 #pragma once
-
-#include "Clause.h"
+#include "SuchThatClause.h"
 #include "Statement.h"
 #include "Procedure.h"
 
-class UsesClause : public Clause{
+class UsesClause 
+	: public SuchThatClause {
+
 public:
 	UsesClause(void);
 	~UsesClause(void);
@@ -31,7 +32,7 @@ protected:
 	//Parent(s1,__)
 	unordered_set<string> getAllS1();
 	//Parent(s1,s2)
-	Results::ResultsTable* getAllS1AndS2();
+	unordered_set<vector<string>> getAllS1AndS2();
 
 private:
 	bool isStmtType(string);

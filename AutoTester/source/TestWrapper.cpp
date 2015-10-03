@@ -17,7 +17,6 @@ volatile bool TestWrapper::GlobalStop = false;
 TestWrapper::TestWrapper() {
 	// create any objects here as instance variables of this class
 	// as well as any initialization required for your spa program
-	counter = 1;
 	parser = new Parser();
 	pqlController = new PQLController();
 }
@@ -34,8 +33,8 @@ void TestWrapper::parse(std::string filename) {
     string programSource = buffer.str();
 	// call parser.parse on the string
 	try {
-	parser->parse(programSource);
-	delete parser;
+		parser->parse(programSource);
+		delete parser;
 	} catch (InvalidCodeException e) {
 		cout << e.what();
 		delete parser;
