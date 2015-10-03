@@ -3,8 +3,12 @@
 #include "CFGBuilder.h"
 
 bool PKB::instanceFlag = false;				// instance flag
+PKB* PKB::pkbInstance = NULL;				// table instance
 
 // ACCESSORS
+// empty constructor
+PKB::PKB() {}
+
 // gets instance of PKB
 PKB* PKB::getInstance() {
 	// if instance does not exist, create and return instance

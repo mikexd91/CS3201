@@ -44,4 +44,3 @@ bool WithClause::evaluate(Result*)
 	// 
 	return false;
 }
-

@@ -103,6 +103,9 @@
     <PostBuildEvent>
       <Message>Unit Tests</Message>
     </PostBuildEvent>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='SPA - Release|Win32'">
     <ClCompile>
@@ -133,11 +136,9 @@
     <ClCompile Include="CallNodeTest.cpp" />
     <ClCompile Include="CallsClauseTest.cpp" />
     <ClCompile Include="CallsStartClauseTest.cpp" />
-    <ClCompile Include="CFGBuilderTest.cpp" />
     <ClCompile Include="ConstNodeTest.cpp" />
     <ClCompile Include="ConstTableTest.cpp" />
     <ClCompile Include="FollowsClauseTest.cpp" />
-    <ClCompile Include="FollowsStarClauseTest.cpp" />
     <ClCompile Include="IfNodeTest.cpp" />
     <ClCompile Include="ModifiesClauseTest.cpp" />
     <ClCompile Include="MultiSynInsertTest.cpp" />
@@ -168,11 +169,9 @@
     <ClInclude Include="CallNodeTest.h" />
     <ClInclude Include="CallsClauseTest.h" />
     <ClInclude Include="CallsStartClauseTest.h" />
-    <ClInclude Include="CFGBuilderTest.h" />
     <ClInclude Include="ConstNodeTest.h" />
     <ClInclude Include="ConstTableTest.h" />
     <ClInclude Include="FollowsClauseTest.h" />
-    <ClInclude Include="FollowsStarClauseTest.h" />
     <ClInclude Include="IfNodeTest.h" />
     <ClInclude Include="ModifiesClauseTest.h" />
     <ClInclude Include="MultiSynInsertTest.h" />
@@ -187,7 +186,6 @@
     <ClInclude Include="ProcTableTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
     <ClInclude Include="QueryEvaluatorTest.h" />
-    <ClInclude Include="QueryParserTest.h" />
     <ClInclude Include="ResultTest.h" />
     <ClInclude Include="SingleSynInsertTest.h" />
     <ClInclude Include="StmtLstNodeTest.h" />

@@ -19,7 +19,7 @@ vector<CNode*>& ProgramCNode::getProcedures() {
 }
 
 bool ProgramCNode::contains(const string& procName) {
-	for(int i = 0; i < this->children.size(); i++) {
+	for(size_t i = 0; i < this->children.size(); i++) {
 		CNode* child = children.at(i);
 		if(child->getNodeType() == PROC_ && child->getName() == procName) {
 			return true;
@@ -30,7 +30,7 @@ bool ProgramCNode::contains(const string& procName) {
 }
 
 ProcCNode* ProgramCNode::getProcNode(const string& procName) {
-	for(int i = 0; i < this->children.size(); i++) {
+	for(size_t i = 0; i < this->children.size(); i++) {
 		CNode* child = children.at(i);
 		if(child->getNodeType() == PROC_ && child->getName() == procName) {
 			return (ProcCNode*) child;

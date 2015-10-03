@@ -9,7 +9,7 @@
 
 int main() {
 
-	SuchThatClauseBuilder* b = new SuchThatClauseBuilder(MODIFIES_);
+	/*SuchThatClauseBuilder* b = new SuchThatClauseBuilder(MODIFIES_);
 	b->setArg(1, "a");
 	b->setArgFixed(1, false);
 	b->setArgType(1, stringconst::ARG_ASSIGN);
@@ -23,7 +23,7 @@ int main() {
 	m->evaluate(r);
 
 	cout << "asd" << m->isValid() << r->isClausePass() << "asd" << endl;
-	system("pause");
+	system("pause");*/
 	/* rewrite as necessary */
 
 	/*Parser parser = Parser();

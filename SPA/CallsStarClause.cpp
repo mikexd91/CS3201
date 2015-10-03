@@ -173,9 +173,9 @@ bool CallsStarClause::isCallsStar(Procedure& proc1, Procedure& proc2) {
 		} else {
 			return false;
 		}
-	} else {
-		return true;
 	}
+
+	return true;
 }
 
 bool CallsStarClause::isCalls(Procedure& proc1, Procedure& proc2) {
