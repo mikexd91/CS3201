@@ -4,7 +4,6 @@
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <string>
-#include <sstream>
 
 QueryEvaluator::QueryEvaluator(void)
 {
@@ -34,7 +33,13 @@ unordered_set<string> QueryEvaluator::getValuesToPrint(Result* obj, vector<Strin
 	int numOfSyn = selectList.size();
 	if (numOfSyn == 1) {
 		string syn = selectList.at(0).getFirst();
-		resultSet = printSingleSynValues(*obj, syn);
+		string type = selectList.at(0).getSecond();
+		if (syn == "BOOLEAN" && type == stringconst::ARG_BOOLEAN) {
+			bool isQueryPass = obj->isPass();
+			resultSet.insert(boost::lexical_cast<string>(isQueryPass));
+		} else {
+			resultSet = printSingleSynValues(*obj, syn);
+		}
 	} else {
 		resultSet = printTupleSynValues(*obj, selectList);
 	}

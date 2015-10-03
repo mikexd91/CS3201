@@ -25,9 +25,8 @@ unordered_set<string> PQLController::parse(string query) {
 		cout << "parsed query";
 		QueryEvaluator* qe = new QueryEvaluator();
 		Result* resObj = qe->evaluateQuery(q);
-		vector<StringPair> selectList = q.getSelectList();
 		cout << resObj->getResultTableSize() << endl;
-		boost::unordered_set<string> valueSet = qe->getValuesToPrint(resObj, selectList);
+		boost::unordered_set<string> valueSet = qe->getValuesToPrint(resObj, q.getSelectList());
 		cout << "vauesetsize = " << valueSet.size() << endl;
 		//delete q;
 		//delete resObj;

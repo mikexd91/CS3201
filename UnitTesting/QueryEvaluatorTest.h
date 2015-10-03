@@ -37,8 +37,8 @@ class QueryEvaluatorTest: public CPPUNIT_NS::TestFixture {
 
 	// Testing Follows clause, 1 clause in query
 	// select BOOLEAN
-	//CPPUNIT_TEST( testFollowsEvaluateFixedFixedPass );
-	//CPPUNIT_TEST( testFollowsEvaluateFixedFixedFail );
+	CPPUNIT_TEST( testFollowsEvaluateFixedFixedPass );
+	CPPUNIT_TEST( testFollowsEvaluateFixedFixedFail );
 	
 	// Testing FollowsStar, Parent, Modifies clause in query
 	// select BOOLEAN
@@ -70,5 +70,8 @@ public:
 	void testHalfInClauseWithModifiesSynSynStmtPass();
 
 	void testModifiesEvaluateSynGenericStmtPass();
+
+	void testFollowsEvaluateFixedFixedPass();
+	void testFollowsEvaluateFixedFixedFail();
 };
 

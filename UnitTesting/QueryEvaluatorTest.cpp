@@ -3,6 +3,7 @@
 #include "../SPA/ParentStarClause.h"
 #include "../SPA/PatternAssgClause.h"
 #include "../SPA/ModifiesClause.h"
+#include "../SPA/FollowsClause.h"
 #include "../SPA/Result.h"
 #include "../SPA/QueryEvaluator.h"
 #include "../SPA/StmtTable.h"
@@ -828,6 +829,42 @@ void QueryEvaluatorTest::testModifiesEvaluateSynGenericStmtPass() {
 	vector<StringPair> selectList = q->getSelectList();
 	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
 	CPPUNIT_ASSERT(toPrint.size() == 1);
+
+	delete qe;
+	delete p;
+	delete q;
+	delete result;
+}
+
+void QueryEvaluatorTest::testFollowsEvaluateFixedFixedPass() {
+	QueryEvaluator *qe = new QueryEvaluator();
+
+	StringPair *p = new StringPair();
+	p->setFirst("BOOLEAN");
+	p->setSecond(ARG_BOOLEAN);
+	Query *q = new Query();
+	q->addSelectSynonym(*p);
+	
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	followsBuilder->setArg(1, "7");
+	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_ASSIGN);
+	followsBuilder->setArg(2, "_");
+	followsBuilder->setArgFixed(2, true);
+	followsBuilder->setArgType(2, ARG_GENERIC);
+	FollowsClause* m1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	q->addClause((Clause*) m1);
+
+	Result* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->isSynPresent("p") == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
+	vector<StringPair> selectList = q->getSelectList();
+	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
+	CPPUNIT_ASSERT(toPrint.size() == 1);
+	unordered_set<string>::iterator iter = toPrint.begin();
+	CPPUNIT_ASSERT(*iter == "true");
 
 	delete qe;
 	delete p;
