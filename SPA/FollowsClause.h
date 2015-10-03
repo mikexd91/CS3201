@@ -1,6 +1,5 @@
 #pragma once
 #include "SuchThatClause.h"
-#include "TNode.h"
 
 class FollowsClause 
 	: public SuchThatClause {
@@ -8,17 +7,10 @@ class FollowsClause
 public:
 	FollowsClause(void);
 	~FollowsClause(void);
-
 	bool isValid(void);
 
-	//Results evaluate(void);
-	//string getFollows(string stmtNum, string unfixedStmtType);			// gets list of statements that follows stmtNum
-	//string getFollowedBy(string stmtNum, string unfixedStmtType);		// gets list of statements that stmtNum follows
-	//bool checkIsSameType(NodeType type, string stmtType);
-	//void followsBothUnfixedArg(string firstArgType, string secondArgType, Results &resObj);
-	//void followsWithOneUnderscore(string firstArgType, string secondArgType, Results &resObj);
-
 protected:
+	StmtTable* stmtTable;
 	
 	bool evaluateS1FixedS2Fixed(string, string);
 	//e.g. Parent(_,_)
