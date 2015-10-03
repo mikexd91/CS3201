@@ -3,10 +3,12 @@
 #include "Utils.h"
 #include <string>
 #include <map>
+#include "boost/foreach.hpp"
 
 using std::map;
 using std::string;
 using namespace stringconst;
+using namespace boost;
 
 SuchThatClause::SuchThatClause(ClauseType type){
 	this->clauseType = type;
@@ -274,12 +276,13 @@ bool SuchThatClause::evaluate(Result* res) {
 			} else if (isFirstInTable) {
 				//get all a1 values
 				unordered_set<string> firstValues = res->getSyn(firstArgSyn);
+				
 				//for each a1 value, get all a2 values
 				for (unordered_set<string>::iterator iter = firstValues.begin(); iter != firstValues.end(); ++iter) {
 					string firstValue = *iter;
 					unordered_set<string> secondValues = getAllS2WithS1Fixed(firstValue);
 					//add each row of a1 and a2 into the results table
-					for (unordered_set<string>::iterator iter2 = secondValues.begin(); iter!= secondValues.end(); ++iter) {
+					for (unordered_set<string>::iterator iter2 = secondValues.begin(); iter2 != secondValues.end(); ++iter2) {
 						string secondValue = *iter2;
 						vector<string> newRow = vector<string>();
 						newRow.push_back(firstValue);
@@ -296,7 +299,7 @@ bool SuchThatClause::evaluate(Result* res) {
 					string secondValue = *iter;
 					unordered_set<string> firstValues = getAllS2WithS1Fixed(secondValue);
 					//add each row of a1 and a2 into the results table
-					for (unordered_set<string>::iterator iter2 = firstValues.begin(); iter!= firstValues.end(); ++iter) {
+					for (unordered_set<string>::iterator iter2 = firstValues.begin(); iter2!= firstValues.end(); ++iter2) {
 						string firstValue = *iter2;
 						vector<string> newRow = vector<string>();
 						newRow.push_back(firstValue);
@@ -308,9 +311,7 @@ bool SuchThatClause::evaluate(Result* res) {
 			} else {
 				//generate all a1 and a2 values
 				unordered_set<vector<string>> firstSecondValues = getAllS1AndS2();
-				for (auto iter = firstSecondValues.begin();
-					iter != firstSecondValues.end();
-					++iter) {
+				for (auto iter = firstSecondValues.begin();	iter != firstSecondValues.end(); ++iter) {
 						vector<string> values = *iter;
 						insert.insertValues(values);
 				}
