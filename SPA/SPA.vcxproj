@@ -25,6 +25,8 @@
     <ClCompile Include="CallNode.cpp" />
     <ClCompile Include="CallsClause.cpp" />
     <ClCompile Include="CallsStarClause.cpp" />
+    <ClCompile Include="CFG.cpp" />
+    <ClCompile Include="CFGBuilder.cpp" />
     <ClCompile Include="Clause.cpp" />
     <ClCompile Include="CNode.cpp" />
     <ClCompile Include="Constant.cpp" />
@@ -38,6 +40,7 @@
     <ClCompile Include="FollowsStarClause.cpp" />
     <ClCompile Include="IfCNode.cpp" />
     <ClCompile Include="IfNode.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="MultiSynInsert.cpp" />
     <ClCompile Include="NoSynInsert.cpp" />
@@ -91,6 +94,8 @@
     <ClInclude Include="CallNode.h" />
     <ClInclude Include="CallsClause.h" />
     <ClInclude Include="CallsStarClause.h" />
+    <ClInclude Include="CFG.h" />
+    <ClInclude Include="CFGBuilder.h" />
     <ClInclude Include="Clause.h" />
     <ClInclude Include="CNode.h" />
     <ClInclude Include="Constant.h" />

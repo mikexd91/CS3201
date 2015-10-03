@@ -70,7 +70,7 @@ void PDR::processCallStmt(ParsedData data) {
 	Statement* callStmt = new Statement();
 	callStmt->setStmtNum(stmtCounter);
 	callStmt->setCalls(data.getProcName());
-	callStmt->setType(NodeType::CALL_STMT_);
+	callStmt->setType(CALL_STMT_);
 	createFollowsLinks(callNode, callStmt);
 	addToStmtTable(callStmt);
 }
@@ -170,7 +170,7 @@ void PDR::processIfStmt(ParsedData data) {
 	// Populating StmtTable
 	StmtTable* stmtTable = StmtTable::getInstance();
 	Statement* ifStmt = new Statement();
-	ifStmt->setType(NodeType::IF_STMT_);
+	ifStmt->setType(IF_STMT_);
 	ifStmt->setStmtNum(stmtCounter);
 	ifStmt->setTNodeRef(ifNode);
 

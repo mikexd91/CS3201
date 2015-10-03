@@ -33,8 +33,8 @@ void TestWrapper::parse(std::string filename) {
     string programSource = buffer.str();
 	// call parser.parse on the string
 	try {
-	parser->parse(programSource);
-	delete parser;
+		parser->parse(programSource);
+		delete parser;
 	} catch (InvalidCodeException e) {
 		cout << e.what();
 		delete parser;
