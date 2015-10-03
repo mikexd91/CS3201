@@ -12,13 +12,13 @@ class ParentStarClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testParentStarGenericGenericPass );
 	CPPUNIT_TEST( testParentStarGenericStatementPass );
 	CPPUNIT_TEST( testParentStarGenericWhilePass );
+	CPPUNIT_TEST( testParentStarFixedGenericPass );
 	//CPPUNIT_TEST( testParentStarSynFixedPass );
 			/**
 	CPPUNIT_TEST( testParentStarSynFixedPassWithGeneric );
 	CPPUNIT_TEST( testParentStarSynFixedFail );
 	CPPUNIT_TEST( testParentStarFixedSynPass );
 	CPPUNIT_TEST( testParentStarFixedSynPassWithWhile );
-	CPPUNIT_TEST( testParentStarFixedSynPassWithGeneric );
 	CPPUNIT_TEST( testParentStarFixedSynFail );
 	CPPUNIT_TEST( testParentStarFixedSynFailWithWhile );
 	CPPUNIT_TEST( testParentStarSynSynPass );
@@ -39,6 +39,7 @@ public:
 	void testParentStarGenericGenericPass();
 	void testParentStarGenericStatementPass();
 	void testParentStarGenericWhilePass();
+	void testParentStarFixedGenericPass();
 
 
 	void testParentStarSynFixedPass();
@@ -46,7 +47,6 @@ public:
 	void testParentStarSynFixedFail();
 	void testParentStarFixedSynPass();
 	void testParentStarFixedSynPassWithWhile();
-	void testParentStarFixedSynPassWithGeneric();
 	void testParentStarFixedSynFail();
 	void testParentStarFixedSynFailWithWhile();
 	void testParentStarSynSynPass();

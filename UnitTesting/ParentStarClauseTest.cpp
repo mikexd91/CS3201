@@ -285,7 +285,28 @@ void ParentStarClauseTest::testParentStarFixedFixedFailSameStmt() {
 
 	bool result = m1->evaluate(&res);
 	CPPUNIT_ASSERT(!result);
+}
 
+//Parent*(_,w)
+void ParentStarClauseTest::testParentStarGenericWhilePass() {
+
+	Result res = Result();
+	SuchThatClauseBuilder* parentStarBuilder = new SuchThatClauseBuilder(PARENTSTAR_);
+	parentStarBuilder->setArg(1, "_");
+	parentStarBuilder->setArgFixed(1, false);
+	parentStarBuilder->setArgType(1, ARG_GENERIC);
+	parentStarBuilder->setArg(2, "w");
+	parentStarBuilder->setArgFixed(2, false);
+	parentStarBuilder->setArgType(2, ARG_WHILE);
+	ParentStarClause* m1 = (ParentStarClause*) parentStarBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+	CPPUNIT_ASSERT(res.getResultTableSize() == 1);
+	unordered_set<string> s = res.getSyn("w");
+	CPPUNIT_ASSERT(s.size() == 1);
+	CPPUNIT_ASSERT(s.find("4") != s.end());
 }
 
 void ParentStarClauseTest::testParentStarGenericGenericPass() {
@@ -331,26 +352,22 @@ void ParentStarClauseTest::testParentStarGenericStatementPass() {
 	CPPUNIT_ASSERT(s.find("7") != s.end());
 }
 
-//Parent*(_,w)
-void ParentStarClauseTest::testParentStarGenericWhilePass() {
-
+//Parent*(2,_)
+void ParentStarClauseTest::testParentStarFixedGenericPass() {
 	Result res = Result();
 	SuchThatClauseBuilder* parentStarBuilder = new SuchThatClauseBuilder(PARENTSTAR_);
-	parentStarBuilder->setArg(1, "_");
-	parentStarBuilder->setArgFixed(1, false);
-	parentStarBuilder->setArgType(1, ARG_GENERIC);
-	parentStarBuilder->setArg(2, "w");
+	parentStarBuilder->setArg(1, "2");
+	parentStarBuilder->setArgFixed(1, true);
+	parentStarBuilder->setArgType(1, ARG_STATEMENT);
+	parentStarBuilder->setArg(2, "_");
 	parentStarBuilder->setArgFixed(2, false);
-	parentStarBuilder->setArgType(2, ARG_WHILE);
+	parentStarBuilder->setArgType(2, ARG_GENERIC);
 	ParentStarClause* m1 = (ParentStarClause*) parentStarBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
 
 	bool result = m1->evaluate(&res);
 	CPPUNIT_ASSERT(result);
-	CPPUNIT_ASSERT(res.getResultTableSize() == 1);
-	unordered_set<string> s = res.getSyn("w");
-	CPPUNIT_ASSERT(s.size() == 1);
-	CPPUNIT_ASSERT(s.find("4") != s.end());
+	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
 }
 
 /**
@@ -444,23 +461,6 @@ void ParentStarClauseTest::testParentStarFixedSynPassWithWhile() {
 	CPPUNIT_ASSERT(r1.isClausePassed());
 	CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
 	CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == "4");
-}
-
-void ParentStarClauseTest::testParentStarFixedSynPassWithGeneric() {
-	ParentStarClause* m1 = new ParentStarClause();
-	m1->setFirstArg("2");
-	m1->setFirstArgFixed(true);
-	m1->setFirstArgType(ARG_STATEMENT);
-	m1->setSecondArg("_");
-	m1->setSecondArgFixed(false);
-	m1->setSecondArgType(ARG_GENERIC);
-	CPPUNIT_ASSERT(m1->isValid());
-
-	Results r1 = m1->evaluate();
-	vector<string> singleResults = r1.getSinglesResults();
-
-	CPPUNIT_ASSERT(r1.isClausePassed());
-	CPPUNIT_ASSERT(singleResults.size() == 0);
 }
 
 void ParentStarClauseTest::testParentStarFixedSynFail() {

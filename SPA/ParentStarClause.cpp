@@ -50,11 +50,13 @@ bool ParentStarClause::evaluateS1GenericS2Generic() {
 };
 //e.g. Parent(_,string)
 bool ParentStarClause::evaluateS1GenericS2Fixed(string s2){
-	return false;
+	Statement::ParentStarSet parents = getParentStar(stoi(s2), stringconst::ARG_STATEMENT);
+	return !parents.empty();
 };
 //Parent(string,_)
 bool ParentStarClause::evaluateS1FixedS2Generic(string s1) {
-	return false;
+	Statement::ChildrenStarSet  children =  getChildrenStar(stoi(s1), stringconst::ARG_STATEMENT);
+	return !children.empty();
 }
 //Parent(string,s2)
 unordered_set<string> ParentStarClause::getAllS2WithS1Fixed(string s1) {
