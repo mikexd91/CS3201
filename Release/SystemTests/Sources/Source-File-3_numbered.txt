@@ -1,0 +1,31 @@
+	procedure pokemon {
+1		charmander = 5;
+2		squirtle = 5;
+3		bulbasaur = 5;
+4		firstStageEvolution = 11;
+
+5		while firstStageEvolution {
+6			charmander = charmander + 1;
+7			bulbasaur = bulbasaur + 1;
+8			squirtle = squirtle + 1;
+		}
+
+9		charmeleon = charmander;
+10		wartortle = squirtle;
+11		ivysaur = bulbasaur;
+
+12		battle1 = charmeleon - wartortle;
+13		battle2 = ivysaur - charmeleon;
+14		battle3 = squirtle - ivysaur;
+
+15		while battle1 {
+16			charmeleon = wartortle + ivysaur;
+
+17			while battle2 {
+18				while battle3 {
+19					ivysaur = charmeleon + wartortle;
+				}
+			}
+20			lastPokemon = 3;
+		}
+	}

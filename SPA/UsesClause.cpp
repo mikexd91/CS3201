@@ -3,7 +3,6 @@
 #include "StmtTable.h"
 #include "VarTable.h"
 #include "ProcTable.h"
-#include "Results.h"
 
 #include "boost\lexical_cast.hpp"
 #include "boost\unordered_set.hpp"

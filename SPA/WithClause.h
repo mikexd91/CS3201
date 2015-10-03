@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Clause.h"
-#include "Results.h"
+
 #include "boost\unordered_set.hpp"
 #include "WithClauseRef.h"
 
@@ -26,7 +26,7 @@ public:
 	void setRightRef(WithClauseRef);
 
 private:
-	bool evaluate(Results*);
+	bool evaluate(Result*);
 
 	WithClauseRef leftRef;
 	WithClauseRef rightRef;

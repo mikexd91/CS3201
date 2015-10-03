@@ -1,5 +1,6 @@
 #pragma once
 #include "SuchThatClause.h"
+#include "StmtTable.h"
 
 class FollowsStarClause 
 	: public SuchThatClause {
@@ -7,12 +8,10 @@ class FollowsStarClause
 public:
 	FollowsStarClause(void);
 	~FollowsStarClause(void);
-
 	bool isValid(void);
 
-	Results evaluate(void);
-
 protected:
+	StmtTable* stmtTable;
 	//e.g. Parent(string,string)
 	bool evaluateS1FixedS2Fixed(string, string);
 	//e.g. Parent(_,_)
@@ -33,15 +32,6 @@ protected:
 	unordered_set<vector<string>> getAllS1AndS2();
 
 private:
-	/**
-	Results evaluateFollowsStarFixedFixed(int firstStmtNum, int secondStmtNum);
-	Results evaluateFollowsStarFixedSyn(int firstStmtNum, string secondStmtSyn);
-	Results evaluateFollowsStarSynFixed(string firstStmtSyn, int secondStmtNum);
-	Results evaluateFollowsStarSynSyn(string firstStmtSyn, string secondStmtSyn);
 
-	bool isFollowsStar(int stmt1, int stmt2);
-	void transferSinglesToResult(set<string>* singles, Results* res);
-	void transferPairsToResult(set<pair<string, string>>* pairs, Results* res);
-	**/
 };
 
