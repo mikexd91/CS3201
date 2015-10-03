@@ -20,14 +20,16 @@ unordered_set<string> PQLController::parse(string query) {
 	// call query evaluator to format query
 	// display query result
 	try {
-		cout << "parsing query"; 
+		cout << "Parsing Query..."; 
 		Query q= QueryParser::parseQuery(query);
-		cout << "parsed query";
+		cout << "Query Parse Successful" << endl;
 		QueryEvaluator* qe = new QueryEvaluator();
 		Result* resObj = qe->evaluateQuery(q);
+		cout << "Query Evaluated" << endl;
+		vector<StringPair> selectList = q.getSelectList();
 		cout << resObj->getResultTableSize() << endl;
-		boost::unordered_set<string> valueSet = qe->getValuesToPrint(resObj, q.getSelectList());
-		cout << "vauesetsize = " << valueSet.size() << endl;
+		boost::unordered_set<string> valueSet = qe->getValuesToPrint(resObj, selectList);
+		cout << "Result Set Size: " << valueSet.size() << endl;
 		//delete q;
 		//delete resObj;
 		//delete qe;
@@ -35,7 +37,7 @@ unordered_set<string> PQLController::parse(string query) {
 		return valueSet;
 
 		} catch (std::exception& e) {
-			cout << "eval not ok" << endl;
+			cout << "Evalutaion Failed...";
 			cout << e.what() << endl;
 			unordered_set<string> empty;
 			return empty;
