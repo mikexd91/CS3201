@@ -3,7 +3,6 @@
 #include "SingleSynInsert.h"
 #include "MultiSynInsert.h"
 #include "Result.h"
-#include "Results.h"
 #include "Utils.h"
 
 enum ClauseType{

@@ -2,7 +2,6 @@
 #include "SuchThatClause.h"
 #include "StmtTable.h"
 #include "Statement.h"
-#include "Results.h"
 
 class ParentClause 
 	: public SuchThatClause {

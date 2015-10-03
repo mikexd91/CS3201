@@ -103,6 +103,9 @@
     <PostBuildEvent>
       <Message>Unit Tests</Message>
     </PostBuildEvent>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='SPA - Release|Win32'">
     <ClCompile>

@@ -37,10 +37,9 @@ void WithClause::setRightRef(WithClauseRef rightRef)
 	this->rightRef = rightRef;
 }
 
-bool WithClause::evaluate(Results*)
+bool WithClause::evaluate(Result*)
 {
 	// TODO
 	// 
 	return false;
 }
-
