@@ -10,6 +10,8 @@ using namespace std;
 Parser parser;
 PDR* pdr;
 AST* ast;
+CFG* cfg;
+CFGBuilder* builder;
 VarTable* varTable1;
 ProcTable* procTable;
 StmtTable* stmtTable1;
@@ -786,5 +788,371 @@ void FrontEndTest::testCFGMultAssg() {
 	unordered_set<int> assg2NextSet(assg2Next, assg2Next + 1);
 	unordered_set<int> assg3PrevSet(assg3Prev, assg3Prev + 1);
 
+	CPPUNIT_ASSERT(assg1->getPrev().empty());
 	CPPUNIT_ASSERT(assg1->getNext() == assg1NextSet);
+	CPPUNIT_ASSERT(assg2->getPrev() == assg2PrevSet);
+	CPPUNIT_ASSERT(assg2->getNext() == assg2NextSet);
+	CPPUNIT_ASSERT(assg3->getPrev() == assg3PrevSet);
+	CPPUNIT_ASSERT(assg3->getNext().empty());
+}
+
+void FrontEndTest::testCFGMultProc() {
+	/*
+	procedure proc1 {
+		x = 1;
+		call proc2;
+		y = 2;
+	}
+
+	procedure proc2 {
+		y = 3;
+		x = 2;
+	}
+	*/
+
+	parser.parse("procedure proc1 { x = 1; call proc2; y = 2;} procedure proc2 { y = 3; x = 2;} ");
+	
+	Statement* stmt1 = stmtTable1->getStmtObj(1);
+	Statement* stmt2 = stmtTable1->getStmtObj(2);
+	Statement* stmt3 = stmtTable1->getStmtObj(3);
+	Statement* stmt4 = stmtTable1->getStmtObj(4);
+	Statement* stmt5 = stmtTable1->getStmtObj(5);
+
+	int stmt1Next[] = {2};
+	int stmt2Prev[] = {1};
+	int stmt2Next[] = {3};
+	int stmt3Prev[] = {2};
+	int stmt4Next[] = {5};
+	int stmt5Prev[] = {4};
+	unordered_set<int> stmt1NextSet(stmt1Next, stmt1Next + 1);
+	unordered_set<int> stmt2PrevSet(stmt2Prev, stmt2Prev + 1);
+	unordered_set<int> stmt2NextSet(stmt2Next, stmt2Next + 1);
+	unordered_set<int> stmt3PrevSet(stmt3Prev, stmt3Prev + 1);
+	unordered_set<int> stmt4NextSet(stmt4Next, stmt4Next + 1);
+	unordered_set<int> stmt5PrevSet(stmt5Prev, stmt5Prev + 1);
+
+	CPPUNIT_ASSERT(stmt1->getPrev().empty());
+	CPPUNIT_ASSERT(stmt1->getNext() == stmt1NextSet);
+	CPPUNIT_ASSERT(stmt2->getPrev() == stmt2PrevSet);
+	CPPUNIT_ASSERT(stmt2->getNext() == stmt2NextSet);
+	CPPUNIT_ASSERT(stmt3->getPrev() == stmt3PrevSet);
+	CPPUNIT_ASSERT(stmt3->getNext().empty());
+	CPPUNIT_ASSERT(stmt4->getPrev().empty());
+	CPPUNIT_ASSERT(stmt4->getNext() == stmt4NextSet);
+	CPPUNIT_ASSERT(stmt5->getPrev() == stmt5PrevSet);
+	CPPUNIT_ASSERT(stmt5->getNext().empty());
+}
+
+void FrontEndTest::testCFGIfStmt() {
+	/*
+	procedure proc {
+		x = 2;
+		if x then {
+			y = 3;
+			z = 4;
+		} else {
+			y = 10;
+			z = 11;
+		}
+		z = y + x;
+	}
+	*/
+
+	parser.parse("procedure proc {x = 2; if x then {y = 3; z = 4;} else {y = 10; z = 11;} z = y + x;}");
+
+	CPPUNIT_ASSERT(stmtTable1->getAllStmts().size() == 7);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(2)->getType() == NodeType::IF_STMT_);
+	
+	Statement* ifStmt = stmtTable1->getStmtObj(2);
+	int ifStmtPrev[] = {1};
+	int ifStmtNext[] = {3, 5};
+	unordered_set<int> ifStmtPrevSet(ifStmtPrev, ifStmtPrev + 1);
+	unordered_set<int> ifStmtNextSet(ifStmtNext, ifStmtNext + 2);
+	CPPUNIT_ASSERT(ifStmt->getPrev() == ifStmtPrevSet);
+	CPPUNIT_ASSERT(ifStmt->getNext() == ifStmtNextSet);
+
+	Statement* lastStmt = stmtTable1->getStmtObj(7);
+	int lastStmtPrev[] = {4, 6};
+	unordered_set<int> lastStmtPrevSet(lastStmtPrev, lastStmtPrev + 2);
+	CPPUNIT_ASSERT(lastStmt->getPrev() == lastStmtPrevSet);
+	CPPUNIT_ASSERT(lastStmt->getNext().empty());	
+}
+
+void FrontEndTest::testCFGIfNested() {
+	/*
+	procedure proc {						 1
+		x = 2;							     | 
+		if x then {							 2
+			y = 1;						  /     \
+			if y then {					 3		 7		
+				z = 2;					 |		 |	
+			} else {					 4		 8
+				a = 3;					/ \     / \
+			}						   5   6   9   10
+		} else {					    \ /     \ /
+			w = 4;						 -       -
+			if w then {					   \   /	
+				x = 3;						 11
+			} else {
+				b = z;
+			}
+		}
+		y = 3;
+	}
+	*/
+
+	parser.parse("procedure proc { x = 2; if x then {y = 1; if y then { z = 2;} else { a = 3; }} else { w = 4; if w then { x = 3; } else { b = z; }} y = 3;}");
+
+	Statement* stmt2 = stmtTable1->getStmtObj(2);
+	int stmt2Next[] = {3,7};
+	unordered_set<int> stmt2NextSet(stmt2Next, stmt2Next + 2);
+	CPPUNIT_ASSERT(stmt2->getNext() == stmt2NextSet);
+
+	Statement* stmt4 = stmtTable1->getStmtObj(4);
+	int stmt4Prev[] = {3};
+	int stmt4Next[] = {5, 6};
+	unordered_set<int> stmt4PrevSet(stmt4Prev, stmt4Prev + 1);
+	unordered_set<int> stmt4NextSet(stmt4Next, stmt4Next + 2);
+	CPPUNIT_ASSERT(stmt4->getPrev() == stmt4PrevSet);
+	CPPUNIT_ASSERT(stmt4->getNext() == stmt4NextSet);
+
+	Statement* stmt8 = stmtTable1->getStmtObj(8);
+	int stmt8Prev[] = {7};
+	int stmt8Next[] = {9, 10};
+	unordered_set<int> stmt8PrevSet(stmt8Prev, stmt8Prev + 1);
+	unordered_set<int> stmt8NextSet(stmt8Next, stmt8Next + 2);
+	CPPUNIT_ASSERT(stmt8->getPrev() == stmt8PrevSet);
+	CPPUNIT_ASSERT(stmt8->getNext() == stmt8NextSet);
+
+	Statement* stmt11 = stmtTable1->getStmtObj(11);
+	int stmt11Prev[] = {5, 6, 9, 10};
+	unordered_set<int> stmt11PrevSet(stmt11Prev, stmt11Prev + 4);
+	CPPUNIT_ASSERT(stmt11->getPrev() == stmt11PrevSet);
+	CPPUNIT_ASSERT(stmt11->getNext().empty());
+
+	int next11[] = {11};
+	unordered_set<int> next11Set(next11, next11 + 1);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(5)->getNext() == next11Set);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(6)->getNext() == next11Set);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(9)->getNext() == next11Set);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(10)->getNext() == next11Set);
+}
+
+void FrontEndTest::testCFGWhileStmt() {
+	/*
+	procedure proc {					1
+		x = 3;							|
+		while x {					<---2<--- 
+			y = 4;				  /		|   /
+			z = 5;				  \   3, 4
+		}						   \
+		z = 4;						\__>5
+	}
+	*/
+
+	parser.parse("procedure proc {x = 3; while x {y = 4; z = 5;} z= 4;}");
+
+	Statement* stmt1 = stmtTable1->getStmtObj(1);
+	int stmt1Next[] = {2};
+	unordered_set<int> stmt1NextSet(stmt1Next, stmt1Next + 1);
+	CPPUNIT_ASSERT(stmt1->getNext() == stmt1NextSet);
+
+	Statement* stmt2 = stmtTable1->getStmtObj(2);
+	int stmt2Next[] = {3, 5};
+	int stmt2Prev[] = {1, 4};
+	unordered_set<int> stmt2NextSet(stmt2Next, stmt2Next + 2);
+	unordered_set<int> stmt2PrevSet(stmt2Prev, stmt2Prev + 2);
+	CPPUNIT_ASSERT(stmt2->getNext() == stmt2NextSet);
+	CPPUNIT_ASSERT(stmt2->getPrev() == stmt2PrevSet);
+
+	Statement* stmt3 = stmtTable1->getStmtObj(3);
+	int stmt3Next[] = {4};
+	int stmt3Prev[] = {2};
+	unordered_set<int> stmt3NextSet(stmt3Next, stmt3Next + 1);
+	unordered_set<int> stmt3PrevSet(stmt3Prev, stmt3Prev + 1);
+	CPPUNIT_ASSERT(stmt3->getNext() == stmt3NextSet);
+	CPPUNIT_ASSERT(stmt3->getPrev() == stmt3PrevSet);
+
+	Statement* stmt4 = stmtTable1->getStmtObj(4);
+	int stmt4Next[] = {2};
+	int stmt4Prev[] = {3};
+	unordered_set<int> stmt4NextSet(stmt4Next, stmt4Next + 1);
+	unordered_set<int> stmt4PrevSet(stmt4Prev, stmt4Prev + 1);
+	CPPUNIT_ASSERT(stmt4->getNext() == stmt4NextSet);
+	CPPUNIT_ASSERT(stmt4->getPrev() == stmt4PrevSet);
+	
+	Statement* stmt5 = stmtTable1->getStmtObj(5);
+	int stmt5Prev[] = {2};
+	unordered_set<int> stmt5PrevSet(stmt5Prev, stmt5Prev + 1);
+	CPPUNIT_ASSERT(stmt5->getNext().empty());
+	CPPUNIT_ASSERT(stmt5->getPrev() == stmt5PrevSet);
+}
+
+void FrontEndTest::testCFGWhileNested() {
+	/*
+	procedure proc {								1	
+		x = 2;										|
+		while x {						   ------->	2 -----> END
+			y = 3;						  |			|
+			z = 3;						  |		   3,4
+			while y {					  |			|
+				while z {				  |		--- 5 <-
+					y = 3;				  |		|	|  /
+				}						  |		|	6 <--
+			}							  |		|	|	|
+										  |		|	7----	
+			while z {					  | 	|	
+				z = 4;					  | 	--> 8 <--	
+			}							  | 	  /	|	|
+		}								  <------/	9 ---
+	}
+	*/
+
+	parser.parse("procedure proc {x = 2; while x {y = 3; z = 3; while y {while z {y = 3;}} while z{z = 4;}}}");
+
+	Statement* stmt2 = stmtTable1->getStmtObj(2);
+	int stmt2Next[] = {3};
+	int stmt2Prev[] = {1, 8};
+	unordered_set<int> stmt2NextSet(stmt2Next, stmt2Next + 1);
+	unordered_set<int> stmt2PrevSet(stmt2Prev, stmt2Prev + 2);
+	CPPUNIT_ASSERT(stmt2->getNext() == stmt2NextSet);
+	CPPUNIT_ASSERT(stmt2->getPrev() == stmt2PrevSet);
+
+	Statement* stmt5 = stmtTable1->getStmtObj(5);
+	int stmt5Next[] = {6, 8};
+	int stmt5Prev[] = {4, 6};
+	unordered_set<int> stmt5NextSet(stmt5Next, stmt5Next + 2);
+	unordered_set<int> stmt5PrevSet(stmt5Prev, stmt5Prev + 2);
+	CPPUNIT_ASSERT(stmt5->getNext() == stmt5NextSet);
+	CPPUNIT_ASSERT(stmt5->getPrev() == stmt5PrevSet);
+
+	Statement* stmt6 = stmtTable1->getStmtObj(6);
+	int stmt6Next[] = {7, 5};
+	int stmt6Prev[] = {5, 7};
+	unordered_set<int> stmt6NextSet(stmt6Next, stmt6Next + 2);
+	unordered_set<int> stmt6PrevSet(stmt6Prev, stmt6Prev + 2);
+	CPPUNIT_ASSERT(stmt6->getNext() == stmt6NextSet);
+	CPPUNIT_ASSERT(stmt6->getPrev() == stmt6PrevSet);
+
+	Statement* stmt7 = stmtTable1->getStmtObj(7);
+	int stmt7Next[] = {6};
+	int stmt7Prev[] = {6};
+	unordered_set<int> stmt7NextSet(stmt7Next, stmt7Next + 1);
+	unordered_set<int> stmt7PrevSet(stmt7Prev, stmt7Prev + 1);
+	CPPUNIT_ASSERT(stmt7->getNext() == stmt7NextSet);
+	CPPUNIT_ASSERT(stmt7->getPrev() == stmt7PrevSet);
+
+	Statement* stmt8 = stmtTable1->getStmtObj(8);
+	int stmt8Next[] = {9, 2};
+	int stmt8Prev[] = {5, 9};
+	unordered_set<int> stmt8NextSet(stmt8Next, stmt8Next + 2);
+	unordered_set<int> stmt8PrevSet(stmt8Prev, stmt8Prev + 2);
+	CPPUNIT_ASSERT(stmt8->getNext() == stmt8NextSet);
+	CPPUNIT_ASSERT(stmt8->getPrev() == stmt8PrevSet);
+}
+
+void FrontEndTest::testCFGMixedNested() {
+	/*
+	procedure proc {
+		x = 2;
+		while x {
+			if x then  {
+				y = 3;
+			} else {
+				y = 4;
+			}
+		}
+
+		if y then {
+			while x {
+		 		z = 3;
+			}
+		} else {
+			while y {
+				z = 4;
+				while z {
+					a = 5;
+				}
+			}
+		}
+	}
+	*/
+
+	parser.parse("procedure proc {x = 2; while x {if x then {y = 3;} else {y = 4;}} if y then {while x {z = 3;}} else {while y {z = 4; while z {a = 5;}}} b = 4;}");
+
+	Statement* stmt2 = stmtTable1->getStmtObj(2);
+	int stmt2Next[] = {3, 6};
+	int stmt2Prev[] = {1, 4, 5};
+	unordered_set<int> stmt2NextSet(stmt2Next, stmt2Next + 2);
+	unordered_set<int> stmt2PrevSet(stmt2Prev, stmt2Prev + 3);
+	CPPUNIT_ASSERT(stmt2->getNext() == stmt2NextSet);
+	CPPUNIT_ASSERT(stmt2->getPrev() == stmt2PrevSet);
+
+	Statement* stmt3 = stmtTable1->getStmtObj(3);
+	int stmt3Next[] = {4, 5};
+	int stmt3Prev[] = {2};
+	unordered_set<int> stmt3NextSet(stmt3Next, stmt3Next + 2);
+	unordered_set<int> stmt3PrevSet(stmt3Prev, stmt3Prev + 1);
+	CPPUNIT_ASSERT(stmt3->getNext() == stmt3NextSet);
+	CPPUNIT_ASSERT(stmt3->getPrev() == stmt3PrevSet);
+
+	Statement* stmt4 = stmtTable1->getStmtObj(4);
+	Statement* stmt5 = stmtTable1->getStmtObj(5);
+	int stmt4Next[] = {2};
+	int stmt4Prev[] = {3};
+	unordered_set<int> stmt4NextSet(stmt4Next, stmt4Next + 1);
+	unordered_set<int> stmt4PrevSet(stmt4Prev, stmt4Prev + 1);
+	CPPUNIT_ASSERT(stmt4->getNext() == stmt4NextSet);
+	CPPUNIT_ASSERT(stmt4->getPrev() == stmt4PrevSet);
+	CPPUNIT_ASSERT(stmt5->getNext() == stmt4NextSet);
+	CPPUNIT_ASSERT(stmt5->getPrev() == stmt4PrevSet);
+
+	Statement* stmt6 = stmtTable1->getStmtObj(6);
+	int stmt6Next[] = {7, 9};
+	int stmt6Prev[] = {2};
+	unordered_set<int> stmt6NextSet(stmt6Next, stmt6Next + 2);
+	unordered_set<int> stmt6PrevSet(stmt6Prev, stmt6Prev + 1);
+	CPPUNIT_ASSERT(stmt6->getNext() == stmt6NextSet);
+	CPPUNIT_ASSERT(stmt6->getPrev() == stmt6PrevSet);
+
+	Statement* stmt7 = stmtTable1->getStmtObj(7);
+	int stmt7Next[] = {8, 13};
+	int stmt7Prev[] = {6, 8};
+	unordered_set<int> stmt7NextSet(stmt7Next, stmt7Next + 2);
+	unordered_set<int> stmt7PrevSet(stmt7Prev, stmt7Prev + 2);
+	CPPUNIT_ASSERT(stmt7->getNext() == stmt7NextSet);
+	CPPUNIT_ASSERT(stmt7->getPrev() == stmt7PrevSet);
+
+	Statement* stmt8 = stmtTable1->getStmtObj(8);
+	int stmt8Next[] = {7};
+	unordered_set<int> stmt8Set(stmt8Next, stmt8Next + 1);
+	CPPUNIT_ASSERT(stmt8->getNext() == stmt8->getPrev() && stmt8->getNext() == stmt8Set);
+
+	Statement* stmt9 = stmtTable1->getStmtObj(9);
+	int stmt9Next[] = {10, 13};
+	int stmt9Prev[] = {6, 11};
+	unordered_set<int> stmt9NextSet(stmt9Next, stmt9Next + 2);
+	unordered_set<int> stmt9PrevSet(stmt9Prev, stmt9Prev + 2);
+	CPPUNIT_ASSERT(stmt9->getNext() == stmt9NextSet);
+	CPPUNIT_ASSERT(stmt9->getPrev() == stmt9PrevSet);
+
+	Statement* stmt11 = stmtTable1->getStmtObj(11);
+	int stmt11Next[] = {12, 9};
+	int stmt11Prev[] = {10, 12};
+	unordered_set<int> stmt11NextSet(stmt11Next, stmt11Next + 2);
+	unordered_set<int> stmt11PrevSet(stmt11Prev, stmt11Prev + 2);
+	CPPUNIT_ASSERT(stmt11->getNext() == stmt11NextSet);
+	CPPUNIT_ASSERT(stmt11->getPrev() == stmt11PrevSet);
+
+	Statement* stmt12 = stmtTable1->getStmtObj(12);
+	int stmt12Next[] = {11};
+	unordered_set<int> stmt12Set(stmt12Next, stmt12Next + 1);
+	CPPUNIT_ASSERT(stmt12->getNext() == stmt12Set);
+	CPPUNIT_ASSERT(stmt12->getPrev() == stmt12Set);
+
+	Statement* stmt13 = stmtTable1->getStmtObj(13);
+	int stmt13Prev[] = {7, 9};
+	unordered_set<int> stmt13PrevSet(stmt13Prev, stmt13Prev + 2);
+	CPPUNIT_ASSERT(stmt13->getPrev() == stmt13PrevSet);
+	CPPUNIT_ASSERT(stmt13->getNext().empty());
 }
