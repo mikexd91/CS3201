@@ -1,5 +1,10 @@
 #pragma once
 #include "Query.h"
+#include "StmtTable.h"
+#include "VarTable.h"
+#include "ConstTable.h"
+#include "ProcTable.h"
+#include "Result.h"
 #include "boost/unordered_set.hpp"
 
 //Query object to be passed between parser and evaluator
@@ -27,20 +32,20 @@ private:
 	unordered_set<string> getAllProc();
 	unordered_set<string> getAllConst();
 
-	void getRemainingSynValuesFromTable(Results &obj);
-	Results* evaluateClauses(Results* obj, vector<Clause*> clauseList);
+	void getRemainingSynValuesFromTable(Result &obj);
+	Result* evaluateClauses(Result* obj, vector<Clause*> clauseList);
 	unordered_set<string> stringVectorToSet(vector<string> &varVector);
 	unordered_set<string> intVectorToSet(vector<int> &vec);
-	void insertSetValues(string syn, unordered_set<string> values, Results &obj);
-	unordered_set<string> printSingleSynValues(Results &obj, string syn);
-	unordered_set<string> printTupleSynValues(Results &obj, vector<StringPair> selectList);
+	void insertSetValues(string syn, unordered_set<string> values, Result &obj);
+	unordered_set<string> printSingleSynValues(Result &obj, string syn);
+	unordered_set<string> printTupleSynValues(Result &obj, vector<StringPair> selectList);
 
 public:
 	QueryEvaluator(void);
 	~QueryEvaluator(void);
 
 	// Evaluate all clauses in a query. Return values of the from table of the right type if there are no clauses.
-	Results* evaluateQuery(Query query);
+	Result* evaluateQuery(Query query);
 	// Return values to be printed.
-	unordered_set<string> getValuesToPrint(Results* obj, vector<StringPair> selectList); 
+	unordered_set<string> getValuesToPrint(Result* obj, vector<StringPair> selectList); 
 };
