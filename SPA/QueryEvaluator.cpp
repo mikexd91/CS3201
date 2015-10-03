@@ -60,7 +60,9 @@ unordered_set<string> QueryEvaluator::printTupleSynValues(Result &obj, vector<St
 			if (valueIter != tupleList.end() - 1) {
 				tuple.append(*valueIter);
 				tuple.append(" ");
-			} 
+			} else {
+				tuple.append(*valueIter);
+			}
 		}
 		resultSet.insert(tuple);
 	}
