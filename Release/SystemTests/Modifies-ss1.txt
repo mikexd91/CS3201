@@ -71,7 +71,7 @@ wartortle
 15 - MODIFIES-stmt: syn-fixed
 stmt s;
 Select s such that Modifies(s, "ivysaur")
-11, 15, 17, 18
+11, 15, 17, 18, 19
 5000
 16 - MODIFIES-assign: syn-fixed
 assign a;
@@ -110,13 +110,13 @@ true
 5000
 23 - MODIFIES-assign: syn-generic
 assign a;
-Select a such that Uses(a, _)
+Select a such that Modifies(a, _)
 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 19, 21, 22, 23
 5000
 24 - MODIFIES-while: syn-generic
 while w;
 Select w such that Modifies(w, _)
-15, 17, 18
+5, 15, 17, 18
 5000
 25 - MODIFIES-if: syn-generic
 if i;
@@ -141,7 +141,7 @@ firstStageEvolution, charmander, bulbasaur, squirtle, charmeleon, wartortle, ivy
 29 - MODIFIES-assign: pattern-right defined (match select)
 assign a;
 Select a such that Modifies(a, _) pattern a(_, _"charmeleon"_)
-12, 19
+12, 13, 19
 5000
 30 - MODIFIES-assign: pattern-right defined (does not match select)
 assign a1, a2;
@@ -165,7 +165,7 @@ Select a such that Modifies(a, _) pattern a("wartortle", _"squirtle"_)
 5000
 34 - MODIFIES-assign: pattern-both defined (does not match select)
 assign a1, a2;
-Select a1 such that Modifies(a1, "charmander") pattern a2("battle2", "charmeleon")
+Select a1 such that Modifies(a1, "charmander") pattern a2("battle2", _"charmeleon"_)
 1, 6
 5000
 35 - MODIFIES-while: pattern (match select)
