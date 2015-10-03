@@ -40,6 +40,7 @@
     <ClCompile Include="FollowsStarClause.cpp" />
     <ClCompile Include="IfCNode.cpp" />
     <ClCompile Include="IfNode.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="MultiSynInsert.cpp" />
     <ClCompile Include="NoSynInsert.cpp" />
@@ -165,7 +166,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
