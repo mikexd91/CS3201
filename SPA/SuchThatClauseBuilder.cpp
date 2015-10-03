@@ -68,7 +68,7 @@ SuchThatClause* SuchThatClauseBuilder::build() {
 	if (this->clauseType == FOLLOWSSTAR_){
 		clause = new FollowsStarClause();
 	
-	} else */ if (this->clauseType == PARENTSTAR_){
+	} else if (this->clauseType == PARENTSTAR_){
 		clause = new ParentStarClause();
 	
 	} else if (this->clauseType == FOLLOWS_){
