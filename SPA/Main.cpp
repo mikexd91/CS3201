@@ -1,19 +1,14 @@
 #include <stdio.h>
 #include <iostream>
-#include "PQLController.h"
 #include "Parser.h"
 #include "InvalidCodeException.h"
 #include "SuchThatClauseBuilder.h"
 #include "Utils.h"
-#include "boost/unordered_set.hpp"
 #include <fstream>
 #include <sstream>
 
-using namespace std;
-using namespace boost;
-
 int main() {
-	/*
+
 	SuchThatClauseBuilder* b = new SuchThatClauseBuilder(MODIFIES_);
 	b->setArg(1, "a");
 	b->setArgFixed(1, false);
@@ -29,48 +24,25 @@ int main() {
 
 	cout << "asd" << m->isValid() << r->isClausePass() << "asd" << endl;
 	system("pause");
-	*/
 	/* rewrite as necessary */
 
-	Parser* parser = new Parser();
-	PQLController* pqlController = new PQLController();
+	/*Parser parser = Parser();
 
-	// read the file as given by filename
-	string filename = "SystemTests/Sources/System-Source-1.txt";
-	ifstream in(filename);
+	ifstream in("sample.txt");
 	stringstream buffer;
     buffer << in.rdbuf();
     string programSource = buffer.str();
-	// call parser.parse on the string
+
 	try {
-		parser->parse(programSource);
-		delete parser;
-	} catch (InvalidCodeException e) {
-		cout << e.what();
-		delete parser;
+		parser.parse(programSource);
+	} catch (InvalidCodeException) {
+		cout << "Error";
 		exit(EXIT_FAILURE);
-	}
+	}*/
 
 	// designExtractor.extract();
 
-	string queryString = "variable v; Select v such that Uses(1,v)";
-	
-	list<string> results = list<string>();
-	try {
-		unordered_set<string> resultSet = pqlController->parse(queryString);
-		// get results
-		// iterate through the results and stuff them into the results list
-		unordered_set<string>::iterator iter;
-		for (iter = resultSet.begin(); iter != resultSet.end(); ++iter) {
-			results.push_back(*iter);
-		}
-		delete pqlController;
-	} catch (std::exception e) {
-		results.push_back(e.what());
-		delete pqlController;
-	}
-
-	
+	string queryString = "pql query string";
 	// QueryProcessor queryProcessor = QueryProcessor();
 	// result = queryProcessor.evaluate(queryString);
 	// queryProjector.project(result);
