@@ -131,16 +131,19 @@ unordered_set<string> FollowsStarClause::getAllS1() {
 
 unordered_set<vector<string>> FollowsStarClause::getAllS1AndS2() {
 	unordered_set<vector<string>> result = unordered_set<vector<string>>();
-	unordered_set<Statement*> stmtSet = stmtTable->getAllStmts();
-	for (auto iter1 = stmtSet.begin(); iter1 != stmtSet.end(); ++iter1) {
-		Statement* stmtPtr = *iter1;
-		unordered_set<int> followsStarAfterSet = stmtPtr->getFollowsStarAfter();
-		for (auto iter2 = followsStarAfterSet.begin(); iter2 != followsStarAfterSet.end(); ++iter2) {
-			vector<string> values = vector<string>();
-			string s1 = boost::lexical_cast<string>(stmtPtr->getStmtNum());
-			values.push_back(s1);
-			values.push_back(boost::lexical_cast<string>(*iter2));
-			result.insert(values);
+	//handle case where first and second args are the same -> they should not be
+	if (firstArg != secondArg) {
+		unordered_set<Statement*> stmtSet = stmtTable->getAllStmts();
+		for (auto iter1 = stmtSet.begin(); iter1 != stmtSet.end(); ++iter1) {
+			Statement* stmtPtr = *iter1;
+			unordered_set<int> followsStarAfterSet = stmtPtr->getFollowsStarAfter();
+			for (auto iter2 = followsStarAfterSet.begin(); iter2 != followsStarAfterSet.end(); ++iter2) {
+				vector<string> values = vector<string>();
+				string s1 = boost::lexical_cast<string>(stmtPtr->getStmtNum());
+				values.push_back(s1);
+				values.push_back(boost::lexical_cast<string>(*iter2));
+				result.insert(values);
+			}
 		}
 	}
 	return result;

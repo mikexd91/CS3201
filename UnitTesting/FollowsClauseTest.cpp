@@ -527,7 +527,6 @@ void FollowsClauseTest::testFollowsSynSynPass() {
 }
 
 void FollowsClauseTest::testFollowsSynSynSameFail() {
-	/*
 	Result result = Result();
 	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
 	
@@ -544,7 +543,6 @@ void FollowsClauseTest::testFollowsSynSynSameFail() {
 	bool evalResult = c1->evaluate(&result);
 	CPPUNIT_ASSERT(!evalResult);
 	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
-	*/
 }
 
 void FollowsClauseTest::testFollowsFirstUnderscoreFixedPass() {

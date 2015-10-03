@@ -523,7 +523,6 @@ void FollowsStarClauseTest::testFollowsStarSynSynPass() {
 }
 
 void FollowsStarClauseTest::testFollowsStarSynSynSameFail() {
-	/*
 	Result result = Result();
 	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
 	
@@ -539,9 +538,8 @@ void FollowsStarClauseTest::testFollowsStarSynSynSameFail() {
 	
 	bool evalResult = c1->evaluate(&result);
 	CPPUNIT_ASSERT(!evalResult);
-	//CPPUNIT_ASSERT(result.getResultTableSize() == 29);
-	CPPUNIT_ASSERT(result.isSynPresent("a"));
-	*/
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+	CPPUNIT_ASSERT(result.isSynPresent("a") == false);
 }
 
 void FollowsStarClauseTest::testFollowsStarFirstUnderscoreFixedPass() {

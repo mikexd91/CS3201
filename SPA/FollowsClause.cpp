@@ -143,17 +143,20 @@ unordered_set<string> FollowsClause::getAllS1(){
 //Follows(s1,s2)
 
 unordered_set<vector<string>> FollowsClause::getAllS1AndS2(){
-	unordered_set<vector<string>> results;
-	unordered_set<Statement*> stmtSet = stmtTable->getAllStmts();
-	for (auto iter = stmtSet.begin(); iter != stmtSet.end(); ++iter) {
-		Statement* stmtObj = *iter;
-		int a = stmtObj->getStmtNum();
-		int b = stmtObj->getFollowsAfter();
-		if (a != -1 && b != -1) {
-			vector<string> resVec;
-			resVec.push_back(lexical_cast<string>(a));
-			resVec.push_back(lexical_cast<string>(b));
-			results.insert(resVec);
+	unordered_set<vector<string>> results = unordered_set<vector<string>>();
+	//handle case where first and second args are the same -> they should not be
+	if (firstArg != secondArg) {
+		unordered_set<Statement*> stmtSet = stmtTable->getAllStmts();
+		for (auto iter = stmtSet.begin(); iter != stmtSet.end(); ++iter) {
+			Statement* stmtObj = *iter;
+			int a = stmtObj->getStmtNum();
+			int b = stmtObj->getFollowsAfter();
+			if (a != -1 && b != -1) {
+				vector<string> resVec;
+				resVec.push_back(lexical_cast<string>(a));
+				resVec.push_back(lexical_cast<string>(b));
+				results.insert(resVec);
+			}
 		}
 	}
 	return results;
