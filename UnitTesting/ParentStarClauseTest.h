@@ -9,17 +9,19 @@ class ParentStarClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testParentStarFixedFixedPass );
 	CPPUNIT_TEST( testParentStarFixedFixedFail );
 	CPPUNIT_TEST( testParentStarFixedFixedFailSameStmt );
+	CPPUNIT_TEST( testParentStarGenericGenericPass );
+	CPPUNIT_TEST( testParentStarFixedGenericPass );
+	CPPUNIT_TEST( testParentStarGenericFixedPass );
+	CPPUNIT_TEST( testParentStarGenericStatementPass );
+	CPPUNIT_TEST( testParentStarGenericWhilePass );
+	CPPUNIT_TEST( testParentStarWhileGenericPass );
 	CPPUNIT_TEST( testParentStarSynFixedPass );
-	CPPUNIT_TEST( testParentStarSynFixedPassWithGeneric );
 	CPPUNIT_TEST( testParentStarSynFixedFail );
 	CPPUNIT_TEST( testParentStarFixedSynPass );
-	CPPUNIT_TEST( testParentStarFixedSynPassWithWhile );
-	CPPUNIT_TEST( testParentStarFixedSynPassWithGeneric );
+	CPPUNIT_TEST( testParentStarFixedSynPassWithIf );
 	CPPUNIT_TEST( testParentStarFixedSynFail );
-	CPPUNIT_TEST( testParentStarFixedSynFailWithWhile );
 	CPPUNIT_TEST( testParentStarSynSynPass );
-	CPPUNIT_TEST( testParentStarSynSynPassWithWhile );
-	CPPUNIT_TEST( testParentStarSynSynPassWithGeneric );
+	CPPUNIT_TEST( testParentStarSynSynPassWithIf );
 	CPPUNIT_TEST( testParentStarInvalid );
 	CPPUNIT_TEST( testParentStarStmtOverflow );
 	CPPUNIT_TEST_SUITE_END();
@@ -27,22 +29,22 @@ class ParentStarClauseTest : public CPPUNIT_NS::TestFixture {
 public:
 	void setUp();
 	void tearDown();
-	
 	void testParentStarFixedFixedPass();
 	void testParentStarFixedFixedFail();
 	void testParentStarFixedFixedFailSameStmt();
+	void testParentStarGenericGenericPass();
+	void testParentStarFixedGenericPass();
+	void testParentStarGenericFixedPass();
+	void testParentStarGenericStatementPass();
+	void testParentStarGenericWhilePass();
+	void testParentStarWhileGenericPass();
 	void testParentStarSynFixedPass();
-	void testParentStarSynFixedPassWithGeneric();
 	void testParentStarSynFixedFail();
 	void testParentStarFixedSynPass();
-	void testParentStarFixedSynPassWithWhile();
-	void testParentStarFixedSynPassWithGeneric();
+	void testParentStarFixedSynPassWithIf();
 	void testParentStarFixedSynFail();
-	void testParentStarFixedSynFailWithWhile();
 	void testParentStarSynSynPass();
-	void testParentStarSynSynPassWithWhile();
-	void testParentStarSynSynPassWithGeneric();
+	void testParentStarSynSynPassWithIf();
 	void testParentStarInvalid();
 	void testParentStarStmtOverflow();
-};
-    
+};    
