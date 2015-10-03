@@ -297,7 +297,7 @@ bool SuchThatClause::evaluate(Result* res) {
 				//for each a1 value, get all a2 values
 				for (unordered_set<string>::iterator iter = secondValues.begin(); iter != secondValues.end(); ++iter) {
 					string secondValue = *iter;
-					unordered_set<string> firstValues = getAllS2WithS1Fixed(secondValue);
+					unordered_set<string> firstValues = getAllS1WithS2Fixed(secondValue);
 					//add each row of a1 and a2 into the results table
 					for (unordered_set<string>::iterator iter2 = firstValues.begin(); iter2!= firstValues.end(); ++iter2) {
 						string firstValue = *iter2;
