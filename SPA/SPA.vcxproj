@@ -76,6 +76,7 @@
     <ClCompile Include="StringPair.cpp" />
     <ClCompile Include="SuchThatClause.cpp" />
     <ClCompile Include="SuchThatClauseBuilder.cpp" />
+    <ClCompile Include="SynNode.cpp" />
     <ClCompile Include="TNode.cpp" />
     <ClCompile Include="UsesClause.cpp" />
     <ClCompile Include="Utils.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="StringPair.h" />
     <ClInclude Include="SuchThatClause.h" />
     <ClInclude Include="SuchThatClauseBuilder.h" />
+    <ClInclude Include="SynNode.h" />
     <ClInclude Include="TNode.h" />
     <ClInclude Include="UsesClause.h" />
     <ClInclude Include="Utils.h" />
