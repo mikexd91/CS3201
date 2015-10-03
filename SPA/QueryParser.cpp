@@ -333,6 +333,7 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 			while (expectSelect){
 				string syn = Utils::getWordAndPop(line);
 				if (decList.find(syn) == decList.end()){
+					cout << "missing dec: " << syn;
 					throw MissingDeclarationException();
 				}
 				string type = decList.at(syn);
@@ -357,6 +358,7 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 				query->addSelectSynonym(*newPair);		
 			} else {
 				if (decList.find(current) == decList.end()){
+					cout << "missing dec: " << current;
 					throw MissingDeclarationException();
 				}
 				string type = decList.at(current);
@@ -410,6 +412,7 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 		if (!Utils::isValidConstant(firstVar)){
 			if (!expectFirstFixed){
 				if (firstVar != stringconst::STRING_EMPTY){
+					cout << "missing dec: " << firstVar;
 					throw MissingDeclarationException();
 				} else {
 					newClause->setArg(1, stringconst::STRING_EMPTY);
@@ -498,6 +501,7 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 	string synonym = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
 	if (decList.find(synonym) == decList.end()){
+		cout << "missing dec: " << synonym;
 		throw InvalidDeclarationException();
 	} else {
 		patternType = decList.at(synonym);
@@ -522,7 +526,7 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 	if (openParen != "("){
 		throw InvalidSyntaxException();
 	}
-
+	
 	var = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
 	if (var == "\""){
@@ -537,6 +541,7 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 		varType = stringconst::ARG_GENERIC;
 	} else {
 		if (decList.find(var) == decList.end()){
+			cout << "missing dec: " << var;
 			throw MissingDeclarationException();
 		} else {
 			varType = decList.at(var);
@@ -656,6 +661,7 @@ void QueryParser::parsePatternIf(Query* query, queue<string> line, string synony
 	} else {
 		if (decList.find(var) == decList.end()){
 			if (var != stringconst::STRING_EMPTY){
+				cout << "missing dec: " << var;
 				throw MissingDeclarationException();
 			} else {
 				varType = stringconst::ARG_GENERIC;
@@ -707,7 +713,7 @@ void QueryParser::parsePatternIf(Query* query, queue<string> line, string synony
 //TODO : check how to build with
 void QueryParser::parseWith(Query* query, queue<string> line){
 	
-	WithClause with;
+	/*WithClause with;
 	WithClauseRef leftEntity;
 	WithClauseRef rightEntity;
 
@@ -719,49 +725,49 @@ void QueryParser::parseWith(Query* query, queue<string> line){
 	unexpectedEndCheck(line);
 
 	if (firstOperand == "."){
-		
-		string leftAttrCond = Utils::getWordAndPop(line);
-		unexpectedEndCheck(line);
-		leftEntity.setAttr(leftAttrCond);
 
-		string equalOperand = Utils::getWordAndPop(line);
-		unexpectedEndCheck(line);
-		if (equalOperand != "="){
-			throw InvalidSyntaxException();
-		}
+	string leftAttrCond = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	leftEntity.setAttr(leftAttrCond);
 
-		string rightVal = Utils::getWordAndPop(line);
-		rightEntity.setEntity(rightVal);
-		
-		if (!line.empty()){
-			
-			string dotOperand = Utils::getWordAndPop(line);
-			unexpectedEndCheck(line);
+	string equalOperand = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+	if (equalOperand != "="){
+	throw InvalidSyntaxException();
+	}
 
-			string rightAttrCond = Utils::getWordAndPop(line);
-			rightEntity.setAttr(rightAttrCond);
-		}
+	string rightVal = Utils::getWordAndPop(line);
+	rightEntity.setEntity(rightVal);
+
+	if (!line.empty()){
+
+	string dotOperand = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+
+	string rightAttrCond = Utils::getWordAndPop(line);
+	rightEntity.setAttr(rightAttrCond);
+	}
 
 	} else if (firstOperand == "="){
-		
-		string rightVal = Utils::getWordAndPop(line);
-		rightEntity.setEntity(rightVal);
 
-		if (!line.empty()){
+	string rightVal = Utils::getWordAndPop(line);
+	rightEntity.setEntity(rightVal);
 
-			string dotOperand = Utils::getWordAndPop(line);
-			unexpectedEndCheck(line);
+	if (!line.empty()){
 
-			string rightAttrCond = Utils::getWordAndPop(line);
-			rightEntity.setAttr(rightAttrCond);
-		}
+	string dotOperand = Utils::getWordAndPop(line);
+	unexpectedEndCheck(line);
+
+	string rightAttrCond = Utils::getWordAndPop(line);
+	rightEntity.setAttr(rightAttrCond);
+	}
 
 	} else {
-		throw InvalidSyntaxException();
+	throw InvalidSyntaxException();
 	}
-	
+
 	with.setLeftRef(leftEntity);
-	with.setRightRef(rightEntity);
+	with.setRightRef(rightEntity);*/
 	//query->addClause(with);
 }
 

@@ -142,6 +142,7 @@
     <ClCompile Include="ProcNodeTest.cpp" />
     <ClCompile Include="ProcTableTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
+    <ClCompile Include="QueryParserTest.cpp" />
     <ClCompile Include="ResultsTest.cpp" />
     <ClCompile Include="StmtLstNodeTest.cpp" />
     <ClCompile Include="StmtTableTest.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="ProcNodeTest.h" />
     <ClInclude Include="ProcTableTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
+    <ClInclude Include="QueryParserTest.h" />
     <ClInclude Include="ResultsTest.h" />
     <ClInclude Include="StmtLstNodeTest.h" />
     <ClInclude Include="StmtTableTest.h" />
@@ -172,6 +174,11 @@
     <ClInclude Include="VarNodeTest.h" />
     <ClInclude Include="VarTableTest.h" />
     <ClInclude Include="WhileNodeTest.h" />
+    <ClCompile Include="AllUnitTest.cpp" />
+    <ClCompile Include="WithClauseTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="WithClauseTest.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

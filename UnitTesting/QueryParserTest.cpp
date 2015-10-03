@@ -146,12 +146,12 @@ void QueryParserTest::testClause(){
 	Query* ASSERTION = new Query();
 	string const DEC_LINE = "variable v;";
 	string const SEL_LINE = "Select v";
-	string const CLS_LINE = "Uses(-1, v)";
-
+	string const CLS_LINE = "Uses(1, v)";
+	//todo parse -1
 	vector<string> DEC_LIST = QueryParser::tokeniser(DEC_LINE, ';');
 	QueryParser::parseDeclarations(ASSERTION, DEC_LIST);
 	boost::unordered_map<string, string> declist = ASSERTION->getDeclarationList();
-	CPPUNIT_ASSERT(declist.at("v") == stringconst::ARG_ASSIGN);
+	CPPUNIT_ASSERT(declist.at("v") == stringconst::ARG_VARIABLE);
 	
 	queue<string> SEL_Q = QueryParser::queueBuilder(SEL_LINE);
 	QueryParser::parseSelectSynonyms(ASSERTION, SEL_Q);
