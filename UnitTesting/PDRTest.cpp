@@ -253,8 +253,8 @@ void PDRTest::testProcessIf() {
 	ifStmt.setIfVar("x");
 	pdr->processParsedData(ifStmt);
 	IfNode* parentIfNode = (IfNode*)pdr->getNodeStack().top()->getParent();
-	CPPUNIT_ASSERT(parentIfNode->getNodeType() == NodeType::IF_STMT_);
-	CPPUNIT_ASSERT(parentIfNode->getLeftSibling()->getNodeType() == NodeType::ASSIGN_STMT_);
+	CPPUNIT_ASSERT(parentIfNode->getNodeType() == IF_STMT_);
+	CPPUNIT_ASSERT(parentIfNode->getLeftSibling()->getNodeType() == ASSIGN_STMT_);
 	CPPUNIT_ASSERT(parentIfNode->getVarNode()->getName() == "x");
 
 	ParsedData assign2 = ParsedData(ParsedData::ASSIGNMENT, 2);
@@ -276,6 +276,6 @@ void PDRTest::testProcessIf() {
 	
 	vector<TNode*> children = parentIfNode->getElseStmtLstNode()->getChildren();
 	TNode* assignChild = children[0];
-	CPPUNIT_ASSERT(assignChild->getNodeType() == NodeType::ASSIGN_STMT_);
+	CPPUNIT_ASSERT(assignChild->getNodeType() == ASSIGN_STMT_);
 	CPPUNIT_ASSERT(pdr->getCurrNestingLevel() == 2);
 }

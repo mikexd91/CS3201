@@ -15,7 +15,6 @@ protected:
 	string var;
 	bool varFixed;
 	string varType;
-	Results::ResultsTable table;
 
 	StmtTable* stmtTable;
 	VarTable* varTable;

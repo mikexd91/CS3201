@@ -1,7 +1,6 @@
 #pragma once
 #include "SuchThatClause.h"
 #include "ProcTable.h"
-#include "Results.h"
 
 class CallsClause 
 	: public SuchThatClause {
