@@ -2,8 +2,8 @@
 #include "Utils.h"
 #include <iostream>
 
-#include "boost\lexical_cast.hpp"
-#include "boost\foreach.hpp"
+#include "boost/lexical_cast.hpp"
+#include "boost/foreach.hpp"
 
 using namespace std;
 using namespace boost;
