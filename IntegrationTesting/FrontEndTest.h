@@ -36,6 +36,12 @@ class FrontEndTest : public CPPUNIT_NS::TestFixture {
 
 	CPPUNIT_TEST( testCFGSingleAssg );
 	CPPUNIT_TEST( testCFGMultAssg );
+	CPPUNIT_TEST( testCFGMultProc );
+	CPPUNIT_TEST( testCFGIfStmt );
+	CPPUNIT_TEST( testCFGIfNested );
+	CPPUNIT_TEST( testCFGWhileStmt );
+	CPPUNIT_TEST( testCFGWhileNested );
+	CPPUNIT_TEST( testCFGMixedNested );
 
 	//CPPUNIT_TEST( testFalseAddProc );
 
@@ -82,4 +88,10 @@ public:
 
 	void testCFGSingleAssg();
 	void testCFGMultAssg();
+	void testCFGMultProc();
+	void testCFGIfStmt();
+	void testCFGIfNested();
+	void testCFGWhileStmt();
+	void testCFGWhileNested();
+	void testCFGMixedNested();
 };
