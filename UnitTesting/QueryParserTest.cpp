@@ -144,14 +144,14 @@ void QueryParserTest::testSelect(){
 
 void QueryParserTest::testClause(){
 	Query* ASSERTION = new Query();
-	string const DEC_LINE = "assign a, a1;";
-	string const SEL_LINE = "Select a";
-	string const CLS_LINE = "Follows(\"a\", \"a1\")";
-	
+	string const DEC_LINE = "variable v;";
+	string const SEL_LINE = "Select v";
+	string const CLS_LINE = "Uses(-1, v)";
+
 	vector<string> DEC_LIST = QueryParser::tokeniser(DEC_LINE, ';');
 	QueryParser::parseDeclarations(ASSERTION, DEC_LIST);
 	boost::unordered_map<string, string> declist = ASSERTION->getDeclarationList();
-	CPPUNIT_ASSERT(declist.at("a") == stringconst::ARG_ASSIGN);
+	CPPUNIT_ASSERT(declist.at("v") == stringconst::ARG_ASSIGN);
 	
 	queue<string> SEL_Q = QueryParser::queueBuilder(SEL_LINE);
 	QueryParser::parseSelectSynonyms(ASSERTION, SEL_Q);
@@ -163,12 +163,37 @@ void QueryParserTest::testClause(){
 	vector<StringPair> sel = ASSERTION->getSelectList();
 	vector<Clause*> cls = ASSERTION->getClauseList();
 	
-	CPPUNIT_ASSERT(dec.at("a") == stringconst::ARG_ASSIGN);
-	CPPUNIT_ASSERT(sel.at(0).getFirst() == "a");
-	CPPUNIT_ASSERT(sel.at(0).getSecond() == stringconst::ARG_ASSIGN);
+	CPPUNIT_ASSERT(sel.at(0).getFirst() == "v");
+	CPPUNIT_ASSERT(sel.at(0).getSecond() == stringconst::ARG_VARIABLE);
 	
 	Clause* TEST = cls.at(0);
-	TEST->getClauseType();
+	//TEST->getClauseType();
+	
+	//string const DEC_LINE = "assign a, a1;";
+	//string const SEL_LINE = "Select a";
+	//string const CLS_LINE = "Follows(\"a\", \"a1\")";
+	
+	//vector<string> DEC_LIST = QueryParser::tokeniser(DEC_LINE, ';');
+	//QueryParser::parseDeclarations(ASSERTION, DEC_LIST);
+	//boost::unordered_map<string, string> declist = ASSERTION->getDeclarationList();
+	//CPPUNIT_ASSERT(declist.at("a") == stringconst::ARG_ASSIGN);
+	//
+	//queue<string> SEL_Q = QueryParser::queueBuilder(SEL_LINE);
+	//QueryParser::parseSelectSynonyms(ASSERTION, SEL_Q);
+	//
+	//queue<string> CLS_Q = QueryParser::queueBuilder(CLS_LINE);
+	//QueryParser::parseClause(ASSERTION, CLS_Q);
+	//
+	//unordered_map<string, string> dec = ASSERTION->getDeclarationList();
+	//vector<StringPair> sel = ASSERTION->getSelectList();
+	//vector<Clause*> cls = ASSERTION->getClauseList();
+	//
+	//CPPUNIT_ASSERT(dec.at("a") == stringconst::ARG_ASSIGN);
+	//CPPUNIT_ASSERT(sel.at(0).getFirst() == "a");
+	//CPPUNIT_ASSERT(sel.at(0).getSecond() == stringconst::ARG_ASSIGN);
+	//
+	//Clause* TEST = cls.at(0);
+	//TEST->getClauseType();
 }
 
 void QueryParserTest::testPatternAssign(){
