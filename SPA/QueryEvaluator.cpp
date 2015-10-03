@@ -27,6 +27,14 @@ Result* QueryEvaluator::evaluateQuery(Query query) {
 	return obj;
 }
 
+string QueryEvaluator::boolToString(bool b) {
+	if (b) {
+		return "true";
+	} else {
+		return "false";
+	}
+}
+
 // Return values to be printed.
 unordered_set<string> QueryEvaluator::getValuesToPrint(Result* obj, vector<StringPair> selectList) {
 	unordered_set<string> resultSet = unordered_set<string>();
@@ -36,7 +44,7 @@ unordered_set<string> QueryEvaluator::getValuesToPrint(Result* obj, vector<Strin
 		string type = selectList.at(0).getSecond();
 		if (syn == "BOOLEAN" && type == stringconst::ARG_BOOLEAN) {
 			bool isQueryPass = obj->isPass();
-			resultSet.insert(boost::lexical_cast<string>(isQueryPass));
+			resultSet.insert(boolToString(isQueryPass));
 		} else {
 			resultSet = printSingleSynValues(*obj, syn);
 		}

@@ -850,7 +850,7 @@ void QueryEvaluatorTest::testFollowsEvaluateFixedFixedPass() {
 	followsBuilder->setArgFixed(1, true);
 	followsBuilder->setArgType(1, ARG_ASSIGN);
 	followsBuilder->setArg(2, "_");
-	followsBuilder->setArgFixed(2, true);
+	followsBuilder->setArgFixed(2, false);
 	followsBuilder->setArgType(2, ARG_GENERIC);
 	FollowsClause* m1 = (FollowsClause*) followsBuilder->build();
 	CPPUNIT_ASSERT(m1->isValid());
@@ -858,13 +858,48 @@ void QueryEvaluatorTest::testFollowsEvaluateFixedFixedPass() {
 	q->addClause((Clause*) m1);
 
 	Result* result = qe->evaluateQuery(*q);
-	CPPUNIT_ASSERT(result->isSynPresent("p") == false);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 	vector<StringPair> selectList = q->getSelectList();
 	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
 	CPPUNIT_ASSERT(toPrint.size() == 1);
 	unordered_set<string>::iterator iter = toPrint.begin();
 	CPPUNIT_ASSERT(*iter == "true");
+
+	delete qe;
+	delete p;
+	delete q;
+	delete result;
+}
+
+void QueryEvaluatorTest::testFollowsEvaluateFixedFixedFail() {
+	QueryEvaluator *qe = new QueryEvaluator();
+
+	StringPair *p = new StringPair();
+	p->setFirst("BOOLEAN");
+	p->setSecond(ARG_BOOLEAN);
+	Query *q = new Query();
+	q->addSelectSynonym(*p);
+	
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	followsBuilder->setArg(1, "9");
+	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_ASSIGN);
+	followsBuilder->setArg(2, "_");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_GENERIC);
+	FollowsClause* m1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	q->addClause((Clause*) m1);
+
+	Result* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
+	vector<StringPair> selectList = q->getSelectList();
+	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
+	CPPUNIT_ASSERT(toPrint.size() == 1);
+	unordered_set<string>::iterator iter = toPrint.begin();
+	cout << *iter << endl;
+	CPPUNIT_ASSERT(*iter == "false");
 
 	delete qe;
 	delete p;
