@@ -55,7 +55,6 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
 		// iterate through the results and stuff them into the results list
 		unordered_set<string>::iterator iter;
 		for (iter = resultSet.begin(); iter != resultSet.end(); ++iter) {
-			cout << *iter << endl;
 			results.push_back(*iter);
 		}
 	} catch (std::exception e) {
