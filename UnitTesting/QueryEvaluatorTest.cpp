@@ -173,6 +173,7 @@ void QueryEvaluatorTest::setUp() {
 	stmt3->setStmtNum(3);
 	stmt3->setType(ASSIGN_STMT_);
 	stmt3->setFollowsBefore(2);
+	stmt3->setFollowsAfter(4);
 	string kvar = "k";
 	unordered_set<string> mods3;
 	mods3.emplace(kvar);
@@ -675,6 +676,53 @@ void QueryEvaluatorTest::testModifiesEvaluateSynSynAssgPass() {
 	vector<StringPair> selectList = q->getSelectList();
 	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
 	CPPUNIT_ASSERT(toPrint.size() == 9);
+
+	delete qe;
+	delete p1;
+	delete p2;
+	delete q;
+	delete result;
+}
+
+void QueryEvaluatorTest::testFollowsEvaluateSynSynStmtPass() {
+	QueryEvaluator *qe = new QueryEvaluator();
+
+	StringPair *p1 = new StringPair();
+	p1->setFirst("s1");
+	p1->setSecond(ARG_STATEMENT);
+	StringPair *p2 = new StringPair();
+	p2->setFirst("s2");
+	p2->setSecond(ARG_STATEMENT);
+
+	Query *q = new Query();
+	q->addSelectSynonym(*p1);
+	q->addSelectSynonym(*p2);
+
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	followsBuilder->setArg(1, "s1");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "s2");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
+	FollowsClause* m1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	q->addClause((Clause*) m1);
+
+	Result* result = qe->evaluateQuery(*q);
+	CPPUNIT_ASSERT(result->isSynPresent("s1") == true);
+	CPPUNIT_ASSERT(result->isSynPresent("s2") == true);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
+
+	vector<StringPair> selectList = q->getSelectList();
+	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
+	/*
+	for (unordered_set<string>::iterator iter = toPrint.begin(); iter != toPrint.end(); ++iter) {
+		cout << *iter << "|";
+	}
+	*/
+	CPPUNIT_ASSERT(toPrint.size() == 7);
 
 	delete qe;
 	delete p1;

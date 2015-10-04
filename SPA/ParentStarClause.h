@@ -32,6 +32,13 @@ protected:
 
 
 private:
+	StmtTable* stmtTable;
+	bool isParentStar(string, string);
+	Statement::ParentStarSet getParentStar(int, string);
+	Statement::ChildrenStarSet getChildrenStar(int, string);
+	void insertChildrenStarIntoStmtNum(unordered_set<string>&, unordered_set<Statement*>, string argType);
+	void insertParentStarIntoStmtNum(unordered_set<string>&, unordered_set<Statement*>, string argType);
+	void insertParentStarAndChildrenStarIntoResult(unordered_set<vector<string>>&, unordered_set<Statement*>);
 	/**
 	// ONLY EVALUATES PROTOTYPE CASES (only while statements)
 	Results evaluateS1WildS2Wild();										// Case: Parent*(s1,s2) - stmt1 wild, stmt2 wild
