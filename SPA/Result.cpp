@@ -63,6 +63,10 @@ unordered_set<string> Result::getSyn(string syn) {
 	return res;
 }
 
+void Result::setFail() {
+	pass = false;
+}
+
 bool Result::isPass() {
 	return pass;
 }

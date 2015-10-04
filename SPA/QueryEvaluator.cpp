@@ -17,8 +17,6 @@ QueryEvaluator::~QueryEvaluator(void)
 {
 }
 
-// If clauseList is empty, insert values from table of the right type into Result obj.
-// Else, evaluate all clauses.
 Result* QueryEvaluator::evaluateQuery(Query query) {
 	Result *obj = new Result();
 	setClauseList(query.getClauseList());
@@ -35,7 +33,6 @@ string QueryEvaluator::boolToString(bool b) {
 	}
 }
 
-// Return values to be printed.
 unordered_set<string> QueryEvaluator::getValuesToPrint(Result* obj, vector<StringPair> selectList) {
 	unordered_set<string> resultSet = unordered_set<string>();
 	int numOfSyn = selectList.size();
@@ -90,17 +87,19 @@ void QueryEvaluator::setSelectList(vector<StringPair> selectList) {
 	this->selectList = selectList;
 }
 
-// evalute clauses in clause List
-// inserts in synonyms that appear in select list but not in clause list
 Result* QueryEvaluator::evaluateClauses(Result* obj, vector<Clause*> clauseList) {
 	for (vector<Clause*>::iterator i = clauseList.begin(); i != clauseList.end(); ++i) {
 		Clause* c = *i;
-		c->evaluate(obj);
-		if (obj->isPass() == false) {
+		if (c->evaluate(obj) == false) {
+			obj->setFail();
 			break;
 		} 
 	}
-	getRemainingSynValuesFromTable(*obj);
+	string syn = selectList.at(0).getFirst();
+	string type = selectList.at(0).getSecond();
+	if (syn != "BOOLEAN" && type != stringconst::ARG_BOOLEAN) {
+		getRemainingSynValuesFromTable(*obj);
+	}
 	return obj;
 }
 
