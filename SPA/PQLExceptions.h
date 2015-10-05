@@ -1,6 +1,5 @@
 #include <iostream>
 #include <exception>
-
 using namespace std;
 
 struct MissingDeclarationException : public std::exception{
