@@ -17,6 +17,9 @@
 #include <algorithm>
 #include <boost\foreach.hpp>
 #include <boost\unordered_set.hpp>
+#include "../SPA/ProcTable.h"
+#include "../SPA/CFG.h"
+#include "../SPA/CallNode.h"
 
 using namespace stringconst;
 using namespace std;
@@ -25,350 +28,134 @@ using boost::unordered_set;
 void PQLIntegration::setUp() {
 	/* testing this source
 
-	procedure chocs {
-		a=4;				//1
-		while i {			//2
-			k = 3;			//3
-			while j {		//4
-				i=1;		//5
-				j=2; 		//6
+	procedure Pizza {
+		if good then {						//1
+			eaten = eaten + 1;					//2
+		} else {							
+			drink = more * (beer - water);	//3
+			call YourMom;					//4
+		}
+	}	
+
+	procedure YourMom {
+		while nagging {						//5
+			nagging = nagging + 1;			//6
+			while i {						//7
+				mom = nagging;				//8
 			}
-			b=5;			//7
-			j=2+3+4;		//8
-			z=(10+11)*12; 	//9
 		}
-		--- new stuff TODO ---
-		if a then {			//10
-		} else {
-		}
+		full = drink + eaten;					//9
 	}
 	*/
 
-	// to set up the ast manually
+//-------------  SET UP AST -------------//
 	AST* ast = AST::getInstance();
 
-	ProcNode* proc = new ProcNode("chocs");
-	StmtLstNode* procsl = new StmtLstNode();
-	proc->linkStmtLstNode(procsl);
-
-	AssgNode* assg1 = new AssgNode(1);
-	VarNode* a1 = new VarNode("a");
-	ConstNode* c1 = new ConstNode("4");
-	assg1->linkVarNode(a1);
-	assg1->linkExprNode(c1);
-	procsl->linkStmtNode(assg1);
-
-	WhileNode* while1 = new WhileNode(2);
-	VarNode* i1 = new VarNode("i");
-	while1->linkVarNode(i1);
-	StmtLstNode* whilesl1 = new StmtLstNode();
-	while1->linkStmtLstNode(whilesl1);
-	procsl->linkStmtNode(while1);
-
-	AssgNode* assg2 = new AssgNode(3);
-	VarNode* k1 = new VarNode("k");
-	assg2->linkVarNode(k1);
-	ConstNode* c2 = new ConstNode("3");
-	assg2->linkExprNode(c2);
-	whilesl1->linkStmtNode(assg2);
-
-	WhileNode* while2 = new WhileNode(4);
-	VarNode* j1 = new VarNode("j");
-	while2->linkVarNode(j1);
-	StmtLstNode* whilesl2 = new StmtLstNode();
-	while2->linkStmtLstNode(whilesl2);
-	whilesl1->linkStmtNode(while2);
-
-	AssgNode* assg3 = new AssgNode(5);
-	VarNode* i2 = new VarNode("i");
-	assg3->linkVarNode(i2);
-	ConstNode* c3 = new ConstNode("1");
-	assg3->linkExprNode(c3);
-	whilesl2->linkStmtNode(assg3);
-
-	AssgNode* assg4 = new AssgNode(6);
-	VarNode* j2 = new VarNode("j");
-	assg4->linkVarNode(j2);
-	ConstNode* c4 = new ConstNode("2");
-	assg4->linkExprNode(c4);
-	whilesl2->linkStmtNode(assg4);
-
-	AssgNode* assg5 = new AssgNode(7);
-	VarNode* b1 = new VarNode("b");
-	assg5->linkVarNode(b1);
-	ConstNode* c5 = new ConstNode("5");
-	assg5->linkExprNode(c5);
-	whilesl1->linkStmtNode(assg5);
-
-	AssgNode* assg6 = new AssgNode(8);
-	VarNode* j6 = new VarNode("j");
-	OpNode* plus2_1 = new OpNode("+");
-	ConstNode* four2 = new ConstNode("4");
-	OpNode* plus2_2 = new OpNode("+");
-	ConstNode* three2 = new ConstNode("3");
-	ConstNode* two2 = new ConstNode("2");
-	plus2_2->linkRightNode(three2);
-	plus2_2->linkLeftNode(two2);
-	plus2_1->linkRightNode(four2);
-	plus2_1->linkLeftNode(plus2_2);
-	assg6->linkVarNode(j6);
-	assg6->linkExprNode(plus2_1);
-	whilesl1->linkStmtNode(assg6);
-
-	//z=(10+11)*12
-	AssgNode* assg7 = new AssgNode(9);
-	VarNode* j7 = new VarNode("z");
-	OpNode* plus3_1 = new OpNode("+");
-	ConstNode* c10 = new ConstNode("10");
-	ConstNode* c11 = new ConstNode("11");
-	OpNode* multiply = new OpNode("*");
-	ConstNode* c12 = new ConstNode("12");
-	plus3_1->linkRightNode(c11);
-	plus3_1->linkLeftNode(c10);
-	multiply->linkRightNode(c12);
-	multiply->linkLeftNode(plus3_1);
-	assg7->linkVarNode(j7);
-	assg7->linkExprNode(multiply);
-	whilesl1->linkStmtNode(assg7);
-
-	/// if a then {} else {}	//10
-	IfNode* if1 = new IfNode(10);
-	VarNode* a2 = new VarNode("a");
-	if1->linkVarNode(a2);
+// procedure Pizza
+	ProcNode* pizzaProc = new ProcNode("Pizza");
+	ast->addProcNode(pizzaProc);
+	StmtLstNode* pizzasl = new StmtLstNode();
+	pizzaProc->linkStmtLstNode(pizzasl);
+	
+	IfNode* if1 = new IfNode(1);
+	pizzasl->linkStmtNode(if1);
+	VarNode* good1 = new VarNode("good");
+	if1->linkVarNode(good1);
 	StmtLstNode* thensl1 = new StmtLstNode();
 	if1->linkThenStmtLstNode(thensl1);
 	StmtLstNode* elsesl1 = new StmtLstNode();
 	if1->linkElseStmtLstNode(elsesl1);
-	procsl->linkStmtNode(if1);
 
-	ast->addProcNode(proc);
+	AssgNode* assg2 = new AssgNode(2);
+	thensl1->linkStmtNode(assg2);
+	VarNode* eaten1 = new VarNode("eaten");
+	assg2->linkVarNode(eaten1);
+	OpNode* plus1 = new OpNode("+");
+	assg2->linkExprNode(plus1);
+	VarNode* eaten2 = new VarNode("eaten");
+	plus1->linkLeftNode(eaten2);
+	ConstNode* one1 = new ConstNode("1");
+	plus1->linkRightNode(one1);
 
-	// to set up the stmttable manually
+	AssgNode* assg3 = new AssgNode(3);
+	elsesl1->linkStmtNode(assg3);
+	VarNode* drink1 = new VarNode("drink");
+	assg3->linkVarNode(drink1);
+	OpNode* times1 = new OpNode("*");
+	assg3->linkExprNode(times1);
+	VarNode* more1 = new VarNode("more");
+	times1->linkLeftNode(more1);
+	OpNode* minus1 = new OpNode("-");
+	times1->linkRightNode(minus1);
+	VarNode* beer1 = new VarNode("beer");
+	minus1->linkLeftNode(beer1);
+	VarNode* water1 = new VarNode("water");
+	minus1->linkRightNode(water1);
+
+	CallNode* call4 = new CallNode(4, "YourMom");
+	pizzasl->linkStmtNode(call4);
+
+// procedure YourMom
+	ProcNode* yourmomProc = new ProcNode("YourMom");
+	ast->addProcNode(yourmomProc);
+	StmtLstNode* yourmomsl = new StmtLstNode();
+	yourmomProc->linkStmtLstNode(yourmomsl);
+	
+	WhileNode* while5 = new WhileNode(5);
+	yourmomsl->linkStmtNode(while5);
+	VarNode* nagging1 = new VarNode("nagging");
+	while5->linkVarNode(nagging1);
+	StmtLstNode* while5sl = new StmtLstNode();
+	while5->linkStmtLstNode(while5sl);
+
+	AssgNode* assg6 = new AssgNode(6);
+	while5sl->linkStmtNode(assg6);
+	VarNode* nagging2 = new VarNode("nagging");
+	assg6->linkVarNode(nagging2);
+	OpNode* plus2 = new OpNode("+");
+	assg6->linkExprNode(plus2);
+	VarNode* nagging3 = new VarNode("nagging");
+	plus2->linkLeftNode(nagging3);
+	ConstNode* one2 = new ConstNode("1");
+	plus2->linkRightNode(one2);
+
+	WhileNode* while7 = new WhileNode(7);
+	while5sl->linkStmtNode(while7);
+	VarNode* i1 = new VarNode("i");
+	while7->linkVarNode(i1);
+	StmtLstNode* while7sl = new StmtLstNode();
+	while7->linkStmtLstNode(while7sl);
+
+	AssgNode* assg8 = new AssgNode(8);
+	while7sl->linkStmtNode(assg8);
+	VarNode* mom1 = new VarNode("mom");
+	assg8->linkVarNode(mom1);
+	VarNode* nagging4 = new VarNode("nagging");
+	assg8->linkExprNode(nagging4);
+
+	AssgNode* assg9 = new AssgNode(9);
+	yourmomsl->linkStmtNode(assg9);
+	VarNode* full1 = new VarNode("full");
+	assg9->linkVarNode(full1);
+	OpNode* plus3 = new OpNode("+");
+	assg9->linkExprNode(plus3);
+	VarNode* drink2 = new VarNode("drink");
+	plus3->linkLeftNode(drink2);
+	VarNode* eaten3 = new VarNode("eaten");
+	plus3->linkRightNode(eaten3);
+//-------------  END OF AST -------------//
+
+
+//-------------  SET UP STMT ------------//
 	StmtTable* stable = StmtTable::getInstance();
 
 	Statement* stmt1 = new Statement();
 	stmt1->setStmtNum(1);
-	stmt1->setType(ASSIGN_STMT_);
+	stmt1->setType(IF_STMT_);
 	stmt1->setFollowsAfter(2);
-	string modifiesArray1[] = {"a"};
-	unordered_set<string> mods1(modifiesArray1, modifiesArray1 + 1);
-	stmt1->setModifies(mods1);
-	stmt1->setTNodeRef(assg1);
-	stable->addStmt(stmt1);
 
-	Statement* stmt2 = new Statement();
-	stmt2->setStmtNum(2);
-	stmt2->setType(WHILE_STMT_);
-	stmt2->setFollowsBefore(1);
-	stmt2->setFollowsAfter(10);
-	string modifiesArray2[] = {"k", "i", "j", "b"};
-	unordered_set<string> mods2(modifiesArray2, modifiesArray2 + 4);
-	string usesArray2[] = {"i", "j"};
-	unordered_set<string> uses2(usesArray2, usesArray2 + 2);
-	stmt2->setModifies(mods2);
-	stmt2->setUses(uses2);
-	stmt2->setTNodeRef(while1);
-	int children2[] = {3, 4, 7, 8, 9};
-	stmt2->setChildren(unordered_set<int>(children2, children2+5));
-	stable->addStmt(stmt2);
 
-	Statement* stmt3 = new Statement();
-	stmt3->setStmtNum(3);
-	stmt3->setType(ASSIGN_STMT_);
-	stmt3->setFollowsAfter(4);
-	unordered_set<string> mods3 = unordered_set<string>();
-	mods3.emplace("k");
-	stmt3->setModifies(mods3);
-	stmt3->setTNodeRef(assg2);
-	stmt3->setParent(2);
-	stable->addStmt(stmt3);
 
-	Statement* stmt4 = new Statement();
-	stmt4->setStmtNum(4);
-	stmt4->setType(WHILE_STMT_);
-	stmt4->setFollowsBefore(3);
-	stmt4->setFollowsAfter(7);
-	unordered_set<string> mods4 = unordered_set<string>();
-	mods4.emplace("i");
-	mods4.emplace("j");
-	unordered_set<string> uses4 = unordered_set<string>();
-	uses4.emplace("j");
-	stmt4->setModifies(mods4);
-	stmt4->setUses(uses4);
-	int children3[] = {5, 6};
-	stmt4->setChildren(unordered_set<int>(children3, children3+2));
-	stmt4->setTNodeRef(while2);
-	stmt4->setParent(2);
-	stable->addStmt(stmt4);
-
-	Statement* stmt5 = new Statement();
-	stmt5->setStmtNum(5);
-	stmt5->setType(ASSIGN_STMT_);
-	stmt5->setFollowsAfter(6);
-	unordered_set<string> mods5= unordered_set<string>();
-	mods5.emplace("i");
-	stmt5->setModifies(mods5);
-	stmt5->setTNodeRef(assg3);
-	stmt5->setParent(4);
-	stable->addStmt(stmt5);
-
-	Statement* stmt6 = new Statement();
-	stmt6->setStmtNum(6);
-	stmt6->setType(ASSIGN_STMT_);
-	stmt6->setFollowsBefore(5);
-	unordered_set<string> mods6= unordered_set<string>();
-	mods6.emplace("j");
-	stmt6->setModifies(mods6);
-	stmt6->setTNodeRef(assg4);
-	stmt6->setParent(4);
-	stable->addStmt(stmt6);
-
-	Statement* stmt7 = new Statement();
-	stmt7->setStmtNum(7);
-	stmt7->setType(ASSIGN_STMT_);
-	stmt7->setFollowsBefore(4);
-	stmt7->setFollowsAfter(8);
-	unordered_set<string> mods7= unordered_set<string>();
-	mods7.emplace("b");
-	stmt7->setModifies(mods7);
-	stmt7->setTNodeRef(assg5);
-	stmt7->setParent(2);
-	stable->addStmt(stmt7);
-
-	Statement* stmt8 = new Statement();
-	stmt8->setStmtNum(8);
-	stmt8->setType(ASSIGN_STMT_);
-	unordered_set<string> mods8 = unordered_set<string>();
-	mods8.emplace("j");
-	stmt8->setModifies(mods8);
-	stmt8->setFollowsBefore(7);
-	stmt8->setFollowsAfter(9);
-	stmt8->setTNodeRef(assg6);
-	stmt8->setParent(2);
-	stable->addStmt(stmt8);
-
-	Statement* stmt9 = new Statement();
-	stmt9->setStmtNum(9);
-	stmt9->setType(ASSIGN_STMT_);
-	unordered_set<string> mods9 = unordered_set<string>();
-	mods9.emplace("z");
-	stmt9->setModifies(mods9);
-	stmt9->setFollowsBefore(8);
-	stmt9->setTNodeRef(assg7);
-	stmt9->setParent(2);
-	stable->addStmt(stmt9);
-
-	Statement* stmt10 = new Statement();
-	stmt10->setStmtNum(10);
-	stmt10->setType(IF_STMT_);
-	unordered_set<string> uses10 = unordered_set<string>();
-	uses10.emplace("a");
-	stmt10->setUses(uses10);
-	stmt10->setFollowsBefore(2);
-	stable->addStmt(stmt10);
-
-	// to set up the vartable manually
-	VarTable* vtable = VarTable::getInstance();
-
-	Variable* va = new Variable("a");
-	va->addModifyingStmt(1);
-	va->addUsingStmt(10);
-	va->addUsingProc("chocs");
-	va->addTNode(a1);
-	vtable->addVariable(va);
-
-	Variable* vi = new Variable("i");
-	vi->addModifyingStmt(2);
-	vi->addModifyingStmt(5);
-	vi->addUsingStmt(2);
-	vi->addUsingProc("chocs");
-	vi->addTNode(i1);
-	vi->addTNode(i2);
-	vtable->addVariable(vi);
-
-	Variable* vj = new Variable("j");
-	vj->addModifyingStmt(2);
-	vj->addModifyingStmt(4);
-	vj->addModifyingStmt(6);
-	vj->addModifyingStmt(8);
-	vj->addUsingStmt(4);
-	vj->addTNode(j1);
-	vj->addTNode(j2);
-	vtable->addVariable(vj);
-
-	Variable* vk = new Variable("k");
-	vk->addModifyingStmt(2);
-	vk->addModifyingStmt(3);
-	vk->addTNode(k1);
-	vtable->addVariable(vk);
-
-	Variable* vb = new Variable("b");
-	vb->addModifyingStmt(2);
-	vb->addModifyingStmt(7);
-	vb->addTNode(b1);
-	vtable->addVariable(vb);
-
-	Variable* vz = new Variable("z");
-	vz->addModifyingStmt(2);
-	vz->addModifyingStmt(9);
-	vz->addTNode(j7);
-	vtable->addVariable(vz);
-
-	ConstTable* ctable = ConstTable::getInstance();
-	//Populate Constant Table
-	Constant* const1 = new Constant();
-	const1->addAppearsIn(5);
-	const1->addTNodeRef(c3);
-	const1->setConstName("1");
-	ctable->addConst(const1);
-	
-	Constant* const2 = new Constant();
-	const2->addAppearsIn(6);
-	const2->addAppearsIn(8);
-	const2->addTNodeRef(c4);
-	const2->addTNodeRef(two2);
-	const2->setConstName("2");
-	ctable->addConst(const2);
-
-	Constant* const3 = new Constant();
-	const3->addAppearsIn(3);
-	const3->addAppearsIn(8);
-	const3->addTNodeRef(c2);
-	const3->addTNodeRef(three2);
-	const3->setConstName("3");
-	ctable->addConst(const3);
-
-	Constant* const4 = new Constant();
-	const4->addAppearsIn(1);
-	const4->addAppearsIn(8);
-	const4->addTNodeRef(c1);
-	const4->addTNodeRef(four2);
-	const4->setConstName("4");
-	ctable->addConst(const4);
-
-	Constant* const5 = new Constant();
-	const5->addAppearsIn(7);
-	const5->addTNodeRef(c5);
-	const5->setConstName("5");
-	ctable->addConst(const5);
-	
-	Constant* const10 = new Constant();
-	const10->addAppearsIn(9);
-	const10->addTNodeRef(c10);
-	const10->setConstName("10");
-	ctable->addConst(const10);
-
-	Constant* const11 = new Constant();
-	const11->addAppearsIn(9);
-	const11->addTNodeRef(c11);
-	const11->setConstName("11");
-	ctable->addConst(const11);
-	
-	Constant* const12 = new Constant();
-	const12->addAppearsIn(9);
-	const12->addTNodeRef(c12);
-	const12->setConstName("12");
-	ctable->addConst(const12);
 }
 
 void PQLIntegration::tearDown() {
@@ -377,6 +164,8 @@ void PQLIntegration::tearDown() {
 	StmtTable::getInstance()->clearTable();
 	VarTable::reset();
 	ConstTable::getInstance()->clearTable();
+	ProcTable::getInstance()->clearTable();
+	CFG::reset();
 }
 
 // Registers the fixture into the 'registry'
@@ -393,7 +182,7 @@ void PQLIntegration::testSelectOnly() {
 	unordered_set<string> r;
 	r = pcc->parse(QUERY_STRING);
 	cout << "size1 for select only: " << r.size() << endl;
-	//CPPUNIT_ASSERT(6 == r.size());
+	CPPUNIT_ASSERT(6 == r.size());
 
 	// new test for if
 	string QUERY_STRING2 = "if x; Select x";
@@ -401,7 +190,7 @@ void PQLIntegration::testSelectOnly() {
 	unordered_set<string> r2;
 	r2 = pcc->parse(QUERY_STRING2);
 
-	//CPPUNIT_ASSERT(1 == r2.size());
+	CPPUNIT_ASSERT(1 == r2.size());
 }
 
 void PQLIntegration::testSelectModifies() {
