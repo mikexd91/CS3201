@@ -21,7 +21,7 @@ none
 5 - MODIFIES-stmt: syn-syn (tuple)
 stmt s; variable v;
 Select <s,v> such that Modifies(s, v)
-1 charmander, 2 squirtle, 3 bulbasaur, 4 firstStageEvolution, 5 charmander, 5 bulbasaur, 5 squirtle, 6 charmander, 7 bulbasaur, 8 squirtle, 9 charmeleon, 10 wartortle, 11 ivysaur, 12 battle1, 13 battle2, 14 battle3, 15 charmeleon, 15 ivysaur, 15 wartortle, 15 lastPokemon, 16 charmeleon, 17 ivysaur, 17 wartortle, 18 ivysaur, 18 wartortle, 19 ivysaur, 20 wartortle, 21 wartortle, 23 lastPokemon
+1 charmander, 2 squirtle, 3 bulbasaur, 4 firstStageEvolution, 5 charmander, 5 bulbasaur, 5 squirtle, 6 charmander, 7 bulbasaur, 8 squirtle, 9 charmeleon, 10 wartortle, 11 ivysaur, 12 battle1, 13 battle2, 14 battle3, 15 charmeleon, 15 ivysaur, 15 wartortle, 15 lastPokemon, 16 charmeleon, 17 ivysaur, 17 wartortle, 18 ivysaur, 19 ivysaur, 20 wartortle, 21 wartortle, 22 wartortle, 23 lastPokemon
 5000
 6 - MODIFIES-assign: syn-syn
 assign a; variable v;
@@ -111,7 +111,7 @@ true
 23 - MODIFIES-assign: syn-generic
 assign a;
 Select a such that Modifies(a, _)
-6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 19, 21, 22, 23
+1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 19, 21, 22, 23
 5000
 24 - MODIFIES-while: syn-generic
 while w;
