@@ -12,6 +12,10 @@ WithClause::~WithClause(void)
 {
 }
 
+ClauseType WithClause::getClauseType(){
+	return this->clauseType;
+}
+
 bool WithClause::isValid(void)
 {
 	// TODO

@@ -384,8 +384,8 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 //TODO: UPDATE PARSE CLAUSE WITH NEW QUEUE (DONE, UNIT TESTING)
 void QueryParser::parseClause(Query* query, queue<string> line){
 	unordered_map<string, string> decList = query->getDeclarationList();
-	bool expectFirstFixed = false;
-	bool expectSecondFixed = false;
+	bool expectFirstFixedSynonym = false;
+	bool expectSecondFixedSynonym = false;
 
 	string clauseType = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
@@ -400,17 +400,17 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 	string firstVar = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
 	if (firstVar == "\""){
-		expectFirstFixed = true;
+		expectFirstFixedSynonym = true;
 		firstVar = Utils::getWordAndPop(line);
 		unexpectedEndCheck(line);
 		if (firstVar == "\""){
 			throw InvalidSyntaxException();
 		}
 	}
-	newClause->setArgFixed(1, expectFirstFixed);
+	newClause->setArgFixed(1, expectFirstFixedSynonym);
 	if (decList.find(firstVar) == decList.end()){
 		if (!Utils::isValidConstant(firstVar)){
-			if (!expectFirstFixed){
+			if (!expectFirstFixedSynonym){
 				if (firstVar != stringconst::STRING_EMPTY){
 					cout << "missing dec: " << firstVar;
 					throw MissingDeclarationException();
@@ -423,6 +423,7 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 				newClause->setArgType(1, stringconst::ARG_VARIABLE);
 			}
 		} else {
+			newClause->setArgFixed(1, true);
 			newClause->setArg(1, firstVar);
 			newClause->setArgType(1, stringconst::ARG_STATEMENT);
 		}
@@ -431,7 +432,7 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 		newClause->setArg(1, firstVar);
 		newClause->setArgType(1, firstArgType);
 	}
-	if (expectFirstFixed){
+	if (expectFirstFixedSynonym){
 		string closeFixed = Utils::getWordAndPop(line);
 		unexpectedEndCheck(line);
 		if (closeFixed != "\""){
@@ -448,17 +449,17 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 	string secondVar = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
 	if (secondVar == "\""){
-		expectSecondFixed = true;
+		expectSecondFixedSynonym = true;
 		secondVar = Utils::getWordAndPop(line);
 		unexpectedEndCheck(line);
 		if (secondVar == "\""){
 			throw InvalidSyntaxException();
 		}
 	}
-	newClause->setArgFixed(2, expectSecondFixed);
+	newClause->setArgFixed(2, expectSecondFixedSynonym);
 	if (decList.find(secondVar) == decList.end()){
 		if (!Utils::isValidConstant(secondVar)){
-			if (!expectSecondFixed){
+			if (!expectSecondFixedSynonym){
 				if (secondVar != stringconst::STRING_EMPTY){
 					throw MissingDeclarationException();
 				} else {
@@ -470,6 +471,7 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 				newClause->setArgType(2, stringconst::ARG_VARIABLE);
 			}
 		} else {
+			newClause->setArgFixed(2, true);
 			newClause->setArg(2, secondVar);
 			newClause->setArgType(2, stringconst::ARG_STATEMENT);
 		}
@@ -478,7 +480,7 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 		newClause->setArg(2, secondVar);
 		newClause->setArgType(2, secondArgType);
 	}
-	if (expectSecondFixed){
+	if (expectSecondFixedSynonym){
 		string closeFixed = Utils::getWordAndPop(line);
 		unexpectedEndCheck(line);
 		if (closeFixed != "\""){

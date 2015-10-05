@@ -6,6 +6,7 @@
 #include "../SPA/PQLExceptions.h"
 #include "boost/algorithm/string.hpp"
 #include "../SPA/Clause.h"
+#include "../SPA/SuchThatClause.h"
 #include "../SPA/FollowsClause.h"
 #include "../SPA/FollowsStarClause.h"
 #include "../SPA/ModifiesClause.h"
@@ -135,7 +136,7 @@ void QueryParserTest::testSelect(){
 	//CPPUNIT_ASSERT(single.getFirst() == "a");
 	//CPPUNIT_ASSERT(single.getSecond() == stringconst::ARG_STATEMENT);
 
-	//test attr
+	//test attribute
 	//StringPair single = asd.at(0);
 	//CPPUNIT_ASSERT(single.getFirst() == "a");
 	//CPPUNIT_ASSERT(single.getSecond() == stringconst::ARG_STATEMENT);
@@ -146,7 +147,7 @@ void QueryParserTest::testClause(){
 	Query* ASSERTION = new Query();
 	string const DEC_LINE = "variable v;";
 	string const SEL_LINE = "Select v";
-	string const CLS_LINE = "Uses(1, v)";
+	string const CLS_LINE = "Uses(1, 2)";
 	//todo parse -1
 	vector<string> DEC_LIST = QueryParser::tokeniser(DEC_LINE, ';');
 	QueryParser::parseDeclarations(ASSERTION, DEC_LIST);
@@ -166,9 +167,11 @@ void QueryParserTest::testClause(){
 	CPPUNIT_ASSERT(sel.at(0).getFirst() == "v");
 	CPPUNIT_ASSERT(sel.at(0).getSecond() == stringconst::ARG_VARIABLE);
 	
-	Clause* TEST = cls.at(0);
-	//TEST->getClauseType();
+	UsesClause* TEST = (UsesClause*)cls.at(0);
+	ClauseType type = TEST->getClauseType();
 	
+	CPPUNIT_ASSERT(TEST->getFirstArgFixed() == true);
+	CPPUNIT_ASSERT(TEST->getSecondArgFixed() == true);
 	//string const DEC_LINE = "assign a, a1;";
 	//string const SEL_LINE = "Select a";
 	//string const CLS_LINE = "Follows(\"a\", \"a1\")";

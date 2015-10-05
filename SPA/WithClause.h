@@ -22,6 +22,8 @@ public:
 
 	bool isValid(void);
 
+	ClauseType getClauseType();
+
 	//access
 	WithClauseRef getLeftRef();
 	WithClauseRef getRightRef();
