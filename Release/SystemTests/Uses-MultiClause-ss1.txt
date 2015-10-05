@@ -6,7 +6,7 @@ true
 2 - USES: 2 clauses (similar) - syn-syn, syn-syn
 stmt s; variable v1, v2;
 Select <s,v1> such that Uses(s, v1) and Uses(s, v2)
-5 firstStageEvolution, 5 charmander, 5 bulbasaur, 5 squirtle, 6, charmander, 7 bulbasaur, 8 squirtle, 9 charmander, 10 squirtle, 11 bulbasaur, 12 charmeleon, 12 wartortle, 13 ivysaur, 13 charmeleon, 14 squirtle, 14 ivysaur, 15 battle1, 15 wartortle, 15 ivysaur, 15 battle2, 15 battle3, 15 charmeleon, 15 squirtle, 16 wartortle, 16 ivysaur, 17 battle2, 17 battle3, 17 charmeleon, 17 wartortle, 17 squirtle, 18 battle3, 18 charmeleon, 18 wartortle, 19 charmeleon, 19 wartortle, 20 wartortle, 20 squirtle, 21 squirtle, 22 wartortle
+5 firstStageEvolution, 5 charmander, 5 bulbasaur, 5 squirtle, 6 charmander, 7 bulbasaur, 8 squirtle, 9 charmander, 10 squirtle, 11 bulbasaur, 12 charmeleon, 12 wartortle, 13 ivysaur, 13 charmeleon, 14 squirtle, 14 ivysaur, 15 battle1, 15 wartortle, 15 ivysaur, 15 battle2, 15 battle3, 15 charmeleon, 15 squirtle, 16 wartortle, 16 ivysaur, 17 battle2, 17 battle3, 17 charmeleon, 17 wartortle, 17 squirtle, 18 battle3, 18 charmeleon, 18 wartortle, 19 charmeleon, 19 wartortle, 20 wartortle, 20 squirtle, 21 squirtle, 22 wartortle
 5000
 3 - USES: 2 clauses (similar) - fixed-syn, fixed-syn
 variable v;
