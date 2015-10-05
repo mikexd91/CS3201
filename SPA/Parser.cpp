@@ -159,12 +159,16 @@ queue<string> Parser::getExpression() {
 			throwException(stmtCount);
 		}
 	}
+
+	ExpressionParser expressionParser;
+	queue<string> rpn;
 	try {
-		ExpressionParser expressionParser;
-		return expressionParser.getRPN(originalExpression);
+		rpn = expressionParser.getRPN(originalExpression);
 	} catch (InvalidExpressionException) {
 		throwException(stmtCount);
 	}
+
+	return rpn;
 }
 
 void Parser::call() {

@@ -70,6 +70,9 @@ void CFGBuilder::processProcStmt(ParsedData data) {
 			if(nestingStack.top()->getNodeType() == IF_) {
 				DummyCNode* dumNode = new DummyCNode();
 
+				dumNode->setIfParentStmt(ifStack.top()->getEndStmt());
+				dumNode->setElseParentStmt(head->getEndStmt());
+
 				dumNode->setFirstParent(ifStack.top());
 				dumNode->setSecondParent(head);
 
@@ -145,6 +148,9 @@ void CFGBuilder::processAssgCallStmt(ParsedData data) {
 				if(nestingStack.top()->getNodeType() == IF_) {
 					DummyCNode* dumNode = new DummyCNode();
 
+					dumNode->setIfParentStmt(ifStack.top()->getEndStmt());
+					dumNode->setElseParentStmt(head->getEndStmt());
+
 					dumNode->setFirstParent(ifStack.top());
 					dumNode->setSecondParent(head);
 
@@ -161,12 +167,12 @@ void CFGBuilder::processAssgCallStmt(ParsedData data) {
 						head->setSecondChild(nestingStack.top());
 					}
 					nestingStack.top()->setSecondParent(head);
-					addNextAndPrev(head, nestingStack.top());
+					addNextAndPrev(nestingStack.top(), head);
 
 					head = nestingStack.top();
 					nestingStack.pop();
 				}
-			} else {
+			} else /* i == 1 */ {
 				if(nestingStack.top()->getNodeType() == IF_) {
 					CNode* ifParentNode = ifStack.top();
 					CNode* elseParentNode = head;
@@ -183,14 +189,14 @@ void CFGBuilder::processAssgCallStmt(ParsedData data) {
 					head = node;
 					ifStack.pop();
 					nestingStack.pop();
-				} else {
+				} else /* top is while */ {
 					if(head->getNodeType() == ASSIGN_CALL_ || head->getNodeType() == DUMMY_) {
 						head->setFirstChild(nestingStack.top());
 					} else {
 						head->setSecondChild(nestingStack.top());
 					}
 					nestingStack.top()->setSecondParent(head);
-					addNextAndPrev(head, nestingStack.top());
+					addNextAndPrev(nestingStack.top(), head);
 
 					// add the assignment after all the recovery
 					nestingStack.top()->setSecondChild(node);
@@ -241,8 +247,12 @@ void CFGBuilder::processIfStmt(ParsedData data) {
 				if (nestingStack.top()->getNodeType() == IF_) {
 					DummyCNode* dumNode = new DummyCNode();
 
+					dumNode->setIfParentStmt(ifStack.top()->getEndStmt());
+					dumNode->setElseParentStmt(head->getEndStmt());
+
 					dumNode->setFirstParent(ifStack.top());
 					dumNode->setSecondParent(head);
+
 					setRecoverChild(ifStack.top(), dumNode);
 					setRecoverChild(head, dumNode);
 
@@ -256,7 +266,7 @@ void CFGBuilder::processIfStmt(ParsedData data) {
 						head->setSecondChild(nestingStack.top());
 					}
 					nestingStack.top()->setSecondParent(head);
-					addNextAndPrev(head, nestingStack.top());
+					addNextAndPrev(nestingStack.top(), head);
 
 					head = nestingStack.top();
 					nestingStack.pop();
@@ -365,6 +375,7 @@ void CFGBuilder::processElseStmt(ParsedData data) {
 				head->setFirstChild(whileParent);
 				setRecoverParent(whileParent, head);
 				whileParent->setSecondParent(head);
+				addNextAndPrev(whileParent, head);
 
 				head = whileParent;
 				nestingStack.pop();
@@ -386,8 +397,12 @@ void CFGBuilder::processWhileStmt(ParsedData data) {
 				if (nestingStack.top()->getNodeType() == IF_) {
 					DummyCNode* dumNode = new DummyCNode();
 
+					dumNode->setIfParentStmt(ifStack.top()->getEndStmt());
+					dumNode->setElseParentStmt(head->getEndStmt());
+
 					dumNode->setFirstParent(ifStack.top());
 					dumNode->setSecondParent(head);
+
 					setRecoverChild(ifStack.top(), dumNode);
 					setRecoverChild(head, dumNode);
 
@@ -401,7 +416,7 @@ void CFGBuilder::processWhileStmt(ParsedData data) {
 						head->setSecondChild(nestingStack.top());
 					}
 					nestingStack.top()->setSecondParent(head);
-					addNextAndPrev(head, nestingStack.top());
+					addNextAndPrev(nestingStack.top(), head);
 
 					head = nestingStack.top();
 					nestingStack.pop();
@@ -484,6 +499,9 @@ void CFGBuilder::processEndProgram(ParsedData data) {
 			if(nestingStack.top()->getNodeType() == IF_) {
 				DummyCNode* dumNode = new DummyCNode();
 
+				dumNode->setIfParentStmt(ifStack.top()->getEndStmt());
+				dumNode->setElseParentStmt(head->getEndStmt());
+
 				dumNode->setFirstParent(ifStack.top());
 				dumNode->setSecondParent(head);
 
@@ -500,7 +518,7 @@ void CFGBuilder::processEndProgram(ParsedData data) {
 					head->setSecondChild(nestingStack.top());
 				}
 				nestingStack.top()->setSecondParent(head);
-				addNextAndPrev(head, nestingStack.top());
+				addNextAndPrev(nestingStack.top(), head);
 
 				head = nestingStack.top();
 				nestingStack.pop();
@@ -521,6 +539,7 @@ void CFGBuilder::processEndProgram(ParsedData data) {
 					head->setSecondChild(nestingStack.top());
 				}
 				nestingStack.top()->setSecondParent(head);
+				addNextAndPrev(nestingStack.top(), head);
 
 				nestingStack.top()->setSecondChild(endNode);
 				endNode->setFirstParent(nestingStack.top());

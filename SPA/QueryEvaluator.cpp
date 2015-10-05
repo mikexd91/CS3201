@@ -4,7 +4,6 @@
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <string>
-#include <sstream>
 
 QueryEvaluator::QueryEvaluator(void)
 {
@@ -18,8 +17,6 @@ QueryEvaluator::~QueryEvaluator(void)
 {
 }
 
-// If clauseList is empty, insert values from table of the right type into Result obj.
-// Else, evaluate all clauses.
 Result* QueryEvaluator::evaluateQuery(Query query) {
 	Result *obj = new Result();
 	setClauseList(query.getClauseList());
@@ -28,13 +25,26 @@ Result* QueryEvaluator::evaluateQuery(Query query) {
 	return obj;
 }
 
-// Return values to be printed.
+string QueryEvaluator::boolToString(bool b) {
+	if (b) {
+		return "true";
+	} else {
+		return "false";
+	}
+}
+
 unordered_set<string> QueryEvaluator::getValuesToPrint(Result* obj, vector<StringPair> selectList) {
 	unordered_set<string> resultSet = unordered_set<string>();
 	int numOfSyn = selectList.size();
 	if (numOfSyn == 1) {
 		string syn = selectList.at(0).getFirst();
-		resultSet = printSingleSynValues(*obj, syn);
+		string type = selectList.at(0).getSecond();
+		if (syn == "BOOLEAN" && type == stringconst::ARG_BOOLEAN) {
+			bool isQueryPass = obj->isPass();
+			resultSet.insert(boolToString(isQueryPass));
+		} else {
+			resultSet = printSingleSynValues(*obj, syn);
+		}
 	} else {
 		resultSet = printTupleSynValues(*obj, selectList);
 	}
@@ -60,7 +70,9 @@ unordered_set<string> QueryEvaluator::printTupleSynValues(Result &obj, vector<St
 			if (valueIter != tupleList.end() - 1) {
 				tuple.append(*valueIter);
 				tuple.append(" ");
-			} 
+			} else {
+				tuple.append(*valueIter);
+			}
 		}
 		resultSet.insert(tuple);
 	}
@@ -75,17 +87,19 @@ void QueryEvaluator::setSelectList(vector<StringPair> selectList) {
 	this->selectList = selectList;
 }
 
-// evalute clauses in clause List
-// inserts in synonyms that appear in select list but not in clause list
 Result* QueryEvaluator::evaluateClauses(Result* obj, vector<Clause*> clauseList) {
 	for (vector<Clause*>::iterator i = clauseList.begin(); i != clauseList.end(); ++i) {
 		Clause* c = *i;
-		c->evaluate(obj);
-		if (obj->isPass() == false) {
+		if (c->evaluate(obj) == false) {
+			obj->setFail();
 			break;
 		} 
 	}
-	getRemainingSynValuesFromTable(*obj);
+	string syn = selectList.at(0).getFirst();
+	string type = selectList.at(0).getSecond();
+	if (syn != "BOOLEAN" && type != stringconst::ARG_BOOLEAN) {
+		getRemainingSynValuesFromTable(*obj);
+	}
 	return obj;
 }
 

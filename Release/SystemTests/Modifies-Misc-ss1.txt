@@ -1,0 +1,55 @@
+1 - MODIFIES: stmt# - select clause (has results)
+assign a;
+Select a.stmt# such that Modifies(a, "ivysaur")
+11, 19
+5000
+2 - MODIFIES: stmt# - select clause (no results)
+assign a;
+Select a.stmt# such that Modifies(a, "firstPokemon")
+none
+5000
+3 - MODIFIES: stmt# - with clause (has results)
+assign a;
+Select a such that Modifies(a, "battle1") with a.stmt# = 12
+12
+5000
+4 - MODIFIES: stmt# - with clause(no results)
+assign a;
+Select a such that Modifies(a, "battle1") with a.stmt# = 12 and s.stmt# = 11
+none
+5000
+5 - MODIFIES: procName - select clause (has results)
+procedure p;
+Select p.procName such that Modifies(p, "battle1")
+pokemon
+5000
+6 - MODIFIES: procName - select clause (no results)
+procedure p;
+Select p.procName such that Modifies(p, "a")
+none
+5000
+7 - MODIFIES: procName - with clause (has results)
+procedure p;
+Select BOOLEAN such that Modifies(p, "battle1") with p.procName = "pokemon"
+true
+5000
+8 - MODIFIES: procName - with clause (no results)
+procedure p;
+Select BOOLEAN such that Modifies(p, "battle1") with p.procName = "digimon"
+false
+5000
+9 - MODIFIES: varName - select clause (has results)
+variable v;
+Select v.varName such that Modifies(21, v)
+wartortle
+5000
+10 - Modifies: varName - with clause (has results)
+variable v;
+Select BOOLEAN such that Modifies(19, v) with v.varName = "ivysaur"
+true
+5000
+11 - MODIFIES: varName - with clause (no results)
+variable v;
+Select BOOLEAN such that Modifies(19, v) with v.varName = "charmander"
+false
+5000
