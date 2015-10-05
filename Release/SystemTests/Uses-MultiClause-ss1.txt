@@ -41,7 +41,7 @@ charmander, squirtle, bulbasaur, firstStageEvolution, charmeleon, wartortle, ivy
 9 - USES: 2 clauses (mixed) - fixed-fixed, fixed-syn
 variable v;
 Select v such that Uses(17, "battle2") and Uses("18", v)
-battle3, charmeleon, wartortle, squirtle
+battle3, charmeleon, wartortle
 5000
 10 - USES: 2 clauses (mixed) - syn-syn, syn-fixed
 stmt s; variable v;
@@ -56,7 +56,7 @@ none
 12 - USES: 2 clauses (mixed) - fixed-syn, generic-fixed
 variable v;
 Select v such that Uses(15, v) and Uses(_, "lastPokemon")
-none
+battle1, wartortle, ivysaur, battle2, battle3, charmeleon, squirtle
 5000
 13 - USES: 2 clauses (mixed) - syn-fixed, syn-generic
 stmt s;
