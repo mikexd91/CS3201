@@ -6,12 +6,13 @@
 #include "boost/algorithm/string.hpp"
 #include "Clause.h"
 #include "FollowsClause.h"
-//#include "FollowsStarClause.h"
+#include "FollowsStarClause.h"
 #include "ModifiesClause.h"
 #include "ParentClause.h"
 //#include "ParentStarClause.h"
 #include "PatternClause.h"
 #include "UsesClause.h"
+#include "CallsClause.h"
 #include "PatternIfClause.h"
 #include "PatternAssgClause.h"
 #include "PatternWhileClause.h"
@@ -209,7 +210,7 @@ bool QueryParser::containsClauseType(string s){
 	clauseVector.push_back(stringconst::TYPE_PARENT);
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
 	clauseVector.push_back(stringconst::TYPE_USES);
-	//clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
+	clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
 	//clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
 	return containsAny(s, clauseVector);
 }
@@ -229,7 +230,7 @@ string QueryParser::getClauseString(string s){
 	clauseVector.push_back(stringconst::TYPE_PARENT);
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
 	clauseVector.push_back(stringconst::TYPE_USES);
-	//clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
+	clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
 	//clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
 	for (size_t i=0; i<clauseVector.size(); i++){
 		string current = clauseVector.at(i);
@@ -241,13 +242,13 @@ string QueryParser::getClauseString(string s){
 }
 
 SuchThatClauseBuilder* QueryParser::createCorrectClause(string type){
-	//if (type == stringconst::TYPE_FOLLOWS_STAR){
-		//SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(FOLLOWSSTAR_);
-		//return clause;		
+	if (type == stringconst::TYPE_FOLLOWS_STAR){
+		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+		return clause;		
 	/*} else if (type == stringconst::TYPE_PARENT_STAR){
 		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(PARENTSTAR_);
-		return clause;
-	} else*/ if (type == stringconst::TYPE_FOLLOWS){
+		return clause;*/
+	} else if (type == stringconst::TYPE_FOLLOWS){
 		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(FOLLOWS_);
 		return clause;		
 	} else if (type == stringconst::TYPE_PARENT){
@@ -259,9 +260,11 @@ SuchThatClauseBuilder* QueryParser::createCorrectClause(string type){
 	} else if (type == stringconst::TYPE_USES){
 		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(USES_);
 		return clause;
-	/*INSERT WHEN CLAUSES ARE DONE
 	} else if (type == stringconst::TYPE_CALLS){
 		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(CALLS_);
+		return clause;
+	/*} else if (type == stringconst::TYPE_CALLS_STAR){
+		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(CALLSSTAR_);
 		return clause;
 	} else if (type == stringconst::TYPE_NEXT){
 		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXT_);
@@ -406,7 +409,13 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 		if (firstVar == "\""){
 			throw InvalidSyntaxException();
 		}
-	}
+	} /*else if (firstVar == "-"){
+		string firstVal = Utils::getWordAndPop(line);
+		unexpectedEndCheck(line);
+		if (!firstVal){
+
+		}
+	}*/
 	newClause->setArgFixed(1, expectFirstFixedSynonym);
 	if (decList.find(firstVar) == decList.end()){
 		if (!Utils::isValidConstant(firstVar)){
