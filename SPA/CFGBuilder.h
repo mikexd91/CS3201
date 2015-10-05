@@ -64,5 +64,11 @@ private:
 	void setRecoverChild(CNode*, CNode*);
 	void setRecoverParent(CNode*, CNode*);
 
+	void setDummyIfNestingRecovery();
+	void setWhileNestingRecovery();
+	void setNodeSameRecoveryIfNest(CNode*);
+	void setEndProcOrEndNodeIfNest(EndCNode*);
+	void checkPrevStateAndSetProperties(CNode*);
+
 	CFGBuilder();
 };

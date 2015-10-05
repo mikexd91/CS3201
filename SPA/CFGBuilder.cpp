@@ -68,52 +68,21 @@ void CFGBuilder::processProcStmt(ParsedData data) {
 	for(int i = diff; i > 0; i--) {
 		if(i > 1) {
 			if(nestingStack.top()->getNodeType() == IF_) {
-				DummyCNode* dumNode = new DummyCNode();
-
-				dumNode->setIfParentStmt(ifStack.top()->getEndStmt());
-				dumNode->setElseParentStmt(head->getEndStmt());
-
-				dumNode->setFirstParent(ifStack.top());
-				dumNode->setSecondParent(head);
-
-				setRecoverChild(ifStack.top(), dumNode);
-				setRecoverChild(head, dumNode);
-
-				head = dumNode;
-				ifStack.pop();
-				nestingStack.pop();
+				setDummyIfNestingRecovery();
 			} else {
-				if(head->getNodeType() == ASSIGN_CALL_ || head->getNodeType() == DUMMY_) {
-					head->setFirstChild(nestingStack.top());
-				} else {
-					head->setSecondChild(nestingStack.top());
-				}
-				nestingStack.top()->setSecondParent(head);
-				addNextAndPrev(head, nestingStack.top());
+				setWhileNestingRecovery();
 
 				head = nestingStack.top();
 				nestingStack.pop();
 			}
 		} else /* i == 1 */ {
 			if(nestingStack.top()->getNodeType() == IF_) {
-				endNode->setFirstParent(ifStack.top());
-				endNode->setSecondParent(head);
-
-				setRecoverChild(ifStack.top(), endNode);
-				setRecoverChild(head, endNode);
-
-				ifStack.pop();
+				setEndProcOrEndNodeIfNest(endNode);
 			} else {
-				if(head->getNodeType() == ASSIGN_CALL_ || head->getNodeType() == DUMMY_){
-					head->setFirstChild(nestingStack.top());
-				} else {
-					head->setSecondChild(nestingStack.top());
-				}
-				nestingStack.top()->setSecondParent(head);
+				setWhileNestingRecovery();
 
 				nestingStack.top()->setSecondChild(endNode);
 				endNode->setFirstParent(nestingStack.top());
-
 			}
 
 			nestingStack.pop();
@@ -146,57 +115,18 @@ void CFGBuilder::processAssgCallStmt(ParsedData data) {
 		for(int i = diff; i > 0; i--) {
 			if(i > 1) {
 				if(nestingStack.top()->getNodeType() == IF_) {
-					DummyCNode* dumNode = new DummyCNode();
-
-					dumNode->setIfParentStmt(ifStack.top()->getEndStmt());
-					dumNode->setElseParentStmt(head->getEndStmt());
-
-					dumNode->setFirstParent(ifStack.top());
-					dumNode->setSecondParent(head);
-
-					setRecoverChild(ifStack.top(), dumNode);
-					setRecoverChild(head, dumNode);
-
-					head = dumNode;
-					ifStack.pop();
-					nestingStack.pop();
+					setDummyIfNestingRecovery();
 				} else {
-					if(head->getNodeType() == ASSIGN_CALL_ || head->getNodeType() == DUMMY_) {
-						head->setFirstChild(nestingStack.top());
-					} else {
-						head->setSecondChild(nestingStack.top());
-					}
-					nestingStack.top()->setSecondParent(head);
-					addNextAndPrev(nestingStack.top(), head);
+					setWhileNestingRecovery();
 
 					head = nestingStack.top();
 					nestingStack.pop();
 				}
 			} else /* i == 1 */ {
 				if(nestingStack.top()->getNodeType() == IF_) {
-					CNode* ifParentNode = ifStack.top();
-					CNode* elseParentNode = head;
-
-					node->setFirstParent(ifParentNode);
-					node->setSecondParent(elseParentNode);
-
-					setRecoverChild(ifParentNode, node);
-					setRecoverChild(elseParentNode, node);
-
-					addNextAndPrev(node, ifParentNode);
-					addNextAndPrev(node, elseParentNode);
-
-					head = node;
-					ifStack.pop();
-					nestingStack.pop();
+					setNodeSameRecoveryIfNest(node);
 				} else /* top is while */ {
-					if(head->getNodeType() == ASSIGN_CALL_ || head->getNodeType() == DUMMY_) {
-						head->setFirstChild(nestingStack.top());
-					} else {
-						head->setSecondChild(nestingStack.top());
-					}
-					nestingStack.top()->setSecondParent(head);
-					addNextAndPrev(nestingStack.top(), head);
+					setWhileNestingRecovery();
 
 					// add the assignment after all the recovery
 					nestingStack.top()->setSecondChild(node);
@@ -219,17 +149,7 @@ void CFGBuilder::processAssgCallStmt(ParsedData data) {
 		}
 
 		AssgCallCNode* node = new AssgCallCNode(++stmtCounter);
-		node->setFirstParent(head);
-		if(prevState == IF || prevState == WHILE) {
-			head->setFirstChild(node);
-			addNextAndPrev(node, head);
-		} else if(prevState == ELSE) {
-			head->setSecondChild(node);
-			addNextAndPrev(node, head);
-		} else /* dummy */ {
-			head->setFirstChild(node);
-		}
-		head = node;
+		checkPrevStateAndSetProperties(node);
 	}
 
 	prevState = ASSGCALL;
@@ -245,53 +165,18 @@ void CFGBuilder::processIfStmt(ParsedData data) {
 		for(int i = diff; i > 0; i--) {
 			if (i > 1) {
 				if (nestingStack.top()->getNodeType() == IF_) {
-					DummyCNode* dumNode = new DummyCNode();
-
-					dumNode->setIfParentStmt(ifStack.top()->getEndStmt());
-					dumNode->setElseParentStmt(head->getEndStmt());
-
-					dumNode->setFirstParent(ifStack.top());
-					dumNode->setSecondParent(head);
-
-					setRecoverChild(ifStack.top(), dumNode);
-					setRecoverChild(head, dumNode);
-
-					head = dumNode;
-					ifStack.pop();
-					nestingStack.pop();
+					setDummyIfNestingRecovery();
 				} else {
-					if (head->getNodeType() == ASSIGN_CALL_ || head->getNodeType() == DUMMY_) {
-						head->setFirstChild(nestingStack.top());
-					} else {
-						head->setSecondChild(nestingStack.top());
-					}
-					nestingStack.top()->setSecondParent(head);
-					addNextAndPrev(nestingStack.top(), head);
+					setWhileNestingRecovery();
 
 					head = nestingStack.top();
 					nestingStack.pop();
 				}
 			} else /* i == 1 */{
 				if(nestingStack.top()->getNodeType() == IF_) {
-					node->setFirstParent(ifStack.top());
-					node->setSecondParent(head);
-					setRecoverChild(ifStack.top(), node);
-					setRecoverChild(head, node);
-
-					addNextAndPrev(node, ifStack.top());
-					addNextAndPrev(node, head);
-
-					head = node;
-					nestingStack.pop();
-					ifStack.pop();
+					setNodeSameRecoveryIfNest(node);
 				} else /* while stmt */{
-					if(head->getNodeType() == ASSIGN_CALL_ || head->getNodeType() == DUMMY_) {
-						head->setFirstChild(nestingStack.top());
-					} else {
-						head->setSecondChild(nestingStack.top());
-					}
-					nestingStack.top()->setSecondParent(head);
-					addNextAndPrev(nestingStack.top(), head);
+					setWhileNestingRecovery();
 
 					//recovery
 					nestingStack.top()->setSecondChild(node);
@@ -323,17 +208,7 @@ void CFGBuilder::processIfStmt(ParsedData data) {
 
 		// prev state was either if/else/while
 		// will definitely enter nesting
-		node->setFirstParent(head);
-		if(prevState == IF || prevState == WHILE) {
-			head->setFirstChild(node);
-			addNextAndPrev(node, head);
-		} else if(prevState == ELSE) {
-			head->setSecondChild(node);
-			addNextAndPrev(node, head);
-		} else /* dummy */{
-			head->setFirstChild(node);
-		}
-		head = node;
+		checkPrevStateAndSetProperties(node);
 	}
 
 	currNestingLevel = data.getNestingLevel() + 1;
@@ -355,22 +230,8 @@ void CFGBuilder::processElseStmt(ParsedData data) {
 			head = nestingStack.top();
 		} else {
 			if(nestingStack.top()->getNodeType() == IF_) {		// recovering from an if nest
-				DummyCNode* dumNode = new DummyCNode;
-				CNode* ifParent = ifStack.top();
-
-				dumNode->setIfParentStmt(ifParent->getEndStmt());
-				dumNode->setElseParentStmt(head->getEndStmt());
-
-				dumNode->setFirstParent(ifParent);
-				dumNode->setSecondParent(head);
-
-				setRecoverChild(ifParent, dumNode);
-				setRecoverChild(head, dumNode);
-
-				head = dumNode;
-				nestingStack.pop();
-				ifStack.pop();
-			} else {											// recovering from a while nest
+				setDummyIfNestingRecovery();
+			} else /* nesting stack top == while */{											// recovering from a while nest
 				CNode* whileParent = nestingStack.top();
 				head->setFirstChild(whileParent);
 				setRecoverParent(whileParent, head);
@@ -395,53 +256,18 @@ void CFGBuilder::processWhileStmt(ParsedData data) {
 		for(int i = diff; i > 0; i--) {
 			if (i > 1) {
 				if (nestingStack.top()->getNodeType() == IF_) {
-					DummyCNode* dumNode = new DummyCNode();
-
-					dumNode->setIfParentStmt(ifStack.top()->getEndStmt());
-					dumNode->setElseParentStmt(head->getEndStmt());
-
-					dumNode->setFirstParent(ifStack.top());
-					dumNode->setSecondParent(head);
-
-					setRecoverChild(ifStack.top(), dumNode);
-					setRecoverChild(head, dumNode);
-
-					head = dumNode;
-					ifStack.pop();
-					nestingStack.pop();
+					setDummyIfNestingRecovery();
 				} else {
-					if (head->getNodeType() == ASSIGN_CALL_ || head->getNodeType() == DUMMY_) {
-						head->setFirstChild(nestingStack.top());
-					} else {
-						head->setSecondChild(nestingStack.top());
-					}
-					nestingStack.top()->setSecondParent(head);
-					addNextAndPrev(nestingStack.top(), head);
+					setWhileNestingRecovery();
 
 					head = nestingStack.top();
 					nestingStack.pop();
 				}
 			} else /* i == 1 */{
 				if(nestingStack.top()->getNodeType() == IF_) {
-					node->setFirstParent(ifStack.top());
-					node->setSecondParent(head);
-					setRecoverChild(ifStack.top(), node);
-					setRecoverChild(head, node);
-
-					addNextAndPrev(node, ifStack.top());
-					addNextAndPrev(node, head);
-
-					head = node;
-					nestingStack.pop();
-					ifStack.pop();
+					setNodeSameRecoveryIfNest(node);
 				} else /* while stmt */{
-					if(head->getNodeType() == ASSIGN_CALL_ || head->getNodeType() == DUMMY_) {
-						head->setFirstChild(nestingStack.top());
-					} else {
-						head->setSecondChild(nestingStack.top());
-					}
-					nestingStack.top()->setSecondParent(head);
-					addNextAndPrev(nestingStack.top(), head);
+					setWhileNestingRecovery();
 
 					//recovery
 					nestingStack.top()->setSecondChild(node);
@@ -468,18 +294,7 @@ void CFGBuilder::processWhileStmt(ParsedData data) {
 			return;
 		}
 
-		node->setFirstParent(head);
-		if(prevState == IF || prevState == WHILE) {
-			head->setFirstChild(node);
-			addNextAndPrev(node, head);
-		} else if(prevState == ELSE){
-			head->setSecondChild(node);
-			addNextAndPrev(node, head);
-		} else /* dummy or procedure */{
-			head->setFirstChild(node);
-		}
-
-		head = node;
+		checkPrevStateAndSetProperties(node);
 	}
 
 	currNestingLevel = data.getNestingLevel() + 1;
@@ -497,49 +312,18 @@ void CFGBuilder::processEndProgram(ParsedData data) {
 	for(int i = diff; i > 0; i--) {
 		if(i > 1) {
 			if(nestingStack.top()->getNodeType() == IF_) {
-				DummyCNode* dumNode = new DummyCNode();
-
-				dumNode->setIfParentStmt(ifStack.top()->getEndStmt());
-				dumNode->setElseParentStmt(head->getEndStmt());
-
-				dumNode->setFirstParent(ifStack.top());
-				dumNode->setSecondParent(head);
-
-				setRecoverChild(ifStack.top(), dumNode);
-				setRecoverChild(head, dumNode);
-
-				head = dumNode;
-				ifStack.pop();
-				nestingStack.pop();
+				setDummyIfNestingRecovery();
 			} else {
-				if(head->getNodeType() == ASSIGN_CALL_ || head->getNodeType() == DUMMY_) {
-					head->setFirstChild(nestingStack.top());
-				} else {
-					head->setSecondChild(nestingStack.top());
-				}
-				nestingStack.top()->setSecondParent(head);
-				addNextAndPrev(nestingStack.top(), head);
+				setWhileNestingRecovery();
 
 				head = nestingStack.top();
 				nestingStack.pop();
 			}
 		} else /* i == 1 */ {
 			if(nestingStack.top()->getNodeType() == IF_) {
-				endNode->setFirstParent(ifStack.top());
-				endNode->setSecondParent(head);
-
-				setRecoverChild(ifStack.top(), endNode);
-				setRecoverChild(head, endNode);
-
-				ifStack.pop();
+				setEndProcOrEndNodeIfNest(endNode);
 			} else {
-				if(head->getNodeType() == ASSIGN_CALL_ || head->getNodeType() == DUMMY_){
-					head->setFirstChild(nestingStack.top());
-				} else {
-					head->setSecondChild(nestingStack.top());
-				}
-				nestingStack.top()->setSecondParent(head);
-				addNextAndPrev(nestingStack.top(), head);
+				setWhileNestingRecovery();
 
 				nestingStack.top()->setSecondChild(endNode);
 				endNode->setFirstParent(nestingStack.top());
@@ -560,6 +344,58 @@ void CFGBuilder::processEndProgram(ParsedData data) {
 	}
 
 	head = endNode;
+}
+
+void CFGBuilder::setDummyIfNestingRecovery() {
+	DummyCNode* dumNode = new DummyCNode();
+
+	dumNode->setIfParentStmt(ifStack.top()->getEndStmt());
+	dumNode->setElseParentStmt(head->getEndStmt());
+
+	dumNode->setFirstParent(ifStack.top());
+	dumNode->setSecondParent(head);
+
+	setRecoverChild(ifStack.top(), dumNode);
+	setRecoverChild(head, dumNode);
+
+	head = dumNode;
+	ifStack.pop();
+	nestingStack.pop();
+}
+
+void CFGBuilder::setWhileNestingRecovery() {
+	if(head->getNodeType() == ASSIGN_CALL_ || head->getNodeType() == DUMMY_) {
+		head->setFirstChild(nestingStack.top());
+	} else {
+		head->setSecondChild(nestingStack.top());
+	}
+	nestingStack.top()->setSecondParent(head);
+	addNextAndPrev(nestingStack.top(), head);
+}
+
+void CFGBuilder::setNodeSameRecoveryIfNest(CNode* node) {
+	node->setFirstParent(ifStack.top());
+	node->setSecondParent(head);
+
+	setRecoverChild(ifStack.top(), node);
+	setRecoverChild(head, node);
+
+	addNextAndPrev(node, ifStack.top());
+	addNextAndPrev(node, head);
+
+	head = node;
+	ifStack.pop();
+	nestingStack.pop();
+}
+
+void CFGBuilder::setEndProcOrEndNodeIfNest(EndCNode* node) {
+	node->setFirstParent(ifStack.top());
+	node->setSecondParent(head);
+
+	setRecoverChild(ifStack.top(), node);
+	setRecoverChild(head, node);
+
+	ifStack.pop();
 }
 
 void CFGBuilder::addNextAndPrev(CNode* next, CNode* prev) {
@@ -629,6 +465,20 @@ void CFGBuilder::setRecoverParent(CNode* parent, CNode* child) {
 	} else {
 		child->setFirstParent(parent);
 	}
+}
+
+void CFGBuilder::checkPrevStateAndSetProperties(CNode* node) {
+	node->setFirstParent(head);
+	if(prevState == IF || prevState == WHILE) {
+		head->setFirstChild(node);
+		addNextAndPrev(node, head);
+	} else if(prevState == ELSE) {
+		head->setSecondChild(node);
+		addNextAndPrev(node, head);
+	} else /* dummy */{
+		head->setFirstChild(node);
+	}
+	head = node;
 }
 
 // for testing
