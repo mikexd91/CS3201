@@ -2,6 +2,7 @@
 
 #include <set>
 #include "TNode.h"
+#include "GNode.h"
 //#include "GNode.h"
 #include <boost/unordered_set.hpp>
 
@@ -57,7 +58,7 @@ public:
 	NodeType getType();													// get stmt type
 	int getStmtNum();													// get stmt num
 	TNode* getTNodeRef();												// get reference to stmt TNode
-	//GNode* getGNodeRef();												// get reference to stmt GNode
+	GNode* getGNodeRef();												// get reference to stmt GNode
 	const UsesSet& getUses();											// get set of variables stmt uses
 	const ModifiesSet& getModifies();									// get set of variables stmt modifies
 	int getFollowsAfter();												// get stmt that follows after this stmt
@@ -76,7 +77,7 @@ public:
 	void setType(NodeType nodeType);
 	void setStmtNum(int num);
 	void setTNodeRef(TNode *ref);
-	//void setGNodeRef(GNode *ref);
+	void setGNodeRef(GNode *ref);
 	void setUses(const UsesSet &usesSet);
 	void setModifies(const ModifiesSet &modifiesSet);
 	void setFollowsAfter(int followsAfter);
@@ -96,7 +97,7 @@ private:
 	NodeType	type;			// node type
 	int			stmtNum;		// stmt number
 	TNode		*TNodeRef;		// TNode reference
-	//GNode		*GNodeRef;		// GNode reference
+	GNode		*GNodeRef;		// GNode reference
 
 	// PRIVATE RELATIONS ATTRIBUTES
 	UsesSet			uses;

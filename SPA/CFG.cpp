@@ -24,21 +24,21 @@ CFG* CFG::getInstance() {
 	return instance;
 }
 
-void CFG::addProcedure(CNode* proc) {
+void CFG::addProcedure(ProcGNode* proc) {
 	this->procedures.push_back(proc);
 }
 
-vector<CNode*> CFG::getAllProcedures() {
+vector<ProcGNode*> CFG::getAllProcedures() {
 	return this->procedures;
 }
 
-CNode* CFG::getProcedure(string procName) {
+ProcGNode* CFG::getProcedure(string procName) {
 	if(procedures.empty()) {
 		return NULL;
 	}
 
 	for(size_t i = 0; i < procedures.size(); i++) {
-		CNode* proc = procedures.at(i);
+		ProcGNode* proc = procedures.at(i);
 		if(proc->getName() == procName) {
 			return proc;
 		}
@@ -54,7 +54,7 @@ bool CFG::hasProcedure(string procName) {
 	}
 
 	for(size_t i = 0; i < procedures.size(); i++) {
-		CNode* proc = procedures.at(i);
+		GNode* proc = procedures.at(i);
 		if(proc->getName() == procName) {
 			return true;
 		}
