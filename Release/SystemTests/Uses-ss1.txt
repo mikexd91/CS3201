@@ -113,7 +113,7 @@ none
 Select BOOLEAN such that Uses(14, _)
 true
 5000
-24 - USES-: generic-fixed
+24 - USES-boolean: generic-fixed
 
 Select BOOLEAN such that Uses(_, "battle3")
 true
