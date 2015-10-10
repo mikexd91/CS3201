@@ -30,7 +30,7 @@ void PQLIntegration::setUp() {
 
 	procedure Pizza {
 		if good then {						//1
-			eaten = eaten + 1;					//2
+			eaten = eaten + 1;				//2
 		} else {							
 			drink = more * (beer - water);	//3
 			call YourMom;					//4
@@ -44,7 +44,7 @@ void PQLIntegration::setUp() {
 				mom = nagging;				//8
 			}
 		}
-		full = drink + eaten;					//9
+		full = drink + eaten;				//9
 	}
 	*/
 
@@ -149,13 +149,71 @@ void PQLIntegration::setUp() {
 //-------------  SET UP STMT ------------//
 	StmtTable* stable = StmtTable::getInstance();
 
+	//--- stmt sample ---//
+	//Statement* stmt1 = new Statement();
+	//stmt1->setStmtNum(1);
+	//stmt1->setType(IF_STMT_);
+	//stmt1->setCalls();
+	//string stmt1usesarr[] = {"eaten", "more"};
+	//stmt1->setUses(Statement::UsesSet(stmt1usesarr, stmt1usesarr+len));
+	//string stmt1modsarr[] = {"eaten"};
+	//stmt1->setModifies(Statement::ModifiesSet(stmt1modsarr, stmt1modsarr+len));
+	//stmt1->setFollowsAfter();
+	//stmt1->setFollowsBefore();
+	//stmt1->setFollowsStarAfter();
+	//stmt1->setFollowsStarBefore();
+	//stmt1->setParent();
+	//stmt1->setChildren();
+	//stmt1->setParentStar();
+	//stmt1->setChildrenStar();
+	//stmt1->setNext();
+	//stmt1->setPrev();
+	//stable->addStmt(stmt1);
+
 	Statement* stmt1 = new Statement();
 	stmt1->setStmtNum(1);
-	stmt1->setType(IF_STMT_);
-	stmt1->setFollowsAfter(2);
+	stmt1->setType(NodeType::IF_STMT_);
+	//stmt1->setCalls();
+	string stmt1UsesArr[] = {"eaten", "more", "beer", "water", "nagging", "i", "drink"};
+	stmt1->setUses(Statement::UsesSet(stmt1UsesArr, stmt1UsesArr+ 7));
+	string stmt1ModsArr[] = {"eaten", "drink", "nagging", "mom", "full"};
+	stmt1->setModifies(Statement::ModifiesSet(stmt1ModsArr, stmt1ModsArr+ 5));
+	//stmt1->setFollowsAfter();
+	//stmt1->setFollowsBefore();
+	//stmt1->setFollowsStarAfter();
+	//stmt1->setFollowsStarBefore();
+	//stmt1->setParent();
+	int stmt1ChildrenArr[] = {2, 3, 4};
+	stmt1->setChildren(Statement::ChildrenSet(stmt1ChildrenArr, stmt1ChildrenArr+ 3));
+	//stmt1->setParentStar();
+	int stmt1ChildrenStarArr[] = {2, 3, 4};
+	stmt1->setChildrenStar(Statement::ChildrenSet(stmt1ChildrenStarArr, stmt1ChildrenStarArr+ 3));
+	int stmt1NextArr[] = {2, 3};
+	stmt1->setNext(Statement::NextSet(stmt1NextArr, stmt1NextArr+ 2));
+	//stmt1->setPrev();
 
-
-
+	Statement* stmt2 = new Statement();
+	stmt2->setStmtNum(1);
+	stmt2->setType(NodeType::ASSIGN_STMT_);
+	//stmt2->setCalls();
+	string stmt2UsesArr[] = {"eaten"};
+	stmt2->setUses(Statement::UsesSet(stmt2UsesArr, stmt2UsesArr+ 1));
+	string stmt2ModsArr[] = {"eaten"};
+	stmt2->setModifies(Statement::ModifiesSet(stmt2ModsArr, stmt2ModsArr+ 1));
+	//stmt2->setFollowsAfter();
+	//stmt2->setFollowsBefore();
+	//stmt2->setFollowsStarAfter();
+	//stmt2->setFollowsStarBefore();
+	stmt2->setParent(1);
+	//int stmt2ChildrenArr[] = {2, 3, 4};
+	//stmt2->setChildren(Statement::ChildrenSet(stmt2ChildrenArr, stmt2ChildrenArr+ 3));
+	int stmt2ParentStarArr[] = {1};
+	stmt2->setParentStar(Statement::ParentStarSet(stmt2ParentStarArr, stmt2ParentStarArr+ 1));
+	//int stmt2ChildrenStarArr[] = {2, 3, 4};
+	//stmt2->setChildrenStar(Statement::ChildrenSet(stmt2ChildrenStarArr, stmt2ChildrenStarArr+ 3));
+	int stmt2NextArr[] = {2, 3};
+	stmt2->setNext(Statement::NextSet(stmt2NextArr, stmt2NextArr+ 2));
+	//stmt2->setPrev();
 }
 
 void PQLIntegration::tearDown() {
@@ -216,7 +274,7 @@ void PQLIntegration::testSelectModifies() {
 	CPPUNIT_ASSERT(6 == r4.size());
 }
 
-	/* testing this source
+	/* OLd source
 
 	procedure chocs {
 		a=4;				//1
