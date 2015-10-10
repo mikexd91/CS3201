@@ -55,11 +55,11 @@ TNode* Statement::getTNodeRef() {
 	return TNodeRef;
 }
 
-/*
+
 // get reference to stmt GNode
 GNode* Statement::getGNodeRef() {
 	return GNodeRef;
-} */
+}
 
 // get set of variables stmt uses
 const Statement::UsesSet& Statement::getUses() {
@@ -142,10 +142,10 @@ void Statement::setTNodeRef(TNode *ref) {
 	TNodeRef = ref;
 }
 
-/*
-//void Statement::setGNodeRef(GNode *ref) {
+
+void Statement::setGNodeRef(GNode *ref) {
 	GNodeRef = ref;
-} */
+} 
 
 void Statement::setUses(const unordered_set<string> &useSet) {
 	uses = useSet;

@@ -1,19 +1,19 @@
 #pragma once
 
-#include "CNode.h"
+#include "GNode.h"
 
-class AssgCallCNode : public CNode {
+class AssgGNode : public GNode {
 
 public:
 
 	// constructor
-	AssgCallCNode(int);
+	AssgGNode(int);
 
 	// getters
-	CNode* getChild();
+	GNode* getChild();
 
 	// setters
-	void setChild(CNode*);
+	void setChild(GNode*);
 
 	// validity checks
 	bool hasMoreThanOneStmt(); 		// checks to see if have more than one stmt
