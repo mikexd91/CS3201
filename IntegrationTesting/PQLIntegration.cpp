@@ -11,6 +11,7 @@
 #include "../SPA/Utils.h"
 #include "../SPA/ConstTable.h"
 #include "../SPA/IfNode.h"
+#include "../SPA/Procedure.h"
 
 #include <iostream>
 #include <string>
@@ -54,10 +55,10 @@ void PQLIntegration::setUp() {
 	AST* ast = AST::getInstance();
 
 // procedure Pizza
-	ProcNode* pizzaProc = new ProcNode("Pizza");
-	ast->addProcNode(pizzaProc);
+	ProcNode* procNodePizza = new ProcNode("Pizza");
+	ast->addProcNode(procNodePizza);
 	StmtLstNode* pizzasl = new StmtLstNode();
-	pizzaProc->linkStmtLstNode(pizzasl);
+	procNodePizza->linkStmtLstNode(pizzasl);
 	
 	IfNode* if1 = new IfNode(1);
 	pizzasl->linkStmtNode(if1);
@@ -98,10 +99,10 @@ void PQLIntegration::setUp() {
 	pizzasl->linkStmtNode(call4);
 
 // procedure YourMom
-	ProcNode* yourmomProc = new ProcNode("YourMom");
-	ast->addProcNode(yourmomProc);
+	ProcNode* procNodeYourMom = new ProcNode("YourMom");
+	ast->addProcNode(procNodeYourMom);
 	StmtLstNode* yourmomsl = new StmtLstNode();
-	yourmomProc->linkStmtLstNode(yourmomsl);
+	procNodeYourMom->linkStmtLstNode(yourmomsl);
 	
 	WhileNode* while5 = new WhileNode(5);
 	yourmomsl->linkStmtNode(while5);
@@ -429,6 +430,33 @@ void PQLIntegration::setUp() {
 //-------------  SET UP PROC ------------//
 	ProcTable* ptable = ProcTable::getInstance();
 
+	Procedure* procPizza = new Procedure("Pizza");
+	procPizza->setTNodeRef(procNodePizza);
+	string procPizzaUsesArr[] = {"good", "eaten", "more", "beer", "water", "nagging", "i", "drink"};
+	procPizza->setUses(Procedure::UsesSet(procPizzaUsesArr, procPizzaUsesArr+ sizeof(procPizzaUsesArr)/sizeof(*procPizzaUsesArr)));
+	string procPizzaModsArr[] = {"eaten", "mom", "nagging", "full", "drink"};
+	procPizza->setModifies(Procedure::ModifiesSet(procPizzaModsArr, procPizzaModsArr+ sizeof(procPizzaModsArr)/sizeof(*procPizzaModsArr)));
+	string procPizzaCallsArr[] = {"YourMom"};
+	procPizza->setCalls(Procedure::CallsSet(procPizzaCallsArr, procPizzaCallsArr+ sizeof(procPizzaCallsArr)/sizeof(*procPizzaCallsArr)));
+	//string procPizzaCalledByArr[] = {"YourMom"};
+	//procPizza->setCalledBy(Procedure::CallsSet(procPizzaCalledByArr, procPizzaCalledByArr+ sizeof(procPizzaCalledByArr)/sizeof(*procPizzaCalledByArr)));
+	int procPizzaStmtsArr[] = {1, 2, 3, 4};
+	//procPizza->setStmts(Procedure::StatementSet(procPizzaStmtsArr, procPizzaStmtsArr+ sizeof(procPizzaStmtsArr)/sizeof(*procPizzaStmtsArr)));
+	ptable->addProc(procPizza);
+
+	Procedure* procYourMom = new Procedure("Pizza");
+	procYourMom->setTNodeRef(procNodePizza);
+	string procYourMomUsesArr[] = {"nagging", "i", "drink", "eaten"};
+	procYourMom->setUses(Procedure::UsesSet(procYourMomUsesArr, procYourMomUsesArr+ sizeof(procYourMomUsesArr)/sizeof(*procYourMomUsesArr)));
+	string procYourMomModsArr[] = {"mom", "nagging", "full"};
+	procYourMom->setModifies(Procedure::ModifiesSet(procYourMomModsArr, procYourMomModsArr+ sizeof(procYourMomModsArr)/sizeof(*procYourMomModsArr)));
+	//string procYourMomCallsArr[] = {"YourMom"};
+	//procYourMom->setCalls(Procedure::CallsSet(procYourMomCallsArr, procYourMomCallsArr+ sizeof(procYourMomCallsArr)/sizeof(*procYourMomCallsArr)));
+	string procYourMomCalledByArr[] = {"Pizza"};
+	procYourMom->setCalledBy(Procedure::CallsSet(procYourMomCalledByArr, procYourMomCalledByArr+ sizeof(procYourMomCalledByArr)/sizeof(*procYourMomCalledByArr)));
+	int procYourMomStmtsArr[] = {5, 6, 7, 8, 9};
+	//procYourMom->setStmts(Procedure::StatementSet(procYourMomStmtsArr, procYourMomStmtsArr+ sizeof(procYourMomStmtsArr)/sizeof(*procYourMomStmtsArr)));
+	ptable->addProc(procYourMom);
 //-------------  END OF PROC ------------//
 
 
