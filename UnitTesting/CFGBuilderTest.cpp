@@ -51,13 +51,13 @@ void CFGBuilderTest::testWithIf() {
 	ifStmt.setIfVar("x");
 
 	parse(proc);
-	CNode* procNode = builder->getHead();
+	GNode* procNode = builder->getHead();
 
 	parse(ifStmt);
-	CNode* ifNode = builder->getHead();
+	GNode* ifNode = builder->getHead();
 
-	vector<CNode*> procNodeChildrens = procNode->getChildren();
-	vector<CNode*> ifNodeParents = ifNode->getParents();
+	vector<GNode*> procNodeChildrens = procNode->getChildren();
+	vector<GNode*> ifNodeParents = ifNode->getParents();
 
 	CPPUNIT_ASSERT(procNodeChildrens[0] == ifNode);
 	CPPUNIT_ASSERT(ifNodeParents[0] == procNode);
@@ -99,19 +99,19 @@ void CFGBuilderTest::testIfAssg() {
 	assgStmt2.setAssignExpression(assgExp2);
 
 	parse(proc);
-	CNode* procNode = builder->getHead();
+	ProcGNode* procNode = (ProcGNode*) builder->getHead();
 
 	parse(ifStmt);
-	CNode* ifNode = builder->getHead();
+	GNode* ifNode = builder->getHead();
 
 	parse(assgStmt1);
-	CNode* assgNode1 = builder->getHead();
+	GNode* assgNode1 = builder->getHead();
 
 	parse(elseStmt);
 	CPPUNIT_ASSERT(builder->getHead() == ifNode);
 
 	parse(assgStmt2);
-	CNode* assgNode2 = builder->getHead();
+	GNode* assgNode2 = builder->getHead();
 
 	parse(endProg);
 
@@ -163,12 +163,12 @@ void CFGBuilderTest::testMultAssg() {
 	assg3.setAssignExpression(queue3);
 
 	parse(proc);
-	CNode* procNode = builder->getHead();
+	GNode* procNode = builder->getHead();
 
 	parse(assg1);
 	parse(assg2);
 	parse(assg3);
-	CNode* assgNode = builder->getHead();
+	GNode* assgNode = builder->getHead();
 
 	parse(endProg);
 
@@ -209,16 +209,16 @@ void CFGBuilderTest::testMultProc() {
 	assg2.setAssignExpression(queue2);
 
 	parse(proc1);
-	CNode* procNode1 = builder->getHead();
+	GNode* procNode1 = builder->getHead();
 
 	parse(assg1);
-	CNode* assgNode1 = builder->getHead();
+	GNode* assgNode1 = builder->getHead();
 
 	parse(proc2);
-	CNode* procNode2 = builder->getHead();
+	GNode* procNode2 = builder->getHead();
 
 	parse(assg2);
-	CNode* assgNode2 = builder->getHead();
+	GNode* assgNode2 = builder->getHead();
 
 	parse(endProg);
 
@@ -271,26 +271,32 @@ void CFGBuilderTest::testMultAssgCall() {
 	call.setProcName("proc2");
 
 	parse(proc1);
-	CNode* procNode1 = builder->getHead();
+	GNode* procNode1 = builder->getHead();
 
 	parse(assg1);
 	parse(assg2);
+	GNode* block1 = builder->getHead();
+
 	parse(call);
-	CNode* block1 = builder->getHead();
+	GNode* callNode = builder->getHead();
 
 	parse(proc2);
-	CNode* procNode2 = builder->getHead();
+	GNode* procNode2 = builder->getHead();
 
 	parse(assg1);
 	parse(assg2);
-	CNode* block2 = builder->getHead();
+	GNode* block2 = builder->getHead();
 
 	parse(endProg);
 
 	CPPUNIT_ASSERT(procNode1->getChildren().at(0) == block1);
 	CPPUNIT_ASSERT(block1->getParents().at(0) == procNode1);
-	CPPUNIT_ASSERT(block1->getChildren().at(0)->getNodeType() == END_);
-	CPPUNIT_ASSERT(block1->getStartStmt() == 1 && block1->getEndStmt() == 3);
+	CPPUNIT_ASSERT(block1->getChildren().at(0)->getNodeType() == CALL_);
+	CPPUNIT_ASSERT(block1->getStartStmt() == 1 && block1->getEndStmt() == 2);
+
+	CPPUNIT_ASSERT(callNode->getChildren().at(0)->getNodeType() == END_);
+	CPPUNIT_ASSERT(callNode->getParents().at(0) == block1);
+	CPPUNIT_ASSERT(callNode->getEndStmt() == 3 && callNode->getStartStmt() == 3);
 
 	CPPUNIT_ASSERT(procNode2->getChildren().at(0) == block2);
 	CPPUNIT_ASSERT(block2->getParents().at(0) == procNode2);
@@ -320,13 +326,13 @@ void CFGBuilderTest::testWithWhile() {
 	assg.setAssignExpression(queue);
 
 	parse(proc);
-	CNode* procNode = builder->getHead();
+	GNode* procNode = builder->getHead();
 	
 	parse(whileStmt);
-	CNode* whileNode = builder->getHead();
+	GNode* whileNode = builder->getHead();
 
 	parse(assg);
-	CNode* assgNode = builder->getHead();
+	GNode* assgNode = builder->getHead();
 
 	parse(endProg);
 
@@ -394,24 +400,24 @@ void CFGBuilderTest::testIfNested() {
 	parse(proc);
 
 	parse(assg1);
-	CNode* assgNode1 = builder->getHead();
+	GNode* assgNode1 = builder->getHead();
 
 	parse(ifStmt1);
-	CNode* ifNode1 = builder->getHead();
+	GNode* ifNode1 = builder->getHead();
 
 	parse(ifStmt2);
-	CNode* ifNode2 = builder->getHead();
+	GNode* ifNode2 = builder->getHead();
 
 	parse(assg2);
-	CNode* assgNode2 = builder->getHead();
+	GNode* assgNode2 = builder->getHead();
 
 	parse(elseStmt1);
 	parse(assg3);
-	CNode* assgNode3 = builder->getHead();
+	GNode* assgNode3 = builder->getHead();
 
 	parse(elseStmt2);
 	parse(assg4);
-	CNode* assgNode4 = builder->getHead();
+	GNode* assgNode4 = builder->getHead();
 
 	parse(endProg);
 
@@ -478,16 +484,16 @@ void CFGBuilderTest::testWhileNested() {
 
 	parse(proc);
 	parse(assg1);
-	CNode* assgNode1 = builder->getHead();
+	GNode* assgNode1 = builder->getHead();
 
 	parse(while1);
-	CNode* whileNode1 = builder->getHead();
+	GNode* whileNode1 = builder->getHead();
 
 	parse(while2);
-	CNode* whileNode2 = builder->getHead();
+	GNode* whileNode2 = builder->getHead();
 
 	parse(assg2);
-	CNode* assgNode2 = builder->getHead();
+	GNode* assgNode2 = builder->getHead();
 
 	parse(endProg);
 
@@ -554,17 +560,17 @@ void CFGBuilderTest::testIfWhile() {
 	parse(proc);
 	parse(assg1);
 	parse(ifStmt);
-	CNode* ifNode = builder->getHead();
+	GNode* ifNode = builder->getHead();
 
 	parse(whileStmt);
-	CNode* whileNode = builder->getHead();
+	GNode* whileNode = builder->getHead();
 
 	parse(assg2);
-	CNode* assgNode2 = builder->getHead();
+	GNode* assgNode2 = builder->getHead();
 
 	parse(elseStmt);
 	parse(assg3);
-	CNode* assgNode3 = builder->getHead();
+	GNode* assgNode3 = builder->getHead();
 
 	parse(endProg);
 

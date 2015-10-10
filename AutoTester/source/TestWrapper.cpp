@@ -1,8 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include "boost/foreach.hpp"
 #include "TestWrapper.h"
 
+using namespace boost;
 
 // implementation code of WrapperFactory - do NOT modify the next 5 lines
 AbstractWrapper* WrapperFactory::wrapper = 0;
@@ -54,9 +56,8 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
 		// get results
 		// iterate through the results and stuff them into the results list
 		unordered_set<string>::iterator iter;
-		for (iter = resultSet.begin(); iter != resultSet.end(); ++iter) {
-			cout << *iter << endl;
-			results.push_back(*iter);
+		BOOST_FOREACH(auto i, resultSet) {
+			results.push_back(i);
 		}
 	} catch (std::exception e) {
 		results.push_back(e.what());

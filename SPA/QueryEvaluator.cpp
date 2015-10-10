@@ -211,9 +211,9 @@ unordered_set<string> QueryEvaluator::getAllCall() {
 
 unordered_set<string> QueryEvaluator::getAllVar() {
 	// get all variables
-	vector<string>* varVector = varTable->getAllVarNames();
-	unordered_set<string> varStringSet = stringVectorToSet(*varVector);
-	return varStringSet;
+	unordered_set<string> varVector = varTable->getAllVarNames();
+
+	return varVector;
 }
 
 unordered_set<string> QueryEvaluator::getAllProc() {
