@@ -3,7 +3,7 @@
 using namespace std;
 
 SynNode::SynNode(string name) {
-	edgeList = vector<pair<int, SynNode>>();
+	edgeList = vector<pair<int, SynNode*>>();
 	this->synonym = name;
 }
 
@@ -15,7 +15,7 @@ int SynNode::getWeight() {
 	return weight;
 }
 
-vector<pair<int, SynNode>> SynNode::getEdges() {
+vector<pair<int, SynNode*>> SynNode::getEdges() {
 	return edgeList;
 }
 
@@ -23,12 +23,12 @@ void SynNode::setWeight(int num) {
 	this->weight = num;
 }
 
-void SynNode::setEdge(int edgeWeight, SynNode node) {
-	pair<int, SynNode> edge (edgeWeight, node);
+void SynNode::setEdge(int edgeWeight, SynNode* node) {
+	pair<int, SynNode*> edge (edgeWeight, node);
 	edgeList.push_back(edge);
-	if (node.getEdges().size() > 0) {
-		pair<int, SynNode> othersEdge = node.getEdges().back();
-		if (!isSame(*this, othersEdge.second)) {
+	if (node->getEdges().size() > 0) {
+		pair<int, SynNode*> othersEdge = node->getEdges().back();
+		if (!isSame(this, othersEdge.second)) {
 			setOtherEdge(edgeWeight, node);
 		}
 	} else {
@@ -36,13 +36,12 @@ void SynNode::setEdge(int edgeWeight, SynNode node) {
 	}
 }
 
-void SynNode::setOtherEdge(int edgeWeight, SynNode node) {
-	pair<int, SynNode> edge (edgeWeight, *this);
-	node.getEdges().push_back(edge);
+void SynNode::setOtherEdge(int edgeWeight, SynNode* node) {
+	node->setEdge(edgeWeight, this);
 }
 
-bool SynNode::isSame(SynNode node1, SynNode node2) {
-	string syn1 = node1.getSynonym();
-	string syn2 = node2.getSynonym();
+bool SynNode::isSame(SynNode* node1, SynNode* node2) {
+	string syn1 = node1->getSynonym();
+	string syn2 = node2->getSynonym();
 	return syn1 == syn2;
 }
