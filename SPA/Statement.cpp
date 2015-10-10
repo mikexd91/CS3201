@@ -55,7 +55,6 @@ TNode* Statement::getTNodeRef() {
 	return TNodeRef;
 }
 
-
 // get reference to stmt GNode
 GNode* Statement::getGNodeRef() {
 	return GNodeRef;
@@ -127,6 +126,10 @@ const Statement::FollowsStarAfterSet& Statement::getFollowsStarAfter() {
 	return followsStarAfter;
 }
 
+Procedure* Statement::getProc() {
+	return proc;
+}
+
 /* ----------------------------- */
 /* ---------- SETTERS ---------- */
 /* ----------------------------- */
@@ -141,7 +144,6 @@ void Statement::setStmtNum(int num) {
 void Statement::setTNodeRef(TNode *ref) {
 	TNodeRef = ref;
 }
-
 
 void Statement::setGNodeRef(GNode *ref) {
 	GNodeRef = ref;
@@ -196,4 +198,8 @@ void Statement::setFollowsStarBefore(const FollowsStarBeforeSet &followsStarBefo
 }
 void Statement::setFollowsStarAfter(const FollowsStarAfterSet &followsStarAfterSet) {
 	followsStarAfter = followsStarAfterSet;
+}
+
+void Statement::setProcedure(Procedure* proc) {
+	this->proc = proc;
 }

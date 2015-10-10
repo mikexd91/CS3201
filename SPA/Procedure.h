@@ -26,6 +26,7 @@ class Procedure {
 public:
 
 	// TYPEDEF
+	typedef unordered_set<int> ContainsStmtSet;
 	typedef unordered_set<string> UsesSet;
 	typedef unordered_set<string> ModifiesSet;
 	typedef unordered_set<Procedure*> CallsSet;
@@ -37,18 +38,20 @@ public:
 	Procedure(const string &name, TNode *tRef);
 
 	// GETTERS
-	string getProcName();					// get name of proc
-	TNode* getTNodeRef();					// get reference to proc TNode
-	ProcGNode* getGNodeRef();				// get reference to proc GNode
-	const UsesSet& getUses();				// get set of variables proc uses
-	const ModifiesSet& getModifies();		// get set of variables proc modifies
-	const CallsSet& getCalls();				// get set of procs this proc calls
-	const CalledBySet& getCalledBy();		// get set of procs that call this proc
+	string getProcName();						// get name of proc
+	TNode* getTNodeRef();						// get reference to proc TNode
+	ProcGNode* getGNodeRef();					// get reference to proc GNode
+	const ContainsStmtSet& getContainStmts();	// get set of statements in this proc
+	const UsesSet& getUses();					// get set of variables proc uses
+	const ModifiesSet& getModifies();			// get set of variables proc modifies
+	const CallsSet& getCalls();					// get set of procs this proc calls
+	const CalledBySet& getCalledBy();			// get set of procs that call this proc
 
 	// SETTERS
 	void setProcName(const string &name);
 	void setTNodeRef(TNode *ref);
 	void setGNodeRef(ProcGNode *ref);
+	void setContainStmts(const unordered_set<int> &stmtsSet);
 	void setUses(const unordered_set<string> &useSet);
 	void setModifies(const unordered_set<string> &modifiesSet);
 	void setCalls(const unordered_set<Procedure*> &callsSet);
@@ -61,6 +64,7 @@ private:
 	ProcGNode	*GNodeRef;		// GNode reference
 
 	// PRIVATE SETS
+	ContainsStmtSet	stmts;
 	UsesSet			uses;
 	ModifiesSet		modifies;
 	CallsSet		calls;
