@@ -211,8 +211,9 @@ bool QueryParser::containsClauseType(string s){
 	clauseVector.push_back(stringconst::TYPE_PARENT);
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
 	clauseVector.push_back(stringconst::TYPE_USES);
-	clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
-	clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
+	clauseVector.push_back(stringconst::TYPE_CALLS);
+	clauseVector.push_back(stringconst::TYPE_NEXT);
+	clauseVector.push_back(stringconst::TYPE_AFFECTS);
 	return containsAny(s, clauseVector);
 }
 
@@ -231,8 +232,9 @@ string QueryParser::getClauseString(string s){
 	clauseVector.push_back(stringconst::TYPE_PARENT);
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
 	clauseVector.push_back(stringconst::TYPE_USES);
-	clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
-	clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
+	clauseVector.push_back(stringconst::TYPE_CALLS);
+	clauseVector.push_back(stringconst::TYPE_NEXT);
+	clauseVector.push_back(stringconst::TYPE_AFFECTS);
 	for (size_t i=0; i<clauseVector.size(); i++){
 		string current = clauseVector.at(i);
 		if (contains(s, current)){
@@ -277,24 +279,24 @@ SuchThatClauseBuilder* QueryParser::createCorrectClause(string type, queue<strin
 			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(CALLS_);
 			return clause;
 		}
-	//} else if (type == stringconst::TYPE_NEXT){
-	//	if (isStar == "*"){
-	//		Utils::getWordAndPop(line);
-	//		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXTSTAR_);
-	//		return clause;
-	//	} else {
-	//		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXT_);
-	//		return clause;
-	//	}
-	//} else if (type == stringconst::TYPE_AFFECTS){
-	//	if (isStar == "*"){
-	//		Utils::getWordAndPop(line);
-	//		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFETCSSTAR_);
-	//		return clause;
-	//	} else {
-	//		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTS_);
-	//		return clause;
-	//	}
+	} else if (type == stringconst::TYPE_NEXT){
+		if (isStar == "*"){
+			Utils::getWordAndPop(line);
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXTSTAR_);
+			return clause;
+		} else {
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXT_);
+			return clause;
+		}
+	} else if (type == stringconst::TYPE_AFFECTS){
+		if (isStar == "*"){
+			Utils::getWordAndPop(line);
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFETCSSTAR_);
+			return clause;
+		} else {
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTS_);
+			return clause;
+		}
 	} else {
 		throw UnexpectedClauseException();
 	}
