@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AffectsClause.cpp" />
     <ClCompile Include="AssgGNode.cpp" />
     <ClCompile Include="AssgNode.cpp" />
     <ClCompile Include="AST.cpp" />
@@ -84,6 +85,7 @@
     <ClCompile Include="WhileNode.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AffectsClause.h" />
     <ClInclude Include="AssgGNode.h" />
     <ClInclude Include="AssgNode.h" />
     <ClInclude Include="AST.h" />

@@ -1,6 +1,7 @@
 #include "AffectsClause.h"
 #include "CFG.h"
 #include "AssgGNode.h"
+#include "CallGNode.h"
 #include "DummyGNode.h"
 #include "IfGNode.h"
 #include "WhileGNode.h"
@@ -64,8 +65,6 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 
 	//if both are in same procedure
 	//check if stmt2 next* stmt1
-	//get procedure name of stmt1
-	//temp fix now. TODO
 	GNode* nextNode = stmt1->getGNodeRef();
 	while (nextNode->getNodeType() != END_) {
 		switch(nextNode->getNodeType()) {
@@ -109,7 +108,8 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 			}
 			break;
 		case CALL_:
-			break;
+			CallGNode* callNode = static_cast<CallGNode*>(nextNode);
+			nextNode = callNode;
 		case DUMMY_:
 			//only for if nodes
 			DummyGNode* dummyNode = static_cast<DummyGNode*>(nextNode);
@@ -127,8 +127,6 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 			break;
 		}
 	}
-
-
 
 	return false;
 }
