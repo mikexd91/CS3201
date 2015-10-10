@@ -2,6 +2,7 @@
 
 #include <set>
 #include "TNode.h"
+#include "ProcGNode.h"
 #include <boost\unordered_set.hpp>
 
 using boost::unordered_set;
@@ -38,6 +39,7 @@ public:
 	// GETTERS
 	string getProcName();					// get name of proc
 	TNode* getTNodeRef();					// get reference to proc TNode
+	ProcGNode* getGNodeRef();				// get reference to proc GNode
 	const UsesSet& getUses();				// get set of variables proc uses
 	const ModifiesSet& getModifies();		// get set of variables proc modifies
 	const CallsSet& getCalls();				// get set of procs this proc calls
@@ -46,6 +48,7 @@ public:
 	// SETTERS
 	void setProcName(const string &name);
 	void setTNodeRef(TNode *ref);
+	void setGNodeRef(ProcGNode *ref);
 	void setUses(const unordered_set<string> &useSet);
 	void setModifies(const unordered_set<string> &modifiesSet);
 	void setCalls(const unordered_set<Procedure*> &callsSet);
@@ -55,6 +58,7 @@ private:
 	// PRIVATE ATTRIBUTES
 	string		procName;		// proc name
 	TNode		*TNodeRef;		// TNode reference
+	ProcGNode	*GNodeRef;		// GNode reference
 
 	// PRIVATE SETS
 	UsesSet			uses;
