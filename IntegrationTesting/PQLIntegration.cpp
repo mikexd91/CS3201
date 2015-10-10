@@ -26,6 +26,7 @@ using namespace std;
 using boost::unordered_set;
 
 void PQLIntegration::setUp() {
+
 	/* testing this source
 
 	procedure Pizza {
@@ -35,7 +36,7 @@ void PQLIntegration::setUp() {
 			drink = more * (beer - water);	//3
 			call YourMom;					//4
 		}
-	}	
+	}
 
 	procedure YourMom {
 		while nagging {						//5
@@ -46,6 +47,7 @@ void PQLIntegration::setUp() {
 		}
 		full = drink + eaten;				//9
 	}
+
 	*/
 
 //-------------  SET UP AST -------------//
@@ -153,6 +155,7 @@ void PQLIntegration::setUp() {
 	//Statement* stmt1 = new Statement();
 	//stmt1->setStmtNum(1);
 	//stmt1->setType(IF_STMT_);
+	//stmt1->setTNodeRef();
 	//stmt1->setCalls();
 	//string stmt1usesarr[] = {"eaten", "more"};
 	//stmt1->setUses(Statement::UsesSet(stmt1usesarr, stmt1usesarr+len));
@@ -173,33 +176,36 @@ void PQLIntegration::setUp() {
 	Statement* stmt1 = new Statement();
 	stmt1->setStmtNum(1);
 	stmt1->setType(NodeType::IF_STMT_);
+	stmt1->setTNodeRef(if1);
 	//stmt1->setCalls();
 	string stmt1UsesArr[] = {"eaten", "more", "beer", "water", "nagging", "i", "drink"};
-	stmt1->setUses(Statement::UsesSet(stmt1UsesArr, stmt1UsesArr+ 7));
+	stmt1->setUses(Statement::UsesSet(stmt1UsesArr, stmt1UsesArr+ sizeof(stmt1UsesArr)/sizeof(*stmt1UsesArr)));
 	string stmt1ModsArr[] = {"eaten", "drink", "nagging", "mom", "full"};
-	stmt1->setModifies(Statement::ModifiesSet(stmt1ModsArr, stmt1ModsArr+ 5));
+	stmt1->setModifies(Statement::ModifiesSet(stmt1ModsArr, stmt1ModsArr+ sizeof(stmt1ModsArr)/sizeof(*stmt1ModsArr)));
 	//stmt1->setFollowsAfter();
 	//stmt1->setFollowsBefore();
 	//stmt1->setFollowsStarAfter();
 	//stmt1->setFollowsStarBefore();
 	//stmt1->setParent();
 	int stmt1ChildrenArr[] = {2, 3, 4};
-	stmt1->setChildren(Statement::ChildrenSet(stmt1ChildrenArr, stmt1ChildrenArr+ 3));
+	stmt1->setChildren(Statement::ChildrenSet(stmt1ChildrenArr, stmt1ChildrenArr+ sizeof(stmt1ChildrenArr)/sizeof(*stmt1ChildrenArr)));
 	//stmt1->setParentStar();
 	int stmt1ChildrenStarArr[] = {2, 3, 4};
-	stmt1->setChildrenStar(Statement::ChildrenSet(stmt1ChildrenStarArr, stmt1ChildrenStarArr+ 3));
+	stmt1->setChildrenStar(Statement::ChildrenSet(stmt1ChildrenStarArr, stmt1ChildrenStarArr+ sizeof(stmt1ChildrenStarArr)/sizeof(*stmt1ChildrenStarArr)));
 	int stmt1NextArr[] = {2, 3};
-	stmt1->setNext(Statement::NextSet(stmt1NextArr, stmt1NextArr+ 2));
+	stmt1->setNext(Statement::NextSet(stmt1NextArr, stmt1NextArr+ sizeof(stmt1NextArr)/sizeof(*stmt1NextArr)));
 	//stmt1->setPrev();
+	stable->addStmt(stmt1);
 
 	Statement* stmt2 = new Statement();
-	stmt2->setStmtNum(1);
+	stmt2->setStmtNum(2);
 	stmt2->setType(NodeType::ASSIGN_STMT_);
+	stmt2->setTNodeRef(assg2);
 	//stmt2->setCalls();
 	string stmt2UsesArr[] = {"eaten"};
-	stmt2->setUses(Statement::UsesSet(stmt2UsesArr, stmt2UsesArr+ 1));
+	stmt2->setUses(Statement::UsesSet(stmt2UsesArr, stmt2UsesArr+ sizeof(stmt2UsesArr)/sizeof(*stmt2UsesArr)));
 	string stmt2ModsArr[] = {"eaten"};
-	stmt2->setModifies(Statement::ModifiesSet(stmt2ModsArr, stmt2ModsArr+ 1));
+	stmt2->setModifies(Statement::ModifiesSet(stmt2ModsArr, stmt2ModsArr+ sizeof(stmt2ModsArr)/sizeof(*stmt2ModsArr)));
 	//stmt2->setFollowsAfter();
 	//stmt2->setFollowsBefore();
 	//stmt2->setFollowsStarAfter();
@@ -208,12 +214,234 @@ void PQLIntegration::setUp() {
 	//int stmt2ChildrenArr[] = {2, 3, 4};
 	//stmt2->setChildren(Statement::ChildrenSet(stmt2ChildrenArr, stmt2ChildrenArr+ 3));
 	int stmt2ParentStarArr[] = {1};
-	stmt2->setParentStar(Statement::ParentStarSet(stmt2ParentStarArr, stmt2ParentStarArr+ 1));
+	stmt2->setParentStar(Statement::ParentStarSet(stmt2ParentStarArr, stmt2ParentStarArr+ sizeof(stmt2ParentStarArr)/sizeof(*stmt2ParentStarArr)));
 	//int stmt2ChildrenStarArr[] = {2, 3, 4};
 	//stmt2->setChildrenStar(Statement::ChildrenSet(stmt2ChildrenStarArr, stmt2ChildrenStarArr+ 3));
-	int stmt2NextArr[] = {2, 3};
-	stmt2->setNext(Statement::NextSet(stmt2NextArr, stmt2NextArr+ 2));
-	//stmt2->setPrev();
+	//int stmt2NextArr[] = {2, 3};
+	//stmt2->setNext(Statement::NextSet(stmt2NextArr, stmt2NextArr+ 2));
+	int stmt2PrevArr[] = {1};
+	stmt2->setPrev(Statement::PreviousSet(stmt2PrevArr, stmt2PrevArr+ sizeof(stmt2PrevArr)/sizeof(*stmt2PrevArr)));
+	stable->addStmt(stmt2);
+
+	cout << "aqwertyu" << endl;
+
+	Statement* stmt3 = new Statement();
+	stmt3->setStmtNum(3);
+	stmt3->setType(NodeType::ASSIGN_STMT_);
+	stmt3->setTNodeRef(assg3);
+	//stmt3->setCalls();
+	string stmt3UsesArr[] = {"more", "beer", "water"};
+	//cout << "asd " << sizeof(stmt3UsesArr)/sizeof(*stmt3UsesArr) << " dsa" << endl;
+	stmt3->setUses(Statement::UsesSet(stmt3UsesArr, stmt3UsesArr+ sizeof(stmt3UsesArr)/sizeof(*stmt3UsesArr)));
+	string stmt3ModsArr[] = {"drink"};
+	stmt3->setModifies(Statement::ModifiesSet(stmt3ModsArr, stmt3ModsArr+ sizeof(stmt3ModsArr)/sizeof(*stmt3ModsArr)));
+	stmt3->setFollowsAfter(4);
+	//stmt3->setFollowsBefore();
+	int stmt3FollowsStarAfterArr[] = {4};
+	stmt3->setFollowsStarAfter(Statement::FollowsStarAfterSet(stmt3FollowsStarAfterArr, stmt3FollowsStarAfterArr+ sizeof(stmt3FollowsStarAfterArr)/sizeof(*stmt3FollowsStarAfterArr)));
+	//stmt3->setFollowsStarBefore();
+	stmt3->setParent(1);
+	//int stmt3ChildrenArr[] = {2, 3, 4};
+	//stmt3->setChildren(Statement::ChildrenSet(stmt3ChildrenArr, stmt3ChildrenArr+ 3));
+	int stmt3ParentStarArr[] = {1};
+	stmt3->setParentStar(Statement::ParentStarSet(stmt3ParentStarArr, stmt3ParentStarArr+ sizeof(stmt3UsesArr)/sizeof(*stmt3UsesArr)));
+	//int stmt3ChildrenStarArr[] = {2, 3, 4};
+	//stmt3->setChildrenStar(Statement::ChildrenSet(stmt3ChildrenStarArr, stmt3ChildrenStarArr+ 3));
+	int stmt3NextArr[] = {4};
+	stmt3->setNext(Statement::NextSet(stmt3NextArr, stmt3NextArr+ sizeof(stmt3NextArr)/sizeof(*stmt3NextArr)));
+	int stmt3PrevArr[] = {1};
+	stmt3->setPrev(Statement::PreviousSet(stmt3PrevArr, stmt3PrevArr+ sizeof(stmt3UsesArr)/sizeof(*stmt3UsesArr)));
+	stable->addStmt(stmt3);
+
+	Statement* stmt4 = new Statement();
+	stmt4->setStmtNum(4);
+	stmt4->setType(NodeType::CALL_STMT_);
+	stmt4->setTNodeRef(call4);
+	stmt4->setCalls("YourMom");
+	string stmt4UsesArr[] = {"nagging", "i", "drink", "eaten"};
+	stmt4->setUses(Statement::UsesSet(stmt4UsesArr, stmt4UsesArr+ sizeof(stmt4UsesArr)/sizeof(*stmt4UsesArr)));
+	string stmt4ModsArr[] = {"nagging", "mom", "full"};
+	stmt4->setModifies(Statement::ModifiesSet(stmt4ModsArr, stmt4ModsArr+ sizeof(stmt4ModsArr)/sizeof(*stmt4ModsArr)));
+	//stmt4->setFollowsAfter();
+	stmt4->setFollowsBefore(3);
+	//stmt4->setFollowsStarAfter();
+	int stmt4FollowsStarBeforeArr[] = {3};
+	stmt4->setFollowsStarBefore(Statement::FollowsStarBeforeSet(stmt4FollowsStarBeforeArr, stmt4FollowsStarBeforeArr+ sizeof(stmt4FollowsStarBeforeArr)/sizeof(*stmt4FollowsStarBeforeArr)));
+	stmt4->setParent(1);
+	//int stmt4ChildrenArr[] = {2, 3, 4};
+	//stmt4->setChildren(Statement::ChildrenSet(stmt4ChildrenArr, stmt4ChildrenArr+ 3));
+	int stmt4ParentStarArr[] = {1};
+	stmt4->setParentStar(Statement::ParentStarSet(stmt4ParentStarArr, stmt4ParentStarArr+ sizeof(stmt4ParentStarArr)/sizeof(*stmt4ParentStarArr)));
+	//int stmt4ChildrenStarArr[] = {2, 3, 4};
+	//stmt4->setChildrenStar(Statement::ChildrenSet(stmt4ChildrenStarArr, stmt4ChildrenStarArr+ 3));
+	//int stmt4NextArr[] = {2, 3};
+	//stmt4->setNext(Statement::NextSet(stmt4NextArr, stmt4NextArr+ 2));
+	int stmt4PrevArr[] = {3};
+	stmt4->setPrev(Statement::PreviousSet(stmt4PrevArr, stmt4PrevArr+ sizeof(stmt4PrevArr)/sizeof(*stmt4PrevArr)));
+	stable->addStmt(stmt4);
+
+	cout << "L" << endl;
+
+	Statement* stmt5 = new Statement();
+	stmt5->setStmtNum(5);
+	stmt5->setType(NodeType::WHILE_STMT_);
+	stmt5->setTNodeRef(while5);
+	//stmt5->setCalls("YourMom");
+	string stmt5UsesArr[] = {"nagging", "i"};
+	stmt5->setUses(Statement::UsesSet(stmt5UsesArr, stmt5UsesArr+ sizeof(stmt5UsesArr)/sizeof(*stmt5UsesArr)));
+	string stmt5ModsArr[] = {"nagging", "mom"};
+	stmt5->setModifies(Statement::ModifiesSet(stmt5ModsArr, stmt5ModsArr+ sizeof(stmt5ModsArr)/sizeof(*stmt5ModsArr)));
+	stmt5->setFollowsAfter(9);
+	//stmt5->setFollowsBefore(3);
+	int stmt5FollowsStarAfterArr[] = {4};
+	stmt5->setFollowsStarAfter(Statement::FollowsStarAfterSet(stmt5FollowsStarAfterArr, stmt5FollowsStarAfterArr+ sizeof(stmt5FollowsStarAfterArr)/sizeof(*stmt5FollowsStarAfterArr)));
+	//int stmt5FollowsStarBeforeArr[] = {3};
+	//stmt5->setFollowsStarBefore(Statement::FollowsStarBeforeSet(stmt3FollowsStarBeforeArr, stmt3FollowsStarBeforeArr+ sizeof(stmt3FollowsStarBeforeArr)/sizeof(*stmt3FollowsStarBeforeArr)));
+	//stmt5->setParent(1);
+	int stmt5ChildrenArr[] = {6, 7};
+	stmt5->setChildren(Statement::ChildrenSet(stmt5ChildrenArr, stmt5ChildrenArr+ sizeof(stmt5ChildrenArr)/sizeof(*stmt5ChildrenArr)));
+	//int stmt5ParentStarArr[] = {1};
+	//stmt5->setParentStar(Statement::ParentStarSet(stmt5ParentStarArr, stmt5ParentStarArr+ sizeof(stmt5ParentStarArr)/sizeof(*stmt5ParentStarArr)));
+	int stmt5ChildrenStarArr[] = {6, 7, 8};
+	stmt5->setChildrenStar(Statement::ChildrenSet(stmt5ChildrenStarArr, stmt5ChildrenStarArr+ sizeof(stmt5ChildrenStarArr)/sizeof(*stmt5ChildrenStarArr)));
+	int stmt5NextArr[] = {6};
+	stmt5->setNext(Statement::NextSet(stmt5NextArr, stmt5NextArr+ sizeof(stmt5NextArr)/sizeof(*stmt5NextArr)));
+	//int stmt5PrevArr[] = {3};
+	//stmt5->setPrev(Statement::PreviousSet(stmt5PrevArr, stmt5PrevArr+ sizeof(stmt5PrevArr)/sizeof(*stmt5PrevArr)));
+	stable->addStmt(stmt5);
+
+	Statement* stmt6 = new Statement();
+	stmt6->setStmtNum(6);
+	stmt6->setType(NodeType::ASSIGN_STMT_);
+	stmt6->setTNodeRef(assg6);
+	//stmt6->setCalls("YourMom");
+	string stmt6UsesArr[] = {"nagging"};
+	stmt6->setUses(Statement::UsesSet(stmt6UsesArr, stmt6UsesArr+ sizeof(stmt6UsesArr)/sizeof(*stmt6UsesArr)));
+	string stmt6ModsArr[] = {"nagging"};
+	stmt6->setModifies(Statement::ModifiesSet(stmt6ModsArr, stmt6ModsArr+ sizeof(stmt6ModsArr)/sizeof(*stmt6ModsArr)));
+	stmt6->setFollowsAfter(7);
+	//stmt6->setFollowsBefore(3);
+	int stmt6FollowsStarAfterArr[] = {7};
+	stmt6->setFollowsStarAfter(Statement::FollowsStarAfterSet(stmt6FollowsStarAfterArr, stmt6FollowsStarAfterArr+ sizeof(stmt6FollowsStarAfterArr)/sizeof(*stmt6FollowsStarAfterArr)));
+	//int stmt6FollowsStarBeforeArr[] = {3};
+	//stmt6->setFollowsStarBefore(Statement::FollowsStarBeforeSet(stmt3FollowsStarBeforeArr, stmt3FollowsStarBeforeArr+ sizeof(stmt3FollowsStarBeforeArr)/sizeof(*stmt3FollowsStarBeforeArr)));
+	stmt6->setParent(5);
+	//int stmt6ChildrenArr[] = {6, 7};
+	//stmt6->setChildren(Statement::ChildrenSet(stmt6ChildrenArr, stmt6ChildrenArr+ sizeof(stmt6ChildrenArr)/sizeof(*stmt6ChildrenArr)));
+	int stmt6ParentStarArr[] = {5};
+	stmt6->setParentStar(Statement::ParentStarSet(stmt6ParentStarArr, stmt6ParentStarArr+ sizeof(stmt6ParentStarArr)/sizeof(*stmt6ParentStarArr)));
+	int stmt6ChildrenStarArr[] = {6, 7, 8};
+	stmt6->setChildrenStar(Statement::ChildrenSet(stmt6ChildrenStarArr, stmt6ChildrenStarArr+ sizeof(stmt6ChildrenStarArr)/sizeof(*stmt6ChildrenStarArr)));
+	int stmt6NextArr[] = {7, 9};
+	stmt6->setNext(Statement::NextSet(stmt6NextArr, stmt6NextArr+ sizeof(stmt6NextArr)/sizeof(*stmt6NextArr)));
+	int stmt6PrevArr[] = {7, 5};
+	stmt6->setPrev(Statement::PreviousSet(stmt6PrevArr, stmt6PrevArr+ sizeof(stmt6PrevArr)/sizeof(*stmt6PrevArr)));
+	stable->addStmt(stmt6);
+
+	Statement* stmt7 = new Statement();
+	stmt7->setStmtNum(7);
+	stmt7->setType(NodeType::WHILE_STMT_);
+	stmt7->setTNodeRef(while7);
+	//stmt7->setCalls("YourMom");
+	string stmt7UsesArr[] = {"i", "nagging"};
+	stmt7->setUses(Statement::UsesSet(stmt7UsesArr, stmt7UsesArr+ sizeof(stmt7UsesArr)/sizeof(*stmt7UsesArr)));
+	string stmt7ModsArr[] = {"mom"};
+	stmt7->setModifies(Statement::ModifiesSet(stmt7ModsArr, stmt7ModsArr+ sizeof(stmt7ModsArr)/sizeof(*stmt7ModsArr)));
+	//stmt7->setFollowsAfter(7);
+	stmt7->setFollowsBefore(6);
+	//int stmt7FollowsStarAfterArr[] = {7};
+	//stmt3->setFollowsStarAfter(Statement::FollowsStarAfterSet(stmt7FollowsStarAfterArr, stmt7FollowsStarAfterArr+ sizeof(stmt7FollowsStarAfterArr)/sizeof(*stmt7FollowsStarAfterArr)));
+	int stmt7FollowsStarBeforeArr[] = {6};
+	stmt7->setFollowsStarBefore(Statement::FollowsStarBeforeSet(stmt7FollowsStarBeforeArr, stmt7FollowsStarBeforeArr+ sizeof(stmt7FollowsStarBeforeArr)/sizeof(*stmt7FollowsStarBeforeArr)));
+	stmt7->setParent(5);
+	int stmt7ChildrenArr[] = {8};
+	stmt7->setChildren(Statement::ChildrenSet(stmt7ChildrenArr, stmt7ChildrenArr+ sizeof(stmt7ChildrenArr)/sizeof(*stmt7ChildrenArr)));
+	int stmt7ParentStarArr[] = {5};
+	stmt7->setParentStar(Statement::ParentStarSet(stmt7ParentStarArr, stmt7ParentStarArr+ sizeof(stmt7ParentStarArr)/sizeof(*stmt7ParentStarArr)));
+	int stmt7ChildrenStarArr[] = {8};
+	stmt7->setChildrenStar(Statement::ChildrenSet(stmt7ChildrenStarArr, stmt7ChildrenStarArr+ sizeof(stmt7ChildrenStarArr)/sizeof(*stmt7ChildrenStarArr)));
+	int stmt7NextArr[] = {6, 8};
+	stmt7->setNext(Statement::NextSet(stmt7NextArr, stmt7NextArr+ sizeof(stmt7NextArr)/sizeof(*stmt7NextArr)));
+	int stmt7PrevArr[] = {6, 8};
+	stmt7->setPrev(Statement::PreviousSet(stmt7PrevArr, stmt7PrevArr+ sizeof(stmt7PrevArr)/sizeof(*stmt7PrevArr)));
+	stable->addStmt(stmt7);
+	
+	cout << "sdfghjk" << endl;
+
+	Statement* stmt8 = new Statement();
+	stmt8->setStmtNum(8);
+	stmt8->setType(NodeType::ASSIGN_STMT_);
+	stmt8->setTNodeRef(assg8);
+	//stmt8->setCalls("YourMom");
+	string stmt8UsesArr[] = {"nagging"};
+	stmt8->setUses(Statement::UsesSet(stmt8UsesArr, stmt8UsesArr+ sizeof(stmt8UsesArr)/sizeof(*stmt8UsesArr)));
+	string stmt8ModsArr[] = {"mom"};
+	stmt8->setModifies(Statement::ModifiesSet(stmt8ModsArr, stmt8ModsArr+ sizeof(stmt8ModsArr)/sizeof(*stmt8ModsArr)));
+	//stmt8->setFollowsAfter(7);
+	//stmt8->setFollowsBefore(6);
+	//int stmt8FollowsStarAfterArr[] = {7};
+	//stmt3->setFollowsStarAfter(Statement::FollowsStarAfterSet(stmt8FollowsStarAfterArr, stmt8FollowsStarAfterArr+ sizeof(stmt8FollowsStarAfterArr)/sizeof(*stmt8FollowsStarAfterArr)));
+	//int stmt8FollowsStarBeforeArr[] = {6};
+	//stmt8->setFollowsStarBefore(Statement::FollowsStarBeforeSet(stmt8FollowsStarBeforeArr, stmt8FollowsStarBeforeArr+ sizeof(stmt8FollowsStarBeforeArr)/sizeof(*stmt8FollowsStarBeforeArr)));
+	stmt8->setParent(7);
+	//int stmt8ChildrenArr[] = {8};
+	//stmt8->setChildren(Statement::ChildrenSet(stmt8ChildrenArr, stmt8ChildrenArr+ sizeof(stmt8ChildrenArr)/sizeof(*stmt8ChildrenArr)));
+	int stmt8ParentStarArr[] = {5, 7};
+	stmt8->setParentStar(Statement::ParentStarSet(stmt8ParentStarArr, stmt8ParentStarArr+ sizeof(stmt8ParentStarArr)/sizeof(*stmt8ParentStarArr)));
+	//int stmt8ChildrenStarArr[] = {8};
+	//stmt8->setChildrenStar(Statement::ChildrenSet(stmt8ChildrenStarArr, stmt8ChildrenStarArr+ sizeof(stmt8ChildrenStarArr)/sizeof(*stmt8ChildrenStarArr)));
+	int stmt8NextArr[] = {7};
+	stmt8->setNext(Statement::NextSet(stmt8NextArr, stmt8NextArr+ sizeof(stmt8NextArr)/sizeof(*stmt8NextArr)));
+	int stmt8PrevArr[] = {7};
+	stmt8->setPrev(Statement::PreviousSet(stmt8PrevArr, stmt8PrevArr+ sizeof(stmt8PrevArr)/sizeof(*stmt8PrevArr)));
+	stable->addStmt(stmt8);
+
+	Statement* stmt9 = new Statement();
+	stmt9->setStmtNum(9);
+	stmt9->setType(NodeType::ASSIGN_STMT_);
+	stmt9->setTNodeRef(assg9);
+	//stmt9->setCalls("YourMom");
+	string stmt9UsesArr[] = {"drink", "eat"};
+	stmt9->setUses(Statement::UsesSet(stmt9UsesArr, stmt9UsesArr+ sizeof(stmt9UsesArr)/sizeof(*stmt9UsesArr)));
+	string stmt9ModsArr[] = {"full"};
+	stmt9->setModifies(Statement::ModifiesSet(stmt9ModsArr, stmt9ModsArr+ sizeof(stmt9ModsArr)/sizeof(*stmt9ModsArr)));
+	//stmt9->setFollowsAfter(7);
+	stmt9->setFollowsBefore(5);
+	//int stmt9FollowsStarAfterArr[] = {7};
+	//stmt3->setFollowsStarAfter(Statement::FollowsStarAfterSet(stmt9FollowsStarAfterArr, stmt9FollowsStarAfterArr+ sizeof(stmt9FollowsStarAfterArr)/sizeof(*stmt9FollowsStarAfterArr)));
+	int stmt9FollowsStarBeforeArr[] = {5};
+	stmt9->setFollowsStarBefore(Statement::FollowsStarBeforeSet(stmt9FollowsStarBeforeArr, stmt9FollowsStarBeforeArr+ sizeof(stmt9FollowsStarBeforeArr)/sizeof(*stmt9FollowsStarBeforeArr)));
+	stmt9->setParent(7);
+	//int stmt9ChildrenArr[] = {8};
+	//stmt9->setChildren(Statement::ChildrenSet(stmt9ChildrenArr, stmt9ChildrenArr+ sizeof(stmt9ChildrenArr)/sizeof(*stmt9ChildrenArr)));
+	//int stmt9ParentStarArr[] = {5, 7};
+	//stmt9->setParentStar(Statement::ParentStarSet(stmt9ParentStarArr, stmt9ParentStarArr+ sizeof(stmt9ParentStarArr)/sizeof(*stmt9ParentStarArr)));
+	//int stmt9ChildrenStarArr[] = {8};
+	//stmt9->setChildrenStar(Statement::ChildrenSet(stmt9ChildrenStarArr, stmt9ChildrenStarArr+ sizeof(stmt9ChildrenStarArr)/sizeof(*stmt9ChildrenStarArr)));
+	//int stmt9NextArr[] = {7};
+	//stmt9->setNext(Statement::NextSet(stmt9NextArr, stmt9NextArr+ sizeof(stmt9NextArr)/sizeof(*stmt9NextArr)));
+	int stmt9PrevArr[] = {6};
+	stmt9->setPrev(Statement::PreviousSet(stmt9PrevArr, stmt9PrevArr+ sizeof(stmt9PrevArr)/sizeof(*stmt9PrevArr)));
+	stable->addStmt(stmt9);
+//-------------  END OF STMT ------------//
+
+
+//-------------  SET UP PROC ------------//
+	ProcTable* ptable = ProcTable::getInstance();
+
+//-------------  END OF PROC ------------//
+
+
+//-------------  SET UP VAR -------------//
+	VarTable* vtable = VarTable::getInstance();
+
+//-------------  END OF VAR -------------//
+
+
+//-------------  SET UP CONST -----------//
+	ConstTable* ctable = ConstTable::getInstance();
+
+//-------------  END OF CONST -----------//
 }
 
 void PQLIntegration::tearDown() {
