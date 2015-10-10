@@ -9,7 +9,7 @@
 #include "FollowsStarClause.h"
 #include "ModifiesClause.h"
 #include "ParentClause.h"
-//#include "ParentStarClause.h"
+#include "ParentStarClause.h"
 #include "PatternClause.h"
 #include "UsesClause.h"
 #include "CallsClause.h"
@@ -19,6 +19,7 @@
 #include "PatternClauseBuilder.h"
 #include "ExpressionParser.h"
 #include "WithClauseRef.h"
+#include "WithClauseBuilder.h"
 #include "WithClause.h"
 #include "boost/unordered_map.hpp"
 #include <queue>
@@ -211,7 +212,7 @@ bool QueryParser::containsClauseType(string s){
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
 	clauseVector.push_back(stringconst::TYPE_USES);
 	clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
-	//clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
+	clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
 	return containsAny(s, clauseVector);
 }
 
@@ -231,7 +232,7 @@ string QueryParser::getClauseString(string s){
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
 	clauseVector.push_back(stringconst::TYPE_USES);
 	clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
-	//clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
+	clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
 	for (size_t i=0; i<clauseVector.size(); i++){
 		string current = clauseVector.at(i);
 		if (contains(s, current)){
@@ -241,19 +242,26 @@ string QueryParser::getClauseString(string s){
 	return stringconst::STRING_EMPTY;
 }
 
-SuchThatClauseBuilder* QueryParser::createCorrectClause(string type){
-	if (type == stringconst::TYPE_FOLLOWS_STAR){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(FOLLOWSSTAR_);
-		return clause;		
-	/*} else if (type == stringconst::TYPE_PARENT_STAR){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(PARENTSTAR_);
-		return clause;*/
-	} else if (type == stringconst::TYPE_FOLLOWS){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(FOLLOWS_);
-		return clause;		
+SuchThatClauseBuilder* QueryParser::createCorrectClause(string type, queue<string> line){
+	string isStar = line.front();
+	if (type == stringconst::TYPE_FOLLOWS){
+		if (isStar == "*"){
+			Utils::getWordAndPop(line);
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+			return clause;
+		} else {
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(FOLLOWS_);
+			return clause;
+		}
 	} else if (type == stringconst::TYPE_PARENT){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(PARENT_);
-		return clause;			
+		if (isStar == "*"){
+			Utils::getWordAndPop(line);
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(PARENTSTAR_);
+			return clause;
+		} else {
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(PARENT_);
+			return clause;
+		}
 	} else if (type == stringconst::TYPE_MODIFIES){
 		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(MODIFIES_);
 		return clause;		
@@ -261,25 +269,32 @@ SuchThatClauseBuilder* QueryParser::createCorrectClause(string type){
 		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(USES_);
 		return clause;
 	} else if (type == stringconst::TYPE_CALLS){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(CALLS_);
-		return clause;
-	/*} else if (type == stringconst::TYPE_CALLS_STAR){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(CALLSSTAR_);
-		return clause;
-	} else if (type == stringconst::TYPE_NEXT){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXT_);
-		return clause;
-	} else if (type == stringconst::TYPE_AFFECTS){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTS_);
-		return clause;
-	} else if (type == stringconst::TYPE_NEXT_STAR){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXTSTAR_);
-		return clause;
-	} else if (type == stringconst::TYPE_AFFECTS_STAR){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTSSTAR_);
-		return clause;
-	}
-	*/
+		if (isStar == "*"){
+			Utils::getWordAndPop(line);
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(CALLSSTAR_);
+			return clause;
+		} else {
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(CALLS_);
+			return clause;
+		}
+	//} else if (type == stringconst::TYPE_NEXT){
+	//	if (isStar == "*"){
+	//		Utils::getWordAndPop(line);
+	//		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXTSTAR_);
+	//		return clause;
+	//	} else {
+	//		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXT_);
+	//		return clause;
+	//	}
+	//} else if (type == stringconst::TYPE_AFFECTS){
+	//	if (isStar == "*"){
+	//		Utils::getWordAndPop(line);
+	//		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFETCSSTAR_);
+	//		return clause;
+	//	} else {
+	//		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTS_);
+	//		return clause;
+	//	}
 	} else {
 		throw UnexpectedClauseException();
 	}
@@ -392,7 +407,7 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 
 	string clauseType = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
-	SuchThatClauseBuilder* newClause = createCorrectClause(clauseType);
+	SuchThatClauseBuilder* newClause = createCorrectClause(clauseType, line);
 
 	string openParen = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
@@ -721,65 +736,55 @@ void QueryParser::parsePatternIf(Query* query, queue<string> line, string synony
 	Clause* newClause = (Clause*)ifBuilder->build();
 	query->addClause(newClause);
 }
-//TODO : check how to build with
+
 void QueryParser::parseWith(Query* query, queue<string> line){
-	
-	/*WithClause with;
-	WithClauseRef leftEntity;
-	WithClauseRef rightEntity;
 
-	string leftVal = Utils::getWordAndPop(line);
-	unexpectedEndCheck(line);
-	leftEntity.setEntity(leftVal);
+	unordered_map<string, string> decList = query->getDeclarationList();
 
-	string firstOperand = Utils::getWordAndPop(line);
-	unexpectedEndCheck(line);
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	string leftEntityValue = "";
+	string leftEntityCond = "";
+	string rightEntityValue = "";
+	string rightEntityCond = "";
+	string nextToken = "";
 
-	if (firstOperand == "."){
-
-	string leftAttrCond = Utils::getWordAndPop(line);
-	unexpectedEndCheck(line);
-	leftEntity.setAttr(leftAttrCond);
-
-	string equalOperand = Utils::getWordAndPop(line);
-	unexpectedEndCheck(line);
-	if (equalOperand != "="){
-	throw InvalidSyntaxException();
-	}
-
-	string rightVal = Utils::getWordAndPop(line);
-	rightEntity.setEntity(rightVal);
-
-	if (!line.empty()){
-
-	string dotOperand = Utils::getWordAndPop(line);
+	leftEntityValue = Utils::getWordAndPop(line);
 	unexpectedEndCheck(line);
 
-	string rightAttrCond = Utils::getWordAndPop(line);
-	rightEntity.setAttr(rightAttrCond);
-	}
-
-	} else if (firstOperand == "="){
-
-	string rightVal = Utils::getWordAndPop(line);
-	rightEntity.setEntity(rightVal);
-
-	if (!line.empty()){
-
-	string dotOperand = Utils::getWordAndPop(line);
-	unexpectedEndCheck(line);
-
-	string rightAttrCond = Utils::getWordAndPop(line);
-	rightEntity.setAttr(rightAttrCond);
-	}
-
+	if (Utils::isValidConstant(leftEntityValue)){
+		withBuilder->setEntity(1, leftEntityValue);
+		withBuilder->setRefType(1, INTEGER_);
+		withBuilder->setAttrType(1, NULLATTR_);
+	} else if (leftEntityValue == "\""){
+		leftEntityValue = Utils::getWordAndPop(line);
+		nextToken = line.front();
+		if (nextToken != "\""){
+			cout << "expected \", got " << nextToken;
+			throw InvalidSyntaxException();
+		} else {
+			Utils::getWordAndPop(line);
+		}
+		withBuilder->setEntity(1, leftEntityValue);
+		withBuilder->setRefType(1, IDENT_);
+		withBuilder->setAttrType(1, NULLATTR_);
+	} else if (decList.find(leftEntityValue) == decList.end()){
+		cout << "missing declaration " << leftEntityValue;
+		throw MissingDeclarationException();
 	} else {
-	throw InvalidSyntaxException();
+		string leftDeclarationType = decList.at(leftEntityValue);
+		nextToken = line.front();
+		if (nextToken == "="){
+			withBuilder->setEntity(1, leftEntityValue);
+			withBuilder->setRefType(1, SYNONYM_);
+			withBuilder->setAttrType(1, NULLATTR_);
+		} else if (nextToken == "."){
+			Utils::getWordAndPop(line);
+			unexpectedEndCheck(line);
+			leftEntityCond = Utils::getWordAndPop(line);
+
+		}
 	}
 
-	with.setLeftRef(leftEntity);
-	with.setRightRef(rightEntity);*/
-	//query->addClause(with);
 }
 
 Query QueryParser::parseQuery(string input){

@@ -32,7 +32,7 @@ public:
 	static bool containsClauseType(string);
 	static bool containsKeyword(string);
 	static string getClauseString(string);
-	static SuchThatClauseBuilder* createCorrectClause(string);
+	static SuchThatClauseBuilder* createCorrectClause(string, queue<string>);
 	static vector<string> splitByDelims(vector<string>, string);
 	static void unexpectedEndCheck(queue<string>);
 
