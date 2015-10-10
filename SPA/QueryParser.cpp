@@ -741,51 +741,51 @@ void QueryParser::parsePatternIf(Query* query, queue<string> line, string synony
 
 void QueryParser::parseWith(Query* query, queue<string> line){
 
-	unordered_map<string, string> decList = query->getDeclarationList();
+	//unordered_map<string, string> decList = query->getDeclarationList();
 
-	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
-	string leftEntityValue = "";
-	string leftEntityCond = "";
-	string rightEntityValue = "";
-	string rightEntityCond = "";
-	string nextToken = "";
+	//WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	//string leftEntityValue = "";
+	//string leftEntityCond = "";
+	//string rightEntityValue = "";
+	//string rightEntityCond = "";
+	//string nextToken = "";
 
-	leftEntityValue = Utils::getWordAndPop(line);
-	unexpectedEndCheck(line);
+	//leftEntityValue = Utils::getWordAndPop(line);
+	//unexpectedEndCheck(line);
 
-	if (Utils::isValidConstant(leftEntityValue)){
-		withBuilder->setEntity(1, leftEntityValue);
-		withBuilder->setRefType(1, INTEGER_);
-		withBuilder->setAttrType(1, NULLATTR_);
-	} else if (leftEntityValue == "\""){
-		leftEntityValue = Utils::getWordAndPop(line);
-		nextToken = line.front();
-		if (nextToken != "\""){
-			cout << "expected \", got " << nextToken;
-			throw InvalidSyntaxException();
-		} else {
-			Utils::getWordAndPop(line);
-		}
-		withBuilder->setEntity(1, leftEntityValue);
-		withBuilder->setRefType(1, IDENT_);
-		withBuilder->setAttrType(1, NULLATTR_);
-	} else if (decList.find(leftEntityValue) == decList.end()){
-		cout << "missing declaration " << leftEntityValue;
-		throw MissingDeclarationException();
-	} else {
-		string leftDeclarationType = decList.at(leftEntityValue);
-		nextToken = line.front();
-		if (nextToken == "="){
-			withBuilder->setEntity(1, leftEntityValue);
-			withBuilder->setRefType(1, SYNONYM_);
-			withBuilder->setAttrType(1, NULLATTR_);
-		} else if (nextToken == "."){
-			Utils::getWordAndPop(line);
-			unexpectedEndCheck(line);
-			leftEntityCond = Utils::getWordAndPop(line);
+	//if (Utils::isValidConstant(leftEntityValue)){
+	//	withBuilder->setEntity(1, leftEntityValue);
+	//	withBuilder->setRefType(1, INTEGER_);
+	//	withBuilder->setAttrType(1, NULLATTR_);
+	//} else if (leftEntityValue == "\""){
+	//	leftEntityValue = Utils::getWordAndPop(line);
+	//	nextToken = line.front();
+	//	if (nextToken != "\""){
+	//		cout << "expected \", got " << nextToken;
+	//		throw InvalidSyntaxException();
+	//	} else {
+	//		Utils::getWordAndPop(line);
+	//	}
+	//	withBuilder->setEntity(1, leftEntityValue);
+	//	withBuilder->setRefType(1, IDENT_);
+	//	withBuilder->setAttrType(1, NULLATTR_);
+	//} else if (decList.find(leftEntityValue) == decList.end()){
+	//	cout << "missing declaration " << leftEntityValue;
+	//	throw MissingDeclarationException();
+	//} else {
+	//	string leftDeclarationType = decList.at(leftEntityValue);
+	//	nextToken = line.front();
+	//	if (nextToken == "="){
+	//		withBuilder->setEntity(1, leftEntityValue);
+	//		withBuilder->setRefType(1, SYNONYM_);
+	//		withBuilder->setAttrType(1, NULLATTR_);
+	//	} else if (nextToken == "."){
+	//		Utils::getWordAndPop(line);
+	//		unexpectedEndCheck(line);
+	//		leftEntityCond = Utils::getWordAndPop(line);
 
-		}
-	}
+	//	}
+	//}
 
 }
 
