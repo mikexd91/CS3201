@@ -3,7 +3,7 @@
 #include <set>
 #include "TNode.h"
 #include "GNode.h"
-//#include "GNode.h"
+#include "Procedure.h"
 #include <boost/unordered_set.hpp>
 
 using boost::unordered_set;
@@ -68,10 +68,11 @@ public:
 	const ChildrenStarSet& getChildrenStar();							// get set of children star stmts of this stmt
 	const ParentStarSet& getParentStar();								// get set of parent star stmts of this stmt
 	int getParent();													// get parent of this stmt
-	const NextSet& getNext();													// get stmt that is next of this stmt
-	const PreviousSet& getPrev();														// get stmt whose next is this stmt
+	const NextSet& getNext();											// get stmt that is next of this stmt
+	const PreviousSet& getPrev();										// get stmt whose next is this stmt
 	const FollowsStarBeforeSet& Statement::getFollowsStarBefore();		// get set of follows star stmt before this stmt
 	const FollowsStarAfterSet& Statement::getFollowsStarAfter();		// get set of follows star stmt after this stmt
+	Procedure* getProc();
 
 	// SETTERS
 	void setType(NodeType nodeType);
@@ -91,6 +92,7 @@ public:
 	void setChildrenStar(const ChildrenStarSet&);
 	void setFollowsStarBefore(const FollowsStarBeforeSet&);
 	void setFollowsStarAfter(const FollowsStarAfterSet&);
+	void setProcedure(Procedure*);
 
 private:
 	// PRIVATE ATTRIBUTES
@@ -113,5 +115,5 @@ private:
 	ParentStarSet   parentStar;
 	FollowsStarBeforeSet followsStarBefore;
 	FollowsStarAfterSet followsStarAfter;
-
+	Procedure*		proc;
 };
