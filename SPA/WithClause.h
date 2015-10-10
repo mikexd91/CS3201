@@ -2,6 +2,11 @@
 
 #include "Clause.h"
 #include "Result.h"
+#include "ProcTable.h"
+#include "VarTable.h"
+#include "ConstTable.h"
+#include "StmtTable.h"
+#include "Statement.h"
 #include "boost\unordered_set.hpp"
 #include "WithClauseRef.h"
 
@@ -16,6 +21,8 @@ public:
 	~WithClause(void);
 
 	bool isValid(void);
+
+	ClauseType getClauseType();
 
 	//access
 	WithClauseRef getLeftRef();

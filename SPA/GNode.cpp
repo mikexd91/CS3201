@@ -1,63 +1,63 @@
-#include "CNode.h"
+#include "GNode.h"
 
 using namespace std;
 
-CNode::CNode(CType type) {
+GNode::GNode(GType type) {
 	this->nodeType = type;
 	this->startStmt = 0;
 	this->endStmt = 0;
 	this->nodeName = "";
 }
 
-CNode::~CNode() {
+GNode::~GNode() {
 
 }
 
-CType CNode::getNodeType() {
+GType GNode::getNodeType() {
 	return this->nodeType;
 }
 
-string CNode::getName() {
+string GNode::getName() {
 	return this->nodeName;
 }
 
-int CNode::getStartStmt() {
+int GNode::getStartStmt() {
 	return this->startStmt;
 }
 
-int CNode::getEndStmt() {
+int GNode::getEndStmt() {
 	return this->endStmt;
 }
 
-vector<CNode*>& CNode::getParents() {
+vector<GNode*>& GNode::getParents() {
 	return this->parents;
 }
 
-vector<CNode*>& CNode::getChildren() {
+vector<GNode*>& GNode::getChildren() {
 	return this->children;
 }
 
-void CNode::setNodeType(CType nodeType) {
+void GNode::setNodeType(GType nodeType) {
 	this->nodeType = nodeType;
 }
 
-void CNode::setName(string name) {
+void GNode::setName(string name) {
 	this->nodeName = name;
 }
 
-void CNode::setStartStmt(int start) {
+void GNode::setStartStmt(int start) {
 	this->startStmt = start;
 }
 
-void CNode::setEndStmt(int end) {
+void GNode::setEndStmt(int end) {
 	this->endStmt = end;
 }
 
-void CNode::addChild(CNode* child) {
+void GNode::addChild(GNode* child) {
 	this->children.push_back(child);
 }
 
-void CNode::setFirstChild(CNode* child) {
+void GNode::setFirstChild(GNode* child) {
 	if(this->children.size() < 1) {
 		this->children.push_back(child);
 	} else {
@@ -65,7 +65,7 @@ void CNode::setFirstChild(CNode* child) {
 	}
 }
 
-void CNode::setSecondChild(CNode* child) {
+void GNode::setSecondChild(GNode* child) {
 	if(this->children.size() < 1) {
 		this->children.push_back(NULL);
 		this->children.push_back(child);
@@ -76,7 +76,7 @@ void CNode::setSecondChild(CNode* child) {
 	}
 }
 
-void CNode::setFirstParent(CNode* parent) {
+void GNode::setFirstParent(GNode* parent) {
 	if(this->parents.size() < 1) {
 		this->parents.push_back(parent);
 	} else {
@@ -84,7 +84,7 @@ void CNode::setFirstParent(CNode* parent) {
 	}
 }
 
-void CNode::setSecondParent(CNode* parent) {
+void GNode::setSecondParent(GNode* parent) {
 	if(this->parents.size() < 1) {
 		this->parents.push_back(NULL);
 		this->parents.push_back(parent);
@@ -95,7 +95,7 @@ void CNode::setSecondParent(CNode* parent) {
 	}
 }
 
-bool CNode::isNodeType(CType type) {
+bool GNode::isNodeType(GType type) {
 	if(this->nodeType == type) {
 		return true;
 	}

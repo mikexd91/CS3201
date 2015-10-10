@@ -13,7 +13,7 @@ enum RefType {
 enum AttrType {
 	PROCNAME_,
 	VARNAME_,
-	VALUE_,
+	CONSTVALUE_,
 	STMTNUM_
 };
 

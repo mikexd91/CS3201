@@ -30,7 +30,7 @@ public:
 	Clause(void);
 	~Clause(void);
 
-	ClauseType getClauseType();
+	virtual ClauseType getClauseType()=0;
 	
 	virtual bool evaluate(Result*)=0;
 

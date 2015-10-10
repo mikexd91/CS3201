@@ -42,6 +42,7 @@ public:
 	static void parsePattern(Query*, queue<string>);
 	static void parsePatternOther(Query*, queue<string>, string);
 	static void parsePatternIf(Query*, queue<string>, string);
+	static void parseWith(Query*, queue<string>);
 
 	static Query parseQuery(string);
 };

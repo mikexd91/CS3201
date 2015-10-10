@@ -323,6 +323,35 @@ void ParentClauseTest::testParentSynFixedPass() {
 	CPPUNIT_ASSERT(s.find("3") != s.end());
 }
 
+void ParentClauseTest::testParentIfFixedPass() {
+	Result res = Result();/*
+	ParentClause* m1 = new ParentClause();
+	m1->setFirstArg("s");
+	m1->setFirstArgFixed(false);
+	m1->setFirstArgType(ARG_STATEMENT);
+	m1->setSecondArg("4");
+	m1->setSecondArgFixed(true);
+	m1->setSecondArgType(ARG_STATEMENT);*/
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "s");
+	parentBuilder->setArgFixed(1, false);
+	parentBuilder->setArgType(1, ARG_IF);
+	//parentBuilder->setArg(2, "4");
+	parentBuilder->setArg(2, "8");
+	parentBuilder->setArgFixed(2, true);
+	parentBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* m1 = (ParentClause*) parentBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+	CPPUNIT_ASSERT(res.getResultTableSize() == 1);
+	CPPUNIT_ASSERT(res.isSynPresent("s"));
+	unordered_set<string> s = res.getSyn("s");
+	CPPUNIT_ASSERT(s.size() == 1);
+	CPPUNIT_ASSERT(s.find("6") != s.end());
+}
+
 void ParentClauseTest::testParentSynFixedFail() {
 	Result res = Result();/*
 	ParentClause* m1 = new ParentClause();
@@ -698,11 +727,6 @@ void ParentClauseTest::testParentCallPass() {
 	unordered_set<string> syns;
 	syns.insert("s1");
 	syns.insert("c");
-	/**
-	Result::ResultTable pairTable = res.selectMultiSyn(syns);
-	Result::Row row = *(*pairTable.begin());
-	CPPUNIT_ASSERT(row["s1"] == "6" && row["c"] == "8");
-	**/
 }
 
 void ParentClauseTest::testParentSameSyn() {

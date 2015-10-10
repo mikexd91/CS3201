@@ -1,13 +1,13 @@
 #pragma once
 
-#include "CNode.h"
+#include "GNode.h"
 
-class DummyCNode : public CNode {
+class DummyGNode : public GNode {
 
 public:
 
 	// constructor
-	DummyCNode();
+	DummyGNode();
 
 	// getters
 	// dummy nodes exist for connecting the if and else branches of if
