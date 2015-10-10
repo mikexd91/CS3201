@@ -11,12 +11,12 @@ DesignExtractor::DesignExtractor() {
 }
 
 void DesignExtractor::executeSecondPass() {
-	checkCircularCall();
+	checkCyclicCalls();
 	populateFollowStar();
 	populateParentStar();
 }
 
-void DesignExtractor::checkCircularCall(){
+void DesignExtractor::checkCyclicCalls(){
 	ProcTable* procTable = ProcTable::getInstance();
 	unordered_set<Procedure*> procs = procTable->getAllProcs();
 	//for each procedure, check whether there is a cyclic call
