@@ -140,10 +140,11 @@ bool ParentStarClause::isParentStar(string stmt1, string stmt2) {
 Statement::ParentStarSet ParentStarClause::getParentStar(int stmtNum, string argType) {
 	NodeType nodeType = Utils::convertArgTypeToNodeType(argType);
 	Statement* stmtObj = stmtTable->getStmtObj(stmtNum);
-	if (stmtObj == nullptr || (nodeType != NULL_ && stmtObj->getType() != nodeType)) {
+	if (stmtObj == nullptr) {
 		return Statement::ParentStarSet();
 	} else {
-		 return stmtObj->getParentStar();
+		 Statement::ParentStarSet parentSet = stmtObj->getParentStar();
+		 return Utils::filterStatements(parentSet, nodeType);
 	}
 }
 

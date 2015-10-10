@@ -8,6 +8,7 @@ class ParentClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testParentFixedFixedPass );
 	CPPUNIT_TEST( testParentFixedFixedFail );
 	CPPUNIT_TEST( testParentSynFixedPass );
+	CPPUNIT_TEST( testParentIfFixedPass );
 	CPPUNIT_TEST( testParentSynFixedFail );
 	CPPUNIT_TEST( testParentFixedSynPass );
 	CPPUNIT_TEST( testParentFixedSynPassWithWhile );
@@ -30,6 +31,7 @@ public:
 	void testParentFixedFixedPass();
 	void testParentFixedFixedFail();
 	void testParentSynFixedPass();
+	void testParentIfFixedPass();
 	void testParentSynFixedFail();
 	void testParentFixedSynPass();
 	void testParentFixedSynPassWithWhile();
