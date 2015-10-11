@@ -133,7 +133,7 @@ unordered_set<string> FollowsStarClause::getAllS1WithS2Fixed(string s2) {
 
 	for (auto iter = setToEvaluate.begin(); iter != setToEvaluate.end(); ++iter) {
 		int beforeStmt = *iter;
-		if(isNeededArgType(firstArgType, beforeStmt) && beforeStmt != -1) {
+		if(beforeStmt != -1 && isNeededArgType(firstArgType, beforeStmt)) {
 			res.insert(lexical_cast<string>(beforeStmt));
 		}
 	}

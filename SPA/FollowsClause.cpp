@@ -99,7 +99,7 @@ unordered_set<string> FollowsClause::getAllS2WithS1Fixed(string s1){
 	unordered_set<string> results;
 	Statement* stmt = stmtTable->getStmtObj(atoi(s1.c_str()));
 	int afterStmt = stmt->getFollowsAfter();
-	if (isNeededArgType(secondArgType, afterStmt) && afterStmt != -1) {
+	if (afterStmt != -1 && isNeededArgType(secondArgType, afterStmt)) {
 		results.insert(lexical_cast<string>(afterStmt));
 	}
 	return results;
@@ -138,7 +138,7 @@ unordered_set<string> FollowsClause::getAllS1WithS2Fixed(string s2){
 	unordered_set<string> results;
 	Statement* stmt = stmtTable->getStmtObj(atoi(s2.c_str()));
 	int beforeStmt = stmt->getFollowsBefore();
-	if (isNeededArgType(firstArgType, beforeStmt) && beforeStmt != -1) {
+	if (beforeStmt != -1 && isNeededArgType(firstArgType, beforeStmt)) {
 		results.insert(lexical_cast<string>(beforeStmt));
 	}
 	return results;
