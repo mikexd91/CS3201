@@ -446,6 +446,47 @@ void FollowsStarClauseTest::testFollowsStarSynFixedPass() {
 	CPPUNIT_ASSERT(result.getResultTableSize() == 2);
 	CPPUNIT_ASSERT(result.isSynPresent("a"));
 }
+
+void FollowsStarClauseTest::testFollowsStarSynFixedPassWithWhile() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "w");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_WHILE);
+	followsStarBuilder->setArg(2, "9");
+	followsStarBuilder->setArgFixed(2, true);
+	followsStarBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+	CPPUNIT_ASSERT(result.isSynPresent("w"));
+}
+
+void FollowsStarClauseTest::testFollowsStarSynFixedPassWithAssign() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "ass");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_ASSIGN);
+	followsStarBuilder->setArg(2, "9");
+	followsStarBuilder->setArgFixed(2, true);
+	followsStarBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 6);
+	CPPUNIT_ASSERT(result.isSynPresent("ass"));
+}
+
 void FollowsStarClauseTest::testFollowsStarSynFixedFail() {
 	Result result = Result();
 	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
@@ -464,6 +505,83 @@ void FollowsStarClauseTest::testFollowsStarSynFixedFail() {
 	CPPUNIT_ASSERT(!evalResult);
 	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
 }
+
+void FollowsStarClauseTest::testFollowsStarSynFixedFailWithIf() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "b");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_IF);
+	followsStarBuilder->setArg(2, "10");
+	followsStarBuilder->setArgFixed(2, true);
+	followsStarBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
+
+void FollowsStarClauseTest::testFollowsStarSynFixedFailWithWhile() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "b");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_WHILE);
+	followsStarBuilder->setArg(2, "10");
+	followsStarBuilder->setArgFixed(2, true);
+	followsStarBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
+
+void FollowsStarClauseTest::testFollowsStarSynFixedFailWithAssign() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "b");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_ASSIGN);
+	followsStarBuilder->setArg(2, "10");
+	followsStarBuilder->setArgFixed(2, true);
+	followsStarBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
+
+void FollowsStarClauseTest::testFollowsStarSynFixedFailWithCalls() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "cal");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_CALL);
+	followsStarBuilder->setArg(2, "9");
+	followsStarBuilder->setArgFixed(2, true);
+	followsStarBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
+
 void FollowsStarClauseTest::testFollowsStarFixedSynPass() {
 	Result result = Result();
 	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
@@ -483,6 +601,67 @@ void FollowsStarClauseTest::testFollowsStarFixedSynPass() {
 	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
 	CPPUNIT_ASSERT(result.isSynPresent("b"));
 }
+
+void FollowsStarClauseTest::testFollowsStarFixedSynPassWithWhile() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "1");
+	followsStarBuilder->setArgFixed(1, true);
+	followsStarBuilder->setArgType(1, ARG_STATEMENT);
+	followsStarBuilder->setArg(2, "w");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_WHILE);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+	CPPUNIT_ASSERT(result.isSynPresent("w"));
+}
+
+void FollowsStarClauseTest::testFollowsStarFixedSynPassWithIf() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "1");
+	followsStarBuilder->setArgFixed(1, true);
+	followsStarBuilder->setArgType(1, ARG_STATEMENT);
+	followsStarBuilder->setArg(2, "i");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_IF);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+	CPPUNIT_ASSERT(result.isSynPresent("i"));
+}
+
+void FollowsStarClauseTest::testFollowsStarFixedSynPassWithAssign() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "3");
+	followsStarBuilder->setArgFixed(1, true);
+	followsStarBuilder->setArgType(1, ARG_STATEMENT);
+	followsStarBuilder->setArg(2, "assg");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_ASSIGN);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 3);
+	CPPUNIT_ASSERT(result.isSynPresent("assg"));
+}
+
 void FollowsStarClauseTest::testFollowsStarFixedSynFail() {
 	Result result = Result();
 	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
@@ -501,6 +680,185 @@ void FollowsStarClauseTest::testFollowsStarFixedSynFail() {
 	CPPUNIT_ASSERT(!evalResult);
 	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
 }
+
+void FollowsStarClauseTest::testFollowsStarGenericSynPass() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "_");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_GENERIC);
+	followsStarBuilder->setArg(2, "lala");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 9);
+	CPPUNIT_ASSERT(result.isSynPresent("lala"));
+}
+
+void FollowsStarClauseTest::testFollowsStarGenericSynPassWithWhile() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "_");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_GENERIC);
+	followsStarBuilder->setArg(2, "w");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_WHILE);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+	CPPUNIT_ASSERT(result.isSynPresent("w"));
+}
+
+void FollowsStarClauseTest::testFollowsStarGenericSynPassWithIf() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "_");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_GENERIC);
+	followsStarBuilder->setArg(2, "i");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_IF);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+	CPPUNIT_ASSERT(result.isSynPresent("i"));
+}
+
+void FollowsStarClauseTest::testFollowsStarGenericSynPassWithAssign() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "_");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_GENERIC);
+	followsStarBuilder->setArg(2, "i");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_ASSIGN);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 7);
+	CPPUNIT_ASSERT(result.isSynPresent("i"));
+}
+
+void FollowsStarClauseTest::testFollowsStarGenericSynFailWithCalls() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "_");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_GENERIC);
+	followsStarBuilder->setArg(2, "puma");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_CALL);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
+
+void FollowsStarClauseTest::testFollowsStarSynGenericPass() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "dodo");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_STATEMENT);
+	followsStarBuilder->setArg(2, "_");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_GENERIC);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 9);
+	CPPUNIT_ASSERT(result.isSynPresent("dodo"));
+}
+
+void FollowsStarClauseTest::testFollowsStarSynGenericPassWithWhile() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "w");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_WHILE);
+	followsStarBuilder->setArg(2, "_");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_GENERIC);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+	CPPUNIT_ASSERT(result.isSynPresent("w"));
+}
+
+void FollowsStarClauseTest::testFollowsStarSynGenericPassWithAssign() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "ass");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_ASSIGN);
+	followsStarBuilder->setArg(2, "_");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_GENERIC);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 8);
+	CPPUNIT_ASSERT(result.isSynPresent("ass"));
+}
+
+void FollowsStarClauseTest::testFollowsStarGenericGenericPass() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "_");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_GENERIC);
+	followsStarBuilder->setArg(2, "_");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_GENERIC);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
+
 void FollowsStarClauseTest::testFollowsStarSynSynPass() {
 	Result result = Result();
 	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
@@ -520,6 +878,88 @@ void FollowsStarClauseTest::testFollowsStarSynSynPass() {
 	CPPUNIT_ASSERT(result.getResultTableSize() == 31);
 	CPPUNIT_ASSERT(result.isSynPresent("donkey"));
 	CPPUNIT_ASSERT(result.isSynPresent("kong"));
+}
+
+void FollowsStarClauseTest::testFollowsStarSynSynPassWithWhile() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "donkey");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_STATEMENT);
+	followsStarBuilder->setArg(2, "w");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_WHILE);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 6);
+	CPPUNIT_ASSERT(result.isSynPresent("donkey"));
+	CPPUNIT_ASSERT(result.isSynPresent("w"));
+}
+
+void FollowsStarClauseTest::testFollowsStarSynSynPassWithIf() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "donkey");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_STATEMENT);
+	followsStarBuilder->setArg(2, "if");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_IF);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 7);
+	CPPUNIT_ASSERT(result.isSynPresent("donkey"));
+	CPPUNIT_ASSERT(result.isSynPresent("if"));
+}
+
+void FollowsStarClauseTest::testFollowsStarSynSynPassWithAssign() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "donkey");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_STATEMENT);
+	followsStarBuilder->setArg(2, "ass");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_ASSIGN);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 18);
+	CPPUNIT_ASSERT(result.isSynPresent("donkey"));
+	CPPUNIT_ASSERT(result.isSynPresent("ass"));
+}
+
+void FollowsStarClauseTest::testFollowsStarSynSynFailWithCalls() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "donkey");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_STATEMENT);
+	followsStarBuilder->setArg(2, "calls");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_CALL);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
 }
 
 void FollowsStarClauseTest::testFollowsStarSynSynSameFail() {
@@ -542,99 +982,6 @@ void FollowsStarClauseTest::testFollowsStarSynSynSameFail() {
 	CPPUNIT_ASSERT(result.isSynPresent("a") == false);
 }
 
-void FollowsStarClauseTest::testFollowsStarFirstUnderscoreFixedPass() {
-	Result result = Result();
-	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
-	
-	followsStarBuilder->setArg(1, "_");
-	followsStarBuilder->setArgFixed(1, false);
-	followsStarBuilder->setArgType(1, ARG_GENERIC);
-	followsStarBuilder->setArg(2, "3");
-	followsStarBuilder->setArgFixed(2, true);
-	followsStarBuilder->setArgType(2, ARG_STATEMENT);
-	
-	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
-	CPPUNIT_ASSERT(c1->isValid());
-	
-	bool evalResult = c1->evaluate(&result);
-	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
-}
-void FollowsStarClauseTest::testFollowsStarFirstUnderscoreSynPass() {
-	Result result = Result();
-	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
-	
-	followsStarBuilder->setArg(1, "_");
-	followsStarBuilder->setArgFixed(1, false);
-	followsStarBuilder->setArgType(1, ARG_GENERIC);
-	followsStarBuilder->setArg(2, "lala");
-	followsStarBuilder->setArgFixed(2, false);
-	followsStarBuilder->setArgType(2, ARG_STATEMENT);
-	
-	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
-	CPPUNIT_ASSERT(c1->isValid());
-	
-	bool evalResult = c1->evaluate(&result);
-	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result.getResultTableSize() == 9);
-	CPPUNIT_ASSERT(result.isSynPresent("lala"));
-}
-void FollowsStarClauseTest::testFollowsStarFixedSecondUnderscorePass() {
-	Result result = Result();
-	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
-	
-	followsStarBuilder->setArg(1, "6");
-	followsStarBuilder->setArgFixed(1, true);
-	followsStarBuilder->setArgType(1, ARG_STATEMENT);
-	followsStarBuilder->setArg(2, "_");
-	followsStarBuilder->setArgFixed(2, false);
-	followsStarBuilder->setArgType(2, ARG_GENERIC);
-	
-	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
-	CPPUNIT_ASSERT(c1->isValid());
-	
-	bool evalResult = c1->evaluate(&result);
-	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
-}
-void FollowsStarClauseTest::testFollowsStarSynSecondUnderscorePass() {
-	Result result = Result();
-	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
-	
-	followsStarBuilder->setArg(1, "dodo");
-	followsStarBuilder->setArgFixed(1, false);
-	followsStarBuilder->setArgType(1, ARG_STATEMENT);
-	followsStarBuilder->setArg(2, "_");
-	followsStarBuilder->setArgFixed(2, false);
-	followsStarBuilder->setArgType(2, ARG_GENERIC);
-	
-	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
-	CPPUNIT_ASSERT(c1->isValid());
-	
-	bool evalResult = c1->evaluate(&result);
-	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result.getResultTableSize() == 9);
-	CPPUNIT_ASSERT(result.isSynPresent("dodo"));
-}
-void FollowsStarClauseTest::testFollowsStarBothUnderscorePass() {
-	Result result = Result();
-	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
-	
-	followsStarBuilder->setArg(1, "_");
-	followsStarBuilder->setArgFixed(1, false);
-	followsStarBuilder->setArgType(1, ARG_GENERIC);
-	followsStarBuilder->setArg(2, "_");
-	followsStarBuilder->setArgFixed(2, false);
-	followsStarBuilder->setArgType(2, ARG_GENERIC);
-	
-	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
-	CPPUNIT_ASSERT(c1->isValid());
-	
-	bool evalResult = c1->evaluate(&result);
-	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
-}
-
 void FollowsStarClauseTest::testFollowsStarStmtOverflow() {
 	Result result = Result();
 	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
@@ -654,4 +1001,20 @@ void FollowsStarClauseTest::testFollowsStarStmtOverflow() {
 	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
 }
 
-
+void FollowsStarClauseTest::testFollowsStarUnacceptedType() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	
+	followsStarBuilder->setArg(1, "a");
+	followsStarBuilder->setArgFixed(1, true);
+	followsStarBuilder->setArgType(1, ARG_VARIABLE);
+	followsStarBuilder->setArg(2, "9");
+	followsStarBuilder->setArgFixed(2, true);
+	followsStarBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsStarClause* c1 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(!c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+}
