@@ -24,8 +24,8 @@ AffectsClause::~AffectsClause(void){
 bool AffectsClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
-	bool firstArg = (firstType == stringconst::ARG_ASSIGN) || (firstType == stringconst::ARG_STATEMENT);
-	bool secondArg = (secondType == stringconst::ARG_ASSIGN) || (secondType == stringconst::ARG_STATEMENT);
+	bool firstArg = (firstType == stringconst::ARG_ASSIGN) || (firstType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_PROGLINE);
+	bool secondArg = (secondType == stringconst::ARG_ASSIGN) || (secondType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_PROGLINE);
 	return firstArg && secondArg;
 }
 
@@ -69,10 +69,11 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 	while (nextNode->getNodeType() != END_) {
 		switch(nextNode->getNodeType()) {
 		case ASSIGN_:
-			AssgGNode* assgNode = static_cast<AssgGNode*>(nextNode);
+			AssgGNode* assgNode;
+			assgNode = static_cast<AssgGNode*>(nextNode);
 			if (assgNode->hasMoreThanOneStmt()) {
 				int endStmt = assgNode->getEndStmt();
-				if (endStmt > stmtNum2) {
+				if (endStmt >= stmtNum2) {
 					//stmt is accessible
 					return true;
 				} 
@@ -80,7 +81,8 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 			}
 			break;
 		case WHILE_:
-			WhileGNode* whileNode = static_cast<WhileGNode*>(nextNode);
+			WhileGNode* whileNode;
+			whileNode = static_cast<WhileGNode*>(nextNode);
 			if (nodeStack.empty() || nodeStack.top().node != whileNode) {
 				//seeing whileNode for the first time
 				GNodeContainer nodeContainer = GNodeContainer(whileNode, 1);
@@ -93,7 +95,8 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 			}
 			break;
 		case IF_:
-			IfGNode* ifNode = static_cast<IfGNode*>(nextNode);
+			IfGNode* ifNode;
+			ifNode = static_cast<IfGNode*>(nextNode);
 			if (nodeStack.empty() || nodeStack.top().node != ifNode) {
 				//seeing ifNode for the first time
 				GNodeContainer nodeContainer = GNodeContainer(ifNode, 1);
@@ -108,13 +111,16 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 			}
 			break;
 		case CALL_:
-			CallGNode* callNode = static_cast<CallGNode*>(nextNode);
+			CallGNode* callNode;
+			callNode = static_cast<CallGNode*>(nextNode);
 			nextNode = callNode;
 		case DUMMY_:
 			//only for if nodes
-			DummyGNode* dummyNode = static_cast<DummyGNode*>(nextNode);
+			DummyGNode* dummyNode;
+			dummyNode = static_cast<DummyGNode*>(nextNode);
 			if (nodeStack.empty() || nodeStack.top().node != ifNode) {
-				//should not happen, throw exception
+				//node is in middle of path
+				//just continue on, as the other then/else branch is not on the next* path
 			} else if (nodeStack.top().count == 0) {
 				//iterated through both then and else, pop off and not consider it again
 				nodeStack.pop();

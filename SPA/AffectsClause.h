@@ -9,7 +9,7 @@ struct GNodeContainer {
 	GNodeContainer(GNode* n= NULL, int c=0):
 		node(n),
         count(c){}
-}
+};
 
 class AffectsClause 
 	: public SuchThatClause {
