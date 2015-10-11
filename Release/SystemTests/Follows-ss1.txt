@@ -15,7 +15,7 @@ false
 5000
 4 - FOLLOWS-stmt: syn-syn (tuple)
 stmt s1, s2;
-Select <s,v> such that Follows(s1, s2)
+Select <s1,s2> such that Follows(s1, s2)
 1 2, 2 3, 3 4, 4 5, 6 7, 7 8, 5 9, 9 10, 10 11, 11 12, 12 13, 13 14, 14 15, 16 17, 17 23, 18 20
 5000
 5 - FOLLOWS-assign: syn-syn
