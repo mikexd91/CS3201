@@ -71,14 +71,11 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 		case ASSIGN_:
 			AssgGNode* assgNode;
 			assgNode = static_cast<AssgGNode*>(nextNode);
-			if (assgNode->hasMoreThanOneStmt()) {
-				int endStmt = assgNode->getEndStmt();
-				if (endStmt >= stmtNum2) {
-					//stmt is accessible
-					return true;
-				} 
-				nextNode = assgNode->getChild();
-			}
+			if ( assgNode->getEndStmt() >= stmtNum2) {
+				//stmt is accessible
+				return true;
+			} 
+			nextNode = assgNode->getChild();
 			break;
 		case WHILE_:
 			WhileGNode* whileNode;

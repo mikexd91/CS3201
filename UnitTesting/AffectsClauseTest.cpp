@@ -269,5 +269,4 @@ void AffectsClauseTest::testSynSynFixedInWhile() {
 	bool result = m1->evaluate(&res);
 	CPPUNIT_ASSERT(result);
 	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
-
 }
