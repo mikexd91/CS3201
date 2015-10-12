@@ -21,7 +21,8 @@ unordered_set<string> PQLController::parse(string query) {
 	// display query result
 	try {
 		cout << "Parsing Query..."; 
-		Query q= QueryParser::parseQuery(query);
+		QueryParser* parser = QueryParser::getInstance();
+		Query q= parser->parseQuery(query);
 		cout << "Query Parse Successful" << endl;
 		QueryEvaluator* qe = new QueryEvaluator();
 		Result* resObj = qe->evaluateQuery(q);
