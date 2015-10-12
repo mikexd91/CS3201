@@ -301,7 +301,7 @@ void PQLIntegration::setUp() {
 	//stmt5->setParentStar(Statement::ParentStarSet(stmt5ParentStarArr, stmt5ParentStarArr+ sizeof(stmt5ParentStarArr)/sizeof(*stmt5ParentStarArr)));
 	int stmt5ChildrenStarArr[] = {6, 7, 8};
 	stmt5->setChildrenStar(Statement::ChildrenSet(stmt5ChildrenStarArr, stmt5ChildrenStarArr+ sizeof(stmt5ChildrenStarArr)/sizeof(*stmt5ChildrenStarArr)));
-	int stmt5NextArr[] = {6};
+	int stmt5NextArr[] = {6, 9};
 	stmt5->setNext(Statement::NextSet(stmt5NextArr, stmt5NextArr+ sizeof(stmt5NextArr)/sizeof(*stmt5NextArr)));
 	//int stmt5PrevArr[] = {3};
 	//stmt5->setPrev(Statement::PreviousSet(stmt5PrevArr, stmt5PrevArr+ sizeof(stmt5PrevArr)/sizeof(*stmt5PrevArr)));
@@ -329,9 +329,9 @@ void PQLIntegration::setUp() {
 	stmt6->setParentStar(Statement::ParentStarSet(stmt6ParentStarArr, stmt6ParentStarArr+ sizeof(stmt6ParentStarArr)/sizeof(*stmt6ParentStarArr)));
 	int stmt6ChildrenStarArr[] = {6, 7, 8};
 	stmt6->setChildrenStar(Statement::ChildrenSet(stmt6ChildrenStarArr, stmt6ChildrenStarArr+ sizeof(stmt6ChildrenStarArr)/sizeof(*stmt6ChildrenStarArr)));
-	int stmt6NextArr[] = {7, 9};
+	int stmt6NextArr[] = {7};
 	stmt6->setNext(Statement::NextSet(stmt6NextArr, stmt6NextArr+ sizeof(stmt6NextArr)/sizeof(*stmt6NextArr)));
-	int stmt6PrevArr[] = {7, 5};
+	int stmt6PrevArr[] = {5};
 	stmt6->setPrev(Statement::PreviousSet(stmt6PrevArr, stmt6PrevArr+ sizeof(stmt6PrevArr)/sizeof(*stmt6PrevArr)));
 	stable->addStmt(stmt6);
 
@@ -357,7 +357,7 @@ void PQLIntegration::setUp() {
 	stmt7->setParentStar(Statement::ParentStarSet(stmt7ParentStarArr, stmt7ParentStarArr+ sizeof(stmt7ParentStarArr)/sizeof(*stmt7ParentStarArr)));
 	int stmt7ChildrenStarArr[] = {8};
 	stmt7->setChildrenStar(Statement::ChildrenSet(stmt7ChildrenStarArr, stmt7ChildrenStarArr+ sizeof(stmt7ChildrenStarArr)/sizeof(*stmt7ChildrenStarArr)));
-	int stmt7NextArr[] = {6, 8};
+	int stmt7NextArr[] = {5, 8};
 	stmt7->setNext(Statement::NextSet(stmt7NextArr, stmt7NextArr+ sizeof(stmt7NextArr)/sizeof(*stmt7NextArr)));
 	int stmt7PrevArr[] = {6, 8};
 	stmt7->setPrev(Statement::PreviousSet(stmt7PrevArr, stmt7PrevArr+ sizeof(stmt7PrevArr)/sizeof(*stmt7PrevArr)));
@@ -415,7 +415,7 @@ void PQLIntegration::setUp() {
 	//stmt9->setChildrenStar(Statement::ChildrenSet(stmt9ChildrenStarArr, stmt9ChildrenStarArr+ sizeof(stmt9ChildrenStarArr)/sizeof(*stmt9ChildrenStarArr)));
 	//int stmt9NextArr[] = {7};
 	//stmt9->setNext(Statement::NextSet(stmt9NextArr, stmt9NextArr+ sizeof(stmt9NextArr)/sizeof(*stmt9NextArr)));
-	int stmt9PrevArr[] = {6};
+	int stmt9PrevArr[] = {5};
 	stmt9->setPrev(Statement::PreviousSet(stmt9PrevArr, stmt9PrevArr+ sizeof(stmt9PrevArr)/sizeof(*stmt9PrevArr)));
 	stable->addStmt(stmt9);
 //-------------  END OF STMT ------------//
@@ -657,7 +657,7 @@ void PQLIntegration::testSelectBoolean() {
 		cout << a << endl;
 	}
 	// FAIL: returns true when it should return false
-	CPPUNIT_ASSERT(res.count("FALSE") == 1);
+	CPPUNIT_ASSERT(res.count("false") == 1);
 	// NOTE: should the return string be capitalised or not?
 }
 
@@ -711,6 +711,8 @@ void PQLIntegration::testSelectPatternAssg() {
 	BOOST_FOREACH(auto a, res) {
 		cout << a << endl;
 	}
+	// FAIL: returns no results when it should return "drink"
+	// NOTE: might be the minus sign. pls check.
 	CPPUNIT_ASSERT(res.size() == 1);
 	CPPUNIT_ASSERT(res.count("drink") == 1);
 }
@@ -727,44 +729,82 @@ void PQLIntegration::testSelectPatternWhile() {
 }
 
 void PQLIntegration::testSelectParentStar() {
+	cout << "parent star" << endl;
 	string query = "if i; Select i such that Parent*(5, 8)";
 	// [1] (size 1)
 
 	PQLController* pcc = new PQLController();
 	unordered_set<string> res = pcc->parse(query);
 
+	// FAIL: clause invalid syntax
 	CPPUNIT_ASSERT(res.size() == 1);
 	CPPUNIT_ASSERT(res.count("1") == 1);
 }
 
 void PQLIntegration::testSelectNextStar() {
+	cout << "next star" << endl;
 	string query = "assign a; Select a such that Next*(8, a)";
-	// [7, 8, 9, 6] (size 4)
+	// [7, 8, 9, 6, 5] (size 5)
 
 	PQLController* pcc = new PQLController();
 	unordered_set<string> res = pcc->parse(query);
 
-	CPPUNIT_ASSERT(res.size() == 4);
+	cout << "next star result size " << res.size() << endl;
+	BOOST_FOREACH(auto a, res) {
+		cout << a << endl;
+	}
+
+	// FAIL: next star is not implemented yet.
+	CPPUNIT_ASSERT(res.size() == 5);
 	CPPUNIT_ASSERT(res.count("7") == 1);
 	CPPUNIT_ASSERT(res.count("8") == 1);
 	CPPUNIT_ASSERT(res.count("9") == 1);
 	CPPUNIT_ASSERT(res.count("6") == 1);
+	CPPUNIT_ASSERT(res.count("5") == 1);
 }
 
 void PQLIntegration::testSelectAffectsStar() {
+	cout << "affects star" << endl;
 	string query = "prog_line n; Select n such that Affects*(6, n)";
 	// [6, 8] (size 2)
 
 	PQLController* pcc = new PQLController();
 	unordered_set<string> res = pcc->parse(query);
 
+	// FAIL: affects star is not implemented yet.
 	CPPUNIT_ASSERT(res.size() == 2);
 	CPPUNIT_ASSERT(res.count("8") == 1);
 	CPPUNIT_ASSERT(res.count("6") == 1);
 }
 
 void PQLIntegration::testSelectCValueWith() {
+	cout << "with c.value" << endl;
 	string query = "constant c; Select c with c.value = 1";
+	// [1] (size 1)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	// FAIL: with is not implemented yet.
+	CPPUNIT_ASSERT(res.size() == 1);
+	CPPUNIT_ASSERT(res.count("1") == 1);
+}
+
+void PQLIntegration::testSelectVVarNameWithPatternAssg() {
+	cout << "with and pattern assg" << endl;
+	string query = "assign a; variable v; Select a with v.varName = \"mom\" pattern a(v, \"nagging\")";
+	// [8] (size 1)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	// FAIL: with is not implemented yet.
+	CPPUNIT_ASSERT(res.size() == 1);
+	CPPUNIT_ASSERT(res.count("8") == 1);
+}
+
+void PQLIntegration::testSelectPatternIfParent() {
+	string query = "if i; Select i pattern i(_, _, _) such that Parent(i, 4)";
 	// [1] (size 1)
 
 	PQLController* pcc = new PQLController();
@@ -772,5 +812,123 @@ void PQLIntegration::testSelectCValueWith() {
 
 	CPPUNIT_ASSERT(res.size() == 1);
 	CPPUNIT_ASSERT(res.count("1") == 1);
+}
+
+void PQLIntegration::testSelectCallsStarUses() {
+	cout << "call star and uses" << endl;
+	string query = "procedure p; Select p such that Calls*(\"Pizza\", p) and Uses(p, \"nagging\")";
+	// [YourMom] (size 1)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	cout << "call star and uses result size " << res.size() << endl;
+	BOOST_FOREACH(auto a, res) {
+		cout << a << endl;
+	}
+
+	// FAIL: returned both procs when only supposed to return YourMom
+	// NOTE: suspect calls* parse wrongly
+	CPPUNIT_ASSERT(res.size() == 1);
+	CPPUNIT_ASSERT(res.count("YourMom") == 1);
+}
+
+void PQLIntegration::testSelectFollowsStarModifies() {
+	cout << "follows star and modifies" << endl;
+	string query = "stmt s, s1; Select s such that Follows*(s1, s) and Modifies(s, \"full\")";
+	// [4, 9] (size 2)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	cout << "follows star and modifies result size " << res.size() << endl;
+	BOOST_FOREACH(auto a, res) {
+		cout << a << endl;
+	}
+
+	// FAIL: follows star throws invalid clause but it should not.
+	CPPUNIT_ASSERT(res.size() == 2);
+	CPPUNIT_ASSERT(res.count("4") == 1);
+	CPPUNIT_ASSERT(res.count("9") == 1);
+}
+
+void PQLIntegration::testSelectPProcNameWithPatternAssgCalls() {
+	cout << "with and pattern assg and calls" << endl;
+	string query = "procedure p, p1; assign a; variable v; Select <a, v, p> with p1.procName = \"Pizza\" pattern a(v, _) such that Calls(p1, p)";
+	// [2 eaten YourMom, 3 drink YourMom, 6 nagging YourMom, 8 mom YourMom, 9 full YourMom] (size 5)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	cout << "with and pattern assg and calls result size " << res.size() << endl;
+	BOOST_FOREACH(auto a, res) {
+		cout << a << endl;
+	}
+
+	// FAIL: with clause not implemented, returning both procs instead of just YourMom
+	CPPUNIT_ASSERT(res.size() == 5);
+	CPPUNIT_ASSERT(res.count("2 eaten YourMom") == 1);
+	CPPUNIT_ASSERT(res.count("3 drink YourMom") == 1);
+	CPPUNIT_ASSERT(res.count("6 nagging YourMom") == 1);
+	CPPUNIT_ASSERT(res.count("8 mom YourMom") == 1);
+	CPPUNIT_ASSERT(res.count("9 full YourMom") == 1);
+}
+
+void PQLIntegration::testFailSelectIStmtNumWith() {
+	cout << "with i.stmt#" << endl;
+	string query = "if i; Select i with i.stmt# = 2";
+	// [] (size 0)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	// FAIL: with clause not implemented, returns the stmt of i when it should not
+	CPPUNIT_ASSERT(res.size() == 0);
+}
+
+void PQLIntegration::testFailSelectBooleanFollowsStar() {
+	cout << "boolean follows star" << endl;
+	string query = "Select BOOLEAN such that Follows*(1, 1)";
+	// [FALSE] (size 1)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	cout << "boolean follows star result size " << res.size() << endl;
+	BOOST_FOREACH(auto a, res) {
+		cout << a << endl;
+	}
+
+	// FAIL: follows star throws invalid syntax
+	CPPUNIT_ASSERT(res.size() == 1);
+	CPPUNIT_ASSERT(res.count("false") == 1);
+}
+
+void PQLIntegration::testFailSelectPatternAssgPatternAssg() {
+	cout << "pattern assg pattern assg" << endl;
+	string query = "assign a; Select a pattern a(\"mom\", _) a(\"eaten\", _)";
+	// [] (size 0)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	cout << "pattern assg and pattern assg result size " << res.size() << endl;
+	BOOST_FOREACH(auto a, res) {
+		cout << a << endl;
+	}
+
+	// FAIL: returning stmt 8 when supposed to return none
+	// NOTE: suspect the second pattern clause did not prune the results
+	CPPUNIT_ASSERT(res.size() == 0);
+}
+
+void PQLIntegration::testFailSelectModifiesModifies() {
+	string query = "assign a; Select a such that Modifies(a, \"mom\") and Modifies(a, \"eaten\")";
+	// [] (size 0)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	CPPUNIT_ASSERT(res.size() == 0);
 }
 
