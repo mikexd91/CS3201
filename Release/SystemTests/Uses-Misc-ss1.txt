@@ -58,3 +58,18 @@ variable v;
 Select BOOLEAN such that Uses(19, v) with v.varName = "charmander"
 false
 5000
+13 - USES: const - with clause (has results)
+variable v; constant c;
+Select c such that Uses(17, v) with c.value = 3
+3
+5000
+14 - USES: const - with clause (no results)
+variable v; constant c;
+Select BOOLEAN such that Uses(17, v) with c.value = 6
+false
+5000
+15 - USES: prog_line
+prog_line n;
+Select n such that Uses(n, "wartortle")
+12, 15, 16, 17, 18, 19, 20, 22
+5000
