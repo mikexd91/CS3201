@@ -4,22 +4,19 @@
 
 class PQLIntegration : public CPPUNIT_NS::TestFixture { 
 	CPPUNIT_TEST_SUITE( PQLIntegration );
-	CPPUNIT_TEST( testSelectOnly );
-	
-	CPPUNIT_TEST( testSelectModifies );
-	CPPUNIT_TEST( testSelectUses );
-	//CPPUNIT_TEST( testSelectFollows );
-	//CPPUNIT_TEST( testSelectFollowsStar );
-	CPPUNIT_TEST( testSelectParent );
-	//CPPUNIT_TEST( testSelectParentStar );
+	CPPUNIT_TEST( testSelectAssign );
+	CPPUNIT_TEST( testSelectProgLine );
+	CPPUNIT_TEST( testSelectBoolean );
+	CPPUNIT_TEST( testSelectProcName );
+
+	CPPUNIT_TEST( testSelectStmtModifies );
+	CPPUNIT_TEST( testSelectProcUses );
 	CPPUNIT_TEST( testSelectPatternAssg );
-	//CPPUNIT_TEST( testSelectModifiesPattern );
-	//CPPUNIT_TEST( testSelectFollowsPattern );
-	CPPUNIT_TEST( testSelectUsesPattern );
-	//CPPUNIT_TEST( testSelectConstant );
-	//CPPUNIT_TEST( testSelectProgLine );
-	CPPUNIT_TEST( testFailParent );
-	CPPUNIT_TEST( testFailUses );
+	CPPUNIT_TEST( testSelectPatternWhile );
+	CPPUNIT_TEST( testSelectParentStar );
+	CPPUNIT_TEST( testSelectNextStar );
+	CPPUNIT_TEST( testSelectAffectsStar );
+	CPPUNIT_TEST( testSelectCValueWith );
 	
 	CPPUNIT_TEST_SUITE_END();
 
@@ -27,24 +24,19 @@ public:
 	void setUp();
 	void tearDown();
 
-	// select single syn, 1 clause
-	void testSelectOnly();
-	void testSelectCalls(); // new
-	void testSelectModifies();
-	void testSelectUses();
-	void testSelectFollows();
-	void testSelectFollowsStar();
-	void testSelectParent();
-	void testSelectParentStar(); // incomplete
-	void testSelectPatternAssg();
-	void testSelectPatternIf(); // new
-	void testSelectPatternWhile(); // new
-	// select single syn, 1++ clauses
-	void testSelectModifiesPattern();
-	void testSelectFollowsPattern();
-	void testSelectUsesPattern();
-	void testSelectConstant();
+	// SELECT WITHOUT CLAUSES
+	void testSelectAssign();
 	void testSelectProgLine();
-	void testFailParent();
-	void testFailUses();
+	void testSelectBoolean();
+	void testSelectProcName();
+
+	// SELECT WITH ONE CLAUSE
+	void testSelectStmtModifies();
+	void testSelectProcUses();
+	void testSelectPatternAssg();
+	void testSelectPatternWhile();
+	void testSelectParentStar();
+	void testSelectNextStar();
+	void testSelectAffectsStar();
+	void testSelectCValueWith();
 };

@@ -611,294 +611,166 @@ void PQLIntegration::tearDown() {
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( PQLIntegration );
 
-void PQLIntegration::testSelectOnly() {
-	cout << "select only";
-
-	// DOES NOT PASS
-	// because the values of a are not set in results object.
-
-	string QUERY_STRING = "assign a; Select a";
+void PQLIntegration::testSelectAssign() {
+	string query = "assign a; Select a";
+	// [2, 3, 6, 8, 9] (size 5)
+	
 	PQLController* pcc = new PQLController();
-	unordered_set<string> r;
-	r = pcc->parse(QUERY_STRING);
-	cout << "size1 for select only: " << r.size() << endl;
-	CPPUNIT_ASSERT(6 == r.size());
-
-	// new test for if
-	string QUERY_STRING2 = "if x; Select x";
-	pcc = new PQLController();
-	unordered_set<string> r2;
-	r2 = pcc->parse(QUERY_STRING2);
-
-	CPPUNIT_ASSERT(1 == r2.size());
-}
-
-void PQLIntegration::testSelectModifies() {
-	//string QUERY_STRING = "assign a; Select a such that Modifies(a, \"a\")";
-	PQLController* pcc = new PQLController();
-	unordered_set<string> r;
-	//r = pcc->parse(QUERY_STRING);
-	//CPPUNIT_ASSERT(1 == r.size());
-
-	string QUERY_STRING2 = "assign a; variable v; Select a such that Modifies(a, v)";
-	unordered_set<string> r2;
-	r2 = pcc->parse(QUERY_STRING2);
-	CPPUNIT_ASSERT(7 == r2.size());
-
-	//string QUERY_STRING3 = "if i; variable v; Select a such that Modifies(i, v)";
-	//unordered_set<string> r3;
-	//r3 = pcc->parse(QUERY_STRING3);
-	//CPPUNIT_ASSERT(0 == r3.size());
-
-	string QUERY_STRING4 = "variable v; Select v such that Modifies(_, v) and Modifies(_, v)";
-	unordered_set<string> r4;
-	r4 = pcc->parse(QUERY_STRING4);
-	CPPUNIT_ASSERT(6 == r4.size());
-}
-
-	/* OLd source
-
-	procedure chocs {
-		a=4;				//1
-		while i {			//2
-			k = 3;			//3
-			while j {		//4
-				i=1;		//5
-				j=2; 		//6
-			}
-			b=5;			//7
-			j=2+3+4;		//8
-			z=(10+11)*12; 	//9
-		}
-		--- new stuff TODO ---
-		if a then {			//10
-		} else {
-		}
-	}
-	*/
-
-void PQLIntegration::testSelectUses() {
-	PQLController* pcc = new PQLController();
-
-	//string QUERY_STRING = "while w; variable v; Select v such that Uses(w, v)";
-	//unordered_set<string> r;
-	//r = pcc->parse(QUERY_STRING);
-	//CPPUNIT_ASSERT(2 == r.size());
-
-	string QUERY_STRING2 = "assign aaaa; variable verynice; Select verynice such that Uses(aaaa, verynice)";
-	unordered_set<string> r2;
-	r2 = pcc->parse(QUERY_STRING2);
-	//CPPUNIT_ASSERT(0 == r2.size());
-
-	string QUERY_STRING3 = "stmt s; variable v; Select v such that Uses(s, v)";
-	unordered_set<string> r3;
-	r3 = pcc->parse(QUERY_STRING3);
-	CPPUNIT_ASSERT(3 == r3.size());
-
-	string QUERY_STRING4 = "variable v; Select v such that Uses(_, v)";
-	unordered_set<string> r4;
-	r4 = pcc->parse(QUERY_STRING4);
-	CPPUNIT_ASSERT(3 == r4.size());
-}
-
-void PQLIntegration::testSelectFollows() {
-	PQLController* pcc = new PQLController();
-	unordered_set<string> r;
-
-	string QUERY_STRING = "assign a, a1; Select a such that Follows(a, a1)";
-	r = pcc->parse(QUERY_STRING);
-	CPPUNIT_ASSERT(3 == r.size());
-
-	string QUERY_STRING2 = "stmt s; Select s such that Follows(s, _)";
-	r = pcc->parse(QUERY_STRING2);
-	// answer supposed to be 1,3,4,5,7
-    CPPUNIT_ASSERT(5 == r.size());
-
-	string QUERY_STRING3 = "stmt s; Select s such that Follows(_, s)";
-	r = pcc->parse(QUERY_STRING3);
-	CPPUNIT_ASSERT(5 == r.size());
-
-	//string QUERY_STRING4 = "assign a; Select a such that Follows(_, _)";
-	//r = pcc->parse(QUERY_STRING4);
-	//CPPUNIT_ASSERT(6 == r.size());
-}
-
-void PQLIntegration::testSelectFollowsStar() {
-	string QUERY_STRING = "assign a, a1; Select a1 such that Follows*(a, a1)";
-	PQLController* pcc = new PQLController();
-	unordered_set<string> r;
-	r = pcc->parse(QUERY_STRING);
-	CPPUNIT_ASSERT(3 == r.size());
-
-	string QUERY_STRING2 = "stmt s; Select s such that Follows*(s, _)";
-	r = pcc->parse(QUERY_STRING2);
-	// answer: 1,3,4,5,7
-	/*BOOST_FOREACH(auto p, r) {
-		cout << p << " ";
-	}*/
-	CPPUNIT_ASSERT(5 == r.size());
-
-	string QUERY_STRING3 = "stmt s; Select s such that Follows*(_, s)";
-	r = pcc->parse(QUERY_STRING3);
-	CPPUNIT_ASSERT(5 == r.size());
-
-	string QUERY_STRING4 = "assign a; Select a such that Follows*(_, _)";
-	r = pcc->parse(QUERY_STRING4);
-	CPPUNIT_ASSERT(6 == r.size());
-}
-
-void PQLIntegration::testSelectParent() {
-	PQLController* pcc = new PQLController();
-	unordered_set<string> r;
-
-	string QUERY_STRING = "while w; assign a; Select a such that Parent(w, a)";
-	r = pcc->parse(QUERY_STRING);
-	CPPUNIT_ASSERT(6 == r.size());
-
-	string QUERY_STRING2 = "while w; Select w such that Parent(w, _)";
-	r = pcc->parse(QUERY_STRING2);
-	CPPUNIT_ASSERT(2 == r.size());
-
-	string QUERY_STRING3 = "while w; Select w such that Parent(_, w)";
-	r = pcc->parse(QUERY_STRING3);
-	CPPUNIT_ASSERT(1 == r.size());
-
-	// don't work because a not present in clauses
-	//string QUERY_STRING4 = "assign a; Select a such that Parent(_, _)";
-	//r = pcc->parse(QUERY_STRING4);
-	//CPPUNIT_ASSERT(6 == r.size());
-
-	//string QUERY_STRING5 = "assign a; Select a such that Parent(3, _)";
-	//r = pcc->parse(QUERY_STRING5);
-	//CPPUNIT_ASSERT(0 == r.size());
-
-	//string QUERY_STRING6 = "assign a; Select a such that Parent(2, _)";
-	//r = pcc->parse(QUERY_STRING6);
-	//CPPUNIT_ASSERT(6 == r.size());
-
-}
-
-void PQLIntegration::testSelectParentStar() {
-	string QUERY_STRING = "while w; Select w such that Parent*(w, 6)";
-	PQLController* pcc = new PQLController();
-	unordered_set<string> r;
-	r = pcc->parse(QUERY_STRING);
-	CPPUNIT_ASSERT(2 == r.size()); 
-
-	string QUERY_STRING2 = "while w; Select w such that Parent*(w, _)";
-	r = pcc->parse(QUERY_STRING2);
-	CPPUNIT_ASSERT(2 == r.size());
-
-	string QUERY_STRING3 = "while w; Select w such that Parent*(_, w)";
-	r = pcc->parse(QUERY_STRING3);
-	//CPPUNIT_ASSERT(1 == r.size());
-
-	string QUERY_STRING4 = "assign a; Select a such that Parent*(_, _)";
-	r = pcc->parse(QUERY_STRING4);
-	CPPUNIT_ASSERT(6 == r.size());
-}
-
-void PQLIntegration::testSelectPatternAssg() {
-	string QUERY_STRING = "assign a; Select a pattern a(\"a\", _)";
-	PQLController* pcc = new PQLController();
-	unordered_set<string> r;
-	r = pcc->parse(QUERY_STRING);
-	CPPUNIT_ASSERT(1 == r.size());
-
-	string QUERY_STRING2 = "assign a; variable v; Select a pattern a(v, _\"4\"_)";
-	unordered_set<string> r2;
-	r2 = pcc->parse(QUERY_STRING2);
-	//cout << r2.size() << endl;
-	CPPUNIT_ASSERT(2 == r2.size());
-
-	string QUERY_STRING3 = "assign a; variable v; Select a pattern a(v, _\"2 + 3 + 4\"_)";
-	unordered_set<string> r3;
-	r3 = pcc->parse(QUERY_STRING3);
-	CPPUNIT_ASSERT(1 == r3.size());
-	CPPUNIT_ASSERT("8" == *r3.begin());
-}
-
-void PQLIntegration::testSelectModifiesPattern() {
-	string QUERY_STRING = "assign a; Select a such that Modifies(a, \"a\") pattern a(\"a\", _)";
-	PQLController* pcc = new PQLController();
-	unordered_set<string> r;
-	r = pcc->parse(QUERY_STRING);
-
-	CPPUNIT_ASSERT(1 == r.size());
-
-	string QUERY_STRING2 = "assign a; variable v; Select a such that Modifies(a, v) pattern a(v, _\"2 + 3 + 4\"_)";
-	unordered_set<string> r2;
-	r2 = pcc->parse(QUERY_STRING2);
-	CPPUNIT_ASSERT(1 == r2.size());
-
-	//TODO: fix parsing of brackets in query parser
-	string QUERY_STRING3 = "assign a; variable v; Select a such that Modifies(a, v) pattern a(v, _\"( 10 + 11 ) * 12\"_)";
-	unordered_set<string> r3;
-	r3 = pcc->parse(QUERY_STRING3);
-	//CPPUNIT_ASSERT(1 == r3.size());
-}
-
-void PQLIntegration::testSelectFollowsPattern() {
-	string QUERY_STRING = "assign a1, a2; Select a1 such that Follows(a1, a2) pattern a2(v, _\"2 + 3\"_)";
-	PQLController* pcc = new PQLController();
-	unordered_set<string> r;
-	r = pcc->parse(QUERY_STRING);
-	CPPUNIT_ASSERT(1 == r.size());
-}
-
-void PQLIntegration::testSelectUsesPattern() {
-	string QUERY_STRING = "variable v; assign a; Select v such that Uses(_, v) pattern a(v, _)";
-	PQLController* pcc = new PQLController();
-	unordered_set<string> r;
-	r = pcc->parse(QUERY_STRING);
-	// answer: i, j
-	BOOST_FOREACH(auto p, r) {
-		cout << p << " ";
-	}
-	//CPPUNIT_ASSERT(2 == r.size());
-}
-
-void PQLIntegration::testSelectConstant() {
-	string QUERY_STRING = "constant c; Select c such that Follows(1, 2)";
-	PQLController* pcc = new PQLController();
-	unordered_set<string> r;
-	r = pcc->parse(QUERY_STRING);
-	CPPUNIT_ASSERT(8 == r.size());
-
-	string QUERY_STRING_2 = "constant c; assign a; Select c such that Follows(a, 1)";
-	unordered_set<string> r2;
-	r2 = pcc->parse(QUERY_STRING_2);
-	CPPUNIT_ASSERT(0 == r2.size());
+	unordered_set<string> res = pcc->parse(query);
+	
+	CPPUNIT_ASSERT(res.size() == 5);
+	CPPUNIT_ASSERT(res.count("2") == 1);
+	CPPUNIT_ASSERT(res.count("3") == 1);
+	CPPUNIT_ASSERT(res.count("6") == 1);
+	CPPUNIT_ASSERT(res.count("8") == 1);
+	CPPUNIT_ASSERT(res.count("9") == 1);
 }
 
 void PQLIntegration::testSelectProgLine() {
-	string QUERY_STRING = "prog_line p; Select p such that Follows(1, p)";
-	PQLController* pcc = new PQLController();
-	unordered_set<string> r;
-	r = pcc->parse(QUERY_STRING);
-	CPPUNIT_ASSERT(1 == r.size());
-	//CPPUNIT_ASSERT(r.find("2") != r.end());
+	string query = "prog_line pg; Select pg";
+	// [1, 2, 3, 4, 5, 6, 7, 8, 9] (size 9)
 
-	string QUERY_STRING_2 = "prog_line p; Select p such that Follows(9, p)";
-	unordered_set<string> r2;
-	r2 = pcc->parse(QUERY_STRING_2);
-	CPPUNIT_ASSERT(1 == r2.size());
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	CPPUNIT_ASSERT(res.size() == 9);
+	CPPUNIT_ASSERT(res.count("1") == 1);
+	CPPUNIT_ASSERT(res.count("2") == 1);
+	CPPUNIT_ASSERT(res.count("3") == 1);
+	CPPUNIT_ASSERT(res.count("4") == 1);
+	CPPUNIT_ASSERT(res.count("5") == 1);
+	CPPUNIT_ASSERT(res.count("6") == 1);
+	CPPUNIT_ASSERT(res.count("7") == 1);
+	CPPUNIT_ASSERT(res.count("8") == 1);
+	CPPUNIT_ASSERT(res.count("9") == 1);
 }
 
-void PQLIntegration::testFailParent(){
-	cout << "will throw exception" << endl;
-	string QUERY_STRING = "assign a; variable v; Select a such that Parent(v, a)";
+void PQLIntegration::testSelectBoolean() {
+	string query = "Select BOOLEAN";
+	// [FALSE] (size 1)
+
 	PQLController* pcc = new PQLController();
-	unordered_set<string> r;
-	r = pcc->parse(QUERY_STRING);
-	CPPUNIT_ASSERT(0 == r.size());
+	unordered_set<string> res = pcc->parse(query);
+
+	CPPUNIT_ASSERT(res.size() == 1);
+	BOOST_FOREACH(auto a, res) {
+		cout << a << endl;
+	}
+	// FAIL: returns true when it should return false
+	CPPUNIT_ASSERT(res.count("FALSE") == 1);
+	// NOTE: should the return string be capitalised or not?
 }
 
-void PQLIntegration::testFailUses(){
-	cout << "will throw exception" << endl;
-	string QUERY_STRING = "variable v, v1; Select v such that Uses(v, v1)";
+void PQLIntegration::testSelectProcName() {
+	string query = "procedure p; Select p.procName";
+	// [Pizza, YourMom] (size 2)
+
 	PQLController* pcc = new PQLController();
-	unordered_set<string> r;
-	r = pcc->parse(QUERY_STRING);
-	CPPUNIT_ASSERT(0 == r.size());
+	unordered_set<string> res = pcc->parse(query);
+
+	CPPUNIT_ASSERT(res.size() == 2);
+	CPPUNIT_ASSERT(res.count("Pizza") == 1);
+	CPPUNIT_ASSERT(res.count("YourMom") == 1);
 }
+
+void PQLIntegration::testSelectStmtModifies() {
+	string query = "stmt s; Select s such that Modifies(s, \"mom\")";
+	// [8, 7, 5, 4, 1] (size 5)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	CPPUNIT_ASSERT(res.size() == 5);
+	CPPUNIT_ASSERT(res.count("8") == 1);
+	CPPUNIT_ASSERT(res.count("7") == 1);
+	CPPUNIT_ASSERT(res.count("5") == 1);
+	CPPUNIT_ASSERT(res.count("4") == 1);
+	CPPUNIT_ASSERT(res.count("1") == 1);
+}
+
+void PQLIntegration::testSelectProcUses() {
+	string query = "procedure p; Select p such that Uses(p, \"good\")";
+	// [Pizza] (size 1)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	CPPUNIT_ASSERT(res.size() == 1);
+	CPPUNIT_ASSERT(res.count("Pizza") == 1);
+}
+
+void PQLIntegration::testSelectPatternAssg() {
+	cout << "pattern assg" << endl;
+	string query = "assign a; variable v; Select v pattern a(v, _\"beer - water\"_)";
+	// [drink] (size 1)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+	
+	cout << "pattern assg result size " << res.size() << endl;
+	BOOST_FOREACH(auto a, res) {
+		cout << a << endl;
+	}
+	CPPUNIT_ASSERT(res.size() == 1);
+	CPPUNIT_ASSERT(res.count("drink") == 1);
+}
+
+void PQLIntegration::testSelectPatternWhile() {
+	string query = "while w; Select w pattern w(\"nagging\", _)";
+	// [5] (size 1)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	CPPUNIT_ASSERT(res.size() == 1);
+	CPPUNIT_ASSERT(res.count("5") == 1);
+}
+
+void PQLIntegration::testSelectParentStar() {
+	string query = "if i; Select i such that Parent*(5, 8)";
+	// [1] (size 1)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	CPPUNIT_ASSERT(res.size() == 1);
+	CPPUNIT_ASSERT(res.count("1") == 1);
+}
+
+void PQLIntegration::testSelectNextStar() {
+	string query = "assign a; Select a such that Next*(8, a)";
+	// [7, 8, 9, 6] (size 4)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	CPPUNIT_ASSERT(res.size() == 4);
+	CPPUNIT_ASSERT(res.count("7") == 1);
+	CPPUNIT_ASSERT(res.count("8") == 1);
+	CPPUNIT_ASSERT(res.count("9") == 1);
+	CPPUNIT_ASSERT(res.count("6") == 1);
+}
+
+void PQLIntegration::testSelectAffectsStar() {
+	string query = "prog_line n; Select n such that Affects*(6, n)";
+	// [6, 8] (size 2)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	CPPUNIT_ASSERT(res.size() == 2);
+	CPPUNIT_ASSERT(res.count("8") == 1);
+	CPPUNIT_ASSERT(res.count("6") == 1);
+}
+
+void PQLIntegration::testSelectCValueWith() {
+	string query = "constant c; Select c with c.value = 1";
+	// [1] (size 1)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	CPPUNIT_ASSERT(res.size() == 1);
+	CPPUNIT_ASSERT(res.count("1") == 1);
+}
+
