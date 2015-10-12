@@ -463,11 +463,142 @@ void PQLIntegration::setUp() {
 //-------------  SET UP VAR -------------//
 	VarTable* vtable = VarTable::getInstance();
 
+	Variable* varGood = new Variable("good");
+	varGood->addTNode(good1);
+	varGood->addUsingStmt(1);
+	//varGood->addModifyingStmt();
+	varGood->addUsingProc("Pizza");
+	//varGood->addModifyingProc();
+	vtable->addVariable(varGood);
+
+	Variable* varEaten = new Variable("eaten");
+	varEaten->addTNode(eaten1);
+	varEaten->addTNode(eaten2);
+	varEaten->addTNode(eaten3);
+	varEaten->addUsingStmt(1);
+	varEaten->addUsingStmt(2);
+	varEaten->addUsingStmt(4);
+	varEaten->addUsingStmt(9);
+	varEaten->addModifyingStmt(1);
+	varEaten->addModifyingStmt(2);
+	varEaten->addUsingProc("Pizza");
+	varEaten->addUsingProc("YourMom");
+	varEaten->addModifyingProc("Pizza");
+	vtable->addVariable(varEaten);
+
+	Variable* varDrink = new Variable("drink");
+	varDrink->addTNode(drink1);
+	varDrink->addTNode(drink2);
+	varDrink->addUsingStmt(1);
+	varDrink->addUsingStmt(4);
+	varDrink->addUsingStmt(9);
+	varDrink->addModifyingStmt(1);
+	varDrink->addModifyingStmt(3);
+	varDrink->addUsingProc("Pizza");
+	varDrink->addUsingProc("YourMom");
+	varDrink->addModifyingProc("Pizza");
+	vtable->addVariable(varDrink);
+
+	Variable* varMore = new Variable("more");
+	varMore->addTNode(more1);
+	varMore->addUsingStmt(1);
+	varMore->addUsingStmt(3);
+	//varMore->addModifyingStmt(1);
+	//varMore->addModifyingStmt(3);
+	varMore->addUsingProc("Pizza");
+	//varMore->addUsingProc("YourMom");
+	//varMore->addModifyingProc("Pizza");
+	vtable->addVariable(varMore);
+
+	Variable* varBeer = new Variable("beer");
+	varBeer->addTNode(beer1);
+	varBeer->addUsingStmt(1);
+	varBeer->addUsingStmt(3);
+	//varBeer->addModifyingStmt(1);
+	//varBeer->addModifyingStmt(3);
+	varBeer->addUsingProc("Pizza");
+	//varBeer->addUsingProc("YourMom");
+	//varBeer->addModifyingProc("Pizza");
+	vtable->addVariable(varBeer);
+
+	Variable* varWater = new Variable("water");
+	varWater->addTNode(water1);
+	varWater->addUsingStmt(1);
+	varWater->addUsingStmt(3);
+	//varWater->addModifyingStmt(1);
+	//varWater->addModifyingStmt(3);
+	varWater->addUsingProc("Pizza");
+	//varWater->addUsingProc("YourMom");
+	//varWater->addModifyingProc("Pizza");
+	vtable->addVariable(varWater);
+
+	Variable* varNagging = new Variable("nagging");
+	varNagging->addTNode(nagging1);
+	varNagging->addTNode(nagging2);
+	varNagging->addTNode(nagging1);
+	varNagging->addTNode(nagging2);
+	varNagging->addUsingStmt(1);
+	varNagging->addUsingStmt(4);
+	varNagging->addUsingStmt(5);
+	varNagging->addUsingStmt(6);
+	varNagging->addUsingStmt(8);
+	varNagging->addModifyingStmt(1);
+	varNagging->addModifyingStmt(4);
+	varNagging->addModifyingStmt(5);
+	varNagging->addModifyingStmt(6);
+	varNagging->addUsingProc("Pizza");
+	varNagging->addUsingProc("YourMom");
+	varNagging->addModifyingProc("Pizza");
+	varNagging->addModifyingProc("YourMom");
+	vtable->addVariable(varNagging);
+
+	Variable* varI = new Variable("i");
+	varI->addTNode(i1);
+	varI->addUsingStmt(1);
+	varI->addUsingStmt(4);
+	varI->addUsingStmt(5);
+	varI->addUsingStmt(7);
+	//varI->addModifyingStmt(1);
+	varI->addUsingProc("Pizza");
+	varI->addUsingProc("YourMom");
+	//varI->addModifyingProc("Pizza");
+	vtable->addVariable(varI);
+
+	Variable* varMom = new Variable("mom");
+	varMom->addTNode(mom1);
+	//varMom->addUsingStmt(1);
+	varMom->addModifyingStmt(1);
+	varMom->addModifyingStmt(4);
+	varMom->addModifyingStmt(5);
+	varMom->addModifyingStmt(7);
+	varMom->addModifyingStmt(8);
+	//varMom->addUsingProc("Pizza");
+	varMom->addModifyingProc("Pizza");
+	varMom->addModifyingProc("YourMom");
+	vtable->addVariable(varMom);
+
+	Variable* varFull = new Variable("full");
+	varFull->addTNode(full1);
+	//varFull->addUsingStmt(1);
+	varFull->addModifyingStmt(1);
+	varFull->addModifyingStmt(4);
+	varFull->addModifyingStmt(9);
+	//varFull->addUsingProc("Pizza");
+	varFull->addModifyingProc("Pizza");
+	varFull->addModifyingProc("YourMom");
+	vtable->addVariable(varFull);
+
 //-------------  END OF VAR -------------//
 
 
 //-------------  SET UP CONST -----------//
 	ConstTable* ctable = ConstTable::getInstance();
+	
+	Constant* c1 = new Constant("1");
+	c1->addTNodeRef(one1);
+	c1->addTNodeRef(one2);
+	c1->addAppearsIn(2);
+	c1->addAppearsIn(6);
 
 //-------------  END OF CONST -----------//
 }
