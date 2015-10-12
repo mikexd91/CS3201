@@ -5,6 +5,7 @@
 #include "../SPA/VarTable.h"
 #include "../SPA/Utils.h"
 #include "../SPA/AssgGNode.h"
+#include "../SPA/DummyGNode.h"
 #include "../SPA/WhileGNode.h"
 #include "../SPA/EndGNode.h"
 #include "../SPA/CallGNode.h"
@@ -41,6 +42,7 @@ AffectsClauseTest::setUp() {
 				a = b;
 			}
 		}
+		y=z;
 	}
 	*/
 
@@ -96,8 +98,16 @@ AffectsClauseTest::setUp() {
 	while10->setEndStmt(11);
 	assg11->setFirstParent(while10);
 	assg11->setChild(while10);
+	DummyGNode* dummy1 = new DummyGNode();
+	while10->setAfterLoopChild(dummy1);
+	dummy1->setElseParentStmt(10);
+	dummy1->setIfParentStmt(8);
+	AssgGNode* assg12 = new AssgGNode(12);
+	assg12->setFirstParent(dummy1);
+	dummy1->setFirstChild(assg12);
 	EndGNode* end2 = new EndGNode();
-	while10->setAfterLoopChild(end2);
+	end2->setParent(assg12);
+	assg12->setFirstChild(end2);
 
 	Procedure* procedure1 = new Procedure();
 	procedure1->setProcName("test");
@@ -255,6 +265,19 @@ AffectsClauseTest::setUp() {
 	stmt11->setGNodeRef(assg11);
 	stmt11->setProcedure(procedure2);
 	stable->addStmt(stmt11);
+
+	Statement* stmt12 = new Statement();
+	stmt12->setStmtNum(12);
+	stmt12->setType(ASSIGN_STMT_);
+	string modifiesArray12[] = {"y"};
+	unordered_set<string> mods12(modifiesArray12, modifiesArray12 + 1);
+	stmt12->setModifies(mods12);
+	string usesArray12[] = {"z"};
+	unordered_set<string> uses12(usesArray12, usesArray12 + 1);
+	stmt12->setUses(uses12);
+	stmt12->setGNodeRef(assg12);
+	stmt12->setProcedure(procedure2);
+	stable->addStmt(stmt12);
 }
 
 void 
@@ -315,6 +338,22 @@ void AffectsClauseTest::testSynSynFixedFail() {
 }
 
 void AffectsClauseTest::testSynFixedFixedIfPass() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder->setArg(1, "5");
+	affectsBuilder->setArgFixed(1, true);
+	affectsBuilder->setArgType(1, ARG_PROGLINE);
+	affectsBuilder->setArg(2, "9");
+	affectsBuilder->setArgFixed(2, true);
+	affectsBuilder->setArgType(2, ARG_PROGLINE);
+	AffectsClause* m1 = (AffectsClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+}
+
+void AffectsClauseTest::testSynFixedFixedOutsideContainerPass() { 
 	Result res = Result();
 	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
 	affectsBuilder->setArg(1, "5");
