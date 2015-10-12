@@ -11,9 +11,7 @@
 #include <iostream>
 
 AffectsClause::AffectsClause(void):SuchThatClause(AFFECTS_) {
-	cfg = CFG::getInstance();
 	stmtTable = StmtTable::getInstance();
-	nodeStack = stack<GNodeContainer>();
 }
 
 AffectsClause::~AffectsClause(void){
@@ -36,11 +34,14 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 	int stmtNum2 = boost::lexical_cast<int>(secondArg);
 	Statement* stmt1 = stmtTable->getStmtObj(stmtNum1);
 	Statement* stmt2 = stmtTable->getStmtObj(stmtNum2);
-	if (stmt1->getType() != ASSIGN_STMT_ || stmt2->getType() != ASSIGN_STMT_) {
+	Procedure* proc1 = stmt1->getProc();
+	Procedure* proc2 = stmt2->getProc();
+	if (stmt1->getType() != ASSIGN_STMT_ || stmt2->getType() != ASSIGN_STMT_ || proc1 != proc2) {
 		return false;
 	}
 	unordered_set<string> modifies1 = stmt1->getModifies();
 	unordered_set<string> uses2 = stmt2->getUses();
+	string modifyingVar;
 	if (modifies1.size() != 1 || uses2.empty()) {
 		//error
 		if (modifies1.size() != 1) {
@@ -48,89 +49,52 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 		}
 		return false;
 	} else {
-		string modifyingVar = *modifies1.begin();
+		modifyingVar = *modifies1.begin();
 		if (uses2.find(modifyingVar) == uses2.end()) {
 			//stmt2 does not use a variable that stmt1 modifies.
 			return false;
 		}
 	}
-	//now we know that stmt 1 modifies a variable that stmt 2 uses
-	//let's check if next* applies
-	//check if both are from the same procedure
-
-	//if both are not in same procedure
-	//check whether firstArg proc calls* secondArg proc
-	//if calls* -> check whether firstArg modifies a statement that secondArg uses
-	//else -> return false
-
 	//if both are in same procedure
 	//check if stmt2 next* stmt1
-	GNode* nextNode = stmt1->getGNodeRef();
-	while (nextNode->getNodeType() != END_) {
-		switch(nextNode->getNodeType()) {
-		case ASSIGN_:
-			AssgGNode* assgNode;
-			assgNode = static_cast<AssgGNode*>(nextNode);
-			if ( assgNode->getEndStmt() >= stmtNum2) {
-				//stmt is accessible
-				return true;
-			} 
-			nextNode = assgNode->getChild();
-			break;
-		case WHILE_:
-			WhileGNode* whileNode;
-			whileNode = static_cast<WhileGNode*>(nextNode);
-			if (nodeStack.empty() || nodeStack.top().node != whileNode) {
-				//seeing whileNode for the first time
-				GNodeContainer nodeContainer = GNodeContainer(whileNode, 1);
-				nodeStack.push(nodeContainer);
-				nextNode = whileNode->getBeforeLoopChild();
+	CFGIterator iterator = CFGIterator(stmt1->getGNodeRef());
+	GNode* currentNode = iterator.getNextNode();
+	while (!currentNode->isNodeType(END_)){
+		if (currentNode->isNodeType(ASSIGN_)) {
+			AssgGNode* assgNode = static_cast<AssgGNode*>(currentNode);
+			int startNum;
+			if (iterator.isStart()) {
+				startNum = stmtNum1+1;
 			} else {
-				//encountering whileNode again
-				nodeStack.pop();
-				nextNode = whileNode->getAfterLoopChild();
+				startNum = assgNode->getStartStmt();
 			}
-			break;
-		case IF_:
-			IfGNode* ifNode;
-			ifNode = static_cast<IfGNode*>(nextNode);
-			if (nodeStack.empty() || nodeStack.top().node != ifNode) {
-				//seeing ifNode for the first time
-				GNodeContainer nodeContainer = GNodeContainer(ifNode, 1);
-				nodeStack.push(nodeContainer);
-				nextNode = ifNode->getThenChild();
-			} else if (nodeStack.top().count == 0) {
-				//encountering ifNode again, but has not traversed else
-				nextNode = ifNode->getElseChild();
-				nodeStack.top().count--;
-			} else {
-				//throw exception, should not happen
+			for (int i =startNum; i <= assgNode->getEndStmt(); i++) {
+				if (i == stmtNum2) {
+					return true;
+				} else {
+					Statement* assgStmt = stmtTable->getStmtObj(i);
+					//if there is a statement that uses the variable
+					if (assgStmt->getModifies().find(modifyingVar) != assgStmt->getModifies().end()) {
+						//if we should consider else stmt (consider both branches) -> consider else branch
+						if (iterator.toConsiderElseStmt()) {
+							IfGNode* ifNode = iterator.getCurrentIfNode();
+							iterator.skipThenStmt(ifNode);
+						} else {
+							//there is no else branch to consider
+							return false;
+						}
+					}
+				}
 			}
-			break;
-		case CALL_:
-			CallGNode* callNode;
-			callNode = static_cast<CallGNode*>(nextNode);
-			nextNode = callNode;
-		case DUMMY_:
-			//only for if nodes
-			DummyGNode* dummyNode;
-			dummyNode = static_cast<DummyGNode*>(nextNode);
-			if (nodeStack.empty() || nodeStack.top().node != ifNode) {
-				//node is in middle of path
-				//just continue on, as the other then/else branch is not on the next* path
-			} else if (nodeStack.top().count == 0) {
-				//iterated through both then and else, pop off and not consider it again
-				nodeStack.pop();
-				nextNode = dummyNode->getChildren().at(0);
-			} else {
-				nodeStack.top().count--;
-				//count is now 0, to iterate through else
-				nextNode = nodeStack.top().node;
+		} else if (currentNode->isNodeType(WHILE_)) {
+			WhileGNode* whileNode = static_cast<WhileGNode*>(currentNode);
+			bool isWithinWhile = stmtNum2 >= whileNode->getStartStmt() && stmtNum2 <= whileNode->getEndStmt();
+			if (!isWithinWhile) {
+				iterator.skipWhileLoop(whileNode);
 			}
-			break;
 		}
+		currentNode = iterator.getNextNode();
 	}
-
 	return false;
 }
 
@@ -176,5 +140,7 @@ unordered_set<string> AffectsClause::getAllS1() {
 unordered_set<vector<string>> AffectsClause::getAllS1AndS2() {
 	return unordered_set<vector<string>>();
 }
+
+
 
 

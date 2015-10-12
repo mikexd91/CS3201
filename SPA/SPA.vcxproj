@@ -29,6 +29,7 @@
     <ClCompile Include="CallsStarClause.cpp" />
     <ClCompile Include="CFG.cpp" />
     <ClCompile Include="CFGBuilder.cpp" />
+    <ClCompile Include="CFGIterator.cpp" />
     <ClCompile Include="Clause.cpp" />
     <ClCompile Include="Constant.cpp" />
     <ClCompile Include="ConstNode.cpp" />
@@ -95,6 +96,7 @@
     <ClInclude Include="CallsStarClause.h" />
     <ClInclude Include="CFG.h" />
     <ClInclude Include="CFGBuilder.h" />
+    <ClInclude Include="CFGIterator.h" />
     <ClInclude Include="Clause.h" />
     <ClInclude Include="Constant.h" />
     <ClInclude Include="ConstNode.h" />

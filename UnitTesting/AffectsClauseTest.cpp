@@ -56,6 +56,8 @@ AffectsClauseTest::setUp() {
 	AssgGNode* assg1 = new AssgGNode(1);
 	proc1->addChild(assg1);
 	WhileGNode* while2 = new WhileGNode(2);
+	while2->setStartStmt(3);
+	while2->setEndStmt(4);
 	assg1->setChild(while2);
 	while2->setFirstParent(assg1);
 	AssgGNode* assg3 = new AssgGNode(3);
@@ -90,10 +92,23 @@ AffectsClauseTest::setUp() {
 	while10->setFirstParent(assg9);
 	AssgGNode* assg11 = new AssgGNode(11);
 	while10->setBeforeLoopChild(assg11);
+	while10->setStartStmt(11);
+	while10->setEndStmt(11);
 	assg11->setFirstParent(while10);
 	assg11->setChild(while10);
 	EndGNode* end2 = new EndGNode();
 	while10->setAfterLoopChild(end2);
+
+	Procedure* procedure1 = new Procedure();
+	procedure1->setProcName("test");
+	Procedure* procedure2 = new Procedure();
+	procedure1->setProcName("hey");
+	unordered_set<Procedure*> proc1CalledBy = unordered_set<Procedure*>();
+	proc1CalledBy.insert(procedure2);
+	procedure1->setCalledBy(proc1CalledBy);
+	unordered_set<Procedure*> proc2Calls = unordered_set<Procedure*>();
+	proc2Calls.insert(procedure1);
+	procedure2->setCalls(proc2Calls);
 
 	//Set statement table
 	Statement* stmt1 = new Statement();
@@ -106,6 +121,7 @@ AffectsClauseTest::setUp() {
 	unordered_set<string> uses1(usesArray1, usesArray1 + 1);
 	stmt1->setUses(uses1);
 	stmt1->setGNodeRef(assg1);
+	stmt1->setProcedure(procedure1);
 	stable->addStmt(stmt1);
 
 	Statement* stmt2 = new Statement();
@@ -118,6 +134,7 @@ AffectsClauseTest::setUp() {
 	unordered_set<string> uses2(usesArray2, usesArray2 + 1);
 	stmt2->setUses(uses2);
 	stmt2->setGNodeRef(while2);
+	stmt2->setProcedure(procedure1);
 	stable->addStmt(stmt2);
 	
 	Statement* stmt3 = new Statement();
@@ -130,6 +147,7 @@ AffectsClauseTest::setUp() {
 	unordered_set<string> uses3(usesArray3, usesArray3 + 1);
 	stmt3->setUses(uses3);
 	stmt3->setGNodeRef(assg3);
+	stmt3->setProcedure(procedure1);
 	stable->addStmt(stmt3);
 
 	Statement* stmt4 = new Statement();
@@ -142,19 +160,22 @@ AffectsClauseTest::setUp() {
 	unordered_set<string> uses4(usesArray4, usesArray4 + 2);
 	stmt4->setUses(uses4);
 	stmt4->setGNodeRef(assg3);
+	stmt4->setProcedure(procedure1);
 	stable->addStmt(stmt4);
 
 	//next procedure
 	Statement* stmt5 = new Statement();
 	stmt5->setStmtNum(5);
 	stmt5->setType(ASSIGN_STMT_);
-	string modifiesArray5[] = {"z"};
-	unordered_set<string> mods5(modifiesArray5, modifiesArray5 + 1);
+	//string modifiesArray5[] = {"z"};
+	unordered_set<string> mods5;//(modifiesArray5, modifiesArray5 + 1);
+	mods5.insert("z");
 	stmt5->setModifies(mods5);
 	string usesArray5[] = {"x"};
 	unordered_set<string> uses5(usesArray5, usesArray5 + 1);
 	stmt5->setUses(uses5);
 	stmt5->setGNodeRef(assg5);
+	stmt5->setProcedure(procedure2);
 	stable->addStmt(stmt5);
 	
 	Statement* stmt6 = new Statement();
@@ -162,11 +183,12 @@ AffectsClauseTest::setUp() {
 	stmt6->setType(CALL_STMT_);
 	string modifiesArray6[] = {"i", "x"};
 	unordered_set<string> mods6(modifiesArray6, modifiesArray6 + 2);
-	stmt5->setModifies(mods6);
+	stmt6->setModifies(mods6);
 	string usesArray6[] = {"x", "b", "z"};
 	unordered_set<string> uses6(usesArray6, usesArray6 + 3);
 	stmt6->setUses(uses6);
 	stmt6->setGNodeRef(call6);
+	stmt6->setProcedure(procedure2);
 	stable->addStmt(stmt6);
 
 	Statement* stmt7 = new Statement();
@@ -179,6 +201,7 @@ AffectsClauseTest::setUp() {
 	unordered_set<string> uses7(usesArray7, usesArray7 + 3);
 	stmt7->setUses(uses7);
 	stmt7->setGNodeRef(if7);
+	stmt7->setProcedure(procedure2);
 	stable->addStmt(stmt7);
 
 	Statement* stmt8 = new Statement();
@@ -191,6 +214,7 @@ AffectsClauseTest::setUp() {
 	unordered_set<string> uses8(usesArray8, usesArray8 + 1);
 	stmt8->setUses(uses8);
 	stmt8->setGNodeRef(assg8);
+	stmt8->setProcedure(procedure2);
 	stable->addStmt(stmt8);
 
 	Statement* stmt9 = new Statement();
@@ -203,6 +227,7 @@ AffectsClauseTest::setUp() {
 	unordered_set<string> uses9(usesArray9, usesArray9 + 1);
 	stmt9->setUses(uses9);
 	stmt9->setGNodeRef(assg9);
+	stmt9->setProcedure(procedure2);
 	stable->addStmt(stmt9);
 
 	Statement* stmt10 = new Statement();
@@ -215,6 +240,7 @@ AffectsClauseTest::setUp() {
 	unordered_set<string> uses10(usesArray10, usesArray10 + 1);
 	stmt10->setUses(uses10);
 	stmt10->setGNodeRef(while10);
+	stmt10->setProcedure(procedure2);
 	stable->addStmt(stmt10);
 
 	Statement* stmt11 = new Statement();
@@ -227,6 +253,7 @@ AffectsClauseTest::setUp() {
 	unordered_set<string> uses11(usesArray11, usesArray11 + 1);
 	stmt11->setUses(uses11);
 	stmt11->setGNodeRef(assg11);
+	stmt11->setProcedure(procedure2);
 	stable->addStmt(stmt11);
 }
 
@@ -257,10 +284,10 @@ void AffectsClauseTest::testSynSynFixedSameProc() {
 void AffectsClauseTest::testSynSynFixedInWhile() { 
 	Result res = Result();
 	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
-	affectsBuilder->setArg(1, "1");
+	affectsBuilder->setArg(1, "4");
 	affectsBuilder->setArgFixed(1, true);
 	affectsBuilder->setArgType(1, ARG_PROGLINE);
-	affectsBuilder->setArg(2, "3");
+	affectsBuilder->setArg(2, "4");
 	affectsBuilder->setArgFixed(2, true);
 	affectsBuilder->setArgType(2, ARG_PROGLINE);
 	AffectsClause* m1 = (AffectsClause*) affectsBuilder->build();
@@ -269,4 +296,36 @@ void AffectsClauseTest::testSynSynFixedInWhile() {
 	bool result = m1->evaluate(&res);
 	CPPUNIT_ASSERT(result);
 	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
+}
+
+void AffectsClauseTest::testSynSynFixedFail() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder->setArg(1, "1");
+	affectsBuilder->setArgFixed(1, true);
+	affectsBuilder->setArgType(1, ARG_PROGLINE);
+	affectsBuilder->setArg(2, "2");
+	affectsBuilder->setArgFixed(2, true);
+	affectsBuilder->setArgType(2, ARG_PROGLINE);
+	AffectsClause* m1 = (AffectsClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(!result);
+}
+
+void AffectsClauseTest::testSynFixedFixedIfPass() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder->setArg(1, "5");
+	affectsBuilder->setArgFixed(1, true);
+	affectsBuilder->setArgType(1, ARG_PROGLINE);
+	affectsBuilder->setArg(2, "9");
+	affectsBuilder->setArgFixed(2, true);
+	affectsBuilder->setArgType(2, ARG_PROGLINE);
+	AffectsClause* m1 = (AffectsClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
 }

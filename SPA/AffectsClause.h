@@ -2,14 +2,7 @@
 #include "SuchThatClause.h"
 #include "CFG.h"
 #include "StmtTable.h"
-
-struct GNodeContainer {
-	GNode* node;
-	int count;
-	GNodeContainer(GNode* n= NULL, int c=0):
-		node(n),
-        count(c){}
-};
+#include "CFGIterator.h"
 
 class AffectsClause 
 	: public SuchThatClause {
@@ -40,8 +33,6 @@ protected:
 	unordered_set<vector<string>> getAllS1AndS2();
 
 private:
-	CFG* cfg;
 	StmtTable* stmtTable;
-	stack<GNodeContainer> nodeStack;
 
 };
