@@ -5,57 +5,57 @@
 
 using namespace std;
 
-enum CType {
+enum GType {
 	PROG_, PROC_, WHILE_, IF_,
-	ASSIGN_CALL_, DUMMY_, END_
+	ASSIGN_, CALL_, DUMMY_, END_
 };
 
-class CNode {
+class GNode {
 
 public:
 
 	// constructor
-	CNode(CType);
+	GNode(GType);
 
 	// destructor
-	~CNode();
+	~GNode();
 
 	// getters
-	CType getNodeType();
+	GType getNodeType();
 	string getName();
 	int getStartStmt();
 	int getEndStmt();
-	vector<CNode*>& getParents();
-	vector<CNode*>& getChildren();
+	vector<GNode*>& getParents();
+	vector<GNode*>& getChildren();
 
 	// setters
-	void setNodeType(CType);
+	void setNodeType(GType);
 	void setName(string);
 	void setStartStmt(int);
 	void setEndStmt(int);
-	void addChild(CNode*);
-	void setFirstChild(CNode*);
-	void setSecondChild(CNode*);
-	void setFirstParent(CNode*);
-	void setSecondParent(CNode*);
+	void addChild(GNode*);
+	void setFirstChild(GNode*);
+	void setSecondChild(GNode*);
+	void setFirstParent(GNode*);
+	void setSecondParent(GNode*);
 
 	// checks
-	bool isNodeType(CType);
+	bool isNodeType(GType);
 
 
 protected:
 
-	CType nodeType;
+	GType nodeType;
 	int startStmt;
 	int endStmt;
 	string nodeName;
 
 	// first element will be used to store the then parent (if) or the direct parent (assign/call/while)
 	// second element will be used to store the else parent (if) or the loop parent (while)
-	vector<CNode*> parents;
+	vector<GNode*> parents;
 
 	// first element will be used to store the then child (if) or the direct child (assign/call/while)
 	// second element will be used to store the else child (if) or the after-loop child (while)
-	vector<CNode*> children;
+	vector<GNode*> children;
 
 };

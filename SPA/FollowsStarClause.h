@@ -33,5 +33,8 @@ protected:
 
 private:
 
+	bool isNeededArgType(string, int);
+	unordered_set<vector<string>> evalFirstArgStmt();
+	unordered_set<vector<string>> evalFirstArg();
 };
 
