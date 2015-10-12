@@ -29,6 +29,7 @@ class PQLIntegration : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testFailSelectBooleanFollowsStar );
 	CPPUNIT_TEST( testFailSelectPatternAssgPatternAssg );
 	CPPUNIT_TEST( testFailSelectModifiesModifies );
+	CPPUNIT_TEST( testFailSelectModifiesPatternAssg );
 	
 	CPPUNIT_TEST_SUITE_END();
 
@@ -66,4 +67,5 @@ public:
 	void testFailSelectBooleanFollowsStar();
 	void testFailSelectPatternAssgPatternAssg();
 	void testFailSelectModifiesModifies();
+	void testFailSelectModifiesPatternAssg();
 };

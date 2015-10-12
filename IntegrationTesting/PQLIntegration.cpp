@@ -905,20 +905,12 @@ void PQLIntegration::testFailSelectBooleanFollowsStar() {
 }
 
 void PQLIntegration::testFailSelectPatternAssgPatternAssg() {
-	cout << "pattern assg pattern assg" << endl;
-	string query = "assign a; Select a pattern a(\"mom\", _) a(\"eaten\", _)";
+	string query = "assign a; Select a pattern a(\"mom\", _) and a(\"eaten\", _)";
 	// [] (size 0)
 
 	PQLController* pcc = new PQLController();
 	unordered_set<string> res = pcc->parse(query);
 
-	cout << "pattern assg and pattern assg result size " << res.size() << endl;
-	BOOST_FOREACH(auto a, res) {
-		cout << a << endl;
-	}
-
-	// FAIL: returning stmt 8 when supposed to return none
-	// NOTE: suspect the second pattern clause did not prune the results
 	CPPUNIT_ASSERT(res.size() == 0);
 }
 
@@ -929,6 +921,19 @@ void PQLIntegration::testFailSelectModifiesModifies() {
 	PQLController* pcc = new PQLController();
 	unordered_set<string> res = pcc->parse(query);
 
+	CPPUNIT_ASSERT(res.size() == 0);
+}
+
+void PQLIntegration::testFailSelectModifiesPatternAssg() {
+	cout << "modifies pattern assg" << endl;
+	string query = "assign a; Select a such that Modifies(a, \"mom\") pattern a(\"seaten\", _)";
+	// [] (size 0)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	// FAIL: returning one result when there should be none
+	// NOTE: when pattern's varname not exist, the result is not pruned
 	CPPUNIT_ASSERT(res.size() == 0);
 }
 
