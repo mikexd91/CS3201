@@ -74,6 +74,12 @@ namespace stringconst{
 	string const ARG_IF = "if";
 	string const ARG_CALL = "call";
 
+	string const ATTR_COND_PROCNAME = "procName";
+	string const ATTR_COND_VARNAME = "varName";
+	string const ATTR_COND_VALUE = "value";
+	string const ATTR_COND_STMTNUM = "stmt#";
+	
+
 	const string DELIM_STRING = " ;={}";
 	const char DELIMITERS[] = { ';', '=', '{', '}' };
 	const char SANITISED_CHARS[] = { '\t', '\n' };

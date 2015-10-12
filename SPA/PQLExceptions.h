@@ -55,3 +55,9 @@ struct InvalidSyntaxException : public std::exception{
 		return "Clause: Invalid syntax";
 	}
 };
+
+struct InvalidAttributeException : public std::exception{
+	const char* what () const throw(){
+		return "Attribute condition mismatch";
+	}
+};

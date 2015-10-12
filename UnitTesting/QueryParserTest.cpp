@@ -17,6 +17,8 @@
 #include "../SPA/PatternAssgClause.h"
 #include "../SPA/PatternWhileClause.h"
 #include "../SPA/PatternIfClause.h"
+#include "../SPA/WithClause.h"
+#include "../SPA/WithClauseRef.h"
 #include "boost/unordered_map.hpp"
 #include <queue>
 #include <string>
@@ -274,33 +276,28 @@ void QueryParserTest::testPatternWhile(){
 }
 
 void QueryParserTest::testWith(){
-	string const USER_IN = "p.progline = 2";
+	string const DECLARATION = "constant c;";
+	string const USER_IN = "c.value = 1";
+	vector<string> DEC_LIST = QueryParser::tokeniser(DECLARATION, ';');
 	queue<string> WITH_Q = QueryParser::queueBuilder(USER_IN);
 	Query* ASSERTION = new Query();
+	QueryParser::parseDeclarations(ASSERTION, DEC_LIST);
 	QueryParser::parseWith(ASSERTION, WITH_Q);
+	vector<Clause*> cl = ASSERTION->getClauseList();
+	WithClause* w = dynamic_cast<WithClause*>(cl.at(0));
+	ClauseType type = w->getClauseType();
+	//CPPUNIT_ASSERT(type == WITH_);
+	WithClauseRef wl = w->getLeftRef();
+	WithClauseRef wr = w->getRightRef();
+	CPPUNIT_ASSERT(wl.getEntity() == "c");
+	CPPUNIT_ASSERT(wl.getRefType() == ATTRREF_);
+	CPPUNIT_ASSERT(wl.getAttrType() == CONSTVALUE_);
+	
+	CPPUNIT_ASSERT(wr.getEntity() == "1");
+	CPPUNIT_ASSERT(wr.getRefType() == INTEGER_);
+	CPPUNIT_ASSERT(wr.getAttrType() == NULLATTR_);
 }
 
 void QueryParserTest::testParser(){
-	//string const USER_INPUT1 = "assign a; variable v; Select a pattern a(\"v\", _\"x+y\"_) and Modifies(a, v) and pattern a(v, _)";
-	string const USER_INPUT1 = "assign a, a1; Select a such that pattern a(_, _) and a1(_, _)";
-	
-	Query output = QueryParser::parseQuery(USER_INPUT1);
-	unordered_map<string, string> decList = output.getDeclarationList();
-	CPPUNIT_ASSERT(decList.at("a") == stringconst::ARG_ASSIGN);
-	CPPUNIT_ASSERT(decList.at("a1") == stringconst::ARG_ASSIGN);
 
-	Clause* c1 = output.getClauseList().at(0);
-	Clause* c2 = output.getClauseList().at(1);
-	PatternAssgClause* a1 = dynamic_cast<PatternAssgClause*>(c1);
-	PatternAssgClause* a2 = dynamic_cast<PatternAssgClause*>(c2);
-
-	//CPPUNIT_ASSERT(a1->getFirstArg() == "a");
-	//CPPUNIT_ASSERT(a1->getFirstArgType() == stringconst::ARG_ASSIGN);
-	//CPPUNIT_ASSERT(a1->getSecondArg() == stringconst::STRING_EMPTY);
-	//CPPUNIT_ASSERT(a1->getExpression() == stringconst::STRING_EMPTY);
-
-	//CPPUNIT_ASSERT(a2->getFirstArg() == "a1");
-	//CPPUNIT_ASSERT(a2->getFirstArgType() == stringconst::ARG_ASSIGN);
-	//CPPUNIT_ASSERT(a2->getSecondArg() == stringconst::STRING_EMPTY);
-	//CPPUNIT_ASSERT(a2->getExpression() == stringconst::STRING_EMPTY);
 }

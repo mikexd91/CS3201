@@ -64,7 +64,6 @@ public:
 	SuchThatClause(ClauseType);
 	~SuchThatClause(void);
 
-	ClauseType getClauseType();
 	void setFirstArg(string);
 	void setSecondArg(string);
 	void setFirstArgType(string);
