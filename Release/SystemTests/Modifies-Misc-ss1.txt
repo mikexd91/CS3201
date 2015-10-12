@@ -13,7 +13,7 @@ assign a;
 Select a such that Modifies(a, "battle1") with a.stmt# = 12
 12
 5000
-4 - MODIFIES: stmt# - with clause(no results)
+4 - MODIFIES: stmt# - with clause (no results)
 assign a;
 Select a such that Modifies(a, "battle1") with a.stmt# = 12 and s.stmt# = 11
 none
@@ -52,4 +52,19 @@ true
 variable v;
 Select BOOLEAN such that Modifies(19, v) with v.varName = "charmander"
 false
+5000
+12 - MODIFIES: const - with clause (has results)
+variable v; constant c;
+Select c such that Modifies(17, v) with c.value = 3
+3
+5000
+13 - MODIFIES: const - with clause (no results)
+variable v; constant c;
+Select BOOLEAN such that Modifies(17, v) with c.value = 6
+false
+5000
+14 - MODIFIES: prog_line
+prog_line n;
+Select n such that Modifies(n, "wartortle")
+10, 15, 17, 20, 21, 22
 5000
