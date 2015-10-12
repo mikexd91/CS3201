@@ -12,6 +12,7 @@ DesignExtractor::DesignExtractor() {
 
 void DesignExtractor::executeSecondPass() {
 	checkCyclicCalls();
+	populateModUses();
 	populateFollowStar();
 	populateParentStar();
 }
@@ -181,4 +182,46 @@ void DesignExtractor::recurseParentStar(StmtNode* stmtNode, vector<int>& current
 		//remove stmt from current parents as all its children has been iterated
 		currentParents.pop_back();
 	}	
+}
+
+void DesignExtractor::populateModUses() {
+	ProcTable* procTable = ProcTable::getInstance();
+	unordered_set<Procedure*> procSet = procTable->getAllProcs();
+	
+	BOOST_FOREACH(auto p, procSet) {
+		unordered_set<string> modifies = recurseModifies(p);
+		unordered_set<string> uses = recurseUses(p);
+		p->setModifies(modifies);
+		p->setUses(uses);
+	}
+}
+
+unordered_set<string> DesignExtractor::recurseModifies(Procedure* proc) {
+	unordered_set<Procedure*> calls = proc->getCalls();
+
+	if(calls.empty()) {
+		return proc->getModifies();
+	}
+
+	BOOST_FOREACH(auto pCall, calls) {
+		unordered_set<string> modifies = proc->getModifies();
+		unordered_set<string> recurseSet = recurseModifies(pCall);
+		modifies.insert(recurseSet.begin(), recurseSet.end());
+		return modifies;
+	}
+}
+
+unordered_set<string> DesignExtractor::recurseUses(Procedure* proc) {
+	unordered_set<Procedure*> calls = proc->getCalls();
+
+	if(calls.empty()) {
+		return proc->getUses();
+	}
+
+	BOOST_FOREACH(auto pCall, calls) {
+		unordered_set<string> uses = proc->getUses();
+		unordered_set<string> recurseSet = recurseUses(pCall);
+		uses.insert(recurseSet.begin(), recurseSet.end());
+		return uses;
+	}
 }

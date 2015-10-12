@@ -1162,3 +1162,18 @@ void FrontEndTest::testCyclicCalls() {
 	string code = "procedure proc1 {x = 1;} procedure proc2 {y = 2; call proc4; } procedure proc3 { call proc2; x = 2; } procedure proc4 {call proc3; }";
 	CPPUNIT_ASSERT_THROW(parser.parse(code), InvalidCodeException);
 }
+
+void FrontEndTest::testMultiProcUses() {
+	parser.parse("procedure proc1 { x = 1; y = x; w = y; a = w; z = a;} procedure proc2 { call proc1;} procedure proc3 {b = 3; c = b; call proc2;}");
+	
+	Procedure* proc2 = procTable->getProcObj("proc2");
+	Procedure* proc3 = procTable->getProcObj("proc3");
+
+	string proc2Uses[] = {"x", "y", "a", "w"};
+	unordered_set<string> proc2UsesSet(proc2Uses, proc2Uses + 4);
+	CPPUNIT_ASSERT(proc2->getUses() == proc2UsesSet);
+
+	string proc3Uses[] = {"x", "y", "a", "w", "b"};
+	unordered_set<string> proc3UsesSet(proc3Uses, proc3Uses + 5);
+	CPPUNIT_ASSERT(proc3->getUses() == proc3UsesSet);
+}
