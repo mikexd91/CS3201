@@ -45,7 +45,7 @@ class FrontEndTest : public CPPUNIT_NS::TestFixture {
 	//CPPUNIT_TEST( testCFGMixedNested );
 
 	//CPPUNIT_TEST( testCyclicCalls );
-	CPPUNIT_TEST( testMultiProcUses );
+	CPPUNIT_TEST( testMultiProc );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -98,6 +98,5 @@ public:
 	void testCFGMixedNested();
 
 	void testCyclicCalls();
-	void testMultiProcUses();
-	void testMultiProcModifies();
+	void testMultiProc();
 };
