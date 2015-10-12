@@ -87,6 +87,7 @@ private:
 
 	void addUseProcToVarTable(set<string>);
 	void addModifyProcToVarTable(string);
+	void addStmtToCurrentProc(Statement*);
     
 	void createFollowsLinks(StmtNode*, Statement*);
 	void createCurrentProcedureLinks(ProcNode*, Procedure*);
@@ -94,7 +95,6 @@ private:
 
 	Procedure* checkAndAddToProcTable(string);
 	ProcNode* retrievePreviousProc();
-
 
     TNode* breakDownAssignExpression(ParsedData, unordered_set<string>&);
     

@@ -2,6 +2,7 @@
 #include "FrontEndTest.h"
 #include "../SPA/Parser.h"
 #include "../SPA/PDR.h"
+#include "../SPA/InvalidCodeException.h"
 
 using namespace std;
 // TEST VARIABLES
@@ -1155,4 +1156,9 @@ void FrontEndTest::testCFGMixedNested() {
 	unordered_set<int> stmt13PrevSet(stmt13Prev, stmt13Prev + 2);
 	CPPUNIT_ASSERT(stmt13->getPrev() == stmt13PrevSet);
 	CPPUNIT_ASSERT(stmt13->getNext().empty());
+}
+
+void FrontEndTest::testCyclicCalls() {
+	string code = "procedure proc1 {x = 1;} procedure proc2 {y = 2; call proc4; } procedure proc3 { call proc2; x = 2; } procedure proc4 {call proc3; }";
+	CPPUNIT_ASSERT_THROW(parser.parse(code), InvalidCodeException);
 }

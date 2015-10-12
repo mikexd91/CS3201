@@ -20,7 +20,8 @@ enum ClauseType{
 	AFFETCSSTAR_,
 	PATTERNASSG_,
 	PATTERNIF_,
-	PATTERNWHILE_
+	PATTERNWHILE_,
+	WITH_
 };
 
 class Clause {
@@ -29,7 +30,7 @@ public:
 	Clause(void);
 	~Clause(void);
 
-	ClauseType getClauseType();
+	virtual ClauseType getClauseType()=0;
 	
 	virtual bool evaluate(Result*)=0;
 

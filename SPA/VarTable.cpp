@@ -1,20 +1,13 @@
 #include "VarTable.h"
-#include <unordered_map>
 #include <boost/foreach.hpp>
-
-using namespace std;
 
 bool VarTable::_hasInstance = false;
 VarTable* VarTable::_instance;
 
 // constructors
-VarTable::VarTable() {
+VarTable::VarTable() {}
 
-}
-
-VarTable::~VarTable() {
-
-}
+VarTable::~VarTable() {}
 
 // general getters
 VarTable* VarTable::getInstance() {
@@ -33,32 +26,32 @@ Variable* VarTable::getVariable(const string& varName) {
 	}
 }
 
-boost::unordered_map<string, Variable*>::iterator VarTable::getIterator() {
+unordered_map<string, Variable*>::iterator VarTable::getIterator() {
 	boost::unordered_map<string, Variable*>::iterator tableIter = _table.begin();
 
 	return tableIter;
 }
 
-boost::unordered_map<string, Variable*>::iterator VarTable::getEnd() {
+unordered_map<string, Variable*>::iterator VarTable::getEnd() {
 	boost::unordered_map<string, Variable*>::iterator tableIter = _table.end();
 
 	return tableIter;
 }
 
-vector<string>* VarTable::getAllVarNames() {
-	vector<string>* allVarNames = new vector<string>;
+const unordered_set<string>& VarTable::getAllVarNames() {
+	unordered_set<string>* allVarNames = new unordered_set<string>;
 	BOOST_FOREACH(auto p, _table) {
-		allVarNames->push_back(p.first);
+		allVarNames->emplace(p.first);
 	}
-	return allVarNames;
+	return *allVarNames;
 }
 
-vector<Variable*>* VarTable::getAllVariables() {
-	vector<Variable*>* allVars = new vector<Variable*>;
+const unordered_set<Variable*>& VarTable::getAllVariables() {
+	unordered_set<Variable*>* allVars = new unordered_set<Variable*>;
 	BOOST_FOREACH(auto p, _table) {
-		allVars->push_back(p.second);
+		allVars->emplace(p.second);
 	}
-	return allVars;
+	return *allVars;
 }
 
 // setters

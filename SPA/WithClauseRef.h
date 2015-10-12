@@ -13,7 +13,7 @@ enum RefType {
 enum AttrType {
 	PROCNAME_,
 	VARNAME_,
-	VALUE_,
+	CONSTVALUE_,
 	STMTNUM_
 };
 
@@ -39,7 +39,6 @@ public:
 	string getEntity();
 	string getEntityType();
 	AttrType getAttrType();
-	string getAttr();
 
 	ReturnType getReturnType();
 
@@ -47,7 +46,6 @@ private:
 	RefType refType;
 	string entity;
 	string entityType;
-	string attr;
 	AttrType attrType;
 };
 

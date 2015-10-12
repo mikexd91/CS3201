@@ -2,7 +2,8 @@
 
 #include <set>
 #include "TNode.h"
-//#include "GNode.h"
+#include "GNode.h"
+#include "Procedure.h"
 #include <boost/unordered_set.hpp>
 
 using boost::unordered_set;
@@ -57,7 +58,7 @@ public:
 	NodeType getType();													// get stmt type
 	int getStmtNum();													// get stmt num
 	TNode* getTNodeRef();												// get reference to stmt TNode
-	//GNode* getGNodeRef();												// get reference to stmt GNode
+	GNode* getGNodeRef();												// get reference to stmt GNode
 	const UsesSet& getUses();											// get set of variables stmt uses
 	const ModifiesSet& getModifies();									// get set of variables stmt modifies
 	int getFollowsAfter();												// get stmt that follows after this stmt
@@ -67,16 +68,17 @@ public:
 	const ChildrenStarSet& getChildrenStar();							// get set of children star stmts of this stmt
 	const ParentStarSet& getParentStar();								// get set of parent star stmts of this stmt
 	int getParent();													// get parent of this stmt
-	const NextSet& getNext();													// get stmt that is next of this stmt
-	const PreviousSet& getPrev();														// get stmt whose next is this stmt
+	const NextSet& getNext();											// get stmt that is next of this stmt
+	const PreviousSet& getPrev();										// get stmt whose next is this stmt
 	const FollowsStarBeforeSet& Statement::getFollowsStarBefore();		// get set of follows star stmt before this stmt
 	const FollowsStarAfterSet& Statement::getFollowsStarAfter();		// get set of follows star stmt after this stmt
+	Procedure* getProc();
 
 	// SETTERS
 	void setType(NodeType nodeType);
 	void setStmtNum(int num);
 	void setTNodeRef(TNode *ref);
-	//void setGNodeRef(GNode *ref);
+	void setGNodeRef(GNode *ref);
 	void setUses(const UsesSet &usesSet);
 	void setModifies(const ModifiesSet &modifiesSet);
 	void setFollowsAfter(int followsAfter);
@@ -90,13 +92,14 @@ public:
 	void setChildrenStar(const ChildrenStarSet&);
 	void setFollowsStarBefore(const FollowsStarBeforeSet&);
 	void setFollowsStarAfter(const FollowsStarAfterSet&);
+	void setProcedure(Procedure*);
 
 private:
 	// PRIVATE ATTRIBUTES
 	NodeType	type;			// node type
 	int			stmtNum;		// stmt number
 	TNode		*TNodeRef;		// TNode reference
-	//GNode		*GNodeRef;		// GNode reference
+	GNode		*GNodeRef;		// GNode reference
 
 	// PRIVATE RELATIONS ATTRIBUTES
 	UsesSet			uses;
@@ -112,5 +115,5 @@ private:
 	ParentStarSet   parentStar;
 	FollowsStarBeforeSet followsStarBefore;
 	FollowsStarAfterSet followsStarAfter;
-
+	Procedure*		proc;
 };

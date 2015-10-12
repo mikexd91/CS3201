@@ -27,6 +27,9 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ConstNodeTest").ma
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("VarNodeTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("OpNodeTest").makeTest());
 
+//CFG Components
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("CFGBuilderTest").makeTest());
+
 // PKB Tables
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("VarTableTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("StmtTableTest").makeTest());
@@ -38,7 +41,9 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("FollowsClauseTest"
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("FollowsStarClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("UsesClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ModifiesClauseTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("NextClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ParentClauseTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ParentStarClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("CallsClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("CallsStarClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("PatternAssgClauseTest").makeTest());

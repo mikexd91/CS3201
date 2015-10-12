@@ -42,4 +42,10 @@ protected:
 private:
 
 	bool isNext(string, string);
+
+	bool isNeededArgType(string, int);
+
+	unordered_set<vector<string>> evalFirstArgStmt();
+	unordered_set<vector<string>> evalFirstArg();
+
 };

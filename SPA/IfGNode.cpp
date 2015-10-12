@@ -1,12 +1,12 @@
-#include "IfCNode.h"
+#include "IfGNode.h"
 
-IfCNode::IfCNode(int stmtNum)
-	: CNode(IF_) {
+IfGNode::IfGNode(int stmtNum)
+	: GNode(IF_) {
 	this->startStmt = stmtNum;
 	this->endStmt = stmtNum;
 }
 
-CNode* IfCNode::getThenChild() {
+GNode* IfGNode::getThenChild() {
 	if(this->children.size() > 0) {
 		return this->children.at(0);
 	}
@@ -14,7 +14,7 @@ CNode* IfCNode::getThenChild() {
 	return NULL;
 }
 
-CNode* IfCNode::getElseChild() {
+GNode* IfGNode::getElseChild() {
 	if(this->children.size() > 1) {
 		return this->children.at(1);
 	}
@@ -22,19 +22,19 @@ CNode* IfCNode::getElseChild() {
 	return NULL;
 }
 
-int IfCNode::getStmtNum() {
+int IfGNode::getStmtNum() {
 	return this->getStartStmt();
 }
 
-void IfCNode::setThenChild(CNode* child) {
+void IfGNode::setThenChild(GNode* child) {
 	this->setFirstChild(child);
 }
 
-void IfCNode::setElseChild(CNode* child) {
+void IfGNode::setElseChild(GNode* child) {
 	this->setSecondChild(child);
 }
 
-void IfCNode::setStmtNum(int stmtNum) {
+void IfGNode::setStmtNum(int stmtNum) {
 	this->setStartStmt(stmtNum);
 	this->setEndStmt(stmtNum);
 }
