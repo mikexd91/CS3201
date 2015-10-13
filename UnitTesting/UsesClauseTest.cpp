@@ -412,6 +412,7 @@ void UsesClauseTest::tearDown() {
 	// to clear the pkb
 	AST::reset();
 	StmtTable::getInstance()->clearTable();
+	ProcTable::getInstance()->clearTable();
 	VarTable::reset();
 }
 
