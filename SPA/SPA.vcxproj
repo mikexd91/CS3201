@@ -41,7 +41,6 @@
     <ClCompile Include="GNode.cpp" />
     <ClCompile Include="IfGNode.cpp" />
     <ClCompile Include="IfNode.cpp" />
-    <ClCompile Include="Main.cpp" />
     <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="MultiSynInsert.cpp" />
     <ClCompile Include="NoSynInsert.cpp" />
@@ -161,7 +160,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
