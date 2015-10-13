@@ -178,71 +178,38 @@ unordered_set<vector<string>> FollowsStarClause::getAllS1AndS2() {
 		return result;
 	}
 
-	if(firstArgType == ARG_STATEMENT || firstArgType == ARG_PROGLINE) {
-		result = evalFirstArgStmt();
-	} else {
-		result = evalFirstArg();
+	unordered_set<Statement*> firstArgTypeSet = getSetFromArgType(firstArgType);
+	for (auto iter = firstArgTypeSet.begin(); iter != firstArgTypeSet.end(); ++iter) {
+		unordered_set<int> followsStarAfterSet = (*iter)->getFollowsStarAfter();
+		if (!followsStarAfterSet.empty()) {
+			for (auto iter2 = followsStarAfterSet.begin(); iter2 != followsStarAfterSet.end(); ++iter2) {
+				if (isNeededArgType(secondArgType, *iter2)) {
+					vector<string> pair;
+					pair.push_back(lexical_cast<string>((*iter)->getStmtNum()));
+					pair.push_back(lexical_cast<string>(*iter2));
+					result.insert(pair);
+				}
+			}
+		}
 	}
 
 	return result;
 }
 
-unordered_set<vector<string>> FollowsStarClause::evalFirstArgStmt() {
-	unordered_set<vector<string>> results;
-	unordered_set<Statement*> setToBeEvaluated;
-
-	if(secondArgType == ARG_STATEMENT || secondArgType == ARG_PROGLINE) {
-		setToBeEvaluated = stmtTable->getAllStmts();
-	} else if(secondArgType == ARG_IF) {
-		setToBeEvaluated = stmtTable->getIfStmts();
-	} else if(secondArgType == ARG_WHILE) {
-		setToBeEvaluated = stmtTable->getWhileStmts();
-	} else if(secondArgType == ARG_CALL) {
-		setToBeEvaluated = stmtTable->getCallStmts();
+unordered_set<Statement*> FollowsStarClause::getSetFromArgType(string type) {
+	unordered_set<Statement*> argTypeSet;
+	if(type == ARG_STATEMENT || type == ARG_PROGLINE) {
+		argTypeSet = stmtTable->getAllStmts();
+	} else if(type == ARG_IF) {
+		argTypeSet = stmtTable->getIfStmts();
+	} else if(type == ARG_WHILE) {
+		argTypeSet = stmtTable->getWhileStmts();
+	} else if(type == ARG_CALL) {
+		argTypeSet = stmtTable->getCallStmts();
 	} else {
-		setToBeEvaluated = stmtTable->getAssgStmts();
+		argTypeSet = stmtTable->getAssgStmts();
 	}
-
-	for (auto stmtaft = setToBeEvaluated.begin(); stmtaft != setToBeEvaluated.end(); ++stmtaft) {
-		unordered_set<int> beforeStmtSet = (*stmtaft)->getFollowsStarBefore();
-
-		for (auto stmtBef = beforeStmtSet.begin(); stmtBef != beforeStmtSet.end(); ++stmtBef) {
-			vector<string> pair;
-			pair.push_back(lexical_cast<string>(*stmtBef));
-			pair.push_back(lexical_cast<string>((*stmtaft)->getStmtNum()));
-			results.insert(pair);
-		}
-	}
-	return results;
-}
-
-unordered_set<vector<string>> FollowsStarClause::evalFirstArg() {
-	unordered_set<vector<string>> results;
-	unordered_set<Statement*> setToBeEvaluated;
-
-	if(firstArgType == ARG_IF) {
-		setToBeEvaluated = stmtTable->getIfStmts();
-	} else if(firstArgType == ARG_CALL) {
-		setToBeEvaluated = stmtTable->getCallStmts();
-	} else if(firstArgType == ARG_WHILE) {
-		setToBeEvaluated = stmtTable->getWhileStmts();
-	} else {
-		setToBeEvaluated = stmtTable->getAssgStmts();
-	}
-
-	for (auto beforeStmt = setToBeEvaluated.begin(); beforeStmt != setToBeEvaluated.end(); ++beforeStmt) {
-		unordered_set<int> afterStmtSet = (*beforeStmt)->getFollowsStarAfter();
-
-		for (auto afterStmt = afterStmtSet.begin(); afterStmt != afterStmtSet.end(); ++afterStmt) {
-			if(isNeededArgType(secondArgType, *afterStmt)) {
-				vector<string> pair;
-				pair.push_back(lexical_cast<string>(*beforeStmt));
-				pair.push_back(lexical_cast<string>(*afterStmt));
-				results.insert(pair);
-			}
-		}
-	}
-	return results;
+	return argTypeSet;
 }
 
 bool FollowsStarClause::isNeededArgType(string type, int stmtNum) {

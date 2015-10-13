@@ -14,22 +14,6 @@ using namespace boost;
 
 int main() {
 
-	/*SuchThatClauseBuilder* b = new SuchThatClauseBuilder(MODIFIES_);
-	b->setArg(1, "a");
-	b->setArgFixed(1, false);
-	b->setArgType(1, stringconst::ARG_ASSIGN);
-	b->setArg(2, "v");
-	b->setArgFixed(2, false);
-	b->setArgType(2, stringconst::ARG_VARIABLE);
-
-	ModifiesClause* m = (ModifiesClause*) b->build();
-	Results* r = new Results();
-	r->setClauseFail();
-	m->evaluate(r);
-
-	cout << "asd" << m->isValid() << r->isClausePass() << "asd" << endl;
-	system("pause");*/
-	/* rewrite as necessary */
 	Parser parser = Parser();
 
 	ifstream in("source.txt");
@@ -47,7 +31,7 @@ int main() {
 	// designExtractor.extract();
 
 	PQLController* pqlController = new PQLController();
-	string query = "Select BOOLEAN such that Parent*(15, 22)";
+	string query = "while w; Select w pattern w(\"battle3\", _)";
 	try {
 		unordered_set<string> resultSet = pqlController->parse(query);
 		BOOST_FOREACH(auto r, resultSet) {

@@ -182,74 +182,36 @@ unordered_set<vector<string>> FollowsClause::getAllS1AndS2(){
 	if(firstArg == secondArg) {
 		return results;
 	}
-
-	if(firstArgType == ARG_STATEMENT || firstArgType == ARG_PROGLINE) {
-		results = evalFirstArgStmt();
-	} else {
-		results = evalFirstArg();
-	}
-
-	return results;
-}
-
-unordered_set<vector<string>> FollowsClause::evalFirstArgStmt() {
-	unordered_set<vector<string>> results;
-	unordered_set<Statement*> setToBeEvaluated;
-
-	if(secondArgType == ARG_STATEMENT || secondArgType == ARG_PROGLINE) {
-		setToBeEvaluated = stmtTable->getAllStmts();
-	} else if(secondArgType == ARG_IF) {
-		setToBeEvaluated = stmtTable->getIfStmts();
-	} else if(secondArgType == ARG_WHILE) {
-		setToBeEvaluated = stmtTable->getWhileStmts();
-	} else if(secondArgType == ARG_CALL) {
-		setToBeEvaluated = stmtTable->getCallStmts();
-	} else {
-		setToBeEvaluated = stmtTable->getAssgStmts();
-	}
-
-	for (auto afterStmt = setToBeEvaluated.begin(); afterStmt != setToBeEvaluated.end(); ++afterStmt) {
-		int thisStmt = (*afterStmt)->getStmtNum();
-		int beforeStmt = (*afterStmt)->getFollowsBefore();
-		bool hasBeforeStmt = (beforeStmt != -1);
-		if (hasBeforeStmt) {
-			vector<string> pair;
-			pair.push_back(lexical_cast<string>(beforeStmt));
-			pair.push_back(lexical_cast<string>(thisStmt));
-			results.insert(pair);
-		}
-	}
-	return results;
-}
-
-unordered_set<vector<string>> FollowsClause::evalFirstArg() {
-	unordered_set<vector<string>> results;
-	unordered_set<Statement*> setToBeEvaluated;
 	
-	if(firstArgType == ARG_IF) {
-		setToBeEvaluated = stmtTable->getIfStmts();
-	} else if(firstArgType == ARG_CALL) {
-		setToBeEvaluated = stmtTable->getCallStmts();
-	} else if(firstArgType == ARG_WHILE) {
-		setToBeEvaluated = stmtTable->getWhileStmts();
-	} else {
-		setToBeEvaluated = stmtTable->getAssgStmts();
-	}
-
-	for (auto afterStmt = setToBeEvaluated.begin(); afterStmt != setToBeEvaluated.end(); ++afterStmt) {
-		int thisStmt = (*afterStmt)->getStmtNum();
-		int beforeStmt = (*afterStmt)->getFollowsBefore();
-		bool hasBeforeStmt = (beforeStmt != -1);
-		if (hasBeforeStmt) {
+	unordered_set<Statement*> secondArgTypeSet = getSetFromArgType(secondArgType);
+	for (auto iter = secondArgTypeSet.begin(); iter != secondArgTypeSet.end(); ++iter) {
+		int followsBefore = (*iter)->getFollowsBefore();
+		if (followsBefore != -1 && 
+			isNeededArgType(firstArgType, followsBefore)) {
 			vector<string> pair;
-			if(isNeededArgType(secondArgType, thisStmt)) {
-				pair.push_back(lexical_cast<string>(beforeStmt));
-				pair.push_back(lexical_cast<string>(thisStmt));
-			}
+			pair.push_back(lexical_cast<string>(followsBefore));
+			pair.push_back(lexical_cast<string>((*iter)->getStmtNum()));
 			results.insert(pair);
 		}
 	}
+	
 	return results;
+}
+
+unordered_set<Statement*> FollowsClause::getSetFromArgType(string type) {
+	unordered_set<Statement*> argTypeSet;
+	if(type == ARG_STATEMENT || type == ARG_PROGLINE) {
+		argTypeSet = stmtTable->getAllStmts();
+	} else if(type == ARG_IF) {
+		argTypeSet = stmtTable->getIfStmts();
+	} else if(type == ARG_WHILE) {
+		argTypeSet = stmtTable->getWhileStmts();
+	} else if(type == ARG_CALL) {
+		argTypeSet = stmtTable->getCallStmts();
+	} else {
+		argTypeSet = stmtTable->getAssgStmts();
+	}
+	return argTypeSet;
 }
 
 bool FollowsClause::isNeededArgType(string type, int stmtNum) {

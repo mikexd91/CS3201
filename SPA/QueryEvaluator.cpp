@@ -35,19 +35,24 @@ string QueryEvaluator::boolToString(bool b) {
 
 unordered_set<string> QueryEvaluator::getValuesToPrint(Result* obj, vector<StringPair> selectList) {
 	unordered_set<string> resultSet = unordered_set<string>();
+	string syn, type;
 	int numOfSyn = selectList.size();
+	bool isQueryPassed = obj->isPass();
+
 	if (numOfSyn == 1) {
-		string syn = selectList.at(0).getFirst();
-		string type = selectList.at(0).getSecond();
+		syn = selectList.at(0).getFirst();
+		type = selectList.at(0).getSecond();
 		if (syn == "BOOLEAN" && type == stringconst::ARG_BOOLEAN) {
-			bool isQueryPass = obj->isPass();
-			resultSet.insert(boolToString(isQueryPass));
-		} else {
+			resultSet.insert(boolToString(isQueryPassed));
+		} else if (isQueryPassed) {
 			resultSet = printSingleSynValues(*obj, syn);
 		}
 	} else {
-		resultSet = printTupleSynValues(*obj, selectList);
+		if (isQueryPassed) {
+			resultSet = printTupleSynValues(*obj, selectList);
+		}
 	}
+
 	return resultSet;
 }
 
@@ -92,7 +97,7 @@ Result* QueryEvaluator::evaluateClauses(Result* obj, vector<Clause*> clauseList)
 		Clause* c = *i;
 		if (c->evaluate(obj) == false) {
 			obj->setFail();
-			break;
+			return obj;
 		} 
 	}
 	string syn = selectList.at(0).getFirst();

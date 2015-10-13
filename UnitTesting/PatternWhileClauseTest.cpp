@@ -17,9 +17,11 @@ void PatternWhileClauseTest::setUp() {
 	/* testing this source
 	procedure zumba {
 		while x {	//1
-		}			//2
+			while y {	//2
+			}
+		}
 	}
-	pattern if("x", "_", "_") == 1;
+	pattern w("x", "_") == 1;
 	*/
 
 	// to set up the ast manually
@@ -35,7 +37,14 @@ void PatternWhileClauseTest::setUp() {
 	StmtLstNode* stmtList = new StmtLstNode();
 	while1->linkStmtLstNode(stmtList);
 
+	WhileNode* while2 = new WhileNode(2);
+	VarNode* y1 = new VarNode("y");
+	while2->linkVarNode(y1);
+	StmtLstNode* stmtList2 = new StmtLstNode();
+	while2->linkStmtLstNode(stmtList2);
+
 	procsl->linkStmtNode(while1);
+	stmtList->linkStmtNode(while2);
 	ast->addProcNode(proc);
 
 	// to set up the stmttable manually
@@ -51,14 +60,28 @@ void PatternWhileClauseTest::setUp() {
 	stmt1->setUses(uses1);
 	stable->addStmt(stmt1);
 
+	Statement* stmt2 = new Statement();
+	stmt2->setStmtNum(2);
+	stmt2->setType(WHILE_STMT_);
+	stmt2->setTNodeRef(while2);
+	string yvar = "y";
+	unordered_set<string> uses2 = unordered_set<string>();
+	uses2.emplace(yvar);
+	stmt2->setUses(uses2);
+	stable->addStmt(stmt2);
+
 	// to set up the vartable manually
 	VarTable* vtable = VarTable::getInstance();
-
+	
 	Variable* vx = new Variable("x");
 	vx->addUsingStmt(1);
 	vx->addTNode(x1);
 	vtable->addVariable(vx);
 
+	Variable* vy = new Variable("y");
+	vy->addUsingStmt(2);
+	vy->addTNode(y1);
+	vtable->addVariable(vy);
 }
 
 void PatternWhileClauseTest::tearDown() {
@@ -82,32 +105,33 @@ void PatternWhileClauseTest::evaluateVarWild() {
 	whileBuilder->setVarType(stringconst::ARG_GENERIC);
 	whileBuilder->setVarFixed(false);
 	whileBuilder->setExpr(1, "_");
-	PatternAssgClause* p1 = (PatternAssgClause*) whileBuilder->build();
+	PatternWhileClause* p1 = (PatternWhileClause*) whileBuilder->build();
 	
 	CPPUNIT_ASSERT(p1->isValid());
 	Result *res = new Result();
 	CPPUNIT_ASSERT(p1->evaluate(res));
 
 	CPPUNIT_ASSERT(res->isSynPresent(syn1));
-	CPPUNIT_ASSERT(res->getSyn(syn1).size() == 1);
+	CPPUNIT_ASSERT(res->getSyn(syn1).size() == 2);
 
 	return;
 }
 
 void PatternWhileClauseTest::evaluateVarFixed() {
 	//cout << "varfixed";
-	// pass pattern if("x", "_", "_");
-	string syn1 = "if";
+	// pass pattern w("x", "_");
+	string syn1 = "w";
+	string var1 = "x";
 	/*PatternWhileClause* p1 = new PatternWhileClause(syn1, "x", "_");
 	p1->setVarFixed(true);
 	p1->setVarType(stringconst::ARG_VARIABLE);*/
 	PatternClauseBuilder* whileBuilder = new PatternClauseBuilder(PATTERNWHILE_);
 	whileBuilder->setSynonym(syn1);
-	whileBuilder->setVar("x");
+	whileBuilder->setVar(var1);
 	whileBuilder->setVarType(stringconst::ARG_VARIABLE);
 	whileBuilder->setVarFixed(true);
 	whileBuilder->setExpr(1, "_");
-	PatternAssgClause* p1 = (PatternAssgClause*) whileBuilder->build();
+	PatternWhileClause* p1 = (PatternWhileClause*) whileBuilder->build();
 
 	CPPUNIT_ASSERT(p1->isValid());
 	Result *r1 = new Result();
@@ -117,22 +141,43 @@ void PatternWhileClauseTest::evaluateVarFixed() {
 	CPPUNIT_ASSERT(r1->getSyn(syn1).size() == 1);
 	CPPUNIT_ASSERT(r1->getSyn(syn1).count("1") == 1);
 
-
-	// var fail, not the control var
-	/*PatternWhileClause* p2 = new PatternWhileClause(syn1, "y", "_");
-	p2->setVarType(stringconst::ARG_VARIABLE);
-	p2->setVarFixed(true);*/
+	// pass pattern w("y", "_");
+	string syn2 = "w";
+	string var2 = "y";
+	/*PatternWhileClause* p1 = new PatternWhileClause(syn2, "y", "_");
+	p1->setVarFixed(true);
+	p1->setVarType(stringconst::ARG_VARIABLE);*/
 	PatternClauseBuilder* whileBuilder2 = new PatternClauseBuilder(PATTERNWHILE_);
-	whileBuilder2->setSynonym(syn1);
-	whileBuilder2->setVar("y");
+	whileBuilder2->setSynonym(syn2);
+	whileBuilder2->setVar(var2);
 	whileBuilder2->setVarType(stringconst::ARG_VARIABLE);
 	whileBuilder2->setVarFixed(true);
 	whileBuilder2->setExpr(1, "_");
-	PatternAssgClause* p2 = (PatternAssgClause*) whileBuilder2->build();
+	PatternWhileClause* p2 = (PatternWhileClause*) whileBuilder2->build();
+
 	CPPUNIT_ASSERT(p2->isValid());
+	Result *r2 = new Result();
+	CPPUNIT_ASSERT(p2->evaluate(r2));
+
+	CPPUNIT_ASSERT(r2->isSynPresent(syn2));
+	CPPUNIT_ASSERT(r2->getSyn(syn2).size() == 1);
+	CPPUNIT_ASSERT(r2->getSyn(syn2).count("2") == 1);
+
+	// var fail, not the control var
+	/*PatternWhileClause* p2 = new PatternWhileClause(syn1, "z", "_");
+	p2->setVarType(stringconst::ARG_VARIABLE);
+	p2->setVarFixed(true);*/
+	PatternClauseBuilder* whileBuilder3 = new PatternClauseBuilder(PATTERNWHILE_);
+	whileBuilder3->setSynonym(syn1);
+	whileBuilder3->setVar("z");
+	whileBuilder3->setVarType(stringconst::ARG_VARIABLE);
+	whileBuilder3->setVarFixed(true);
+	whileBuilder3->setExpr(1, "_");
+	PatternWhileClause* p3 = (PatternWhileClause*) whileBuilder3->build();
+	CPPUNIT_ASSERT(p3->isValid());
 
 	Result* resFail = new Result();
-	CPPUNIT_ASSERT(!p2->evaluate(resFail));
+	CPPUNIT_ASSERT(!p3->evaluate(resFail));
 	
 	return;
 }
@@ -151,7 +196,7 @@ void PatternWhileClauseTest::evaluateVarSyn() {
 	whileBuilder->setVarType(stringconst::ARG_VARIABLE);
 	whileBuilder->setVarFixed(false);
 	whileBuilder->setExpr(1, "_");
-	PatternAssgClause* p1 = (PatternAssgClause*) whileBuilder->build();
+	PatternWhileClause* p1 = (PatternWhileClause*) whileBuilder->build();
 
 	CPPUNIT_ASSERT(p1->isValid());
 	Result *r1 = new Result();
@@ -159,8 +204,9 @@ void PatternWhileClauseTest::evaluateVarSyn() {
 
 	CPPUNIT_ASSERT(r1->isSynPresent(syn1));
 	CPPUNIT_ASSERT(r1->isSynPresent(syn2));
-	CPPUNIT_ASSERT(r1->getSyn(syn1).size() == 1);
+	CPPUNIT_ASSERT(r1->getSyn(syn1).size() == 2);
 	CPPUNIT_ASSERT(r1->getSyn(syn1).count("1") == 1);
+	CPPUNIT_ASSERT(r1->getSyn(syn1).count("2") == 1);
 	// HOW TO CHECK THE PAIR RESULTS
 	// 1. make unordered set of the syns you want to check
 	// 2. select them as resultstable and see size
@@ -168,7 +214,10 @@ void PatternWhileClauseTest::evaluateVarSyn() {
 	synList.push_back(syn1);
 	synList.push_back(syn2);
 	unordered_set<vector<string>> multiSynResults = r1->getMultiSyn(synList);
-	CPPUNIT_ASSERT(multiSynResults.size() == 1);
+	CPPUNIT_ASSERT(multiSynResults.size() == 2);
+	/*BOOST_FOREACH(auto a, multiSynResults) {
+		cout << a.at(0) << "," << a.at(1) << endl;
+	}*/
 	
 	return;
 }

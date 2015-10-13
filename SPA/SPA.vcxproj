@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AffectsClause.cpp" />
     <ClCompile Include="AssgGNode.cpp" />
     <ClCompile Include="AssgNode.cpp" />
     <ClCompile Include="AST.cpp" />
@@ -28,6 +29,7 @@
     <ClCompile Include="CallsStarClause.cpp" />
     <ClCompile Include="CFG.cpp" />
     <ClCompile Include="CFGBuilder.cpp" />
+    <ClCompile Include="CFGIterator.cpp" />
     <ClCompile Include="Clause.cpp" />
     <ClCompile Include="Constant.cpp" />
     <ClCompile Include="ConstNode.cpp" />
@@ -41,6 +43,7 @@
     <ClCompile Include="GNode.cpp" />
     <ClCompile Include="IfGNode.cpp" />
     <ClCompile Include="IfNode.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="MultiSynInsert.cpp" />
     <ClCompile Include="NextClause.cpp" />
@@ -67,6 +70,7 @@
     <ClCompile Include="QueryEvaluator.cpp" />
     <ClCompile Include="QueryParser.cpp" />
     <ClCompile Include="Result.cpp" />
+    <ClCompile Include="DesignExtractor.cpp" />
     <ClCompile Include="SingleSynInsert.cpp" />
     <ClCompile Include="Statement.cpp" />
     <ClCompile Include="StmtLstNode.cpp" />
@@ -85,6 +89,7 @@
     <ClCompile Include="WhileNode.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AffectsClause.h" />
     <ClInclude Include="AssgGNode.h" />
     <ClInclude Include="AssgNode.h" />
     <ClInclude Include="AST.h" />
@@ -94,6 +99,7 @@
     <ClInclude Include="CallsStarClause.h" />
     <ClInclude Include="CFG.h" />
     <ClInclude Include="CFGBuilder.h" />
+    <ClInclude Include="CFGIterator.h" />
     <ClInclude Include="Clause.h" />
     <ClInclude Include="Constant.h" />
     <ClInclude Include="ConstNode.h" />

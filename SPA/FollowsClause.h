@@ -34,7 +34,6 @@ private:
 
 	bool isFollows(string, string);
 	bool isNeededArgType(string, int);
-	unordered_set<vector<string>> evalFirstArgStmt();
-	unordered_set<vector<string>> evalFirstArg();
+	unordered_set<Statement*> getSetFromArgType(string);
 };
 

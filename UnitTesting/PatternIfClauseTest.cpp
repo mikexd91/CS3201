@@ -20,10 +20,12 @@ using namespace stringconst;
 void PatternIfClauseTest::setUp() {
 	/* testing this source
 	procedure zumba {
-		if x then {	//1
-		}			
-		else {		
-		}			
+		if x then {		//1
+			if y then {	//2
+			} else {
+			}
+		} else {
+		}
 	}
 	pattern if("x", "_", "_") == 1;
 	*/
@@ -43,7 +45,16 @@ void PatternIfClauseTest::setUp() {
 	StmtLstNode* elsesl = new StmtLstNode();
 	if1->linkElseStmtLstNode(elsesl);
 
+	IfNode* if2 = new IfNode(2);
+	VarNode* y1 = new VarNode("y");
+	if2->linkVarNode(y1);
+	StmtLstNode* thensl2 = new StmtLstNode();
+	if2->linkThenStmtLstNode(thensl2);
+	StmtLstNode* elsesl2 = new StmtLstNode();
+	if2->linkElseStmtLstNode(elsesl2);
+
 	procsl->linkStmtNode(if1);
+	thensl->linkStmtNode(if2);
 	ast->addProcNode(proc);
 
 	// to set up the stmttable manually
@@ -59,6 +70,16 @@ void PatternIfClauseTest::setUp() {
 	stmt1->setUses(uses1);
 	stable->addStmt(stmt1);
 
+	Statement* stmt2 = new Statement();
+	stmt2->setStmtNum(2);
+	stmt2->setType(IF_STMT_);
+	stmt2->setTNodeRef(if2);
+	string yvar = "y";
+	unordered_set<string> uses2 = unordered_set<string>();
+	uses2.emplace(yvar);
+	stmt2->setUses(uses2);
+	stable->addStmt(stmt2);
+
 	// to set up the vartable manually
 	VarTable* vtable = VarTable::getInstance();
 
@@ -66,6 +87,12 @@ void PatternIfClauseTest::setUp() {
 	vx->addUsingStmt(1);
 	vx->addTNode(x1);
 	vtable->addVariable(vx);
+
+	Variable* vy = new Variable("y");
+	vy->addUsingStmt(1);
+	vy->addUsingStmt(2);
+	vy->addTNode(y1);
+	vtable->addVariable(vy);
 
 }
 
@@ -91,31 +118,14 @@ void PatternIfClauseTest::evaluateVarWild() {
 	ifBuilder->setVarFixed(false);
 	ifBuilder->setExpr(1, "_");
 	ifBuilder->setExpr(2, "_");
-	PatternAssgClause* p1 = (PatternAssgClause*) ifBuilder->build();
+	PatternIfClause* p1 = (PatternIfClause*) ifBuilder->build();
 	
 	CPPUNIT_ASSERT(p1->isValid());
 	Result *r1 = new Result();
 	CPPUNIT_ASSERT(p1->evaluate(r1));
 
 	CPPUNIT_ASSERT(r1->isSynPresent(syn1));
-	CPPUNIT_ASSERT(r1->getSyn(syn1).size() == 1);
-
-	//PatternIfClause* p1 = new PatternIfClause("a", "_", "_");
-	//p1->setSecondArgFixed(false);
-	//p1->setSecondArgType(stringconst::ARG_GENERIC);
-
-	//CPPUNIT_ASSERT(p1->isValid());
-	//Result *r1 = new Result();
-	//CPPUNIT_ASSERT(p1->evaluate(r1));
-	//string syn1 = "a";
-
-	//CPPUNIT_ASSERT(r1->isSynPresent(syn1));
-	//CPPUNIT_ASSERT(r1->getSyn(syn1).size() == 3);
-	//
-	//unordered_set<string> v = r1->getSyn(syn1);
-	////BOOST_FOREACH(auto i, v) {
-	////	cout << i;
-	////}
+	CPPUNIT_ASSERT(r1->getSyn(syn1).size() == 2);
 
 	return;
 }
@@ -134,7 +144,7 @@ void PatternIfClauseTest::evaluateVarFixed() {
 	ifBuilder->setVarFixed(true);
 	ifBuilder->setExpr(1, "_");
 	ifBuilder->setExpr(2, "_");
-	PatternAssgClause* p1 = (PatternAssgClause*) ifBuilder->build();
+	PatternIfClause* p1 = (PatternIfClause*) ifBuilder->build();
 
 	CPPUNIT_ASSERT(p1->isValid());
 	Result *r1 = new Result();
@@ -144,11 +154,10 @@ void PatternIfClauseTest::evaluateVarFixed() {
 	CPPUNIT_ASSERT(r1->getSyn(syn1).size() == 1);
 	CPPUNIT_ASSERT(r1->getSyn(syn1).count("1") == 1);
 
-
-	// var fail, not the control var
-	/*PatternIfClause* p2 = new PatternIfClause(syn1, "y", "_", "_");
-	p2->setVarType(stringconst::ARG_VARIABLE);
-	p2->setVarFixed(true);*/
+	// pass pattern if("y", "_", "_");
+	/*PatternIfClause* p1 = new PatternIfClause(syn1, "y", "_", "_");
+	p1->setVarFixed(true);
+	p1->setVarType(stringconst::ARG_VARIABLE);*/
 	PatternClauseBuilder* ifBuilder2 = new PatternClauseBuilder(PATTERNIF_);
 	ifBuilder2->setSynonym(syn1);
 	ifBuilder2->setVar("y");
@@ -156,41 +165,32 @@ void PatternIfClauseTest::evaluateVarFixed() {
 	ifBuilder2->setVarFixed(true);
 	ifBuilder2->setExpr(1, "_");
 	ifBuilder2->setExpr(2, "_");
-	PatternAssgClause* p2 = (PatternAssgClause*) ifBuilder2->build();
+	PatternIfClause* p2 = (PatternIfClause*) ifBuilder2->build();
+
 	CPPUNIT_ASSERT(p2->isValid());
+	Result *r2 = new Result();
+	CPPUNIT_ASSERT(p2->evaluate(r2));
+
+	CPPUNIT_ASSERT(r2->isSynPresent(syn1));
+	CPPUNIT_ASSERT(r2->getSyn(syn1).size() == 1);
+	CPPUNIT_ASSERT(r2->getSyn(syn1).count("2") == 1);
+
+	// var fail, not the control var
+	/*PatternIfClause* p2 = new PatternIfClause(syn1, "z", "_", "_");
+	p2->setVarType(stringconst::ARG_VARIABLE);
+	p2->setVarFixed(true);*/
+	PatternClauseBuilder* ifBuilder3 = new PatternClauseBuilder(PATTERNIF_);
+	ifBuilder3->setSynonym(syn1);
+	ifBuilder3->setVar("z");
+	ifBuilder3->setVarType(ARG_VARIABLE);
+	ifBuilder3->setVarFixed(true);
+	ifBuilder3->setExpr(1, "_");
+	ifBuilder3->setExpr(2, "_");
+	PatternIfClause* p3 = (PatternIfClause*) ifBuilder3->build();
+	CPPUNIT_ASSERT(p3->isValid());
 
 	Result* resFail = new Result();
-	CPPUNIT_ASSERT(!p2->evaluate(resFail));
-
-	//PatternIfClause* p1 = new PatternIfClause("a", "i", "_");
-	//p1->setVarType(stringconst::ARG_VARIABLE);
-	//p1->setVarFixed(true);
-	//CPPUNIT_ASSERT(p1->isValid());
-
-	//Results* res = new Results();
-	//CPPUNIT_ASSERT(p1->evaluate(res));
-	//
-	//string syn1 = "a";
-	//long long num = 1;
-
-	//CPPUNIT_ASSERT(res->isSynPresent(syn1));
-	//CPPUNIT_ASSERT(res->getSyn(syn1).size() == 1);
-	//CPPUNIT_ASSERT(res->getSyn(syn1).count("1") == 1);
-
-	////cout << r1.getFirstClauseSyn() << endl;
-	////CPPUNIT_ASSERT(r1.isClausePassed());
-	////CPPUNIT_ASSERT(r1.getFirstClauseSyn() == syn1);
-	////CPPUNIT_ASSERT(r1.getSinglesResults().size() == 1);
-	////CPPUNIT_ASSERT(r1.getSinglesResults().at(0) == to_string(num));
-
-	//// var fail
-	//PatternIfClause* p2 = new PatternIfClause("a", "x", "_");
-	//p2->setVarType(stringconst::ARG_VARIABLE);
-	//p2->setVarFixed(true);
-	//CPPUNIT_ASSERT(p2->isValid());
-
-	//Result* resFail = new Result();
-	//CPPUNIT_ASSERT(!p2->evaluate(resFail));
+	CPPUNIT_ASSERT(!p3->evaluate(resFail));
 	
 	return;
 }
@@ -210,7 +210,7 @@ void PatternIfClauseTest::evaluateVarSyn() {
 	ifBuilder->setVarFixed(false);
 	ifBuilder->setExpr(1, "_");
 	ifBuilder->setExpr(2, "_");
-	PatternAssgClause* p1 = (PatternAssgClause*) ifBuilder->build();
+	PatternIfClause* p1 = (PatternIfClause*) ifBuilder->build();
 
 	CPPUNIT_ASSERT(p1->isValid());
 	Result *r1 = new Result();
@@ -218,8 +218,9 @@ void PatternIfClauseTest::evaluateVarSyn() {
 
 	CPPUNIT_ASSERT(r1->isSynPresent(syn1));
 	CPPUNIT_ASSERT(r1->isSynPresent(syn2));
-	CPPUNIT_ASSERT(r1->getSyn(syn1).size() == 1);
+	CPPUNIT_ASSERT(r1->getSyn(syn1).size() == 2);
 	CPPUNIT_ASSERT(r1->getSyn(syn1).count("1") == 1);
+	CPPUNIT_ASSERT(r1->getSyn(syn1).count("2") == 1);
 	// HOW TO CHECK THE PAIR RESULTS
 	// 1. make unordered set of the syns you want to check
 	// 2. select them as resultstable and see size
@@ -227,47 +228,7 @@ void PatternIfClauseTest::evaluateVarSyn() {
 	synList.push_back(syn1);
 	synList.push_back(syn2);
 	unordered_set<vector<string>> multiSynResults = r1->getMultiSyn(synList);
-	CPPUNIT_ASSERT(multiSynResults.size() == 1);
-
-	// pass, pattern a(v, "_");
-	//PatternIfClause* p1 = new PatternIfClause("a", "v", "_");
-	//p1->setVarType(stringconst::ARG_VARIABLE);
-	//p1->setVarFixed(false);
-	//p1->setExpression("_");
-	//CPPUNIT_ASSERT(p1->isValid());
-
-	//Results* res = new Results();
-	//CPPUNIT_ASSERT(p1->evaluate(res));
-	//
-	//string expectedSyn1 = "a";
-	//string expectedSyn2 = "v";
-	//int expectedSize = 3;
-
-	//CPPUNIT_ASSERT(res->isSynPresent(expectedSyn1));
-	//CPPUNIT_ASSERT(res->isSynPresent(expectedSyn2));
-	//// HOW TO CHECK THE PAIR RESULTS
-	//// 1. make unordered set of the syns you want to check
-	//// 2. select them as resultstable and see size
-	//unordered_set<string> synList = unordered_set<string>();
-	//synList.insert(expectedSyn1);
-	//synList.insert(expectedSyn2);
-	//Results::ResultsTable multiSynResults = res->getMultiSyn(synList);
-	//CPPUNIT_ASSERT(multiSynResults.size() == expectedSize);
-
-	//cout << "print the thing" << endl;
-	//for (int i = 0; i < r1.getPairResults().size(); i++) {
-	//	//cout << r1.getPairResults().at(i).first << " " 
-	//		//<< r1.getPairResults().at(i).second << endl;
-	//	if (r1.getPairResults().at(i).first == "1") {
-	//		CPPUNIT_ASSERT(r1.getPairResults().at(i).second == "i");
-	//	}
-	//	if (r1.getPairResults().at(i).first == "2") {
-	//		CPPUNIT_ASSERT(r1.getPairResults().at(i).second == "j");
-	//	}
-	//	if (r1.getPairResults().at(i).first == "3") {
-	//		CPPUNIT_ASSERT(r1.getPairResults().at(i).second == "k");
-	//	}
-	//}
+	CPPUNIT_ASSERT(multiSynResults.size() == 2);
 	
 	return;
 }
