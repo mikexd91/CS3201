@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AffectsClause.cpp" />
     <ClCompile Include="AssgGNode.cpp" />
     <ClCompile Include="AssgNode.cpp" />
     <ClCompile Include="AST.cpp" />
@@ -28,6 +29,7 @@
     <ClCompile Include="CallsStarClause.cpp" />
     <ClCompile Include="CFG.cpp" />
     <ClCompile Include="CFGBuilder.cpp" />
+    <ClCompile Include="CFGIterator.cpp" />
     <ClCompile Include="Clause.cpp" />
     <ClCompile Include="Constant.cpp" />
     <ClCompile Include="ConstNode.cpp" />
@@ -41,8 +43,10 @@
     <ClCompile Include="GNode.cpp" />
     <ClCompile Include="IfGNode.cpp" />
     <ClCompile Include="IfNode.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="MultiSynInsert.cpp" />
+    <ClCompile Include="NextClause.cpp" />
     <ClCompile Include="NoSynInsert.cpp" />
     <ClCompile Include="OpNode.cpp" />
     <ClCompile Include="ParentClause.cpp" />
@@ -84,6 +88,7 @@
     <ClCompile Include="WhileNode.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AffectsClause.h" />
     <ClInclude Include="AssgGNode.h" />
     <ClInclude Include="AssgNode.h" />
     <ClInclude Include="AST.h" />
@@ -93,6 +98,7 @@
     <ClInclude Include="CallsStarClause.h" />
     <ClInclude Include="CFG.h" />
     <ClInclude Include="CFGBuilder.h" />
+    <ClInclude Include="CFGIterator.h" />
     <ClInclude Include="Clause.h" />
     <ClInclude Include="Constant.h" />
     <ClInclude Include="ConstNode.h" />
@@ -111,6 +117,7 @@
     <ClInclude Include="InvalidExpressionException.h" />
     <ClInclude Include="ModifiesClause.h" />
     <ClInclude Include="MultiSynInsert.h" />
+    <ClInclude Include="NextClause.h" />
     <ClInclude Include="NoSynInsert.h" />
     <ClInclude Include="OpNode.h" />
     <ClInclude Include="ParentClause.h" />
@@ -135,7 +142,6 @@
     <ClInclude Include="QueryEvaluator.h" />
     <ClInclude Include="QueryParser.h" />
     <ClInclude Include="Result.h" />
-    <ClInclude Include="DesignExtractor.h" />
     <ClInclude Include="ResultTable.h" />
     <ClInclude Include="SingleSynInsert.h" />
     <ClInclude Include="Statement.h" />

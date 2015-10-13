@@ -6,7 +6,7 @@
 class FollowsStarClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( FollowsStarClauseTest );
 	CPPUNIT_TEST( testFollowsStarFixedFixedPass );
-
+	
 	CPPUNIT_TEST( testFollowsStarFixedFixedFailWrongOrder );
 	CPPUNIT_TEST( testFollowsStarFixedFixedFailNestingLevel );
 	CPPUNIT_TEST( testFollowsStarFixedFixedFailSameStmt );
@@ -27,9 +27,9 @@ class FollowsStarClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testFollowsStarFixedSynPassWithAssign );
 
 	CPPUNIT_TEST( testFollowsStarFixedSynFail );
-
+	
 	CPPUNIT_TEST( testFollowsStarSynSynPass );
-
+	
 	CPPUNIT_TEST( testFollowsStarSynSynSameFail );
 
 	CPPUNIT_TEST( testFollowsStarGenericSynPass  );
@@ -54,6 +54,7 @@ class FollowsStarClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testFollowsStarSynSynSameFail );
 	CPPUNIT_TEST( testFollowsStarStmtOverflow );
 	CPPUNIT_TEST( testFollowsStarUnacceptedType );
+	
 	CPPUNIT_TEST_SUITE_END();
 
 public:
