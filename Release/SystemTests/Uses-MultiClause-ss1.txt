@@ -56,7 +56,7 @@ none
 12 - USES: 2 clauses (mixed) - fixed-syn, generic-fixed
 variable v;
 Select v such that Uses(15, v) and Uses(_, "lastPokemon")
-battle1, wartortle, ivysaur, battle2, battle3, charmeleon, squirtle
+none
 5000
 13 - USES: 2 clauses (mixed) - syn-fixed, syn-generic
 stmt s;

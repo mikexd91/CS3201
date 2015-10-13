@@ -34,7 +34,8 @@ protected:
 private:
 
 	bool isNeededArgType(string, int);
-	unordered_set<vector<string>> evalFirstArgStmt();
-	unordered_set<vector<string>> evalFirstArg();
+	unordered_set<Statement*> getSetFromArgType(string);
+	//unordered_set<vector<string>> evalFirstArgStmt();
+	//unordered_set<vector<string>> evalFirstArg();
 };
 
