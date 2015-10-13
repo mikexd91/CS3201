@@ -3,7 +3,6 @@
 #include "StmtTable.h"
 #include "VarTable.h"
 #include "ProcTable.h"
-#include "Results.h"
 
 #include "boost\lexical_cast.hpp"
 #include "boost\unordered_set.hpp"
@@ -56,12 +55,12 @@ bool UsesClause::evaluateS1FixedS2Fixed(string s1, string s2) {
 bool UsesClause::evaluateS1GenericS2Generic() {
 
 	// get all variables
-	vector<Variable*>* allVars = varTable->getAllVariables();
+	unordered_set<Variable*> allVars = varTable->getAllVariables();
 
 	// check if any of variables are being used (by stmt or proc)
-	for(vector<Variable*>::iterator i=allVars->begin(); i!=allVars->end(); i++) {
-		unordered_set<int> usedByStmts = (*i)->getUsedByStmts();
-		unordered_set<string> usedByProc = (*i)->getUsedByProc();
+	BOOST_FOREACH(auto i, allVars) {
+		unordered_set<int> usedByStmts = i->getUsedByStmts();
+		unordered_set<string> usedByProc = i->getUsedByProc();
 
 		if(!usedByStmts.empty() || !usedByProc.empty()) {
 			return true;

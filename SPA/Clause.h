@@ -3,7 +3,6 @@
 #include "SingleSynInsert.h"
 #include "MultiSynInsert.h"
 #include "Result.h"
-#include "Results.h"
 #include "Utils.h"
 
 enum ClauseType{
@@ -31,7 +30,7 @@ public:
 	Clause(void);
 	~Clause(void);
 
-	ClauseType getClauseType();
+	virtual ClauseType getClauseType()=0;
 	
 	virtual bool evaluate(Result*)=0;
 

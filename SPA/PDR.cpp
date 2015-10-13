@@ -70,9 +70,11 @@ void PDR::processCallStmt(ParsedData data) {
 	Statement* callStmt = new Statement();
 	callStmt->setStmtNum(stmtCounter);
 	callStmt->setCalls(data.getProcName());
-	callStmt->setType(NodeType::CALL_STMT_);
+	callStmt->setType(CALL_STMT_);
 	createFollowsLinks(callNode, callStmt);
 	addToStmtTable(callStmt);
+
+	addStmtToCurrentProc(callStmt);
 }
 
 void PDR::addToStmtTable(Statement* stmt) {
@@ -145,11 +147,11 @@ void PDR::processAssignStmt(ParsedData data) {
 		addParentSet(modifies, MODIFIES);
     }
 
+	addStmtToCurrentProc(stmt);
     stmtTable->addStmt(stmt);
 }
 
 void PDR::processIfStmt(ParsedData data) {
-	// TODO
 	checkAndModifyNestingLevel(data);
 
 	IfNode* ifNode = new IfNode(++stmtCounter);
@@ -170,7 +172,7 @@ void PDR::processIfStmt(ParsedData data) {
 	// Populating StmtTable
 	StmtTable* stmtTable = StmtTable::getInstance();
 	Statement* ifStmt = new Statement();
-	ifStmt->setType(NodeType::IF_STMT_);
+	ifStmt->setType(IF_STMT_);
 	ifStmt->setStmtNum(stmtCounter);
 	ifStmt->setTNodeRef(ifNode);
 
@@ -192,6 +194,7 @@ void PDR::processIfStmt(ParsedData data) {
 	}
 
 	stmtParentNumStack.push(stmtCounter);
+	addStmtToCurrentProc(ifStmt);
 	stmtTable->addStmt(ifStmt);
 }
 
@@ -261,6 +264,7 @@ void PDR::processWhileStmt(ParsedData data) {
 	}
 
 	stmtParentNumStack.push(stmtCounter);
+	addStmtToCurrentProc(whileStmt);
 	stmtTable->addStmt(whileStmt);
 }
 
@@ -478,6 +482,14 @@ void PDR::addModifiesToCalledBy(string modifyVar) {
 		Variable* var = varTable->getVariable(modifyVar);
 		var->addModifyingProc(calledByProcedure->getProcName());
 	}
+}
+
+void PDR::addStmtToCurrentProc(Statement* stmt) {
+	unordered_set<int> containStmts = currentProcedure->getContainStmts();
+	containStmts.insert(stmt->getStmtNum());
+	currentProcedure->setContainStmts(containStmts);
+
+	stmt->setProcedure(currentProcedure);
 }
 
 void PDR::addParentSet(unordered_set<string> setToBeAdded, Flag statusFlag) {

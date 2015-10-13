@@ -32,6 +32,7 @@ private:
 	unordered_set<string> getAllProc();
 	unordered_set<string> getAllConst();
 
+	string boolToString(bool);
 	void getRemainingSynValuesFromTable(Result &obj);
 	Result* evaluateClauses(Result* obj, vector<Clause*> clauseList);
 	unordered_set<string> stringVectorToSet(vector<string> &varVector);

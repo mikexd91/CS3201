@@ -1,11 +1,11 @@
 #pragma once
 
 #include "TNode.h"
-#include <set>
 #include "Variable.h"
-#include <boost\unordered_map.hpp>
+#include "boost/unordered_map.hpp"
+#include "boost/unordered_set.hpp"
 
-using namespace std;
+using namespace boost;
 
 class VarTable {
 	/*
@@ -25,10 +25,10 @@ public:
 	// getters
 	static VarTable* getInstance();
 	Variable* getVariable(const string& varName);
-	boost::unordered_map<string, Variable*>::iterator getIterator();
-	boost::unordered_map<string, Variable*>::iterator getEnd();
-	vector<string>* getAllVarNames();
-	vector<Variable*>* getAllVariables();
+	unordered_map<string, Variable*>::iterator getIterator();
+	unordered_map<string, Variable*>::iterator getEnd();
+	const unordered_set<string>& getAllVarNames();
+	const unordered_set<Variable*>& getAllVariables();
 
 	// setters
 	void addVariable(Variable *var);

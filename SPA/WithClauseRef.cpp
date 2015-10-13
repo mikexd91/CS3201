@@ -58,7 +58,7 @@ ReturnType WithClauseRef::getReturnType()
 				case VARNAME_ :
 					return RETURNSTRING_;
 
-				case VALUE_ :
+				case CONSTVALUE_ :
 				case STMTNUM_ :
 					return RETURNINTEGER_;
 

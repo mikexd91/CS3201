@@ -20,11 +20,12 @@ class QueryEvaluatorTest: public CPPUNIT_NS::TestFixture {
 
 	// YET TO TEST: GETTING TABLE VALUES WHEN TABLE IS EMPTY
 
-	// Testing Modifies clause, 1 clause in query.
+	// Testing Modifies, Follows clause, 1 clause in query.
 	// All synonyms in select list are appearing in clause list
 	CPPUNIT_TEST( testModifiesEvaluateFixedSynProcPass );
 	CPPUNIT_TEST( testModifiesEvaluateSynFixedWhilePass );
 	CPPUNIT_TEST( testModifiesEvaluateSynSynAssgPass );
+	CPPUNIT_TEST( testFollowsEvaluateSynSynStmtPass );
 	
 	// Testing Modifies clause, 1 clause in query
 	// Not all synonyms in select list are appearing in clause list
@@ -34,6 +35,21 @@ class QueryEvaluatorTest: public CPPUNIT_NS::TestFixture {
 	// No synonyms in select list match synonyms in clause list
 	CPPUNIT_TEST( testModifiesEvaluateSynGenericStmtPass );
 
+	// Testing Follows clause, 1 clause in query
+	// select BOOLEAN
+	CPPUNIT_TEST( testFollowsEvaluateFixedFixedPass );
+	CPPUNIT_TEST( testFollowsEvaluateFixedFixedFail );
+	
+	// Testing Follows, Parent, Modifies clause in query
+	// select BOOLEAN
+	CPPUNIT_TEST( testUnderscoreFixedPass );
+	CPPUNIT_TEST( testUnderscoreFixedFail );
+	CPPUNIT_TEST( testFixedUnderscorePass );
+	CPPUNIT_TEST( testFixedUnderscoreFail );
+	CPPUNIT_TEST( testUnderscoreUnderscorePass );
+	CPPUNIT_TEST( testFixedFixedPass );
+	CPPUNIT_TEST( testFixedFixedFail );
+	
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -54,9 +70,21 @@ public:
 	void testModifiesEvaluateFixedSynProcPass();
 	void testModifiesEvaluateSynFixedWhilePass();
 	void testModifiesEvaluateSynSynAssgPass();
+	void testFollowsEvaluateSynSynStmtPass();
 
 	void testHalfInClauseWithModifiesSynSynStmtPass();
 
 	void testModifiesEvaluateSynGenericStmtPass();
+
+	void testFollowsEvaluateFixedFixedPass();
+	void testFollowsEvaluateFixedFixedFail();
+
+	void testUnderscoreFixedPass();
+	void testUnderscoreFixedFail();
+	void testFixedUnderscorePass();
+	void testFixedUnderscoreFail();
+	void testUnderscoreUnderscorePass();
+	void testFixedFixedPass();
+	void testFixedFixedFail();
 };
 
