@@ -27,6 +27,9 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ConstNodeTest").ma
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("VarNodeTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("OpNodeTest").makeTest());
 
+//CFG Components
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("CFGBuilderTest").makeTest());
+
 // PKB Tables
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("VarTableTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("StmtTableTest").makeTest());

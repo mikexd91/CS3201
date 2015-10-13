@@ -19,27 +19,29 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AssgCallCNode.cpp" />
+    <ClCompile Include="AssgGNode.cpp" />
     <ClCompile Include="AssgNode.cpp" />
     <ClCompile Include="AST.cpp" />
+    <ClCompile Include="CallGNode.cpp" />
     <ClCompile Include="CallNode.cpp" />
     <ClCompile Include="CallsClause.cpp" />
     <ClCompile Include="CallsStarClause.cpp" />
     <ClCompile Include="CFG.cpp" />
     <ClCompile Include="CFGBuilder.cpp" />
     <ClCompile Include="Clause.cpp" />
-    <ClCompile Include="CNode.cpp" />
     <ClCompile Include="Constant.cpp" />
     <ClCompile Include="ConstNode.cpp" />
     <ClCompile Include="ConstTable.cpp" />
     <ClCompile Include="DesignExtractor.cpp" />
-    <ClCompile Include="DummyCNode.cpp" />
-    <ClCompile Include="EndCNode.cpp" />
+    <ClCompile Include="DummyGNode.cpp" />
+    <ClCompile Include="EndGNode.cpp" />
     <ClCompile Include="ExpressionParser.cpp" />
     <ClCompile Include="FollowsClause.cpp" />
     <ClCompile Include="FollowsStarClause.cpp" />
-    <ClCompile Include="IfCNode.cpp" />
+    <ClCompile Include="GNode.cpp" />
+    <ClCompile Include="IfGNode.cpp" />
     <ClCompile Include="IfNode.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="MultiSynInsert.cpp" />
     <ClCompile Include="NoSynInsert.cpp" />
@@ -55,13 +57,12 @@
     <ClCompile Include="PatternWhileClause.cpp" />
     <ClCompile Include="PDR.cpp" />
     <ClCompile Include="PQLController.cpp" />
-    <ClCompile Include="ProcCNode.cpp" />
     <ClCompile Include="PKB.cpp" />
     <ClCompile Include="Procedure.cpp" />
+    <ClCompile Include="ProcGNode.cpp" />
     <ClCompile Include="ProcNode.cpp" />
     <ClCompile Include="ProcTable.cpp" />
     <ClCompile Include="ProgNode.cpp" />
-    <ClCompile Include="ProgramCNode.cpp" />
     <ClCompile Include="Query.cpp" />
     <ClCompile Include="QueryEvaluator.cpp" />
     <ClCompile Include="QueryParser.cpp" />
@@ -80,30 +81,31 @@
     <ClCompile Include="Variable.cpp" />
     <ClCompile Include="VarNode.cpp" />
     <ClCompile Include="VarTable.cpp" />
-    <ClCompile Include="WhileCNode.cpp" />
+    <ClCompile Include="WhileGNode.cpp" />
     <ClCompile Include="WhileNode.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AssgCallCNode.h" />
+    <ClInclude Include="AssgGNode.h" />
     <ClInclude Include="AssgNode.h" />
     <ClInclude Include="AST.h" />
+    <ClInclude Include="CallGNode.h" />
     <ClInclude Include="CallNode.h" />
     <ClInclude Include="CallsClause.h" />
     <ClInclude Include="CallsStarClause.h" />
     <ClInclude Include="CFG.h" />
     <ClInclude Include="CFGBuilder.h" />
     <ClInclude Include="Clause.h" />
-    <ClInclude Include="CNode.h" />
     <ClInclude Include="Constant.h" />
     <ClInclude Include="ConstNode.h" />
     <ClInclude Include="ConstTable.h" />
     <ClInclude Include="DesignExtractor.h" />
-    <ClInclude Include="DummyCNode.h" />
-    <ClInclude Include="EndCNode.h" />
+    <ClInclude Include="DummyGNode.h" />
+    <ClInclude Include="EndGNode.h" />
     <ClInclude Include="ExpressionParser.h" />
     <ClInclude Include="FollowsClause.h" />
     <ClInclude Include="FollowsStarClause.h" />
-    <ClInclude Include="IfCNode.h" />
+    <ClInclude Include="GNode.h" />
+    <ClInclude Include="IfGNode.h" />
     <ClInclude Include="IfNode.h" />
     <ClInclude Include="InsertType.h" />
     <ClInclude Include="InvalidCodeException.h" />
@@ -125,12 +127,11 @@
     <ClInclude Include="PKB.h" />
     <ClInclude Include="PQLController.h" />
     <ClInclude Include="PQLExceptions.h" />
-    <ClInclude Include="ProcCNode.h" />
     <ClInclude Include="Procedure.h" />
+    <ClInclude Include="ProcGNode.h" />
     <ClInclude Include="ProcNode.h" />
     <ClInclude Include="ProcTable.h" />
     <ClInclude Include="ProgNode.h" />
-    <ClInclude Include="ProgramCNode.h" />
     <ClInclude Include="Query.h" />
     <ClInclude Include="QueryEvaluator.h" />
     <ClInclude Include="QueryParser.h" />
@@ -151,7 +152,7 @@
     <ClInclude Include="Variable.h" />
     <ClInclude Include="VarNode.h" />
     <ClInclude Include="VarTable.h" />
-    <ClInclude Include="WhileCNode.h" />
+    <ClInclude Include="WhileGNode.h" />
     <ClInclude Include="WhileNode.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -160,7 +161,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>

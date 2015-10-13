@@ -36,10 +36,10 @@ unordered_set<string> PQLController::parse(string query) {
 
 		return valueSet;
 
-		} catch (std::exception& e) {
-			cout << "Evalutaion Failed...";
-			cout << e.what() << endl;
-			unordered_set<string> empty;
-			return empty;
-		}
+	} catch (std::exception& e) {
+		cout << "Evalutaion Failed...";
+		cout << e.what() << endl;
+		unordered_set<string> empty;
+		return empty;
+	}
 }

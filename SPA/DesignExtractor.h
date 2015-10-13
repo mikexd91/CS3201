@@ -12,6 +12,7 @@ public:
 	DesignExtractor();
 	void executeSecondPass();
 private:
+	void checkCyclicCalls();
 	void populateParentStar();
 	void populateFollowStar();
 	void recurseParentStar(StmtNode*, vector<int>&);

@@ -9,7 +9,7 @@
 //#include "FollowsStarClause.h"
 #include "ModifiesClause.h"
 #include "ParentClause.h"
-//#include "ParentStarClause.h"
+#include "ParentStarClause.h"
 #include "PatternClause.h"
 #include "UsesClause.h"
 #include "PatternIfClause.h"
@@ -210,7 +210,7 @@ bool QueryParser::containsClauseType(string s){
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
 	clauseVector.push_back(stringconst::TYPE_USES);
 	//clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
-	//clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
+	clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
 	return containsAny(s, clauseVector);
 }
 
@@ -230,7 +230,7 @@ string QueryParser::getClauseString(string s){
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
 	clauseVector.push_back(stringconst::TYPE_USES);
 	//clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
-	//clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
+	clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
 	for (size_t i=0; i<clauseVector.size(); i++){
 		string current = clauseVector.at(i);
 		if (contains(s, current)){
@@ -244,10 +244,10 @@ SuchThatClauseBuilder* QueryParser::createCorrectClause(string type){
 	//if (type == stringconst::TYPE_FOLLOWS_STAR){
 		//SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(FOLLOWSSTAR_);
 		//return clause;		
-	/*} else if (type == stringconst::TYPE_PARENT_STAR){
+	if (type == stringconst::TYPE_PARENT_STAR){
 		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(PARENTSTAR_);
 		return clause;
-	} else*/ if (type == stringconst::TYPE_FOLLOWS){
+	} else if (type == stringconst::TYPE_FOLLOWS){
 		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(FOLLOWS_);
 		return clause;		
 	} else if (type == stringconst::TYPE_PARENT){
