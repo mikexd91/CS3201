@@ -70,7 +70,6 @@
     <ClCompile Include="QueryEvaluator.cpp" />
     <ClCompile Include="QueryParser.cpp" />
     <ClCompile Include="Result.cpp" />
-    <ClCompile Include="DesignExtractor.cpp" />
     <ClCompile Include="SingleSynInsert.cpp" />
     <ClCompile Include="Statement.cpp" />
     <ClCompile Include="StmtLstNode.cpp" />
@@ -143,7 +142,6 @@
     <ClInclude Include="QueryEvaluator.h" />
     <ClInclude Include="QueryParser.h" />
     <ClInclude Include="Result.h" />
-    <ClInclude Include="DesignExtractor.h" />
     <ClInclude Include="ResultTable.h" />
     <ClInclude Include="SingleSynInsert.h" />
     <ClInclude Include="Statement.h" />
