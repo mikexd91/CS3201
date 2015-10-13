@@ -46,6 +46,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="MultiSynInsert.cpp" />
+    <ClCompile Include="NextClause.cpp" />
     <ClCompile Include="NoSynInsert.cpp" />
     <ClCompile Include="OpNode.cpp" />
     <ClCompile Include="ParentClause.cpp" />
@@ -117,6 +118,7 @@
     <ClInclude Include="InvalidExpressionException.h" />
     <ClInclude Include="ModifiesClause.h" />
     <ClInclude Include="MultiSynInsert.h" />
+    <ClInclude Include="NextClause.h" />
     <ClInclude Include="NoSynInsert.h" />
     <ClInclude Include="OpNode.h" />
     <ClInclude Include="ParentClause.h" />
