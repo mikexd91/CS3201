@@ -26,11 +26,14 @@ public:
 	~CFGIterator();
 	CFGIterator(GNode* start);
 	GNode* getNextNode();
+	bool isInWhileLoop();
+	WhileGNode* getCurrentWhileNode();
 	void skipWhileLoop(WhileGNode* node);
 	bool toConsiderElseStmt();
-	void skipThenStmt(IfGNode* node);
 	IfGNode* getCurrentIfNode();
+	void skipThenStmt(IfGNode* node);
 	bool isStart();
+
 	
 private:
 	GNode* startNode;

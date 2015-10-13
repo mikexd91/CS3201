@@ -5,21 +5,25 @@
 
 class AffectsClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( AffectsClauseTest );
-	CPPUNIT_TEST( testSynSynFixedSameProc );
-	CPPUNIT_TEST( testSynSynFixedInWhile );
-	CPPUNIT_TEST( testSynSynFixedFail );
-	CPPUNIT_TEST( testSynFixedFixedIfPass );
-	CPPUNIT_TEST( testSynFixedFixedOutsideContainerPass );
+	CPPUNIT_TEST( testFixedFixedSameProc );
+	CPPUNIT_TEST( testFixedFixedInWhile );
+	CPPUNIT_TEST( testFixedFixedFail );
+	CPPUNIT_TEST( testFixedFixedIfPass );
+	CPPUNIT_TEST( testFixedFixedOutsideContainerPass );
+	CPPUNIT_TEST( testFixedGenericPass );
+	CPPUNIT_TEST( testFixedGenericFail );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
 	void setUp();
 	void tearDown();
 
-	void testSynSynFixedSameProc();
-	void testSynSynFixedInWhile();
-	void testSynSynFixedFail();
-	void testSynFixedFixedIfPass();
-	void testSynFixedFixedOutsideContainerPass();
+	void testFixedFixedSameProc();
+	void testFixedFixedInWhile();
+	void testFixedFixedFail();
+	void testFixedFixedIfPass();
+	void testFixedFixedOutsideContainerPass();
+	void testFixedGenericPass();
+	void testFixedGenericFail();
 };
     

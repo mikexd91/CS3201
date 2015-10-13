@@ -110,7 +110,68 @@ bool AffectsClause::evaluateS1GenericS2Fixed(string s2) {
 
 //e.g. Parent(2,_)
 bool AffectsClause::evaluateS1FixedS2Generic(string s1){
-	return true;
+	//check modifies/uses aspects of firstArg and secondArg
+	int stmtNum1 = boost::lexical_cast<int>(s1);
+	Statement* stmt1 = stmtTable->getStmtObj(stmtNum1);
+	if (stmt1->getType() != ASSIGN_STMT_) {
+		return false;
+	}
+	unordered_set<string> modifies1 = stmt1->getModifies();
+	string modifyingVar;
+	if (modifies1.size() != 1) {
+		//error
+		if (modifies1.size() != 1) {
+			cout << "Assignment statements should only have 1 modify variable";	
+		}
+		return false;
+	} else {
+		modifyingVar = *modifies1.begin();
+	}
+
+	//if both are in same procedure
+	//check if stmt2 next* stmt1
+	CFGIterator iterator = CFGIterator(stmt1->getGNodeRef());
+	GNode* currentNode = iterator.getNextNode();
+	while (!currentNode->isNodeType(END_)){
+		if (currentNode->isNodeType(ASSIGN_)) {
+			AssgGNode* assgNode = static_cast<AssgGNode*>(currentNode);
+			int startNum;
+			if (iterator.isStart()) {
+				startNum = stmtNum1+1;
+			} else {
+				startNum = assgNode->getStartStmt();
+			}
+			for (int i =startNum; i <= assgNode->getEndStmt(); i++) {
+				Statement* assgStmt = stmtTable->getStmtObj(i);
+				if (assgStmt->getUses().find(modifyingVar) != assgStmt->getUses().end()) {
+					return true;
+				} else {
+					Statement* assgStmt = stmtTable->getStmtObj(i);
+					//if there is a statement that uses the variable
+					if (assgStmt->getModifies().find(modifyingVar) != assgStmt->getModifies().end()) {
+						//if we should consider else stmt (consider both branches) -> consider else branch
+						if (iterator.toConsiderElseStmt()) {
+							IfGNode* ifNode = iterator.getCurrentIfNode();
+							iterator.skipThenStmt(ifNode);
+						} else if (iterator.isInWhileLoop()) {
+							//if the bad assg stmt is in a while loop, skip the while loop
+							//as there may be a path outside it that does not affect
+							WhileGNode* whileNode = iterator.getCurrentWhileNode();
+							iterator.skipWhileLoop(whileNode);
+						} else {
+							//there is no else branch, and we are not in a while loop
+							return false;
+						}
+					}
+				}
+			}
+		} 
+		currentNode = iterator.getNextNode();
+	}
+	return false;
+
+
+
 }
 
 //e.g. Parent(2, s2)
