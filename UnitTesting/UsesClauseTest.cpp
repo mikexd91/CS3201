@@ -32,9 +32,17 @@ void UsesClauseTest::setUp() {
 		} else {
 			y = 6;	//11
 		}
+
+		call proc2; //12
+	}
+
+	procedure proc2 {
+		a = 2;		//13
+		b = a;		//14
 	}
 	*/
 
+	// to set up the ast manually
 	// to set up the ast manually
 	AST* ast = AST::getInstance();
 
@@ -270,6 +278,36 @@ void UsesClauseTest::setUp() {
 	stmt11->setTNodeRef(assg11);
 	stable->addStmt(stmt11);
 
+	Statement* stmt12 = new Statement();
+	stmt12->setStmtNum(12);
+	stmt12->setType(CALL_STMT_);
+	string stmt12Uses[] = {"a"};
+	string stmt12Modifies[] = {"a", "b"};
+	unordered_set<string> stmt12UsesSet(stmt12Uses, stmt12Uses + 1);
+	unordered_set<string> stmt12ModifiesSet(stmt12Modifies, stmt12Modifies + 2);
+	stmt12->setUses(stmt12UsesSet);
+	stmt12->setModifies(stmt12ModifiesSet);
+	stable->addStmt(stmt12);
+
+	Statement* stmt13 = new Statement();
+	stmt13->setStmtNum(13);
+	stmt13->setType(ASSIGN_STMT_);
+	unordered_set<string> mods13;
+	mods13.insert("a");
+	stmt13->setModifies(mods13);
+	stable->addStmt(stmt13);
+
+	Statement* stmt14 = new Statement();
+	stmt14->setStmtNum(14);
+	stmt14->setType(ASSIGN_STMT_);
+	unordered_set<string> mods14;
+	unordered_set<string> uses14;
+	mods14.insert("b");
+	uses14.insert("a");
+	stmt14->setModifies(mods14);
+	stmt14->setUses(uses14);
+	stable->addStmt(stmt14);
+
 	// to set up the vartable manually
 	VarTable* vtable = VarTable::getInstance();
 
@@ -331,17 +369,42 @@ void UsesClauseTest::setUp() {
 	vx->addTNode(x5);
 	vtable->addVariable(vx);
 
+	Variable* va = new Variable("a");
+	va->addModifyingProc("zumba");
+	va->addModifyingProc("proc2");
+	va->addModifyingStmt(13);
+	va->addModifyingStmt(12);
+	va->addUsingStmt(14);
+	va->addUsingStmt(12);
+	vtable->addVariable(va);
+
+	Variable* vb = new Variable("b");
+	vb->addModifyingProc("zumba");
+	vb->addModifyingProc("proc2");
+	vb->addModifyingStmt(14);
+	vb->addModifyingStmt(12);
+	vtable->addVariable(vb);
+
 
 	// set procedure for modifies
 	ProcTable* procTable = ProcTable::getInstance();
 	Procedure* procedure = new Procedure("zumba");
-	string procUsesArr[] = {"i", "w", "k", "j"};
-	unordered_set<string> procUses(procUsesArr, procUsesArr + 4);
-	string procModsArr[] = {"i", "j", "k", "w", "x", "z", "y"};
-	unordered_set<string> procModifies(procModsArr, procModsArr + 7);
+	string procUsesArr[] = {"i", "w", "k", "j", "a"};
+	unordered_set<string> procUses(procUsesArr, procUsesArr + 5);
+	string procModsArr[] = {"i", "j", "k", "w", "x", "z", "y", "a", "b"};
+	unordered_set<string> procModifies(procModsArr, procModsArr + 9);
 	procedure->setUses(procUses);
 	procedure->setModifies(procModifies);
 	procTable->addProc(procedure);
+
+	Procedure* proc2 = new Procedure("proc2");
+	string proc2Uses[] = {"a"};
+	string proc2Modifies[] = {"a", "b"};
+	unordered_set<string> proc2UsesSet(proc2Uses, proc2Uses + 1);
+	unordered_set<string> proc2ModifiesSet(proc2Modifies, proc2Modifies + 2);
+	proc2->setUses(proc2UsesSet);
+	proc2->setModifies(proc2ModifiesSet);
+	procTable->addProc(proc2);
 }
 
 
@@ -440,7 +503,7 @@ void UsesClauseTest::testFixedFixedProcFail() {
 	usesBuilder->setArg(1, "zumba");
 	usesBuilder->setArgFixed(1, true);
 	usesBuilder->setArgType(1, ARG_PROCEDURE);
-	usesBuilder->setArg(2, "a");
+	usesBuilder->setArg(2, "c");
 	usesBuilder->setArgFixed(2, true);
 	usesBuilder->setArgType(2, ARG_VARIABLE);
 	UsesClause* use = (UsesClause*) usesBuilder->build();
@@ -653,7 +716,7 @@ void UsesClauseTest::testFixedSynStmtFail() {
 	use->setSecondArgFixed(false);
 	use->setSecondArgType(ARG_VARIABLE);*/
 	SuchThatClauseBuilder* usesBuilder = new SuchThatClauseBuilder(USES_);
-	usesBuilder->setArg(1, "12");
+	usesBuilder->setArg(1, "15");
 	usesBuilder->setArgFixed(1, true);
 	usesBuilder->setArgType(1, ARG_STATEMENT);
 	usesBuilder->setArg(2, "v");
@@ -688,7 +751,7 @@ void UsesClauseTest::testFixedSynProcPass() {
 
 	bool evalResult = use->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 4);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 5);
 }
 
 void UsesClauseTest::testFixedSynProcFail() {
@@ -736,7 +799,7 @@ void UsesClauseTest::testGenericSynPass() {
 
 	bool evalResult = use->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 4);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 5);
 }
 
 void UsesClauseTest::testSynFixedStmtPass() {
@@ -776,7 +839,7 @@ void UsesClauseTest::testSynFixedStmtFail() {
 	usesBuilder->setArg(1, "s");
 	usesBuilder->setArgFixed(1, false);
 	usesBuilder->setArgType(1, ARG_STATEMENT);
-	usesBuilder->setArg(2, "a");
+	usesBuilder->setArg(2, "c");
 	usesBuilder->setArgFixed(2, true);
 	usesBuilder->setArgType(2, ARG_VARIABLE);
 	UsesClause* use = (UsesClause*) usesBuilder->build();
@@ -968,7 +1031,7 @@ void UsesClauseTest::testSynFixedAssgFail() {
 	usesBuilder->setArg(1, "s");
 	usesBuilder->setArgFixed(1, false);
 	usesBuilder->setArgType(1, ARG_ASSIGN);
-	usesBuilder->setArg(2, "a");
+	usesBuilder->setArg(2, "c");
 	usesBuilder->setArgFixed(2, true);
 	usesBuilder->setArgType(2, ARG_VARIABLE);
 	UsesClause* use = (UsesClause*) usesBuilder->build();
@@ -976,6 +1039,39 @@ void UsesClauseTest::testSynFixedAssgFail() {
 
 	bool evalResult = use->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
+}
+
+void UsesClauseTest::testSynFixedCallPass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(USES_);
+	builder->setArg(1, "c");
+	builder->setArg(2, "a");
+	builder->setArgType(1, ARG_CALL);
+	builder->setArgType(2, ARG_VARIABLE);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, true);
+	UsesClause* clause = (UsesClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result));
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
+
+}
+
+void UsesClauseTest::testSynFixedCallFail() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(USES_);
+	builder->setArg(1, "c");
+	builder->setArg(2, "l");
+	builder->setArgType(1, ARG_CALL);
+	builder->setArgType(2, ARG_VARIABLE);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, true);
+	UsesClause* clause = (UsesClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
@@ -1000,7 +1096,7 @@ void UsesClauseTest::testSynGenericProcPass() {
 
 	bool evalResult = use->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
 }
 
 void UsesClauseTest::testSynGenericIfPass() {
@@ -1072,7 +1168,7 @@ void UsesClauseTest::testSynGenericStmtPass() {
 
 	bool evalResult = use->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 5);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
 }
 
 void UsesClauseTest::testSynGenericAssgPass() {
@@ -1096,7 +1192,23 @@ void UsesClauseTest::testSynGenericAssgPass() {
 
 	bool evalResult = use->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 3);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 4);
+}
+
+void UsesClauseTest::testSynGenericCallPass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(USES_);
+	builder->setArg(1, "c");
+	builder->setArg(2, "_");
+	builder->setArgType(1, ARG_CALL);
+	builder->setArgType(2, ARG_GENERIC);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, false);
+	UsesClause* clause = (UsesClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result));
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void UsesClauseTest::testSynSynProcPass() {
@@ -1120,7 +1232,7 @@ void UsesClauseTest::testSynSynProcPass() {
 
 	bool evalResult = use->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 4);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 6);
 }
 
 void UsesClauseTest::testSynSynIfPass() {
@@ -1192,7 +1304,7 @@ void UsesClauseTest::testSynSynStmtPass() {
 
 	bool evalResult = use->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 6);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 8);
 }
 
 void UsesClauseTest::testSynSynAssgPass() {
@@ -1216,5 +1328,21 @@ void UsesClauseTest::testSynSynAssgPass() {
 
 	bool evalResult = use->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 4);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 5);
+}
+
+void UsesClauseTest::testSynSynCallPass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(USES_);
+	builder->setArg(1, "c");
+	builder->setArg(2, "v");
+	builder->setArgType(1, ARG_CALL);
+	builder->setArgType(2, ARG_VARIABLE);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, false);
+	UsesClause* clause = (UsesClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result));
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }

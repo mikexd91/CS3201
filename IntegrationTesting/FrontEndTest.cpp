@@ -1197,4 +1197,20 @@ void FrontEndTest::testMultiProc() {
 	unordered_set<string> proc4ModifiesSet(proc4Modifies, proc4Modifies + 2);
 	CPPUNIT_ASSERT(proc4->getUses() == proc4UsesSet);
 	CPPUNIT_ASSERT(proc4->getModifies() == proc4ModifiesSet);
+
+	Statement* call1 = stmtTable1->getStmtObj(6);
+	string call1Uses[] = {"v", "w"};
+	string call1Modifies[] = {"v", "w", "y"};
+	unordered_set<string> call1UsesSet(call1Uses, call1Uses + 2);
+	unordered_set<string> call1ModifiesSet(call1Modifies, call1Modifies + 3);
+	CPPUNIT_ASSERT(call1->getUses() == call1UsesSet);
+	CPPUNIT_ASSERT(call1->getModifies() == call1ModifiesSet);
+
+	Statement* call2 = stmtTable1->getStmtObj(9);
+	CPPUNIT_ASSERT(call2->getUses() == proc2UsesSet);
+	CPPUNIT_ASSERT(call2->getModifies() == proc2ModifiesSet);
+
+	Statement* call3 = stmtTable1->getStmtObj(10);
+	CPPUNIT_ASSERT(call3->getUses() == proc4UsesSet);
+	CPPUNIT_ASSERT(call3->getModifies() == proc4ModifiesSet);
 }
