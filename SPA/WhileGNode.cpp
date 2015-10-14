@@ -1,13 +1,13 @@
-#include "WhileCNode.h"
+#include "WhileGNode.h"
 
-WhileCNode::WhileCNode(int stmtNum)
-	: CNode(WHILE_) {
+WhileGNode::WhileGNode(int stmtNum)
+	: GNode(WHILE_) {
 	this->startStmt = stmtNum;
 	this->endStmt = stmtNum;
 }
 
 
-CNode* WhileCNode::getBeforeLoopChild() {
+GNode* WhileGNode::getBeforeLoopChild() {
 	if(this->children.size() > 0) {
 		return this->children.at(0);
 	}
@@ -15,7 +15,7 @@ CNode* WhileCNode::getBeforeLoopChild() {
 	return NULL;
 }
 
-CNode* WhileCNode::getAfterLoopChild() {
+GNode* WhileGNode::getAfterLoopChild() {
 	if(this->children.size() > 1) {
 		return this->children.at(1);
 	}
@@ -23,19 +23,19 @@ CNode* WhileCNode::getAfterLoopChild() {
 	return NULL;
 }
 
-int WhileCNode::getStmtNum() {
+int WhileGNode::getStmtNum() {
 	return this->startStmt;
 }
 
-void WhileCNode::setBeforeLoopChild(CNode* child) {
+void WhileGNode::setBeforeLoopChild(GNode* child) {
 	this->setFirstChild(child);
 }
 
-void WhileCNode::setAfterLoopChild(CNode* child) {
+void WhileGNode::setAfterLoopChild(GNode* child) {
 	this->setSecondChild(child);
 }
 
-void WhileCNode::setStmtNum(int stmtNum) {
+void WhileGNode::setStmtNum(int stmtNum) {
 	this->setStartStmt(stmtNum);
 	this->setEndStmt(stmtNum);
 }

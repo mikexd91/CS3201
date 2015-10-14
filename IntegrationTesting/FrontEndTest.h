@@ -5,6 +5,7 @@
 
 class FrontEndTest : public CPPUNIT_NS::TestFixture { 
 	CPPUNIT_TEST_SUITE( FrontEndTest );
+
 	CPPUNIT_TEST( testParent );
 	CPPUNIT_TEST( testAddProc );
 	CPPUNIT_TEST( testAssign );
@@ -43,7 +44,8 @@ class FrontEndTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testCFGWhileNested );
 	CPPUNIT_TEST( testCFGMixedNested );
 
-	//CPPUNIT_TEST( testFalseAddProc );
+	CPPUNIT_TEST( testCyclicCalls );
+	CPPUNIT_TEST( testMultiProc );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -94,4 +96,7 @@ public:
 	void testCFGWhileStmt();
 	void testCFGWhileNested();
 	void testCFGMixedNested();
+
+	void testCyclicCalls();
+	void testMultiProc();
 };

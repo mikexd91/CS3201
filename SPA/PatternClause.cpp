@@ -15,10 +15,6 @@ PatternClause::PatternClause() {
 PatternClause::~PatternClause(void) {
 }
 
-ClauseType PatternClause::getClauseType(){
-	return this->clauseType;
-}
-
 string PatternClause::getSyn() {
 	return this->syn;
 }
@@ -107,13 +103,8 @@ bool PatternClause::isValidWhile(string whileStr) {
 }
 
 unordered_set<string> PatternClause::getAllVarValues() {
-	vector<string> allVarVector = *(varTable->getAllVarNames());
-	unordered_set<string> allVarValues;
-	BOOST_FOREACH(string val, allVarVector) {
-		allVarValues.insert(val);
-	}
-
-	return allVarValues;
+	unordered_set<string> allVars = varTable->getAllVarNames();
+	return allVars;
 }
 
 bool PatternClause::evaluate(Result* res) {

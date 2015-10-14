@@ -31,7 +31,7 @@ none
 7 - USES-stmt: syn-syn (tuple)
 stmt s; variable v;
 Select <s,v> such that Uses(s, v)
-5 firstStageEvolution, 5 charmander, 5 bulbasaur, 5 squirtle, 6 charmander, 7 bulbasaur, 8 squirtle, 9 charmander, 10 squirtle, 11 bulbasaur, 12 charmeleon, 12 wartortle, 13 ivysaur, 13 charmeleon, 14 squirtle, 14 ivysaur, 15 battle1, 15 wartortle, 15 ivysaur, 15 battle2, 15 battle3, 15 charmeleon, 15 squirtle, 16 wartortle, 16 ivysaur, 17 battle2, 17 battle3, 17 charmeleon, 17 wartortle, 17 squirtle, 18 battle3, 18 charmeleon, 18 wartortle, 20 wartortle, 20 squirtle, 21 squirtle, 22 wartortle
+5 firstStageEvolution, 5 charmander, 5 bulbasaur, 5 squirtle, 6 charmander, 7 bulbasaur, 8 squirtle, 9 charmander, 10 squirtle, 11 bulbasaur, 12 charmeleon, 12 wartortle, 13 ivysaur, 13 charmeleon, 14 squirtle, 14 ivysaur, 15 battle1, 15 wartortle, 15 ivysaur, 15 battle2, 15 battle3, 15 charmeleon, 15 squirtle, 16 wartortle, 16 ivysaur, 17 battle2, 17 battle3, 17 charmeleon, 17 wartortle, 17 squirtle, 18 battle3, 18 charmeleon, 18 wartortle, 19 charmeleon, 19 wartortle, 20 wartortle, 20 squirtle, 21 squirtle, 22 wartortle
 5000
 8 - USES-assign: syn-syn
 assign a; variable v;
@@ -113,7 +113,7 @@ none
 Select BOOLEAN such that Uses(14, _)
 true
 5000
-24 - USES-: generic-fixed
+24 - USES-boolean: generic-fixed
 
 Select BOOLEAN such that Uses(_, "battle3")
 true
@@ -185,7 +185,7 @@ Select w such that Uses(w, _) pattern w("battle3", _)
 5000
 38 - USES-while: pattern (does not match select)
 stmt s; while w;
-Select s such that Uses(s, v) pattern w("battle4", _)
+Select s such that Uses(s, w) pattern w("battle4", _)
 none
 5000
 39 - USES-if: pattern (match select)

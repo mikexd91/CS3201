@@ -36,18 +36,22 @@ class UsesClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testSynFixedIfFail );
 	CPPUNIT_TEST( testSynFixedAssgPass );
 	CPPUNIT_TEST( testSynFixedAssgFail );
+	CPPUNIT_TEST( testSynFixedCallPass );
+	CPPUNIT_TEST( testSynFixedCallFail );
 
 	CPPUNIT_TEST( testSynGenericProcPass );
 	CPPUNIT_TEST( testSynGenericIfPass );
 	CPPUNIT_TEST( testSynGenericWhilePass );
 	CPPUNIT_TEST( testSynGenericStmtPass );
 	CPPUNIT_TEST( testSynGenericAssgPass );	
+	CPPUNIT_TEST( testSynGenericCallPass );	
 
 	CPPUNIT_TEST( testSynSynProcPass );
 	CPPUNIT_TEST( testSynSynIfPass );
 	CPPUNIT_TEST( testSynSynWhilePass );
 	CPPUNIT_TEST( testSynSynStmtPass );
 	CPPUNIT_TEST( testSynSynAssgPass );
+	CPPUNIT_TEST( testSynSynCallPass );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -86,16 +90,20 @@ public:
 	void testSynFixedIfFail();
 	void testSynFixedAssgPass();
 	void testSynFixedAssgFail();
+	void testSynFixedCallPass();
+	void testSynFixedCallFail();
 
 	void testSynGenericProcPass();
 	void testSynGenericIfPass();
 	void testSynGenericWhilePass();
 	void testSynGenericStmtPass();
 	void testSynGenericAssgPass();
+	void testSynGenericCallPass();
 
 	void testSynSynProcPass();
 	void testSynSynIfPass();
 	void testSynSynWhilePass();
 	void testSynSynStmtPass();
 	void testSynSynAssgPass();
+	void testSynSynCallPass();
 };

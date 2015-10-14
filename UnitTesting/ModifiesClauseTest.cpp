@@ -37,6 +37,13 @@ void ModifiesClauseTest::setUp() {
 		} else {
 			y = 6;	//11
 		}
+
+		call proc2; //12
+	}
+
+	procedure proc2 {
+		a = 2;		//13
+		b = a;		//14
 	}
 	*/
 
@@ -275,6 +282,36 @@ void ModifiesClauseTest::setUp() {
 	stmt11->setTNodeRef(assg11);
 	stable->addStmt(stmt11);
 
+	Statement* stmt12 = new Statement();
+	stmt12->setStmtNum(12);
+	stmt12->setType(CALL_STMT_);
+	string stmt12Uses[] = {"a"};
+	string stmt12Modifies[] = {"a", "b"};
+	unordered_set<string> stmt12UsesSet(stmt12Uses, stmt12Uses + 1);
+	unordered_set<string> stmt12ModifiesSet(stmt12Modifies, stmt12Modifies + 2);
+	stmt12->setUses(stmt12UsesSet);
+	stmt12->setModifies(stmt12ModifiesSet);
+	stable->addStmt(stmt12);
+
+	Statement* stmt13 = new Statement();
+	stmt13->setStmtNum(13);
+	stmt13->setType(ASSIGN_STMT_);
+	unordered_set<string> mods13;
+	mods13.insert("a");
+	stmt13->setModifies(mods13);
+	stable->addStmt(stmt13);
+
+	Statement* stmt14 = new Statement();
+	stmt14->setStmtNum(14);
+	stmt14->setType(ASSIGN_STMT_);
+	unordered_set<string> mods14;
+	unordered_set<string> uses14;
+	mods14.insert("b");
+	uses14.insert("a");
+	stmt14->setModifies(mods14);
+	stmt14->setUses(uses14);
+	stable->addStmt(stmt14);
+
 	// to set up the vartable manually
 	VarTable* vtable = VarTable::getInstance();
 
@@ -336,17 +373,42 @@ void ModifiesClauseTest::setUp() {
 	vx->addTNode(x5);
 	vtable->addVariable(vx);
 
+	Variable* va = new Variable("a");
+	va->addModifyingProc("zumba");
+	va->addModifyingProc("proc2");
+	va->addModifyingStmt(13);
+	va->addModifyingStmt(12);
+	va->addUsingStmt(14);
+	va->addUsingStmt(12);
+	vtable->addVariable(va);
+
+	Variable* vb = new Variable("b");
+	vb->addModifyingProc("zumba");
+	vb->addModifyingProc("proc2");
+	vb->addModifyingStmt(14);
+	vb->addModifyingStmt(12);
+	vtable->addVariable(vb);
+
 
 	// set procedure for modifies
 	ProcTable* procTable = ProcTable::getInstance();
 	Procedure* procedure = new Procedure("zumba");
-	string procUsesArr[] = {"i", "w", "k", "j"};
-	unordered_set<string> procUses(procUsesArr, procUsesArr + 4);
-	string procModsArr[] = {"i", "j", "k", "w", "x", "z", "y"};
-	unordered_set<string> procModifies(procModsArr, procModsArr + 7);
+	string procUsesArr[] = {"i", "w", "k", "j", "a"};
+	unordered_set<string> procUses(procUsesArr, procUsesArr + 5);
+	string procModsArr[] = {"i", "j", "k", "w", "x", "z", "y", "a", "b"};
+	unordered_set<string> procModifies(procModsArr, procModsArr + 9);
 	procedure->setUses(procUses);
 	procedure->setModifies(procModifies);
 	procTable->addProc(procedure);
+
+	Procedure* proc2 = new Procedure("proc2");
+	string proc2Uses[] = {"a"};
+	string proc2Modifies[] = {"a", "b"};
+	unordered_set<string> proc2UsesSet(proc2Uses, proc2Uses + 1);
+	unordered_set<string> proc2ModifiesSet(proc2Modifies, proc2Modifies + 2);
+	proc2->setUses(proc2UsesSet);
+	proc2->setModifies(proc2ModifiesSet);
+	procTable->addProc(proc2);
 }
 
 void ModifiesClauseTest::tearDown() {
@@ -426,18 +488,11 @@ void ModifiesClauseTest::testFixedFixedProcPass() {
 
 void ModifiesClauseTest::testFixedFixedProcFail() {
 	Result* result = new Result();
-	/*ModifiesClause* mod = new ModifiesClause();
-	mod->setFirstArg("zumba");
-	mod->setFirstArgFixed(true);
-	mod->setFirstArgType(ARG_PROCEDURE);
-	mod->setSecondArg("a");
-	mod->setSecondArgFixed(true);
-	mod->setSecondArgType(ARG_VARIABLE);*/
 	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
 	modifiesBuilder->setArg(1, "zumba");
 	modifiesBuilder->setArgFixed(1, true);
 	modifiesBuilder->setArgType(1, ARG_PROCEDURE);
-	modifiesBuilder->setArg(2, "a");
+	modifiesBuilder->setArg(2, "c");
 	modifiesBuilder->setArgFixed(2, true);
 	modifiesBuilder->setArgType(2, ARG_VARIABLE);
 	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
@@ -650,7 +705,7 @@ void ModifiesClauseTest::testFixedSynStmtFail() {
 	mod->setSecondArgFixed(false);
 	mod->setSecondArgType(ARG_VARIABLE);*/
 	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
-	modifiesBuilder->setArg(1, "12");
+	modifiesBuilder->setArg(1, "15");
 	modifiesBuilder->setArgFixed(1, true);
 	modifiesBuilder->setArgType(1, ARG_STATEMENT);
 	modifiesBuilder->setArg(2, "v");
@@ -685,7 +740,7 @@ void ModifiesClauseTest::testFixedSynProcPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 9);
 }
 
 void ModifiesClauseTest::testFixedSynProcFail() {
@@ -733,7 +788,7 @@ void ModifiesClauseTest::testGenericSynPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 9);
 }
 
 void ModifiesClauseTest::testSynFixedStmtPass() {
@@ -773,7 +828,7 @@ void ModifiesClauseTest::testSynFixedStmtFail() {
 	modifiesBuilder->setArg(1, "s");
 	modifiesBuilder->setArgFixed(1, false);
 	modifiesBuilder->setArgType(1, ARG_STATEMENT);
-	modifiesBuilder->setArg(2, "a");
+	modifiesBuilder->setArg(2, "c");
 	modifiesBuilder->setArgFixed(2, true);
 	modifiesBuilder->setArgType(2, ARG_VARIABLE);
 	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
@@ -965,7 +1020,7 @@ void ModifiesClauseTest::testSynFixedAssgFail() {
 	modifiesBuilder->setArg(1, "s");
 	modifiesBuilder->setArgFixed(1, false);
 	modifiesBuilder->setArgType(1, ARG_ASSIGN);
-	modifiesBuilder->setArg(2, "a");
+	modifiesBuilder->setArg(2, "c");
 	modifiesBuilder->setArgFixed(2, true);
 	modifiesBuilder->setArgType(2, ARG_VARIABLE);
 	ModifiesClause* mod = (ModifiesClause*) modifiesBuilder->build();
@@ -973,6 +1028,38 @@ void ModifiesClauseTest::testSynFixedAssgFail() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
+}
+
+void ModifiesClauseTest::testSynFixedCallPass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(MODIFIES_);
+	builder->setArg(1, "c");
+	builder->setArg(2, "a");
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, true);
+	builder->setArgType(1, ARG_CALL);
+	builder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* clause = (ModifiesClause*) builder->build();
+	
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result));
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
+}
+
+void ModifiesClauseTest::testSynFixedCallFail() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(MODIFIES_);
+	builder->setArg(1, "c");
+	builder->setArg(2, "x");
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, true);
+	builder->setArgType(1, ARG_CALL);
+	builder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* clause = (ModifiesClause*) builder->build();
+	
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
@@ -997,7 +1084,7 @@ void ModifiesClauseTest::testSynGenericProcPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
 }
 
 void ModifiesClauseTest::testSynGenericIfPass() {
@@ -1069,7 +1156,7 @@ void ModifiesClauseTest::testSynGenericStmtPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 11);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 14);
 }
 
 void ModifiesClauseTest::testSynGenericAssgPass() {
@@ -1093,7 +1180,23 @@ void ModifiesClauseTest::testSynGenericAssgPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 9);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 11);
+}
+
+void ModifiesClauseTest::testSynGenericCallPass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(MODIFIES_);
+	builder->setArg(1, "c");
+	builder->setArg(2, "_");
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, false);
+	builder->setArgType(1, ARG_CALL);
+	builder->setArgType(2, ARG_GENERIC);
+	ModifiesClause* clause = (ModifiesClause*) builder->build();
+	
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result));
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 }
 
 void ModifiesClauseTest::testSynSynProcPass() {
@@ -1117,7 +1220,7 @@ void ModifiesClauseTest::testSynSynProcPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 11);
 }
 
 void ModifiesClauseTest::testSynSynIfPass() {
@@ -1189,7 +1292,7 @@ void ModifiesClauseTest::testSynSynStmtPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 12);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 16);
 }
 
 void ModifiesClauseTest::testSynSynAssgPass() {
@@ -1213,5 +1316,21 @@ void ModifiesClauseTest::testSynSynAssgPass() {
 
 	bool evalResult = mod->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 9);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 11);
+}
+
+void ModifiesClauseTest::testSynSynCallPass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(MODIFIES_);
+	builder->setArg(1, "c");
+	builder->setArg(2, "v");
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, false);
+	builder->setArgType(1, ARG_CALL);
+	builder->setArgType(2, ARG_VARIABLE);
+	ModifiesClause* clause = (ModifiesClause*) builder->build();
+	
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result));
+	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
 }

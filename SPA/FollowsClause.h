@@ -32,6 +32,8 @@ protected:
 
 private:
 
-	bool isFollows(string stmtNum1, string stmtNum2);
+	bool isFollows(string, string);
+	bool isNeededArgType(string, int);
+	unordered_set<Statement*> getSetFromArgType(string);
 };
 

@@ -27,7 +27,8 @@ ParserTest::tearDown() {
 	VarTable::reset();
 	ProcTable::getInstance()->clearTable();
 	PDR::resetInstanceFlag();
-	//StmtTable::getInstance()->clearTable();
+	CFGBuilder::resetInstanceFlag();
+	StmtTable::getInstance()->clearTable();
 }
 
 // Registers the fixture into the 'registry'
