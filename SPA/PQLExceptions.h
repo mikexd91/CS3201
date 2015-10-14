@@ -61,3 +61,9 @@ struct InvalidAttributeException : public std::exception{
 		return "Attribute condition mismatch";
 	}
 };
+
+struct ParseTimeException : public std::exception{
+	const char* what () const throw(){
+		return "Clause building failed";
+	}
+};

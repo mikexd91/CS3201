@@ -154,6 +154,7 @@ void PatternAssgClauseTest::evaluateVarWildExprWild() {
 
 	CPPUNIT_ASSERT(res->isSynPresent(syn1));
 	CPPUNIT_ASSERT(res->getSyn(syn1).size() == 3);
+	CPPUNIT_ASSERT(p1->getClauseType() == PATTERNASSG_);
 	
 	unordered_set<string> v = res->getSyn(syn1);
 	/*BOOST_FOREACH(auto i, v) {

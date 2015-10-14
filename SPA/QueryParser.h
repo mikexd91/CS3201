@@ -42,8 +42,8 @@ public:
 	void parseSelectSynonyms(Query*, queue<string>*);
 	void parseClause(Query*, queue<string>*);
 	void parsePattern(Query*, queue<string>*);
-	void parsePatternOther(Query*, queue<string>, string);
-	void parsePatternIf(Query*, queue<string>, string);
+	void parsePatternOther(Query*, queue<string>*, string);
+	void parsePatternIf(Query*, queue<string>*, string);
 	void parseWith(Query*, queue<string>*);
 
 	Query* parseQuery(string);

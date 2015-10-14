@@ -297,9 +297,6 @@ void QueryParser::parseDeclarations(Query* query, vector<string>* list){
 			cout << decType;
 			throw InvalidDeclarationException();
 		}
-		if (decType == stringconst::ARG_PROGLINE){
-			decType = stringconst::ARG_STATEMENT;
-		}
 		StringPair* newPair = new StringPair();
 		newPair->setFirst(split.at(1));
 		newPair->setSecond(decType);
@@ -385,7 +382,6 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string>* line){
 	}
 }
 
-//TODO: UPDATE PARSE CLAUSE WITH NEW QUEUE (DONE, UNIT TESTING)
 void QueryParser::parseClause(Query* query, queue<string>* line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	bool expectFirstFixedSynonym = false;
@@ -519,13 +515,13 @@ void QueryParser::parsePattern(Query* query, queue<string>* line){
 		patternType = decList.at(synonym);
 	}
 	if (patternType == stringconst::ARG_ASSIGN || patternType == stringconst::ARG_WHILE){
-		parsePatternOther(query, *line, synonym);
+		parsePatternOther(query, line, synonym);
 	} else if (patternType == stringconst::ARG_IF){
-		parsePatternIf(query, *line, synonym);
+		parsePatternIf(query, line, synonym);
 	}
 }
 
-void QueryParser::parsePatternOther(Query* query, queue<string> line, string synonym){
+void QueryParser::parsePatternOther(Query* query, queue<string>* line, string synonym){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string patternType = decList.at(synonym);
 	string var;
@@ -533,19 +529,19 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 	string varType;
 	string expr;
 
-	string openParen = Utils::getWordAndPop(line);
-	unexpectedEndCheck(&line);
+	string openParen = Utils::getWordAndPop(*line);
+	unexpectedEndCheck(line);
 	if (openParen != "("){
 		throw InvalidSyntaxException();
 	}
 	
-	var = Utils::getWordAndPop(line);
-	unexpectedEndCheck(&line);
+	var = Utils::getWordAndPop(*line);
+	unexpectedEndCheck(line);
 	if (var == "\""){
 		varFixed = true;
 		varType = stringconst::ARG_VARIABLE;
-		var = Utils::getWordAndPop(line);
-		unexpectedEndCheck(&line);
+		var = Utils::getWordAndPop(*line);
+		unexpectedEndCheck(line);
 		if (var == "\""){
 			throw InvalidSyntaxException();
 		}
@@ -561,40 +557,40 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 	}
 
 	if (varFixed){
-		string close = Utils::getWordAndPop(line);
-		unexpectedEndCheck(&line);
+		string close = Utils::getWordAndPop(*line);
+		unexpectedEndCheck(line);
 		if (close != "\""){
 			throw InvalidSyntaxException();
 		}
 	}
 
-	string comma = Utils::getWordAndPop(line);
-	unexpectedEndCheck(&line);
+	string comma = Utils::getWordAndPop(*line);
+	unexpectedEndCheck(line);
 	if (comma != ","){
 		throw InvalidSyntaxException();
 	}
 
-	string condition = Utils::getWordAndPop(line);
-	unexpectedEndCheck(&line);
+	string condition = Utils::getWordAndPop(*line);
+	unexpectedEndCheck(line);
 	if (condition == stringconst::STRING_EMPTY){
-		if (line.front() == ")"){
+		if (line->front() == ")"){
 			expr = condition;
-		} else if (line.front() == "\""){
-			Utils::getWordAndPop(line);
-			unexpectedEndCheck(&line);
-			string next = Utils::getWordAndPop(line);
-			unexpectedEndCheck(&line);
+		} else if (line->front() == "\""){
+			Utils::getWordAndPop(*line);
+			unexpectedEndCheck(line);
+			string next = Utils::getWordAndPop(*line);
+			unexpectedEndCheck(line);
 			if (next == "\""){
 				throw InvalidSyntaxException();
 			}
 			queue<string> exprHolder;
 			while (next != "\""){
 				exprHolder.push(next);
-				next = Utils::getWordAndPop(line);
-				unexpectedEndCheck(&line);
+				next = Utils::getWordAndPop(*line);
+				unexpectedEndCheck(line);
 			}
-			string endBound = Utils::getWordAndPop(line);
-			unexpectedEndCheck(&line);
+			string endBound = Utils::getWordAndPop(*line);
+			unexpectedEndCheck(line);
 			if (endBound != "_"){
 				throw InvalidSyntaxException();
 			}
@@ -603,15 +599,15 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 		}
 	} else if (condition == "\""){
 		queue<string> exprHolder;
-		string next = Utils::getWordAndPop(line);
-		unexpectedEndCheck(&line);
+		string next = Utils::getWordAndPop(*line);
+		unexpectedEndCheck(line);
 		if (next == "\""){
 			throw InvalidSyntaxException();
 		}
 		while (next != "\""){
 			exprHolder.push(next);
-			next = Utils::getWordAndPop(line);
-			unexpectedEndCheck(&line);
+			next = Utils::getWordAndPop(*line);
+			unexpectedEndCheck(line);
 		}
 		ExpressionParser expP;
 		expr = "\"" + queueToString(expP.getRPN(exprHolder)) + "\"";
@@ -619,7 +615,7 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 		throw InvalidSyntaxException();
 	}
 
-	string closeParen = Utils::getWordAndPop(line);
+	string closeParen = Utils::getWordAndPop(*line);
 	if (closeParen != ")"){
 		throw InvalidSyntaxException();
 	}
@@ -642,10 +638,12 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 		whileBuilder->setExpr(1, expr);
 		Clause* newClause = (Clause*)whileBuilder->build();
 		query->addClause(newClause);
+	} else {
+		throw ParseTimeException();
 	}
 }
 
-void QueryParser::parsePatternIf(Query* query, queue<string> line, string synonym){
+void QueryParser::parsePatternIf(Query* query, queue<string>* line, string synonym){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string var;
 	bool varFixed = false;
@@ -653,20 +651,20 @@ void QueryParser::parsePatternIf(Query* query, queue<string> line, string synony
 	string expr1;
 	string expr2;
 
-	string openParen = Utils::getWordAndPop(line);
-	unexpectedEndCheck(&line);
+	string openParen = Utils::getWordAndPop(*line);
+	unexpectedEndCheck(line);
 	if (openParen != "("){
 		throw InvalidSyntaxException();
 	}
 
-	var = Utils::getWordAndPop(line);
-	unexpectedEndCheck(&line);
+	var = Utils::getWordAndPop(*line);
+	unexpectedEndCheck(line);
 	if (var == "\""){
 		varFixed = true;
-		var = Utils::getWordAndPop(line);
+		var = Utils::getWordAndPop(*line);
 		varType = stringconst::ARG_VARIABLE;
-		string close = Utils::getWordAndPop(line);
-		unexpectedEndCheck(&line);
+		string close = Utils::getWordAndPop(*line);
+		unexpectedEndCheck(line);
 		if (close != "\""){
 			throw InvalidSyntaxException();
 		}
@@ -683,31 +681,31 @@ void QueryParser::parsePatternIf(Query* query, queue<string> line, string synony
 		}
 	}
 
-	string comma1 = Utils::getWordAndPop(line);
-	unexpectedEndCheck(&line);
+	string comma1 = Utils::getWordAndPop(*line);
+	unexpectedEndCheck(line);
 	if (comma1 != ","){
 		throw InvalidSyntaxException();
 	}
 
-	expr1 = Utils::getWordAndPop(line);
-	unexpectedEndCheck(&line);
+	expr1 = Utils::getWordAndPop(*line);
+	unexpectedEndCheck(line);
 	if (expr1 != "_"){
 		throw InvalidSyntaxException();
 	}
 
-	string comma2 = Utils::getWordAndPop(line);
-	unexpectedEndCheck(&line);
+	string comma2 = Utils::getWordAndPop(*line);
+	unexpectedEndCheck(line);
 	if (comma2 != ","){
 		throw InvalidSyntaxException();
 	}
 
-	expr2 = Utils::getWordAndPop(line);
-	unexpectedEndCheck(&line);
+	expr2 = Utils::getWordAndPop(*line);
+	unexpectedEndCheck(line);
 	if (expr2 != "_"){
 		throw InvalidSyntaxException();
 	}
 
-	string closeParen = Utils::getWordAndPop(line);
+	string closeParen = Utils::getWordAndPop(*line);
 	if (closeParen != ")"){
 		throw InvalidSyntaxException();
 	}
@@ -739,6 +737,7 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 
 	if (Utils::isValidConstant(leftEntityValue)){
 		withBuilder->setEntity(1, leftEntityValue);
+		withBuilder->setEntityType(1, stringconst::ENTITY_TYPE_INTEGER);
 		withBuilder->setRefType(1, INTEGER_);
 		withBuilder->setAttrType(1, NULLATTR_);
 	} else if (leftEntityValue == "\""){
@@ -751,6 +750,7 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 			Utils::getWordAndPop(*line);
 		}
 		withBuilder->setEntity(1, leftEntityValue);
+		withBuilder->setEntityType(1, stringconst::ENTITY_TYPE_IDENT);
 		withBuilder->setRefType(1, IDENT_);
 		withBuilder->setAttrType(1, NULLATTR_);
 	} else if (decList.find(leftEntityValue) == decList.end()){
@@ -759,8 +759,9 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 	} else {
 		string leftDeclarationType = decList.at(leftEntityValue);
 		nextToken = line->front();
+		withBuilder->setEntity(1, leftEntityValue);
+		withBuilder->setEntityType(1, leftDeclarationType);
 		if (nextToken == "="){
-			withBuilder->setEntity(1, leftEntityValue);
 			withBuilder->setRefType(1, SYNONYM_);
 			withBuilder->setAttrType(1, NULLATTR_);
 		} else if (nextToken == "."){
@@ -771,7 +772,6 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 				if (leftDeclarationType != stringconst::ARG_PROCEDURE){
 					throw InvalidAttributeException();
 				}
-				withBuilder->setEntity(1, leftEntityValue);
 				withBuilder->setRefType(1, ATTRREF_);
 				withBuilder->setAttrType(1, PROCNAME_);
 			} else if (leftEntityCond == stringconst::ATTR_COND_STMTNUM){
@@ -781,7 +781,6 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 					|| leftDeclarationType != stringconst::ARG_PROGLINE){
 						throw InvalidAttributeException();
 				}
-				withBuilder->setEntity(1, leftEntityValue);
 				withBuilder->setRefType(1, ATTRREF_);
 				withBuilder->setAttrType(1, STMTNUM_);
 			} else if (leftEntityCond == stringconst::ATTR_COND_VALUE){
@@ -795,7 +794,6 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 				if (leftDeclarationType == stringconst::ARG_VARIABLE){
 					throw InvalidAttributeException();
 				}
-				withBuilder->setEntity(1, leftEntityValue);
 				withBuilder->setRefType(1, ATTRREF_);
 				withBuilder->setAttrType(1, VARNAME_);
 			} else {
@@ -816,6 +814,7 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 
 	if (Utils::isValidConstant(rightEntityValue)){
 		withBuilder->setEntity(2, rightEntityValue);
+		withBuilder->setEntityType(2, stringconst::ENTITY_TYPE_INTEGER);
 		withBuilder->setRefType(2, INTEGER_);
 		withBuilder->setAttrType(2, NULLATTR_);
 	} else if (rightEntityValue == "\""){
@@ -829,6 +828,7 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 			Utils::getWordAndPop(*line);
 		}
 		withBuilder->setEntity(2, rightEntityValue);
+		withBuilder->setEntityType(2, stringconst::ENTITY_TYPE_IDENT);
 		withBuilder->setRefType(2, IDENT_);
 		withBuilder->setAttrType(2, NULLATTR_);
 	} else if (decList.find(rightEntityValue) == decList.end()){
@@ -837,8 +837,9 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 	} else {
 		string rightDeclarationType = decList.at(rightEntityValue);
 		nextToken = line->front();
+		withBuilder->setEntity(2, rightEntityValue);
+		withBuilder->setEntityType(2, rightDeclarationType);
 		if (nextToken == "="){
-			withBuilder->setEntity(2, rightEntityValue);
 			withBuilder->setRefType(2, SYNONYM_);
 			withBuilder->setAttrType(2, NULLATTR_);
 		} else if (nextToken == "."){
@@ -849,7 +850,6 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 				if (rightDeclarationType != stringconst::ARG_PROCEDURE){
 					throw InvalidAttributeException();
 				}
-				withBuilder->setEntity(2, rightEntityValue);
 				withBuilder->setRefType(2, ATTRREF_);
 				withBuilder->setAttrType(2, PROCNAME_);
 			} else if (rightEntityCond == stringconst::ATTR_COND_STMTNUM){
@@ -859,21 +859,18 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 					|| rightDeclarationType != stringconst::ARG_PROGLINE){
 						throw InvalidAttributeException();
 				}
-				withBuilder->setEntity(2, rightEntityValue);
 				withBuilder->setRefType(2, ATTRREF_);
 				withBuilder->setAttrType(2, STMTNUM_);
 			} else if (rightEntityCond == stringconst::ATTR_COND_VALUE){
 				if (rightDeclarationType != stringconst::ARG_CONSTANT){
 					throw InvalidAttributeException();
 				}
-				withBuilder->setEntity(2, rightEntityValue);
 				withBuilder->setRefType(2, ATTRREF_);
 				withBuilder->setAttrType(2, CONSTVALUE_);
 			} else if (rightEntityCond == stringconst::ATTR_COND_VARNAME){
 				if (rightDeclarationType == stringconst::ARG_VARIABLE){
 					throw InvalidAttributeException();
 				}
-				withBuilder->setEntity(2, rightEntityValue);
 				withBuilder->setRefType(2, ATTRREF_);
 				withBuilder->setAttrType(2, VARNAME_);
 			} else {

@@ -131,10 +131,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AllUnitTest.cpp" />
+    <ClCompile Include="PatternAssgClauseTest.cpp" />
+    <ClCompile Include="PatternIfClauseTest.cpp" />
+    <ClCompile Include="PatternWhileClauseTest.cpp" />
     <ClCompile Include="QueryParserTest.cpp" />
     <ClCompile Include="WithClauseTest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="PatternAssgClauseTest.h" />
+    <ClInclude Include="PatternIfClauseTest.h" />
+    <ClInclude Include="PatternWhileClauseTest.h" />
     <ClInclude Include="QueryParserTest.h" />
     <ClInclude Include="WithClauseTest.h" />
   </ItemGroup>
