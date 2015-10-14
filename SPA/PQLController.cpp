@@ -21,12 +21,13 @@ unordered_set<string> PQLController::parse(string query) {
 	// display query result
 	try {
 		//cout << "Parsing Query..."; 
-		Query q= QueryParser::parseQuery(query);
+		QueryParser* parser = QueryParser::getInstance();
+		Query* q= parser->parseQuery(query);
 		//cout << "Query Parse Successful" << endl;
 		QueryEvaluator* qe = new QueryEvaluator();
 		Result* resObj = qe->evaluateQuery(q);
 		//cout << "Query Evaluated" << endl;
-		vector<StringPair> selectList = q.getSelectList();
+		vector<StringPair> selectList = q->getSelectList();
 		//cout << resObj->getResultTableSize() << endl;
 		boost::unordered_set<string> valueSet = qe->getValuesToPrint(resObj, selectList);
 		//cout << "Result Set Size: " << valueSet.size() << endl;

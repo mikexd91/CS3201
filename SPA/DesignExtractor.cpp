@@ -216,12 +216,15 @@ unordered_set<string> DesignExtractor::recurseModifies(Procedure* proc) {
 		return proc->getModifies();
 	}
 
+	unordered_set<string> modifies;
 	BOOST_FOREACH(auto pCall, calls) {
-		unordered_set<string> modifies = proc->getModifies();
+		modifies = proc->getModifies();
 		unordered_set<string> recurseSet = recurseModifies(pCall);
 		modifies.insert(recurseSet.begin(), recurseSet.end());
 		return modifies;
 	}
+
+	return modifies;
 }
 
 unordered_set<string> DesignExtractor::recurseUses(Procedure* proc) {
@@ -231,10 +234,13 @@ unordered_set<string> DesignExtractor::recurseUses(Procedure* proc) {
 		return proc->getUses();
 	}
 
+	unordered_set<string> uses;
 	BOOST_FOREACH(auto pCall, calls) {
-		unordered_set<string> uses = proc->getUses();
+		uses = proc->getUses();
 		unordered_set<string> recurseSet = recurseUses(pCall);
 		uses.insert(recurseSet.begin(), recurseSet.end());
 		return uses;
 	}
+
+	return uses;
 }

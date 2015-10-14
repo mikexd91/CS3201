@@ -107,6 +107,8 @@ GNode* CFGIterator::getNextNode() {
 		case END_:
 			return nextNode;
 			break;
+		default:
+			return NULL;
 	}
 }
 

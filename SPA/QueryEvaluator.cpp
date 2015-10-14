@@ -17,10 +17,10 @@ QueryEvaluator::~QueryEvaluator(void)
 {
 }
 
-Result* QueryEvaluator::evaluateQuery(Query query) {
+Result* QueryEvaluator::evaluateQuery(Query* query) {
 	Result *obj = new Result();
-	setClauseList(query.getClauseList());
-	setSelectList(query.getSelectList());
+	setClauseList(query->getClauseList());
+	setSelectList(query->getSelectList());
 	obj = evaluateClauses(obj, clauseList);
 	return obj;
 }

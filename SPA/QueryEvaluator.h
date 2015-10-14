@@ -46,7 +46,7 @@ public:
 	~QueryEvaluator(void);
 
 	// Evaluate all clauses in a query. Return values of the from table of the right type if there are no clauses.
-	Result* evaluateQuery(Query query);
+	Result* evaluateQuery(Query* query);
 	// Return values to be printed.
 	unordered_set<string> getValuesToPrint(Result* obj, vector<StringPair> selectList); 
 };
