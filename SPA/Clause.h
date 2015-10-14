@@ -38,6 +38,6 @@ public:
 	//Substitute the original clause isValid for this one
 	virtual bool isValid(void)=0;
 
-private:
+protected:
 	ClauseType clauseType;
 };

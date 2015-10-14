@@ -18,7 +18,6 @@ class SuchThatClause
 	: Clause {
 
 protected:
-	ClauseType clauseType;
 	string firstArg;
 	bool firstArgFixed;
 	string firstArgType;

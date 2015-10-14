@@ -26,7 +26,7 @@ public:
 	queue<string> exprBuilder(string);
 	string removeSpace(string);
 	vector<string> split(string, char, vector<string>*);
-	void queueBuilder(string);
+	void queueBuilder(string, queue<string>*);
 	string queueToString(queue<string>);
 	void tokeniser(string, char, vector<string>*);
 	bool containsAny(string, vector<string>*);
@@ -44,16 +44,14 @@ public:
 	void parsePattern(Query*, queue<string>*);
 	void parsePatternOther(Query*, queue<string>, string);
 	void parsePatternIf(Query*, queue<string>, string);
-	void parseWith(Query*, queue<string>);
+	void parseWith(Query*, queue<string>*);
 
-	Query parseQuery(string);
+	Query* parseQuery(string);
 
 private:
 	// SINGLETON
 	static bool instanceFlag;
 	static QueryParser* parser;
-
-	queue<string> queryQueue;
 
 	// SINGLETON CONSTRUCTOR
 	QueryParser();

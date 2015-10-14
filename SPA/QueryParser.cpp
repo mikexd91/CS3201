@@ -73,9 +73,9 @@ vector<string> QueryParser::split(string s, char delim, vector<string>* elems) {
     return *elems;
 }
 
-//ADD OPERATORS TO Q: splitByDelims( operator )
-void QueryParser::queueBuilder(string in){
-	queryQueue = queue<string>();
+//queueBuilder must take in empty queue
+void QueryParser::queueBuilder(string in, queue<string>* out){
+	queue<string>* queryQueue = &queue<string>();
 	vector<string> temp = vector<string>();
 	QueryParser::tokeniser(in, ' ', &temp);
 	QueryParser::splitByDelims(&temp, "(", temp);
@@ -91,7 +91,7 @@ void QueryParser::queueBuilder(string in){
 	QueryParser::splitByDelims(&temp, "<", temp);
 	QueryParser::splitByDelims(&temp, ">", temp);
 	for (size_t i=0; i<temp.size(); i++){
-		queryQueue.push(temp.at(i));
+		out->push(temp.at(i));
 	}
 }
 
@@ -183,6 +183,7 @@ bool QueryParser::containsDeclarationType(string s){
 	decVector.push_back(stringconst::ARG_PROGLINE);
 	decVector.push_back(stringconst::ARG_CONSTANT);
 	decVector.push_back(stringconst::ARG_PROCEDURE);
+	decVector.push_back(stringconst::ARG_CALL);
 	return containsAny(s, &decVector);
 }
 
@@ -202,8 +203,6 @@ bool QueryParser::containsKeyword(string s){
 	vector<string> wordVector;
 	wordVector.push_back(stringconst::STRING_SUCH);
 	wordVector.push_back(stringconst::STRING_THAT);
-	wordVector.push_back(stringconst::STRING_WITH);
-	wordVector.push_back(stringconst::STRING_AND);
 	return containsAny(s, &wordVector);
 }
 
@@ -272,7 +271,7 @@ SuchThatClauseBuilder* QueryParser::createCorrectClause(string type, queue<strin
 	} else if (type == stringconst::TYPE_AFFECTS){
 		if (isStar == "*"){
 			Utils::getWordAndPop(*line);
-			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFETCSSTAR_);
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTSSTAR_);
 			return clause;
 		} else {
 			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTS_);
@@ -295,6 +294,7 @@ void QueryParser::parseDeclarations(Query* query, vector<string>* list){
 		string decType = split.at(0); 
 		boost::trim(decType);
 		if (!containsDeclarationType(decType)){
+			cout << decType;
 			throw InvalidDeclarationException();
 		}
 		if (decType == stringconst::ARG_PROGLINE){
@@ -327,6 +327,7 @@ void QueryParser::unexpectedEndCheck(queue<string>* in){
 void QueryParser::parseSelectSynonyms(Query* query, queue<string>* line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string first = Utils::getWordAndPop(*line);
+	unexpectedEndCheck(line);
 	if (first != stringconst::STRING_SELECT){
 		throw InvalidSelectException();
 	} else {
@@ -722,112 +723,248 @@ void QueryParser::parsePatternIf(Query* query, queue<string> line, string synony
 	query->addClause(newClause);
 }
 
-void QueryParser::parseWith(Query* query, queue<string> line){
+void QueryParser::parseWith(Query* query, queue<string>* line){
 
-	//unordered_map<string, string> decList = query->getDeclarationList();
+	unordered_map<string, string> decList = query->getDeclarationList();
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
 
-	//WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
-	//string leftEntityValue = "";
-	//string leftEntityCond = "";
-	//string rightEntityValue = "";
-	//string rightEntityCond = "";
-	//string nextToken = "";
+	string leftEntityValue = "";
+	string leftEntityCond = "";
+	string rightEntityValue = "";
+	string rightEntityCond = "";
+	string nextToken = "";
 
-	//leftEntityValue = Utils::getWordAndPop(line);
-	//unexpectedEndCheck(line);
+	leftEntityValue = Utils::getWordAndPop(*line);
+	unexpectedEndCheck(line);
 
-	//if (Utils::isValidConstant(leftEntityValue)){
-	//	withBuilder->setEntity(1, leftEntityValue);
-	//	withBuilder->setRefType(1, INTEGER_);
-	//	withBuilder->setAttrType(1, NULLATTR_);
-	//} else if (leftEntityValue == "\""){
-	//	leftEntityValue = Utils::getWordAndPop(line);
-	//	nextToken = line.front();
-	//	if (nextToken != "\""){
-	//		cout << "expected \", got " << nextToken;
-	//		throw InvalidSyntaxException();
-	//	} else {
-	//		Utils::getWordAndPop(line);
-	//	}
-	//	withBuilder->setEntity(1, leftEntityValue);
-	//	withBuilder->setRefType(1, IDENT_);
-	//	withBuilder->setAttrType(1, NULLATTR_);
-	//} else if (decList.find(leftEntityValue) == decList.end()){
-	//	cout << "missing declaration " << leftEntityValue;
-	//	throw MissingDeclarationException();
-	//} else {
-	//	string leftDeclarationType = decList.at(leftEntityValue);
-	//	nextToken = line.front();
-	//	if (nextToken == "="){
-	//		withBuilder->setEntity(1, leftEntityValue);
-	//		withBuilder->setRefType(1, SYNONYM_);
-	//		withBuilder->setAttrType(1, NULLATTR_);
-	//	} else if (nextToken == "."){
-	//		Utils::getWordAndPop(line);
-	//		unexpectedEndCheck(line);
-	//		leftEntityCond = Utils::getWordAndPop(line);
+	if (Utils::isValidConstant(leftEntityValue)){
+		withBuilder->setEntity(1, leftEntityValue);
+		withBuilder->setRefType(1, INTEGER_);
+		withBuilder->setAttrType(1, NULLATTR_);
+	} else if (leftEntityValue == "\""){
+		leftEntityValue = Utils::getWordAndPop(*line);
+		nextToken = line->front();
+		if (nextToken != "\""){
+			cout << "expected \", got " << nextToken;
+			throw InvalidSyntaxException();
+		} else {
+			Utils::getWordAndPop(*line);
+		}
+		withBuilder->setEntity(1, leftEntityValue);
+		withBuilder->setRefType(1, IDENT_);
+		withBuilder->setAttrType(1, NULLATTR_);
+	} else if (decList.find(leftEntityValue) == decList.end()){
+		cout << "missing declaration " << leftEntityValue;
+		throw MissingDeclarationException();
+	} else {
+		string leftDeclarationType = decList.at(leftEntityValue);
+		nextToken = line->front();
+		if (nextToken == "="){
+			withBuilder->setEntity(1, leftEntityValue);
+			withBuilder->setRefType(1, SYNONYM_);
+			withBuilder->setAttrType(1, NULLATTR_);
+		} else if (nextToken == "."){
+			Utils::getWordAndPop(*line);
+			unexpectedEndCheck(line);
+			leftEntityCond = Utils::getWordAndPop(*line);
+			if (leftEntityCond == stringconst::ATTR_COND_PROCNAME){
+				if (leftDeclarationType != stringconst::ARG_PROCEDURE){
+					throw InvalidAttributeException();
+				}
+				withBuilder->setEntity(1, leftEntityValue);
+				withBuilder->setRefType(1, ATTRREF_);
+				withBuilder->setAttrType(1, PROCNAME_);
+			} else if (leftEntityCond == stringconst::ATTR_COND_STMTNUM){
+				if (leftDeclarationType != stringconst::ARG_STATEMENT
+					|| leftDeclarationType != stringconst::ARG_IF
+					|| leftDeclarationType != stringconst::ARG_WHILE
+					|| leftDeclarationType != stringconst::ARG_PROGLINE){
+						throw InvalidAttributeException();
+				}
+				withBuilder->setEntity(1, leftEntityValue);
+				withBuilder->setRefType(1, ATTRREF_);
+				withBuilder->setAttrType(1, STMTNUM_);
+			} else if (leftEntityCond == stringconst::ATTR_COND_VALUE){
+				if (leftDeclarationType != stringconst::ARG_CONSTANT){
+					throw InvalidAttributeException();
+				}
+				withBuilder->setEntity(1, leftEntityValue);
+				withBuilder->setRefType(1, ATTRREF_);
+				withBuilder->setAttrType(1, CONSTVALUE_);
+			} else if (leftEntityCond == stringconst::ATTR_COND_VARNAME){
+				if (leftDeclarationType == stringconst::ARG_VARIABLE){
+					throw InvalidAttributeException();
+				}
+				withBuilder->setEntity(1, leftEntityValue);
+				withBuilder->setRefType(1, ATTRREF_);
+				withBuilder->setAttrType(1, VARNAME_);
+			} else {
+				cout << "unknown attr cond";
+				throw InvalidSyntaxException();
+			}
+		}
+	}
 
-	//	}
-	//}
+	nextToken = Utils::getWordAndPop(*line);
+	unexpectedEndCheck(line);
+
+	if (nextToken != "="){
+		throw InvalidSyntaxException();
+	}
+
+	rightEntityValue = Utils::getWordAndPop(*line);
+
+	if (Utils::isValidConstant(rightEntityValue)){
+		withBuilder->setEntity(2, rightEntityValue);
+		withBuilder->setRefType(2, INTEGER_);
+		withBuilder->setAttrType(2, NULLATTR_);
+	} else if (rightEntityValue == "\""){
+		unexpectedEndCheck(line);
+		rightEntityValue = Utils::getWordAndPop(*line);
+		nextToken = line->front();
+		if (nextToken != "\""){
+			cout << "expected \", got " << nextToken;
+			throw InvalidSyntaxException();
+		} else {
+			Utils::getWordAndPop(*line);
+		}
+		withBuilder->setEntity(2, rightEntityValue);
+		withBuilder->setRefType(2, IDENT_);
+		withBuilder->setAttrType(2, NULLATTR_);
+	} else if (decList.find(rightEntityValue) == decList.end()){
+		cout << "missing declaration " << rightEntityValue;
+		throw MissingDeclarationException();
+	} else {
+		string rightDeclarationType = decList.at(rightEntityValue);
+		nextToken = line->front();
+		if (nextToken == "="){
+			withBuilder->setEntity(2, rightEntityValue);
+			withBuilder->setRefType(2, SYNONYM_);
+			withBuilder->setAttrType(2, NULLATTR_);
+		} else if (nextToken == "."){
+			Utils::getWordAndPop(*line);
+			unexpectedEndCheck(line);
+			rightEntityCond = Utils::getWordAndPop(*line);
+			if (rightEntityCond == stringconst::ATTR_COND_PROCNAME){
+				if (rightDeclarationType != stringconst::ARG_PROCEDURE){
+					throw InvalidAttributeException();
+				}
+				withBuilder->setEntity(2, rightEntityValue);
+				withBuilder->setRefType(2, ATTRREF_);
+				withBuilder->setAttrType(2, PROCNAME_);
+			} else if (rightEntityCond == stringconst::ATTR_COND_STMTNUM){
+				if (rightDeclarationType != stringconst::ARG_STATEMENT
+					|| rightDeclarationType != stringconst::ARG_IF
+					|| rightDeclarationType != stringconst::ARG_WHILE
+					|| rightDeclarationType != stringconst::ARG_PROGLINE){
+						throw InvalidAttributeException();
+				}
+				withBuilder->setEntity(2, rightEntityValue);
+				withBuilder->setRefType(2, ATTRREF_);
+				withBuilder->setAttrType(2, STMTNUM_);
+			} else if (rightEntityCond == stringconst::ATTR_COND_VALUE){
+				if (rightDeclarationType != stringconst::ARG_CONSTANT){
+					throw InvalidAttributeException();
+				}
+				withBuilder->setEntity(2, rightEntityValue);
+				withBuilder->setRefType(2, ATTRREF_);
+				withBuilder->setAttrType(2, CONSTVALUE_);
+			} else if (rightEntityCond == stringconst::ATTR_COND_VARNAME){
+				if (rightDeclarationType == stringconst::ARG_VARIABLE){
+					throw InvalidAttributeException();
+				}
+				withBuilder->setEntity(2, rightEntityValue);
+				withBuilder->setRefType(2, ATTRREF_);
+				withBuilder->setAttrType(2, VARNAME_);
+			} else {
+				cout << "unknown attr cond";
+				throw InvalidSyntaxException();
+			}
+		}
+	}
+	WithClause* wClause = withBuilder->build();
+	query->addClause(wClause);
 
 }
 
-Query QueryParser::parseQuery(string input){
-	Query* output = new Query();
-	vector<string> splitBySC = vector<string>();
-	tokeniser(input, ';', &splitBySC);
-	int numDeclarations = splitBySC.size() - 1;
-	string selectStatement = splitBySC.at(splitBySC.size()-1);
-	queueBuilder(selectStatement);
-	splitBySC.pop_back();
-	parseDeclarations(output, &splitBySC);
+Query* QueryParser::parseQuery(string input){
+
+	Query* outputQuery = new Query();
+	vector<string>* decVector = new vector<string>();
+	tokeniser(input, ';', decVector);
+	int numDecTypes = decVector->size() - 1;
+
+	string queryLine = decVector->at(decVector->size() - 1);
+	queue<string>* selectLine = new queue<string>();
+	queueBuilder(queryLine, selectLine);
+	decVector->pop_back();
+
+	parseDeclarations(outputQuery, decVector);
 	bool expectPattern = false;
 	bool expectWith = false;
-	while(!queryQueue.empty()){
-		string current = queryQueue.front();
-		if (current == stringconst::STRING_SELECT){
+
+	while (!selectLine->empty()){
+
+		string currentWord = selectLine->front();
+		
+		if (currentWord == stringconst::STRING_SELECT){
+			
+			parseSelectSynonyms(outputQuery, selectLine);
+		
+		} else if (containsClauseType(currentWord)){
+			
 			expectPattern = false;
-			//expectWith = false;
-			parseSelectSynonyms(output, &queryQueue);
-		} else if (containsClauseType(current)){
-			expectPattern = false;
-			//expectWith = false;
-			parseClause(output, &queryQueue);
-		} else if (contains(current, stringconst::TYPE_PATTERN)){
-			string wordPattern = Utils::getWordAndPop(queryQueue);
-			unexpectedEndCheck(&queryQueue);
-			parsePattern(output, &queryQueue);
+			expectWith = false;
+			parseClause(outputQuery, selectLine);
+		
+		} else if (currentWord == stringconst::TYPE_PATTERN){
+			
 			expectPattern = true;
-			//expectWith = false;
-		} else if (current == stringconst::TYPE_WITH){
-			//expectPattern = false;
-			//expectWith = true;
-			//string wordWith = Utils::getWordAndPop(selectQueue);
-			//parseWith(output, selectQueue);
-		} else if (current == stringconst::STRING_AND && expectPattern){
-			string wordAnd = Utils::getWordAndPop(queryQueue);
-			unexpectedEndCheck(&queryQueue);
-			parsePattern(output, &queryQueue);
-		} else if (current == stringconst::STRING_AND && expectWith){
-			string wordAnd = Utils::getWordAndPop(queryQueue);
-			unexpectedEndCheck(&queryQueue);
-			//parsePattern(output, selectQueue);
-		} else if (containsKeyword(current)){
+			expectWith = false;
+			string wordPattern = Utils::getWordAndPop(*selectLine);
+			unexpectedEndCheck(selectLine);
+			parsePattern(outputQuery, selectLine);
+		
+		} else if (currentWord == stringconst::TYPE_WITH){
+		
 			expectPattern = false;
+			expectWith = true;
+			string wordWith = Utils::getWordAndPop(*selectLine);
+			unexpectedEndCheck(selectLine);
+			parseWith(outputQuery, selectLine);
+		
+		} else if (currentWord == stringconst::STRING_AND && expectPattern){
+		
+			string wordAnd = Utils::getWordAndPop(*selectLine);
+			unexpectedEndCheck(selectLine);
+			parsePattern(outputQuery, selectLine);
+
+		} else if (currentWord == stringconst::STRING_AND && expectWith){
+		
+			string wordAnd = Utils::getWordAndPop(*selectLine);
+			unexpectedEndCheck(selectLine);
+			parseWith(outputQuery, selectLine);
+
+		} else if (currentWord == stringconst::STRING_SUCH || currentWord == stringconst::STRING_THAT){
+			
+			expectPattern = false;
+			expectWith = false;
+			Utils::getWordAndPop(*selectLine);
+			unexpectedEndCheck(selectLine);
+
+		} else {
+			
+			cout << currentWord << " not in dictionary";
+			throw InvalidSyntaxException();
+
 		}
 
-		if(!queryQueue.empty()) {
-			queryQueue.pop();
+		if (selectLine->empty()){
+			return outputQuery;
 		}
 	}
-	vector<Clause*> clauseList = output->getClauseList();
-	for (size_t i=0; i<clauseList.size(); i++){
-		Clause* current = clauseList.at(i);
-		//if (!current->isValid()){
-			//throw InvalidClauseException();
-		//}
-	}
-	return *output;
+
+	return outputQuery;
 }
 
 void QueryParser::splitByDelims(vector<string>* out, string delim, vector<string> in){
