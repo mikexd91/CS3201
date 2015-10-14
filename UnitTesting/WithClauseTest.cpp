@@ -1,20 +1,22 @@
 #include <cppunit/config/SourcePrefix.h>
 #include "WithClauseTest.h"
 #include "../SPA/WithClause.h"
+#include "../SPA/WithClauseBuilder.h"
+#include "../SPA/WithClauseRef.h"
 #include "../SPA/AST.h"
 #include "../SPA/AssgNode.h"
 #include "../SPA/ConstNode.h"
 #include "../SPA/OpNode.h"
 #include "../SPA/StmtTable.h"
 #include "../SPA/VarTable.h"
+#include "../SPA/Utils.h"
+#include "../SPA/ProcTable.h"
+#include "../SPA/ConstTable.h"
 #include "boost/foreach.hpp"
 
 #include <iostream>
 #include <string>
-#include "../SPA/WithClauseBuilder.h"
-#include "../SPA/Utils.h"
-#include "../SPA/ProcTable.h"
-#include "../SPA/ConstTable.h"
+
 
 using namespace std;
 using namespace stringconst;
@@ -182,6 +184,7 @@ void WithClauseTest::evaluateRightIntLeftInt() {
 	Result* r1 = new Result();
 
 	CPPUNIT_ASSERT(w1->evaluate(r1));
+	//CPPUNIT_ASSERT(w1->getClauseType() == WITH_);
 
 	// test the contents of r1
 	// in this case there are no contents of r1

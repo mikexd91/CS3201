@@ -12,12 +12,17 @@ WithClause::~WithClause(void)
 {
 }
 
-bool WithClause::isValid(void)
-{
-	// TODO
-	// must be same return type on both side
-	bool returnTypesMatch = getLeftRef().getReturnType() == getRightRef().getReturnType();
+bool WithClause::isValid(void){
+	WithClauseRef leftSideRef = this->getLeftRef();
+	WithClauseRef rightSideRef = this->getLeftRef();
+	if (leftSideRef.getAttrType() == SYNONYM_){
+		//(return false if !=progline)
+	}
+	if (rightSideRef.getAttrType() == SYNONYM_){
+		//(return false if !=progline)
+	}
 
+	bool returnTypesMatch = (leftSideRef.getReturnType() == rightSideRef.getReturnType());
 	return returnTypesMatch;
 }
 

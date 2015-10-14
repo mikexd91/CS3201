@@ -945,6 +945,11 @@ Query* QueryParser::parseQuery(string input){
 			unexpectedEndCheck(selectLine);
 			parseWith(outputQuery, selectLine);
 
+		} else if (currentWord == stringconst::STRING_AND && !expectWith && !expectPattern){
+
+			Utils::getWordAndPop(*selectLine);
+			unexpectedEndCheck(selectLine);
+
 		} else if (currentWord == stringconst::STRING_SUCH || currentWord == stringconst::STRING_THAT){
 			
 			expectPattern = false;
