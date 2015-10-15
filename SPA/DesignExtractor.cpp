@@ -12,7 +12,7 @@ DesignExtractor::DesignExtractor() {
 
 void DesignExtractor::executeSecondPass() {
 	checkCyclicCalls();
-	populateModUsesProc();
+	//populateModUsesProc();
 	populateModUsesCalls();
 	populateFollowStar();
 	populateParentStar();
