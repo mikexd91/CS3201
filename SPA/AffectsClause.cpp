@@ -89,7 +89,19 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 			if (!isWithinWhile) {
 				iterator.skipWhileLoop(whileNode);
 			}
+			
+		} /*else if (currentNode->isNodeType(CALL_)) {
+			//check if called procedure modifies var
+			CallGNode* callNode = static_cast<CallGNode*>(currentNode);
+			Statement* callStmt = stmtTable->getStmtObj(callNode->getStartStmt());
+			Procedure* proc = procTable->getProcObj(callStmt->getCalls());
+			if (proc->getModifies().find(modifyingVar) != proc->getModifies().end()) {
+				if (!toContinueForFixed(iterator)) {
+					return false;
+				}
+			}
 		}
+		*/
 		currentNode = iterator.getNextNode();
 	}
 	return false;
@@ -153,16 +165,19 @@ bool AffectsClause::evaluateS1FixedS2Generic(string s1){
 					}
 				}
 			}
-		} 
-		/*else if (currentNode->isNodeType(CALL_)) {
+			
+		} /*else if (currentNode->isNodeType(CALL_)) {
 			//check if called procedure modifies var
 			CallGNode* callNode = static_cast<CallGNode*>(currentNode);
 			Statement* callStmt = stmtTable->getStmtObj(callNode->getStartStmt());
 			Procedure* proc = procTable->getProcObj(callStmt->getCalls());
 			if (proc->getModifies().find(modifyingVar) != proc->getModifies().end()) {
-				return false;
+				if (!toContinue(iterator)) {
+					return false;
+				}
 			}
-		}*/
+		}
+		*/
 
 		currentNode = iterator.getNextNode();
 	}
@@ -212,7 +227,19 @@ unordered_set<string> AffectsClause::getAllS2WithS1Fixed(string s1) {
 					}
 				}
 			}
-		} 
+			
+		}/* else if (currentNode->isNodeType(CALL_)) {
+			//check if called procedure modifies var
+			CallGNode* callNode = static_cast<CallGNode*>(currentNode);
+			Statement* callStmt = stmtTable->getStmtObj(callNode->getStartStmt());
+			Procedure* proc = procTable->getProcObj(callStmt->getCalls());
+			if (proc->getModifies().find(modifyingVar) != proc->getModifies().end()) {
+				if (!toContinue(iterator)) {
+					return results;
+				}
+			}
+		}
+		*/
 		currentNode = iterator.getNextNode();
 	}
 	return results;

@@ -5,10 +5,12 @@
 
 class AffectsClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( AffectsClauseTest );
+	
 	CPPUNIT_TEST( testFixedFixedSameProc );
 	CPPUNIT_TEST( testFixedFixedInWhile );
 	CPPUNIT_TEST( testFixedFixedFail );
 	CPPUNIT_TEST( testFixedFixedIfPass );
+	
 	CPPUNIT_TEST( testFixedFixedOutsideContainerPass );
 	CPPUNIT_TEST( testFixedGenericPass );
 	CPPUNIT_TEST( testFixedGenericFail );
