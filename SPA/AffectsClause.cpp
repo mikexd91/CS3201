@@ -73,14 +73,22 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 					return true;
 				} else {
 					Statement* assgStmt = stmtTable->getStmtObj(i);
-					//if there is a statement that uses the variable
+					//if there is a statement that modifies the variable
 					if (assgStmt->getModifies().find(modifyingVar) != assgStmt->getModifies().end()) {
-						//if we should consider else stmt (consider both branches) -> consider else branch
-						if (iterator.toConsiderElseStmt()) {
+						if (iterator.isInIfContainer()) {
 							IfGNode* ifNode = iterator.getCurrentIfNode();
-							iterator.skipThenStmt(ifNode);
+							if (iterator.toConsiderElseStmt()) {
+								//if we should consider else stmt (consider both branches) -> consider else branch
+								iterator.skipThenStmt(ifNode);
+							} else {
+								//we have considered both then and else stmt, let's see whether we should proceed with evaluation
+								iterator.skipElseStmt(ifNode);
+							}
 						} else {
-							//there is no else branch to consider
+							//2 possibilities:
+							//1. in an ordinary set of assg stmt -> no other path
+							//2. while loop will only occur if the start stmt is in a while loop, or if our end stmt is inside the while loop,
+							//it will fail either way
 							return false;
 						}
 					}
