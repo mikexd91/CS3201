@@ -227,8 +227,8 @@ AffectsClauseTest::setUp() {
 	Statement* stmt8 = new Statement();
 	stmt8->setStmtNum(8);
 	stmt8->setType(CALL_STMT_);
-	string modifiesArray8[] = {"i", "x"};
-	unordered_set<string> mods8(modifiesArray8, modifiesArray8 + 2);
+	string modifiesArray8[] = {"i", "x", "c"};
+	unordered_set<string> mods8(modifiesArray8, modifiesArray8 + 3);
 	stmt8->setModifies(mods8);
 	string usesArray8[] = {"x", "b", "z"};
 	unordered_set<string> uses8(usesArray8, usesArray8 + 3);
@@ -377,6 +377,22 @@ void AffectsClauseTest::testFixedFixedFail() {
 	affectsBuilder->setArgFixed(1, true);
 	affectsBuilder->setArgType(1, ARG_PROGLINE);
 	affectsBuilder->setArg(2, "2");
+	affectsBuilder->setArgFixed(2, true);
+	affectsBuilder->setArgType(2, ARG_PROGLINE);
+	AffectsClause* m1 = (AffectsClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(!result);
+}
+
+void AffectsClauseTest::testFixedFixedCallFail() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder->setArg(1, "7");
+	affectsBuilder->setArgFixed(1, true);
+	affectsBuilder->setArgType(1, ARG_PROGLINE);
+	affectsBuilder->setArg(2, "15");
 	affectsBuilder->setArgFixed(2, true);
 	affectsBuilder->setArgType(2, ARG_PROGLINE);
 	AffectsClause* m1 = (AffectsClause*) affectsBuilder->build();
