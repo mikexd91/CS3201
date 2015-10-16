@@ -128,10 +128,12 @@ GNode* CFGIterator::getNextNode() {
 			} else if (nodeStack.top().count == 0) {
 				//iterated through both then and else, pop off and not consider it again
 				nodeStack.pop();
+				dummyNodeStack.pop();
 				nextNode = dummyNode->getChildren().at(0);
 			} else {
 				nodeStack.top().count--;
 				//count is now 0, to iterate through else
+				dummyNodeStack.push(dummyNode);
 				IfGNode* ifNode = static_cast<IfGNode*>(nodeStack.top().node);
 				nextNode = ifNode->getElseChild();
 			}
