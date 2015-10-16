@@ -12,6 +12,7 @@
 
 AffectsClause::AffectsClause(void):SuchThatClause(AFFECTS_) {
 	stmtTable = StmtTable::getInstance();
+	procTable = ProcTable::getInstance();
 }
 
 AffectsClause::~AffectsClause(void){
@@ -75,20 +76,8 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 					Statement* assgStmt = stmtTable->getStmtObj(i);
 					//if there is a statement that modifies the variable
 					if (assgStmt->getModifies().find(modifyingVar) != assgStmt->getModifies().end()) {
-						if (iterator.isInIfContainer()) {
-							IfGNode* ifNode = iterator.getCurrentIfNode();
-							if (iterator.toConsiderElseStmt()) {
-								//if we should consider else stmt (consider both branches) -> consider else branch
-								iterator.skipThenStmt(ifNode);
-							} else {
-								//we have considered both then and else stmt, let's see whether we should proceed with evaluation
-								iterator.skipElseStmt(ifNode);
-							}
-						} else {
-							//2 possibilities:
-							//1. in an ordinary set of assg stmt -> no other path
-							//2. while loop will only occur if the start stmt is in a while loop, or if our end stmt is inside the while loop,
-							//it will fail either way
+						if(!toContinueForFixed(iterator)) {
+							//break
 							return false;
 						}
 					}
@@ -158,39 +147,75 @@ bool AffectsClause::evaluateS1FixedS2Generic(string s1){
 					//if there is a statement that uses the variable
 					if (assgStmt->getModifies().find(modifyingVar) != assgStmt->getModifies().end()) {
 						//if we should consider else stmt (consider both branches) -> consider else branch
-						if (iterator.isInIfContainer()) {
-							IfGNode* ifNode = iterator.getCurrentIfNode();
-							if (iterator.toConsiderElseStmt()) {
-								//if we should consider else stmt (consider both branches) -> consider else branch
-								iterator.skipThenStmt(ifNode);
-							} else {
-								//we have considered both then and else stmt, let's see whether we should proceed with evaluation
-								iterator.skipElseStmt(ifNode);
-							}
-						} else if (iterator.isInWhileLoop()) {
-							//if the bad assg stmt is in a while loop, skip the while loop
-							//as there may be a path outside it that does not affect
-							WhileGNode* whileNode = iterator.getCurrentWhileNode();
-							iterator.skipWhileLoop(whileNode);
-						} else {
-							//there is no else branch, and we are not in a while loop
+						if (!toContinue(iterator)) {
 							return false;
 						}
 					}
 				}
 			}
 		} 
+		/*else if (currentNode->isNodeType(CALL_)) {
+			//check if called procedure modifies var
+			CallGNode* callNode = static_cast<CallGNode*>(currentNode);
+			Statement* callStmt = stmtTable->getStmtObj(callNode->getStartStmt());
+			Procedure* proc = procTable->getProcObj(callStmt->getCalls());
+			if (proc->getModifies().find(modifyingVar) != proc->getModifies().end()) {
+				return false;
+			}
+		}*/
+
 		currentNode = iterator.getNextNode();
 	}
 	return false;
-
-
-
 }
 
 //e.g. Parent(2, s2)
 unordered_set<string> AffectsClause::getAllS2WithS1Fixed(string s1) {
-	return unordered_set<string>();
+	//check modifies/uses aspects of firstArg and secondArg
+	unordered_set<string> results = unordered_set<string>();
+	int stmtNum1 = boost::lexical_cast<int>(s1);
+	Statement* stmt1 = stmtTable->getStmtObj(stmtNum1);
+	if (stmt1->getType() != ASSIGN_STMT_) {
+		return unordered_set<string>();
+	}
+	unordered_set<string> modifies1 = stmt1->getModifies();
+	string modifyingVar;
+	if (modifies1.size() != 1) {
+		//error
+		cout << "Assignment statements should only have 1 modify variable";	
+		return results;
+	} else {
+		modifyingVar = *modifies1.begin();
+	}
+
+	//if both are in same procedure
+	//check if stmt2 next* stmt1
+	CFGIterator iterator = CFGIterator(stmt1->getGNodeRef());
+	GNode* currentNode = iterator.getNextNode();
+	while (!currentNode->isNodeType(END_)){
+		if (currentNode->isNodeType(ASSIGN_)) {
+			AssgGNode* assgNode = static_cast<AssgGNode*>(currentNode);
+			int startNum;
+			if (iterator.isStart()) {
+				startNum = stmtNum1+1;
+			} else {
+				startNum = assgNode->getStartStmt();
+			}
+			for (int i =startNum; i <= assgNode->getEndStmt(); i++) {
+				Statement* assgStmt = stmtTable->getStmtObj(i);
+				if (assgStmt->getUses().find(modifyingVar) != assgStmt->getUses().end()) {
+					results.insert(lexical_cast<string>(assgStmt->getStmtNum()));
+				}
+				if (assgStmt->getModifies().find(modifyingVar) != assgStmt->getModifies().end()) {
+					if(!toContinue(iterator)) {
+						return results;
+					}
+				}
+			}
+		} 
+		currentNode = iterator.getNextNode();
+	}
+	return results;
 }
 
 //e.g. Parent(_, s2)
@@ -214,6 +239,49 @@ unordered_set<string> AffectsClause::getAllS1() {
 //Parent(s1, s2)
 unordered_set<vector<string>> AffectsClause::getAllS1AndS2() {
 	return unordered_set<vector<string>>();
+}
+
+bool AffectsClause::toContinue(CFGIterator iterator) {
+	if (iterator.isInIfContainer()) {
+		IfGNode* ifNode = iterator.getCurrentIfNode();
+		if (iterator.toConsiderElseStmt()) {
+			//if we should consider else stmt (consider both branches) -> consider else branch
+			iterator.skipThenStmt(ifNode);
+		} else {
+			//we have considered both then and else stmt, let's see whether we should proceed with evaluation
+			iterator.skipElseStmt(ifNode);
+		}
+		return true;
+	} else if (iterator.isInWhileLoop()) {
+		//if the bad assg stmt is in a while loop, skip the while loop
+		//as there may be a path outside it that does not affect
+		WhileGNode* whileNode = iterator.getCurrentWhileNode();
+		iterator.skipWhileLoop(whileNode);
+		return true;
+	} else {
+		//there is no else branch, and we are not in a while loop
+		return false;
+	}
+}
+
+bool AffectsClause::toContinueForFixed(CFGIterator iterator) {
+	if (iterator.isInIfContainer()) {
+		IfGNode* ifNode = iterator.getCurrentIfNode();
+		if (iterator.toConsiderElseStmt()) {
+			//if we should consider else stmt (consider both branches) -> consider else branch
+			iterator.skipThenStmt(ifNode);
+		} else {
+			//we have considered both then and else stmt, let's see whether we should proceed with evaluation
+			iterator.skipElseStmt(ifNode);
+		}
+		return true;
+	} else {
+		//2 possibilities:
+		//1. in an ordinary set of assg stmt -> no other path
+		//2. while loop will only occur if the start stmt is in a while loop, or if our end stmt is inside the while loop,
+		//it will fail either way
+		return false;
+	}
 }
 
 

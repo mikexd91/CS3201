@@ -34,6 +34,7 @@ protected:
 
 private:
 	StmtTable* stmtTable;
-
-
+	ProcTable* procTable;
+	bool toContinue(CFGIterator);
+	bool toContinueForFixed(CFGIterator);
 };
