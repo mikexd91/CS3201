@@ -1,7 +1,6 @@
 #pragma once
 
 #include "GNode.h"
-#include "IfGNode.h"
 #include <boost/unordered_set.hpp>
 
 using boost::unordered_set;
@@ -18,16 +17,16 @@ public:
 	// stmts
 	int getIfParentStmt();
 	int getElseParentStmt();
-	IfGNode* getEntrance();
+	GNode* getEntrance();
 	unordered_set<int> getPrevStmts();
 
 	// setters
 	void setIfParentStmt(int);
 	void setElseParentStmt(int);
-	void setEntrance(IfGNode*);
+	void setEntrance(GNode*);
 	void setPrevStmts(unordered_set<int>);
 
 private:
-	IfGNode* entrance;
+	GNode* entrance;
 	unordered_set<int> prevStmts;
 };
