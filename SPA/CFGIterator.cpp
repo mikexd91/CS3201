@@ -131,7 +131,6 @@ GNode* CFGIterator::getNextNode() {
 			} else {
 				nodeStack.top().count--;
 				//count is now 0, to iterate through else
-				dummyNodeStack.push(dummyNode);
 				IfGNode* ifNode = static_cast<IfGNode*>(nodeStack.top().node);
 				nextNode = ifNode->getElseChild();
 			}
