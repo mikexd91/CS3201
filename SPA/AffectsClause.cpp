@@ -1,4 +1,5 @@
 #include "AffectsClause.h"
+#include "AffectsCalculator.h"
 #include "CFG.h"
 #include "AssgGNode.h"
 #include "CallGNode.h"
@@ -257,7 +258,8 @@ unordered_set<string> AffectsClause::getAllS1() {
 
 //Parent(s1, s2)
 unordered_set<vector<string>> AffectsClause::getAllS1AndS2() {
-	return unordered_set<vector<string>>();
+	AffectsCalculator calc = AffectsCalculator();
+	return calc.computeAllS1AndS2();
 }
 
 bool AffectsClause::toContinue(CFGIterator iterator) {
