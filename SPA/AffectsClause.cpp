@@ -23,8 +23,8 @@ AffectsClause::~AffectsClause(void){
 bool AffectsClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
-	bool firstArg = (firstType == stringconst::ARG_ASSIGN) || (firstType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_PROGLINE);
-	bool secondArg = (secondType == stringconst::ARG_ASSIGN) || (secondType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_PROGLINE);
+	bool firstArg = (firstType == stringconst::ARG_ASSIGN) || (firstType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_PROGLINE) || (firstType == stringconst::ARG_GENERIC);
+	bool secondArg = (secondType == stringconst::ARG_ASSIGN) || (secondType == stringconst::ARG_STATEMENT) || (secondType == stringconst::ARG_PROGLINE) || (secondType == stringconst::ARG_GENERIC);
 	return firstArg && secondArg;
 }
 
@@ -107,7 +107,8 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 
 //e.g. Parent(_,_)
 bool AffectsClause::evaluateS1GenericS2Generic() {
-	return false;
+	AffectsCalculator calc = AffectsCalculator();
+	return calc.computeGeneric();
 }
 
 //e.g. Parent(_,2)
@@ -240,7 +241,8 @@ unordered_set<string> AffectsClause::getAllS2WithS1Fixed(string s1) {
 //e.g. Parent(_, s2)
 //get all children
 unordered_set<string> AffectsClause::getAllS2() {
-	return unordered_set<string>();
+	AffectsCalculator calc = AffectsCalculator();
+	return calc.computeAllS2();
 }
 
 //e.g. Parent(s1,2)
@@ -252,7 +254,8 @@ unordered_set<string> AffectsClause::getAllS1WithS2Fixed(string s2) {
 //e.g. Parent(s1,_)
 //get all parents
 unordered_set<string> AffectsClause::getAllS1() {
-	return unordered_set<string>();
+	AffectsCalculator calc = AffectsCalculator();
+	return calc.computeAllS1();
 }
 
 //Parent(s1, s2)

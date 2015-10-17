@@ -5,7 +5,9 @@
 
 class AffectsClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( AffectsClauseTest );
-	
+	CPPUNIT_TEST( testGenericGenericPass );
+	CPPUNIT_TEST( testGenericSynPass );
+	CPPUNIT_TEST( testSynGenericPass );
 	CPPUNIT_TEST( testFixedFixedSameProc );
 	CPPUNIT_TEST( testFixedFixedInWhile );
 	CPPUNIT_TEST( testFixedFixedFail );
@@ -23,6 +25,9 @@ public:
 	void setUp();
 	void tearDown();
 
+	void testGenericGenericPass();
+	void testGenericSynPass();
+	void testSynGenericPass();
 	void testFixedFixedSameProc();
 	void testFixedFixedInWhile();
 	void testFixedFixedFail();

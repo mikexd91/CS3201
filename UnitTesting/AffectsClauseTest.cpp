@@ -344,6 +344,69 @@ AffectsClauseTest::tearDown() {
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( AffectsClauseTest );
 
+void AffectsClauseTest::testGenericGenericPass() {
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder->setArg(1, "_");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_GENERIC);
+	affectsBuilder->setArg(2, "_");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_GENERIC);
+	AffectsClause* m1 = (AffectsClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
+}
+
+void AffectsClauseTest::testGenericSynPass() {
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder->setArg(1, "_");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_GENERIC);
+	affectsBuilder->setArg(2, "s2");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsClause* m1 = (AffectsClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+	unordered_set<string> s = res.getSyn("s2");
+	CPPUNIT_ASSERT(s.size() == 5);
+	CPPUNIT_ASSERT(s.find("4") != s.end());
+	CPPUNIT_ASSERT(s.find("5") != s.end());
+	CPPUNIT_ASSERT(s.find("11") != s.end());
+	CPPUNIT_ASSERT(s.find("13") != s.end());
+	CPPUNIT_ASSERT(s.find("14") != s.end());
+}
+
+void AffectsClauseTest::testSynGenericPass() {
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder->setArg(1, "s1");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_STATEMENT);
+	affectsBuilder->setArg(2, "_");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_GENERIC);
+	AffectsClause* m1 = (AffectsClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+	unordered_set<string> s = res.getSyn("s1");
+	CPPUNIT_ASSERT(s.size() == 5);
+	CPPUNIT_ASSERT(s.find("1") != s.end());
+	CPPUNIT_ASSERT(s.find("5") != s.end());
+	CPPUNIT_ASSERT(s.find("6") != s.end());
+	CPPUNIT_ASSERT(s.find("10") != s.end());
+	CPPUNIT_ASSERT(s.find("11") != s.end());
+}
+
 void AffectsClauseTest::testFixedFixedSameProc() { 
 	Result res = Result();
 	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);

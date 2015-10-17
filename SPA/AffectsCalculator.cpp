@@ -7,7 +7,8 @@
 AffectsCalculator::AffectsCalculator() {
 	stmtTable = StmtTable::getInstance();
 	cfg = CFG::getInstance();
-	results = unordered_set<vector<string>>();
+	singleSynResults = unordered_set<string>();
+	multiSynResults = unordered_set<vector<string>>();
 	globalState = State();
 }
 
@@ -15,6 +16,8 @@ AffectsCalculator::~AffectsCalculator() {
 }
 
 unordered_set<vector<string>> AffectsCalculator::computeAllS1AndS2() {
+	//used for insertion
+	type = S1_AND_S2;
 	//iterate for each proc
 	vector<ProcGNode*> procNodes = cfg->getAllProcedures();
 	//between each proc, reinitialise state
@@ -26,9 +29,64 @@ unordered_set<vector<string>> AffectsCalculator::computeAllS1AndS2() {
 		//reset state
 		globalState = State();
 	}
-	return results;
+	return multiSynResults;
 }
 
+unordered_set<string> AffectsCalculator::computeAllS1() {
+	//used for insertion
+	type = S1_ONLY;
+	//iterate for each proc
+	vector<ProcGNode*> procNodes = cfg->getAllProcedures();
+	//between each proc, reinitialise state
+	BOOST_FOREACH(ProcGNode* procNode, procNodes) {
+		GNode* currentNode = procNode->getChild();
+		while(currentNode->getNodeType() != END_) {
+			currentNode = evaluateNode(currentNode, globalState);
+		}
+		//reset state
+		globalState = State();
+	}
+	return singleSynResults;
+}
+
+
+bool AffectsCalculator::computeGeneric() {
+	//used for insertion
+	type = BOOLEAN;
+	try {
+		//iterate for each proc
+		vector<ProcGNode*> procNodes = cfg->getAllProcedures();
+		//between each proc, reinitialise state
+		BOOST_FOREACH(ProcGNode* procNode, procNodes) {
+			GNode* currentNode = procNode->getChild();
+			while(currentNode->getNodeType() != END_) {
+				currentNode = evaluateNode(currentNode, globalState);
+			}
+			//reset state
+			globalState = State();
+		}
+	} catch (AffectsTermination e) {
+		return true;
+	}
+	return false;
+}
+
+unordered_set<string> AffectsCalculator::computeAllS2() {
+	//used for insertion
+	type = S2_ONLY;
+	//iterate for each proc
+	vector<ProcGNode*> procNodes = cfg->getAllProcedures();
+	//between each proc, reinitialise state
+	BOOST_FOREACH(ProcGNode* procNode, procNodes) {
+		GNode* currentNode = procNode->getChild();
+		while(currentNode->getNodeType() != END_) {
+			currentNode = evaluateNode(currentNode, globalState);
+		}
+		//reset state
+		globalState = State();
+	}
+	return singleSynResults;
+}
 
 //returns next node
 GNode* AffectsCalculator::evaluateNode(GNode* node, State& state) {
@@ -75,7 +133,7 @@ void AffectsCalculator::updateStateForWhile(WhileGNode* whileNode, State& state)
 
 AffectsCalculator::State AffectsCalculator::recurseWhile(WhileGNode* whileNode, State state) {
 	GNode* currentNode = whileNode->getBeforeLoopChild();
-	while(currentNode != whileNode) {
+	while(currentNode != whileNode && currentNode->getNodeType() != END_) {
 		currentNode = evaluateNode(currentNode, state);
 	}
 	return state;
@@ -108,11 +166,26 @@ void AffectsCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 			//if it has been modified previously, add affects pairs to list
 			if (entry != state.end() && entry->second.size() != 0) {
 				unordered_set<int> modifyingStmts = entry->second;
-				BOOST_FOREACH(int modifyingStmt, modifyingStmts) {
-					vector<string> affectResult = vector<string>();
-					affectResult.push_back(boost::lexical_cast<string>(modifyingStmt));
-					affectResult.push_back(boost::lexical_cast<string>(stmtNum));
-					results.insert(affectResult);
+				switch (type) {
+				case BOOLEAN: 
+					throw AffectsTermination();
+					break;
+				case S1_ONLY: 
+					BOOST_FOREACH(int modifyingStmt, modifyingStmts) {
+							singleSynResults.insert(boost::lexical_cast<string>(modifyingStmt));
+						}
+					break;
+				case S2_ONLY: 
+					singleSynResults.insert(boost::lexical_cast<string>(stmtNum));
+					break;
+				case S1_AND_S2:
+					BOOST_FOREACH(int modifyingStmt, modifyingStmts) {
+						vector<string> affectResult = vector<string>();
+						affectResult.push_back(boost::lexical_cast<string>(modifyingStmt));
+						affectResult.push_back(boost::lexical_cast<string>(stmtNum));
+						multiSynResults.insert(affectResult);
+					}
+					break;
 				}
 			}
 		}
