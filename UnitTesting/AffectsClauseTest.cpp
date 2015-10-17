@@ -1,6 +1,5 @@
 #include <cppunit/config/SourcePrefix.h>
 #include "AffectsClauseTest.h"
-#include "boost\foreach.hpp"
 #include "../SPA/AST.h"
 #include "../SPA/StmtTable.h"
 #include "../SPA/VarTable.h"
