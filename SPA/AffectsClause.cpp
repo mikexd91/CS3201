@@ -222,7 +222,6 @@ unordered_set<string> AffectsClause::getAllS2WithS1Fixed(string s1) {
 					}
 				}
 			}
-			
 		} else if (currentNode->isNodeType(CALL_)) {
 			//check if called procedure modifies var
 			CallGNode* callNode = static_cast<CallGNode*>(currentNode);

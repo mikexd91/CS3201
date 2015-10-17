@@ -13,7 +13,6 @@ CFGIterator::CFGIterator(GNode* start) {
 	startNode = start;
 	nextNode = start;
 	nodeStack = stack<GNodeContainer>();
-	dummyNodeStack = stack<DummyGNode*>();
 	numIter=-1;
 }
 
@@ -69,8 +68,8 @@ void CFGIterator::skipThenStmt(IfGNode* node) {
 void CFGIterator::skipElseStmt(IfGNode* node) {
 	if (nodeStack.top().node == node) {
 		if (nodeStack.top().toContinue) {
-			nextNode = dummyNodeStack.top()->getChildren().at(0);
-			dummyNodeStack.pop();
+			IfGNode* ifNode = static_cast<IfGNode*>(node);
+			nextNode = ifNode->getExit();
 		} else {
 			nextNode = new EndGNode();
 		}
@@ -128,7 +127,6 @@ GNode* CFGIterator::getNextNode() {
 			} else if (nodeStack.top().count == 0) {
 				//iterated through both then and else, pop off and not consider it again
 				nodeStack.pop();
-				dummyNodeStack.pop();
 				nextNode = dummyNode->getChildren().at(0);
 			} else {
 				nodeStack.top().count--;

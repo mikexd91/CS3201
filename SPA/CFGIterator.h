@@ -45,6 +45,5 @@ private:
 	GNode* startNode;
 	GNode* nextNode;
 	stack<GNodeContainer> nodeStack;
-	stack<DummyGNode*> dummyNodeStack;
 	int numIter;
 };
