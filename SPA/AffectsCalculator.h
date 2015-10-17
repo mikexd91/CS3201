@@ -33,5 +33,5 @@ private:
 	void updateStateForAssign(AssgGNode*, State&);
 	GNode* evaluateNode(GNode* node, State&);
 	State mergeStates(State, State);
-	State recurseWhile(GNode*, State);
+	State recurseWhile(WhileGNode*, State);
 };

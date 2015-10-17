@@ -16,6 +16,7 @@ class AffectsClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testFixedGenericFail );
 	CPPUNIT_TEST( testFixedSynPass );
 	CPPUNIT_TEST( testFixedSynPassInWhile );
+	CPPUNIT_TEST( testSynSynPass );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -32,5 +33,6 @@ public:
 	void testFixedGenericFail();
 	void testFixedSynPass();
 	void testFixedSynPassInWhile();
+	void testSynSynPass();
 };
     

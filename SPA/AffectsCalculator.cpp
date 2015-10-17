@@ -5,9 +5,13 @@
 #include <iostream>
 
 AffectsCalculator::AffectsCalculator() {
+	stmtTable = StmtTable::getInstance();
 	cfg = CFG::getInstance();
 	results = unordered_set<vector<string>>();
 	globalState = State();
+}
+
+AffectsCalculator::~AffectsCalculator() {
 }
 
 unordered_set<vector<string>> AffectsCalculator::computeAllS1AndS2() {
@@ -63,15 +67,16 @@ void AffectsCalculator::updateStateForCall(CallGNode* callNode, State& state) {
 void AffectsCalculator::updateStateForWhile(WhileGNode* whileNode, State& state) {
 	GNode* currentNode = whileNode->getBeforeLoopChild();
 	//iterate once through first
-	State state1 = recurseWhile(currentNode, state);
+	State state1 = recurseWhile(whileNode, state);
 	//iterate one more time to get those from backloop
-	State state2 = recurseWhile(currentNode, state1);
+	State state2 = recurseWhile(whileNode, state1);
 	state = mergeStates(state, state2);
 }
 
-AffectsCalculator::State AffectsCalculator::recurseWhile(GNode* node, State state) {
-	while(node->getNodeType() != DUMMY_) {
-		evaluateNode(node, state);
+AffectsCalculator::State AffectsCalculator::recurseWhile(WhileGNode* whileNode, State state) {
+	GNode* currentNode = whileNode->getBeforeLoopChild();
+	while(currentNode != whileNode) {
+		currentNode = evaluateNode(currentNode, state);
 	}
 	return state;
 }
@@ -85,7 +90,7 @@ void AffectsCalculator::updateStateForIf(IfGNode* ifNode, State& state) {
 
 AffectsCalculator::State AffectsCalculator::recurseIf(GNode* node, State state) {
 	while(node->getNodeType() != DUMMY_) {
-		evaluateNode(node, state);
+		node = evaluateNode(node, state);
 	}
 	return state;
 }

@@ -1,5 +1,6 @@
 #include <cppunit/config/SourcePrefix.h>
 #include "AffectsClauseTest.h"
+#include "boost\foreach.hpp"
 #include "../SPA/AST.h"
 #include "../SPA/StmtTable.h"
 #include "../SPA/VarTable.h"
@@ -52,6 +53,7 @@ AffectsClauseTest::setUp() {
 	//build statement table and cfg
 	//no follows before/after set since they are not needed
 	StmtTable* stable = StmtTable::getInstance();
+	CFG* cfg = CFG::getInstance();
 
 	//procedure
 
@@ -119,6 +121,9 @@ AffectsClauseTest::setUp() {
 	EndGNode* end2 = new EndGNode();
 	end2->setParent(assg14);
 	assg14->setFirstChild(end2);
+	cfg->addProcedure(proc1);
+	cfg->addProcedure(proc2);
+
 
 	Procedure* procedure1 = new Procedure();
 	procedure1->setProcName("test");
@@ -333,6 +338,8 @@ AffectsClauseTest::setUp() {
 
 void 
 AffectsClauseTest::tearDown() {
+	StmtTable::getInstance()->clearTable();
+	CFG::getInstance()->reset();
 }
 
 // Registers the fixture into the 'registry'
@@ -490,7 +497,6 @@ void AffectsClauseTest::testFixedSynPassInWhile() {
 }
 
 void AffectsClauseTest::testFixedSynPass() { 
-	//need to wait for pointer from if to dummy node
 	Result res = Result();
 	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
 	affectsBuilder->setArg(1, "6");
@@ -509,4 +515,51 @@ void AffectsClauseTest::testFixedSynPass() {
 	CPPUNIT_ASSERT(s.size() == 2);
 	CPPUNIT_ASSERT(s.find("11") != s.end());
 	CPPUNIT_ASSERT(s.find("14") != s.end());
+}
+
+void AffectsClauseTest::testSynSynPass() { 
+	//need to wait for pointer from if to dummy node
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder->setArg(1, "s1");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_STATEMENT);
+	affectsBuilder->setArg(2, "s2");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsClause* m1 = (AffectsClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	CPPUNIT_ASSERT(m1->evaluate(&res));
+	CPPUNIT_ASSERT(res.isSynPresent("s1"));
+	CPPUNIT_ASSERT(res.isSynPresent("s2"));
+	vector<string> syns;
+	syns.push_back("s1");
+	syns.push_back("s2");
+	unordered_set<vector<string>> pairResults = res.getMultiSyn(syns);
+	CPPUNIT_ASSERT(pairResults.size() == 8);
+	string pair0String[] = {"1", "4"};
+	vector<string> pair0(pair0String, pair0String+2);
+	string pair1String[] = {"5", "4"};
+	vector<string> pair1(pair1String, pair1String+2);
+	string pair2String[] = {"5", "5"};
+	vector<string> pair2(pair2String, pair2String+2);
+	string pair3String[] = {"6", "11"};
+	vector<string> pair3(pair3String, pair3String+2);
+	string pair4String[] = {"11", "13"};
+	vector<string> pair4(pair4String, pair4String+2);
+	string pair5String[] = {"6", "14"};
+	vector<string> pair5(pair5String, pair5String+2);
+	string pair6String[] = {"10", "14"};
+	vector<string> pair6(pair6String, pair6String+2);
+	string pair7String[] = {"1", "5"};
+	vector<string> pair7(pair7String, pair7String+2);
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair0) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair1) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair2) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair3) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair4) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair5) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair6) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair7) != pairResults.end());
 }

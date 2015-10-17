@@ -2,7 +2,6 @@
 #include "AffectsCalculator.h"
 #include "CFG.h"
 #include "AssgGNode.h"
-#include "CallGNode.h"
 #include "DummyGNode.h"
 #include "IfGNode.h"
 #include "WhileGNode.h"
