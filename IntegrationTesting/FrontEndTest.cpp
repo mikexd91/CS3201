@@ -891,11 +891,11 @@ void FrontEndTest::testCFGIfNested() {
 				a = 3;					/ \     / \
 			}						   5   6   9   10
 		} else {					    \ /     \ /
-			w = 4;						 -       -
+			w = 4;						 7      -
 			if w then {					   \   /	
-				x = 3;						 11
-			} else {
-				b = z;
+				x = 3;						 -
+			} else {						 |
+				b = z;						 11	 
 			}
 		}
 		y = 3;
