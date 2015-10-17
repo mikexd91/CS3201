@@ -6,8 +6,10 @@
  */
 
 #include "CFGBuilder.h"
+#include "boost/foreach.hpp"
 
 using namespace std;
+using namespace boost;
 
 bool CFGBuilder::instanceFlag = false;
 CFGBuilder* CFGBuilder::cfgBuilderInstance = NULL;
@@ -80,15 +82,16 @@ void CFGBuilder::processProcStmt(ParsedData data) {
 			}
 		} else /* i == 1 */ {
 			if(nestingStack.top()->getNodeType() == IF_) {
+				setDummyIfNestingRecovery();
 				setEndProcOrEndNodeIfNest(endNode);
 			} else {
 				setWhileNestingRecovery();
 
 				nestingStack.top()->setSecondChild(endNode);
 				endNode->setFirstParent(nestingStack.top());
-			}
 
-			nestingStack.pop();
+				nestingStack.pop();
+			}
 		}
 	}
 
@@ -128,6 +131,7 @@ void CFGBuilder::processAssgStmt(ParsedData data) {
 				}
 			} else /* i == 1 */ {
 				if(nestingStack.top()->getNodeType() == IF_) {
+					setDummyIfNestingRecovery();
 					setNodeSameRecoveryIfNest(node);
 				} else /* top is while */ {
 					setWhileNestingRecovery();
@@ -180,6 +184,7 @@ void CFGBuilder::processIfStmt(ParsedData data) {
 				}
 			} else /* i == 1 */{
 				if(nestingStack.top()->getNodeType() == IF_) {
+					setDummyIfNestingRecovery();
 					setNodeSameRecoveryIfNest(node);
 				} else /* while stmt */{
 					setWhileNestingRecovery();
@@ -272,6 +277,7 @@ void CFGBuilder::processWhileStmt(ParsedData data) {
 				}
 			} else /* i == 1 */{
 				if(nestingStack.top()->getNodeType() == IF_) {
+					setDummyIfNestingRecovery();
 					setNodeSameRecoveryIfNest(node);
 				} else /* while stmt */{
 					setWhileNestingRecovery();
@@ -328,6 +334,7 @@ void CFGBuilder::processCallStmt(ParsedData data) {
 				}
 			} else /* i == 1 */ {
 				if(nestingStack.top()->getNodeType() == IF_) {
+					setDummyIfNestingRecovery();
 					setNodeSameRecoveryIfNest(node);
 				} else {
 					setWhileNestingRecovery();
@@ -384,16 +391,16 @@ void CFGBuilder::processEndProgram(ParsedData data) {
 			}
 		} else /* i == 1 */ {
 			if(nestingStack.top()->getNodeType() == IF_) {
+				setDummyIfNestingRecovery();
 				setEndProcOrEndNodeIfNest(endNode);
 			} else {
 				setWhileNestingRecovery();
 
 				nestingStack.top()->setSecondChild(endNode);
 				endNode->setFirstParent(nestingStack.top());
-
+	
+				nestingStack.pop();
 			}
-
-			nestingStack.pop();
 		}
 	}
 
@@ -412,8 +419,8 @@ void CFGBuilder::processEndProgram(ParsedData data) {
 void CFGBuilder::setDummyIfNestingRecovery() {
 	DummyGNode* dumNode = new DummyGNode();
 
-	dumNode->setIfParentStmt(ifStack.top()->getEndStmt());
-	dumNode->setElseParentStmt(head->getEndStmt());
+	addNextAndPrev(dumNode, ifStack.top());
+	addNextAndPrev(dumNode, head);
 
 	dumNode->setFirstParent(ifStack.top());
 	dumNode->setSecondParent(head);
@@ -421,9 +428,20 @@ void CFGBuilder::setDummyIfNestingRecovery() {
 	setRecoverChild(ifStack.top(), dumNode);
 	setRecoverChild(head, dumNode);
 
+	IfGNode* linkingIf = (IfGNode*) nestingStack.top();
+	dumNode->setEntrance(linkingIf);
+	linkingIf->setExit(dumNode);
+
 	head = dumNode;
 	ifStack.pop();
 	nestingStack.pop();
+}
+
+void CFGBuilder::setEndProcOrEndNodeIfNest(EndGNode* node) {
+	node->setFirstParent(head);
+	head->setFirstChild(node);
+
+	head = node;
 }
 
 void CFGBuilder::setWhileNestingRecovery() {
@@ -437,53 +455,33 @@ void CFGBuilder::setWhileNestingRecovery() {
 }
 
 void CFGBuilder::setNodeSameRecoveryIfNest(GNode* node) {
-	node->setFirstParent(ifStack.top());
-	node->setSecondParent(head);
+	node->setFirstParent(head);
+	head->setFirstChild(node);
 
-	setRecoverChild(ifStack.top(), node);
-	setRecoverChild(head, node);
-
-	addNextAndPrev(node, ifStack.top());
 	addNextAndPrev(node, head);
 
 	head = node;
-	ifStack.pop();
-	nestingStack.pop();
-}
-
-void CFGBuilder::setEndProcOrEndNodeIfNest(EndGNode* node) {
-	node->setFirstParent(ifStack.top());
-	node->setSecondParent(head);
-
-	setRecoverChild(ifStack.top(), node);
-	setRecoverChild(head, node);
-
-	ifStack.pop();
 }
 
 void CFGBuilder::addNextAndPrev(GNode* next, GNode* prev) {
 	StmtTable* stmtTable = StmtTable::getInstance();
 
 	if(prev->getNodeType() == DUMMY_ && next->getNodeType() != DUMMY_) {
-		int nextStmt = next->getStartStmt();
-		int prevStmt1 = prev->getStartStmt();
-		int prevStmt2 = prev->getEndStmt();
+		DummyGNode* dumNode = (DummyGNode*) prev;
+		int after = next->getStartStmt();
+		Statement* afterStmt = stmtTable->getStmtObj(after);
+		unordered_set<int> afterPrev = afterStmt->getPrev();
 
-		Statement* nextStatement = stmtTable->getStmtObj(nextStmt);
-		unordered_set<int> nextSetAdded = nextStatement->getPrev();
-		nextSetAdded.insert(prevStmt1);
-		nextSetAdded.insert(prevStmt2);
-		nextStatement->setPrev(nextSetAdded);
+		unordered_set<int> beforeStmts = dumNode->getPrevStmts();
+		BOOST_FOREACH(auto i, beforeStmts) {
+			Statement* beforeStmt = stmtTable->getStmtObj(i);
+			unordered_set<int> beforeNext = beforeStmt->getNext();
+			beforeNext.insert(after);
+			afterPrev.insert(i);
+			beforeStmt->setNext(beforeNext);
+		}
 
-		Statement* prevStatement1 = stmtTable->getStmtObj(prevStmt1);
-		unordered_set<int> prevSetAdded1 = prevStatement1->getNext();
-		prevSetAdded1.insert(nextStmt);
-		prevStatement1->setNext(prevSetAdded1);
-
-		Statement* prevStatement2 = stmtTable->getStmtObj(prevStmt2);
-		unordered_set<int> prevSetAdded2 = prevStatement2->getNext();
-		prevSetAdded2.insert(nextStmt);
-		prevStatement2->setNext(prevSetAdded1);
+		afterStmt->setPrev(afterPrev);
 	} else if(prev->getNodeType() != DUMMY_ && next->getNodeType() != DUMMY_) {
 		int nextStmt = next->getStartStmt();
 		int prevStmt = prev->getEndStmt();
@@ -497,6 +495,21 @@ void CFGBuilder::addNextAndPrev(GNode* next, GNode* prev) {
 		unordered_set<int> prevSetAdded = prevStatement->getNext();
 		prevSetAdded.insert(nextStmt);
 		prevStatement->setNext(prevSetAdded);
+	} else if(prev->getNodeType() == DUMMY_ && next->getNodeType() == DUMMY_) {
+		DummyGNode* dumNext = (DummyGNode*) next;
+		DummyGNode* dumPrev = (DummyGNode*) prev;
+
+		unordered_set<int> afterPrev = dumNext->getPrevStmts();
+		unordered_set<int> beforeNext = dumPrev->getPrevStmts();
+		
+		afterPrev.insert(beforeNext.begin(), beforeNext.end());
+		dumNext->setPrevStmts(afterPrev);
+	} else if(prev->getNodeType() != DUMMY_ && next->getNodeType() == DUMMY_) {
+		DummyGNode* dumNext = (DummyGNode*) next;
+
+		unordered_set<int> afterPrev = dumNext->getPrevStmts();
+		afterPrev.insert(prev->getEndStmt());
+		dumNext->setPrevStmts(afterPrev);
 	}
 }
 

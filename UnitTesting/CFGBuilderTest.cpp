@@ -122,12 +122,20 @@ void CFGBuilderTest::testIfAssg() {
 	CPPUNIT_ASSERT(ifNode->getChildren().at(1) == assgNode2);
 	CPPUNIT_ASSERT(assgNode1->getParents().at(0) == ifNode);
 	CPPUNIT_ASSERT(assgNode2->getParents().at(0) == ifNode);
-	CPPUNIT_ASSERT(assgNode1->getChildren().at(0)->getNodeType() == END_);
-	CPPUNIT_ASSERT(assgNode2->getChildren().at(0)->getNodeType() == END_);
+	CPPUNIT_ASSERT(assgNode1->getChildren().at(0)->getNodeType() == DUMMY_);
+	CPPUNIT_ASSERT(assgNode2->getChildren().at(0)->getNodeType() == DUMMY_);
+	CPPUNIT_ASSERT(assgNode1->getChildren().at(0) == assgNode2->getChildren().at(0));
+	CPPUNIT_ASSERT(assgNode1->getChildren().at(0)->getChildren().at(0)->getNodeType() == END_);
 
 	CPPUNIT_ASSERT(ifNode->getStartStmt() == ifNode->getEndStmt() && ifNode->getStartStmt() == 1);
 	CPPUNIT_ASSERT(assgNode1->getStartStmt() == assgNode1->getEndStmt() && assgNode1->getStartStmt() == 2);
 	CPPUNIT_ASSERT(assgNode2->getStartStmt() == assgNode2->getEndStmt() && assgNode2->getStartStmt() == 3);
+
+	unordered_set<int> set;
+	set.insert(2);
+	set.insert(3);
+	DummyGNode* dumNode = (DummyGNode*) assgNode1->getChildren().at(0);
+	CPPUNIT_ASSERT(dumNode->getPrevStmts() == set);
 }
 
 void CFGBuilderTest::testMultAssg() {
@@ -403,10 +411,10 @@ void CFGBuilderTest::testIfNested() {
 	GNode* assgNode1 = builder->getHead();
 
 	parse(ifStmt1);
-	GNode* ifNode1 = builder->getHead();
+	IfGNode* ifNode1 = (IfGNode*) builder->getHead();
 
 	parse(ifStmt2);
-	GNode* ifNode2 = builder->getHead();
+	IfGNode* ifNode2 = (IfGNode*) builder->getHead();
 
 	parse(assg2);
 	GNode* assgNode2 = builder->getHead();
@@ -443,10 +451,28 @@ void CFGBuilderTest::testIfNested() {
 	CPPUNIT_ASSERT(assgNode3->getChildren().at(0) == assgNode2->getChildren().at(0));
 	CPPUNIT_ASSERT(assgNode3->getStartStmt() == assgNode3->getEndStmt() && assgNode3->getEndStmt() == 5);
 
+	DummyGNode* firstDum = (DummyGNode*) assgNode2->getChildren().at(0);
+	unordered_set<int> firstSet;
+	firstSet.insert(4);
+	firstSet.insert(5);
+	CPPUNIT_ASSERT(firstDum->getPrevStmts() == firstSet);
+	CPPUNIT_ASSERT(firstDum->getEntrance() == ifNode2);
+	CPPUNIT_ASSERT(ifNode2->getExit() == firstDum);
+
 	CPPUNIT_ASSERT(assgNode4->getParents().at(0) == ifNode1);
-	CPPUNIT_ASSERT(assgNode4->getChildren().at(0)->getNodeType() == END_);
+	CPPUNIT_ASSERT(assgNode4->getChildren().at(0)->getNodeType() == DUMMY_);
 	CPPUNIT_ASSERT(assgNode4->getStartStmt() == assgNode4->getEndStmt() && assgNode4->getEndStmt() == 6);
-	CPPUNIT_ASSERT(assgNode4->getChildren().at(0) == assgNode3->getChildren().at(0)->getChildren().at(0));
+	CPPUNIT_ASSERT(assgNode4->getChildren().at(0) == firstDum->getChildren().at(0));
+
+	DummyGNode* secondDum = (DummyGNode*) assgNode4->getChildren().at(0);
+	unordered_set<int> secondSet;
+	secondSet.insert(firstSet.begin(), firstSet.end());
+	secondSet.insert(6);
+	CPPUNIT_ASSERT(secondDum->getPrevStmts() == secondSet);
+	CPPUNIT_ASSERT(secondDum->getEntrance() == ifNode1);
+	CPPUNIT_ASSERT(ifNode1->getExit() == secondDum);
+
+	CPPUNIT_ASSERT(secondDum->getChildren().at(0)->getNodeType() == END_);
 }
 
 void CFGBuilderTest::testWhileNested() {
@@ -560,7 +586,7 @@ void CFGBuilderTest::testIfWhile() {
 	parse(proc);
 	parse(assg1);
 	parse(ifStmt);
-	GNode* ifNode = builder->getHead();
+	IfGNode* ifNode = (IfGNode*) builder->getHead();
 
 	parse(whileStmt);
 	GNode* whileNode = builder->getHead();
@@ -579,7 +605,7 @@ void CFGBuilderTest::testIfWhile() {
 	CPPUNIT_ASSERT(ifNode->getChildren().size() == 2);
 
 	CPPUNIT_ASSERT(whileNode->getChildren().at(0) == assgNode2);
-	CPPUNIT_ASSERT(whileNode->getChildren().at(1)->getNodeType() == END_);
+	CPPUNIT_ASSERT(whileNode->getChildren().at(1)->getNodeType() == DUMMY_);
 	CPPUNIT_ASSERT(whileNode->getParents().at(0) == ifNode);
 	CPPUNIT_ASSERT(whileNode->getParents().at(1) == assgNode2);
 
@@ -588,6 +614,269 @@ void CFGBuilderTest::testIfWhile() {
 
 	CPPUNIT_ASSERT(assgNode3->getParents().at(0) == ifNode);
 	CPPUNIT_ASSERT(assgNode3->getChildren().at(0) == whileNode->getChildren().at(1));
+
+	DummyGNode* dumNode = (DummyGNode*) assgNode3->getChildren().at(0);
+	unordered_set<int> prev;
+	prev.insert(3);
+	prev.insert(5);
+	CPPUNIT_ASSERT(dumNode->getPrevStmts() == prev);
+	CPPUNIT_ASSERT(dumNode->getEntrance() == ifNode);
+	CPPUNIT_ASSERT(ifNode->getExit() == dumNode);
+	CPPUNIT_ASSERT(dumNode->getChildren().at(0)->getNodeType() == END_);
+}
+
+void CFGBuilderTest::testWhileIf() {
+	/*
+	while x {
+		if x then {
+			x = 2;
+		} else {
+			x = 2;
+		}
+		x = 2;
+	}
+	*/
+
+	ParsedData proc = ParsedData(ParsedData::PROCEDURE, 0);
+	proc.setProcName("proc");
+
+	ParsedData whi = ParsedData(ParsedData::WHILE, 1);
+	whi.setWhileVar("x");
+	
+	ParsedData ifStmt = ParsedData(ParsedData::IF, 2);
+	ifStmt.setIfVar("x");
+
+	ParsedData assg1 = ParsedData(ParsedData::ASSIGNMENT, 3);
+	queue<string> queue;
+	queue.push("2");
+	assg1.setAssignExpression(queue);
+	assg1.setAssignVar("x");
+
+	ParsedData else1 = ParsedData(ParsedData::ELSE, 2);
+
+	ParsedData assg2 = ParsedData(ParsedData::ASSIGNMENT, 2);
+	assg2.setAssignExpression(queue);
+	assg2.setAssignVar("x");
+
+	parse(proc);
+	parse(whi);
+	GNode* node1 = builder->getHead();
+
+	parse(ifStmt);
+	IfGNode* node2 = (IfGNode*) builder->getHead();
+
+	parse(assg1);
+	GNode* node3 = builder->getHead();
+
+	parse(else1);
+	parse(assg1);
+	GNode* node4 = builder->getHead();
+
+	parse(assg2);
+	GNode* node5 = builder->getHead();
+
+	parse(endProg);
+
+	CPPUNIT_ASSERT(node1->getChildren().at(0) == node2);
+	CPPUNIT_ASSERT(node1->getChildren().at(1)->getNodeType() == END_);
+	CPPUNIT_ASSERT(node1->getStartStmt() == node1->getEndStmt() && node1->getEndStmt() == 1);
+	CPPUNIT_ASSERT(node1->getNodeType() == WHILE_);
+
+	CPPUNIT_ASSERT(node2->getParents().at(0) == node1);
+	CPPUNIT_ASSERT(node2->getChildren().at(0) == node3);
+	CPPUNIT_ASSERT(node2->getChildren().at(1) == node4);
+	CPPUNIT_ASSERT(node2->getStartStmt() == node2->getEndStmt() && node2->getEndStmt() == 2);
+	CPPUNIT_ASSERT(node2->getNodeType() == IF_);
+
+	CPPUNIT_ASSERT(node3->getParents().at(0) == node2);
+	CPPUNIT_ASSERT(node3->getChildren().at(0)->getNodeType() == DUMMY_);
+	CPPUNIT_ASSERT(node3->getChildren().at(0) == node4->getChildren().at(0));
+	CPPUNIT_ASSERT(node3->getStartStmt() == node3->getEndStmt() && node3->getEndStmt() == 3);
+	CPPUNIT_ASSERT(node3->getNodeType() == ASSIGN_);
+
+	CPPUNIT_ASSERT(node4->getParents().at(0) == node2);
+	CPPUNIT_ASSERT(node4->getStartStmt() == node4->getEndStmt() && node4->getEndStmt() == 4);
+	CPPUNIT_ASSERT(node4->getNodeType() == ASSIGN_);
+
+	DummyGNode* dumNode = (DummyGNode*) node4->getChildren().at(0);
+	unordered_set<int> prev;
+	prev.insert(4);
+	prev.insert(3);
+	CPPUNIT_ASSERT(dumNode->getPrevStmts() == prev);
+	CPPUNIT_ASSERT(dumNode->getParents().at(0) == node3);
+	CPPUNIT_ASSERT(dumNode->getParents().at(1) == node4);
+	CPPUNIT_ASSERT(dumNode->getChildren().at(0) == node5);
+	CPPUNIT_ASSERT(dumNode->getEntrance() == node2);
+	CPPUNIT_ASSERT(node2->getExit() == dumNode);
+
+	CPPUNIT_ASSERT(node5->getParents().at(0) == dumNode);
+	CPPUNIT_ASSERT(node5->getChildren().at(0) == node1);
+	CPPUNIT_ASSERT(node5->getNodeType() == ASSIGN_);
+	CPPUNIT_ASSERT(node5->getStartStmt() == node5->getEndStmt() && node5->getEndStmt() == 5);
+}
+
+void CFGBuilderTest::testCornerCase1() {
+	/*
+	if x then {
+		if x then {
+			x = 2;
+		} else {
+			x = 2;
+		}
+		x = 2;
+	} else {
+		if x then {
+			x = 2;
+		} else {
+			x = 2;
+		}
+	}
+	x = 2;
+	*/
+	
+	ParsedData proc = ParsedData(ParsedData::PROCEDURE, 0);
+	proc.setProcName("proc");
+
+	ParsedData firstIf = ParsedData(ParsedData::IF, 1);
+	firstIf.setIfVar("x");
+
+	ParsedData secondIf = ParsedData(ParsedData::IF, 2);
+	secondIf.setIfVar("x");
+
+	ParsedData assg1 = ParsedData(ParsedData::ASSIGNMENT, 3);
+	assg1.setAssignVar("x");
+	queue<string> queue;
+	queue.push("2");
+	assg1.setAssignExpression(queue);
+
+	ParsedData else1 = ParsedData(ParsedData::ELSE, 2);
+	
+	ParsedData assg3 = ParsedData(ParsedData::ASSIGNMENT, 2);
+	assg3.setAssignExpression(queue);
+	assg3.setAssignVar("x");
+
+	ParsedData else2 = ParsedData(ParsedData::ELSE, 1);
+
+	ParsedData assg6 = ParsedData(ParsedData::ASSIGNMENT, 1);
+	assg6.setAssignExpression(queue);
+	assg6.setAssignVar("x");
+
+	parse(proc);
+	GNode* procNode = builder->getHead();
+
+	parse(firstIf);
+	IfGNode* node1 = (IfGNode*) builder->getHead();
+
+	parse(secondIf);
+	IfGNode* node2 = (IfGNode*) builder->getHead();
+	
+	parse(assg1);
+	GNode* node3 = builder->getHead();
+
+	parse(else1);
+	parse(assg1);
+	GNode* node4 = builder->getHead();
+
+	parse(assg3);
+	GNode* node5 = builder->getHead();
+
+	parse(else2);
+	parse(secondIf);
+	IfGNode* node6 = (IfGNode*) builder->getHead();
+
+	parse(assg1);
+	GNode* node7 = builder->getHead();
+
+	parse(else1);
+	parse(assg1);
+	GNode* node8 = builder->getHead();
+
+	parse(assg6);
+	GNode* node9 = builder->getHead();
+
+	parse(endProg);
+
+	CPPUNIT_ASSERT(node1->getParents().at(0) == procNode);
+	CPPUNIT_ASSERT(node1->getChildren().at(0) == node2);
+	CPPUNIT_ASSERT(node1->getChildren().at(1) == node6);
+	CPPUNIT_ASSERT(node1->getNodeType() == IF_);
+	CPPUNIT_ASSERT(node1->getStartStmt() == node1->getEndStmt() && node1->getStartStmt() == 1);
+
+	CPPUNIT_ASSERT(node2->getParents().at(0) == node1);
+	CPPUNIT_ASSERT(node2->getChildren().at(0) == node3);
+	CPPUNIT_ASSERT(node2->getChildren().at(1) == node4);
+	CPPUNIT_ASSERT(node2->getNodeType() == IF_);
+	CPPUNIT_ASSERT(node2->getStartStmt() == node2->getEndStmt() && node2->getEndStmt() == 2);
+
+	CPPUNIT_ASSERT(node3->getParents().at(0) == node2);
+	CPPUNIT_ASSERT(node3->getChildren().at(0) == node4->getChildren().at(0));
+	CPPUNIT_ASSERT(node3->getChildren().at(0)->getNodeType() == DUMMY_);
+	CPPUNIT_ASSERT(node3->getNodeType() == ASSIGN_);
+	CPPUNIT_ASSERT(node3->getStartStmt() == node3->getEndStmt() && node3->getEndStmt() == 3);
+
+	CPPUNIT_ASSERT(node4->getParents().at(0) == node2);
+	CPPUNIT_ASSERT(node4->getNodeType() == ASSIGN_);
+	CPPUNIT_ASSERT(node4->getStartStmt() == node4->getEndStmt() && node4->getEndStmt() == 4);
+
+	DummyGNode* firstDum = (DummyGNode*) node4->getChildren().at(0);
+	unordered_set<int> prev;
+	prev.insert(3);
+	prev.insert(4);
+	CPPUNIT_ASSERT(firstDum->getPrevStmts() == prev);
+	CPPUNIT_ASSERT(firstDum->getChildren().at(0) == node5);
+	CPPUNIT_ASSERT(firstDum->getParents().at(0) == node3);
+	CPPUNIT_ASSERT(firstDum->getParents().at(1) == node4);
+	CPPUNIT_ASSERT(firstDum->getEntrance() == node2);
+	CPPUNIT_ASSERT(node2->getExit() == firstDum);
+
+	CPPUNIT_ASSERT(node6->getParents().at(0) == node1);
+	CPPUNIT_ASSERT(node6->getChildren().at(0) == node7);
+	CPPUNIT_ASSERT(node6->getChildren().at(1) == node8);
+	CPPUNIT_ASSERT(node6->getStartStmt() == node6->getEndStmt() && node6->getEndStmt() == 6);
+	CPPUNIT_ASSERT(node6->getNodeType() == IF_);
+
+	CPPUNIT_ASSERT(node7->getNodeType() == ASSIGN_);
+	CPPUNIT_ASSERT(node7->getChildren().at(0)->getNodeType() == DUMMY_);
+	CPPUNIT_ASSERT(node7->getChildren().at(0) == node8->getChildren().at(0));
+	CPPUNIT_ASSERT(node7->getStartStmt() == node7->getEndStmt() && node7->getEndStmt() == 7);
+	CPPUNIT_ASSERT(node7->getParents().at(0) == node6);
+
+	CPPUNIT_ASSERT(node8->getParents().at(0) == node6);
+	CPPUNIT_ASSERT(node8->getStartStmt() == node8->getEndStmt() && node8->getEndStmt() == 8);
+	CPPUNIT_ASSERT(node8->getNodeType() == ASSIGN_);
+
+	DummyGNode* secDum = (DummyGNode*) node7->getChildren().at(0);
+	unordered_set<int> prev2;
+	prev2.insert(7);
+	prev2.insert(8);
+	CPPUNIT_ASSERT(secDum->getPrevStmts() == prev2);
+	CPPUNIT_ASSERT(secDum->getParents().at(0) == node7);
+	CPPUNIT_ASSERT(secDum->getParents().at(1) == node8);
+	CPPUNIT_ASSERT(secDum->getChildren().at(0)->getNodeType() == DUMMY_);
+	CPPUNIT_ASSERT(secDum->getEntrance() == node6);
+	CPPUNIT_ASSERT(node6->getExit() == secDum);
+
+	CPPUNIT_ASSERT(node5->getParents().at(0) == firstDum);
+	CPPUNIT_ASSERT(node5->getNodeType() == ASSIGN_);
+	CPPUNIT_ASSERT(node5->getStartStmt() == node5->getEndStmt() && node5->getEndStmt() == 5);
+	CPPUNIT_ASSERT(node5->getChildren().at(0)->getNodeType() == DUMMY_);
+	CPPUNIT_ASSERT(node5->getChildren().at(0) == secDum->getChildren().at(0));
+
+	DummyGNode* thirdDum = (DummyGNode*) secDum->getChildren().at(0);
+	unordered_set<int> prev3;
+	prev3.insert(prev2.begin(), prev2.end());
+	prev3.insert(5);
+	CPPUNIT_ASSERT(thirdDum->getPrevStmts() == prev3);
+	CPPUNIT_ASSERT(thirdDum->getChildren().at(0) == node9);
+	CPPUNIT_ASSERT(thirdDum->getParents().at(0) == node5);
+	CPPUNIT_ASSERT(thirdDum->getParents().at(1) == secDum);
+	CPPUNIT_ASSERT(thirdDum->getEntrance() == node1);
+	CPPUNIT_ASSERT(node1->getExit() == thirdDum);
+
+	CPPUNIT_ASSERT(node9->getParents().at(0) == thirdDum);
+	CPPUNIT_ASSERT(node9->getChildren().at(0)->getNodeType() == END_);
+	CPPUNIT_ASSERT(node9->getNodeType() == ASSIGN_);
+	CPPUNIT_ASSERT(node9->getStartStmt() == node9->getEndStmt() && node9->getEndStmt() == 9);
 }
 
 void CFGBuilderTest::parse(ParsedData data) {
