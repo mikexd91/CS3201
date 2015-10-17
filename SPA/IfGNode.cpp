@@ -22,7 +22,7 @@ GNode* IfGNode::getElseChild() {
 	return NULL;
 }
 
-DummyGNode* IfGNode::getExit() {
+GNode* IfGNode::getExit() {
 	return this->exit;
 }
 
@@ -38,7 +38,7 @@ void IfGNode::setElseChild(GNode* child) {
 	this->setSecondChild(child);
 }
 
-void IfGNode::setExit(DummyGNode* exit) {
+void IfGNode::setExit(GNode* exit) {
 	this->exit = exit;
 }
 
