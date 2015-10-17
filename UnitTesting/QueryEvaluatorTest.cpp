@@ -414,7 +414,7 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectAssignSyn() {
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->isSynPresent("a") == true);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 9);
 
@@ -437,7 +437,7 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectStmtSyn() {
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->isSynPresent("b") == true);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 11);
 	
@@ -456,7 +456,7 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectWhileSyn() {
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->isSynPresent("c") == true);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 	
@@ -475,7 +475,7 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectIfSyn() {
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->isSynPresent("d") == true);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 	
@@ -495,7 +495,7 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectCallSyn() {
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->isSynPresent("e") == false);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 	
@@ -515,7 +515,7 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectVarSyn() {
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->isSynPresent("g") == true);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
 	
@@ -534,7 +534,7 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectProcSyn() {
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->isSynPresent("g") == true);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 	
@@ -553,7 +553,7 @@ void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectConstSyn() {
 	Query *q = new Query();
 	q->addSelectSynonym(*p);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->isSynPresent("g") == true);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 5);
 	
@@ -593,7 +593,7 @@ void QueryEvaluatorTest::testModifiesEvaluateFixedSynProcPass() {
 	*/
 	q->addClause((Clause*) m1);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->isSynPresent("v") == true);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
 	
@@ -632,7 +632,7 @@ void QueryEvaluatorTest::testModifiesEvaluateSynFixedWhilePass() {
 	*/
 	q->addClause((Clause*) m1);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->isSynPresent("w") == true);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 	
@@ -676,7 +676,7 @@ void QueryEvaluatorTest::testModifiesEvaluateSynSynAssgPass() {
 	*/
 	q->addClause((Clause*) m1);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->isSynPresent("a") == true);
 	CPPUNIT_ASSERT(result->isSynPresent("v") == true);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 9);
@@ -718,7 +718,7 @@ void QueryEvaluatorTest::testFollowsEvaluateSynSynStmtPass() {
 
 	q->addClause((Clause*) m1);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->isSynPresent("s1") == true);
 	CPPUNIT_ASSERT(result->isSynPresent("s2") == true);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
@@ -784,7 +784,7 @@ void QueryEvaluatorTest::testHalfInClauseWithModifiesSynSynStmtPass() {
 	*/
 	q->addClause((Clause*) m1);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->isSynPresent("s") == true);
 	CPPUNIT_ASSERT(result->isSynPresent("v") == true);
 	CPPUNIT_ASSERT(result->isSynPresent("s1") == true);
@@ -830,7 +830,7 @@ void QueryEvaluatorTest::testModifiesEvaluateSynGenericStmtPass() {
 	*/
 	q->addClause((Clause*) m1);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->isSynPresent("p") == true);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 11);
 	vector<StringPair> selectList = q->getSelectList();
@@ -864,7 +864,7 @@ void QueryEvaluatorTest::testFollowsEvaluateFixedFixedPass() {
 
 	q->addClause((Clause*) m1);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 	vector<StringPair> selectList = q->getSelectList();
 	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
@@ -899,7 +899,7 @@ void QueryEvaluatorTest::testFollowsEvaluateFixedFixedFail() {
 
 	q->addClause((Clause*) m1);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 	vector<StringPair> selectList = q->getSelectList();
 	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
@@ -945,7 +945,7 @@ void QueryEvaluatorTest::testUnderscoreFixedPass() {
 	q->addClause((Clause*) m1);
 	q->addClause((Clause*) m2);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 	vector<StringPair> selectList = q->getSelectList();
 	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
@@ -991,7 +991,7 @@ void QueryEvaluatorTest::testUnderscoreFixedFail() {
 	q->addClause((Clause*) m1);
 	q->addClause((Clause*) m2);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 	vector<StringPair> selectList = q->getSelectList();
 	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
@@ -1048,7 +1048,7 @@ void QueryEvaluatorTest::testFixedUnderscorePass() {
 	q->addClause((Clause*) m2);
 	q->addClause((Clause*) m3);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 	vector<StringPair> selectList = q->getSelectList();
 	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
@@ -1094,7 +1094,7 @@ void QueryEvaluatorTest::testFixedUnderscoreFail() {
 	q->addClause((Clause*) m1);
 	q->addClause((Clause*) m2);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 	vector<StringPair> selectList = q->getSelectList();
 	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
@@ -1140,7 +1140,7 @@ void QueryEvaluatorTest::testUnderscoreUnderscorePass() {
 	q->addClause((Clause*) m1);
 	q->addClause((Clause*) m2);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 	vector<StringPair> selectList = q->getSelectList();
 	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
@@ -1197,7 +1197,7 @@ void QueryEvaluatorTest::testFixedFixedPass() {
 	q->addClause((Clause*) m2);
 	q->addClause((Clause*) m3);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 	vector<StringPair> selectList = q->getSelectList();
 	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
@@ -1254,7 +1254,7 @@ void QueryEvaluatorTest::testFixedFixedFail() {
 	q->addClause((Clause*) m2);
 	q->addClause((Clause*) m3);
 
-	Result* result = qe->evaluateQuery(*q);
+	Result* result = qe->evaluateQuery(q);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 	vector<StringPair> selectList = q->getSelectList();
 	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);

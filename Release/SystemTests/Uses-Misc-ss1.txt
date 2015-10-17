@@ -13,7 +13,7 @@ assign a;
 Select a such that Uses(a, "charmeleon") with a.stmt# = 12
 12
 5000
-4 - USES: stmt# - with clause(no results)
+4 - USES: stmt# - with clause (no results)
 assign a;
 Select a such that Uses(a, "charmeleon") with a.stmt# = 12 and s.stmt# = 11
 none

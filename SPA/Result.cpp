@@ -7,7 +7,6 @@ Result::Result() {
 Result::~Result() {
 }
 
-
 bool Result::push(InsertType& insert) {
 	pass = insert.execute(resultTable);
 	return pass;

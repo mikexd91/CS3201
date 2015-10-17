@@ -1,0 +1,25 @@
+1 - follows: synonym, synonym
+stmt s1, s2;
+Select <s1,s2> such that Follows(s1, s2) and Follows(s2, s1)
+none
+5000
+2 - follows: synonym, fixed
+stmt s;
+Select s such that Follows(s, "25")
+24
+5000
+3 - follows: fixed, synonym
+while w;
+Select w such that Follow("45", w)
+46
+5000
+4 - follows-boolean
+
+Select BOOLEAN such that Follows("26", "27")
+false
+5000
+5 - follows-no results
+stmt s;
+Select s such that Follows(s, "13")
+none
+5000
