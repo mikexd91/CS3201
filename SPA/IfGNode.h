@@ -1,7 +1,6 @@
 #pragma once
 
 #include "GNode.h"
-#include "DummyGNode.h"
 
 class IfGNode : public GNode {
 
@@ -13,16 +12,16 @@ public:
 	// getters
 	GNode* getThenChild();
 	GNode* getElseChild();
-	DummyGNode* getExit();
+	GNode* getExit();
 	int getStmtNum();
 
 	// setters
 	void setThenChild(GNode*);
 	void setElseChild(GNode*);
-	void setExit(DummyGNode*);
+	void setExit(GNode*);
 	void setStmtNum(int);
 
 private:
 
-	DummyGNode* exit;
+	GNode* exit;
 };

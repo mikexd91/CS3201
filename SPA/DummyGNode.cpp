@@ -14,7 +14,7 @@ int DummyGNode::getElseParentStmt() {
 	return this->endStmt;
 }
 
-IfGNode* DummyGNode::getEntrance() {
+GNode* DummyGNode::getEntrance() {
 	return this->entrance;
 }
 
@@ -30,7 +30,7 @@ void DummyGNode::setElseParentStmt(int stmtNum) {
 	this->endStmt = stmtNum;
 }
 
-void DummyGNode::setEntrance(IfGNode* entrance) {
+void DummyGNode::setEntrance(GNode* entrance) {
 	this->entrance = entrance;
 }
 
