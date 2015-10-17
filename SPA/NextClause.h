@@ -1,17 +1,25 @@
+/*
+ * NextClause.h
+ *
+ *  Created on: 3 Oct, 2015
+ *      Author: Leon
+ */
+
 #pragma once
 #include "SuchThatClause.h"
 #include "StmtTable.h"
 
-class FollowsStarClause 
+class NextClause
 	: public SuchThatClause {
 
-public:
-	FollowsStarClause(void);
-	~FollowsStarClause(void);
+public :
+	NextClause(void);
+	~NextClause(void);
+
 	bool isValid(void);
 
 protected:
-	StmtTable* stmtTable;
+
 	//e.g. Parent(string,string)
 	bool evaluateS1FixedS2Fixed(string, string);
 	//e.g. Parent(_,_)
@@ -33,9 +41,11 @@ protected:
 
 private:
 
-	bool isNeededArgType(string, int);
-	unordered_set<Statement*> getSetFromArgType(string);
-	//unordered_set<vector<string>> evalFirstArgStmt();
-	//unordered_set<vector<string>> evalFirstArg();
-};
+	bool isNext(string, string);
 
+	bool isNeededArgType(string, int);
+
+	unordered_set<vector<string>> evalFirstArgStmt();
+	unordered_set<vector<string>> evalFirstArg();
+
+};

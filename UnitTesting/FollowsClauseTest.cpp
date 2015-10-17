@@ -446,6 +446,44 @@ void FollowsClauseTest::testFollowsSynFixedPass() {
 	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
 }
 
+void FollowsClauseTest::testFollowsSynFixedPassWithWhile() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "w");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_WHILE);
+	followsBuilder->setArg(2, "9");
+	followsBuilder->setArgFixed(2, true);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+}
+
+void FollowsClauseTest::testFollowsSynFixedPassWithAssign() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "a");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_ASSIGN);
+	followsBuilder->setArg(2, "11");
+	followsBuilder->setArgFixed(2, true);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+}
+
 void FollowsClauseTest::testFollowsSynFixedFail() {
 	Result result = Result();
 	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
@@ -464,6 +502,63 @@ void FollowsClauseTest::testFollowsSynFixedFail() {
 	CPPUNIT_ASSERT(!evalResult);
 	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
 	CPPUNIT_ASSERT(result.isSynPresent("a") == false);
+}
+
+void FollowsClauseTest::testFollowsSynFixedFailWithIf() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "f");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_IF);
+	followsBuilder->setArg(2, "10");
+	followsBuilder->setArgFixed(2, true);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
+
+void FollowsClauseTest::testFollowsSynFixedFailWithAssign() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "ass");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_ASSIGN);
+	followsBuilder->setArg(2, "10");
+	followsBuilder->setArgFixed(2, true);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
+
+void FollowsClauseTest::testFollowsSynFixedFailWithCalls() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "calls");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_CALL);
+	followsBuilder->setArg(2, "10");
+	followsBuilder->setArgFixed(2, true);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
 }
 
 void FollowsClauseTest::testFollowsFixedSynPass() {
@@ -486,6 +581,63 @@ void FollowsClauseTest::testFollowsFixedSynPass() {
 	CPPUNIT_ASSERT(result.isSynPresent("a") == true);
 }
 
+void FollowsClauseTest::testFollowsStarFixedSynPassWithWhile() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "6");
+	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "w");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_WHILE);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+}
+
+void FollowsClauseTest::testFollowsStarFixedSynPassWithIf() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "7");
+	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "if");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_IF);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+}
+
+void FollowsClauseTest::testFollowsStarFixedSynPassWithAssign() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "10");
+	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "ass");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_ASSIGN);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+}
+
 void FollowsClauseTest::testFollowsFixedSynFail() {
 	Result result = Result();
 	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
@@ -505,6 +657,64 @@ void FollowsClauseTest::testFollowsFixedSynFail() {
 	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
 	CPPUNIT_ASSERT(result.isSynPresent("a") == false);
 }
+
+void FollowsClauseTest::testFollowsFixedSynFailWithWhile() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "1");
+	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_ASSIGN);
+	followsBuilder->setArg(2, "w");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_WHILE);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
+
+void FollowsClauseTest::testFollowsFixedSynFailWithIf() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "1");
+	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_ASSIGN);
+	followsBuilder->setArg(2, "f");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_IF);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
+
+void FollowsClauseTest::testFollowsFixedSynFailWithAssign() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "6");
+	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "ass");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_ASSIGN);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(!evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
+
 void FollowsClauseTest::testFollowsSynSynPass() {
 	Result result = Result();
 	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
@@ -526,6 +736,63 @@ void FollowsClauseTest::testFollowsSynSynPass() {
 	CPPUNIT_ASSERT(result.isSynPresent("b") == true);
 }
 
+void FollowsClauseTest::testFollowsSynSynPassWithWhile() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "a");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_ASSIGN);
+	followsBuilder->setArg(2, "w");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_WHILE);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+}
+
+void FollowsClauseTest::testFollowsSynSynPassWithIf() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "w");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_WHILE);
+	followsBuilder->setArg(2, "f");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_IF);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+}
+
+void FollowsClauseTest::testFollowsSynSynPassWithAssign() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "s");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArg(2, "a");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_ASSIGN);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 7);
+}
+
 void FollowsClauseTest::testFollowsSynSynSameFail() {
 	Result result = Result();
 	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
@@ -545,33 +812,14 @@ void FollowsClauseTest::testFollowsSynSynSameFail() {
 	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
 }
 
-void FollowsClauseTest::testFollowsFirstUnderscoreFixedPass() {
+void FollowsClauseTest::testFollowsGenericSynPass() {
 	Result result = Result();
 	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
 	
 	followsBuilder->setArg(1, "_");
 	followsBuilder->setArgFixed(1, false);
 	followsBuilder->setArgType(1, ARG_GENERIC);
-	followsBuilder->setArg(2, "9");
-	followsBuilder->setArgFixed(2, true);
-	followsBuilder->setArgType(2, ARG_STATEMENT);
-	
-	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
-	CPPUNIT_ASSERT(c1->isValid());
-	
-	bool evalResult = c1->evaluate(&result);
-	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
-}
-
-void FollowsClauseTest::testFollowsFirstUnderscoreSynPass() {
-	Result result = Result();
-	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
-	
-	followsBuilder->setArg(1, "_");
-	followsBuilder->setArgFixed(1, false);
-	followsBuilder->setArgType(1, ARG_GENERIC);
-	followsBuilder->setArg(2, "bal");
+	followsBuilder->setArg(2, "s");
 	followsBuilder->setArgFixed(2, false);
 	followsBuilder->setArgType(2, ARG_STATEMENT);
 	
@@ -583,12 +831,69 @@ void FollowsClauseTest::testFollowsFirstUnderscoreSynPass() {
 	CPPUNIT_ASSERT(result.getResultTableSize() == 9);
 }
 
-void FollowsClauseTest::testFollowsFixedSecondUnderscorePass() {
+void FollowsClauseTest::testFollowsGenericSynPassWithWhile() {
 	Result result = Result();
 	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
 	
-	followsBuilder->setArg(1, "11");
-	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArg(1, "_");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_GENERIC);
+	followsBuilder->setArg(2, "w");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_WHILE);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+}
+
+void FollowsClauseTest::testFollowsGenericSynPassWithIf() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "_");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_GENERIC);
+	followsBuilder->setArg(2, "f");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_IF);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+}
+
+void FollowsClauseTest::testFollowsGenericSynPassWithAssign() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "_");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_GENERIC);
+	followsBuilder->setArg(2, "a");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_ASSIGN);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 7);
+}
+
+void FollowsClauseTest::testFollowsSynGenericPass() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "s");
+	followsBuilder->setArgFixed(1, false);
 	followsBuilder->setArgType(1, ARG_STATEMENT);
 	followsBuilder->setArg(2, "_");
 	followsBuilder->setArgFixed(2, false);
@@ -599,16 +904,35 @@ void FollowsClauseTest::testFollowsFixedSecondUnderscorePass() {
 	
 	bool evalResult = c1->evaluate(&result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 9);
 }
 
-void FollowsClauseTest::testFollowsSynSecondUnderscorePass() {
+void FollowsClauseTest::testFollowsSynGenericPassWithWhile() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "w");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_WHILE);
+	followsBuilder->setArg(2, "_");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_GENERIC);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+	
+	bool evalResult = c1->evaluate(&result);
+	CPPUNIT_ASSERT(evalResult);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 1);
+}
+
+void FollowsClauseTest::testFollowsSynGenericPassWithAssign() {
 	Result result = Result();
 	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
 	
 	followsBuilder->setArg(1, "a");
 	followsBuilder->setArgFixed(1, false);
-	followsBuilder->setArgType(1, ARG_STATEMENT);
+	followsBuilder->setArgType(1, ARG_ASSIGN);
 	followsBuilder->setArg(2, "_");
 	followsBuilder->setArgFixed(2, false);
 	followsBuilder->setArgType(2, ARG_GENERIC);
@@ -618,10 +942,10 @@ void FollowsClauseTest::testFollowsSynSecondUnderscorePass() {
 	
 	bool evalResult = c1->evaluate(&result);
 	CPPUNIT_ASSERT(evalResult);
-	CPPUNIT_ASSERT(result.getResultTableSize() == 9);
+	CPPUNIT_ASSERT(result.getResultTableSize() == 8);
 }
 
-void FollowsClauseTest::testFollowsBothUnderscorePass() {
+void FollowsClauseTest::testFollowsGenericGenericPass() {
 	Result result = Result();
 	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
 	
@@ -657,4 +981,19 @@ void FollowsClauseTest::testFollowsStmtOverflow() {
 	bool evalResult = c1->evaluate(&result);
 	CPPUNIT_ASSERT(!evalResult);
 	CPPUNIT_ASSERT(result.getResultTableSize() == 0);
+}
+
+void FollowsClauseTest::testFollowsUnacceptedType() {
+	Result result = Result();
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	
+	followsBuilder->setArg(1, "a");
+	followsBuilder->setArgFixed(1, true);
+	followsBuilder->setArgType(1, ARG_VARIABLE);
+	followsBuilder->setArg(2, "2");
+	followsBuilder->setArgFixed(2, true);
+	followsBuilder->setArgType(2, ARG_STATEMENT);
+	
+	FollowsClause* c1 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(!c1->isValid());
 }

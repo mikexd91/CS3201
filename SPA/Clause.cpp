@@ -10,5 +10,5 @@ Clause::~Clause(void) {
 
 ClauseType Clause::getClauseType()
 {
-	return FOLLOWS_;
+	return this->clauseType;
 }

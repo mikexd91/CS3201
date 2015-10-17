@@ -45,6 +45,7 @@
     <ClCompile Include="IfNode.cpp" />
     <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="MultiSynInsert.cpp" />
+    <ClCompile Include="NextClause.cpp" />
     <ClCompile Include="NoSynInsert.cpp" />
     <ClCompile Include="OpNode.cpp" />
     <ClCompile Include="ParentClause.cpp" />
@@ -57,8 +58,8 @@
     <ClCompile Include="PatternIfClause.cpp" />
     <ClCompile Include="PatternWhileClause.cpp" />
     <ClCompile Include="PDR.cpp" />
-    <ClCompile Include="PQLController.cpp" />
     <ClCompile Include="PKB.cpp" />
+    <ClCompile Include="PQLController.cpp" />
     <ClCompile Include="Procedure.cpp" />
     <ClCompile Include="ProcGNode.cpp" />
     <ClCompile Include="ProcNode.cpp" />
@@ -84,6 +85,9 @@
     <ClCompile Include="VarTable.cpp" />
     <ClCompile Include="WhileGNode.cpp" />
     <ClCompile Include="WhileNode.cpp" />
+    <ClCompile Include="WithClause.cpp" />
+    <ClCompile Include="WithClauseBuilder.cpp" />
+    <ClCompile Include="WithClauseRef.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AffectsClause.h" />
@@ -115,6 +119,7 @@
     <ClInclude Include="InvalidExpressionException.h" />
     <ClInclude Include="ModifiesClause.h" />
     <ClInclude Include="MultiSynInsert.h" />
+    <ClInclude Include="NextClause.h" />
     <ClInclude Include="NoSynInsert.h" />
     <ClInclude Include="OpNode.h" />
     <ClInclude Include="ParentClause.h" />
@@ -139,7 +144,6 @@
     <ClInclude Include="QueryEvaluator.h" />
     <ClInclude Include="QueryParser.h" />
     <ClInclude Include="Result.h" />
-    <ClInclude Include="DesignExtractor.h" />
     <ClInclude Include="ResultTable.h" />
     <ClInclude Include="SingleSynInsert.h" />
     <ClInclude Include="Statement.h" />
@@ -157,6 +161,9 @@
     <ClInclude Include="VarTable.h" />
     <ClInclude Include="WhileGNode.h" />
     <ClInclude Include="WhileNode.h" />
+    <ClInclude Include="WithClause.h" />
+    <ClInclude Include="WithClauseBuilder.h" />
+    <ClInclude Include="WithClauseRef.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>

@@ -14,7 +14,8 @@ enum AttrType {
 	PROCNAME_,
 	VARNAME_,
 	CONSTVALUE_,
-	STMTNUM_
+	STMTNUM_,
+	NULLATTR_
 };
 
 enum ReturnType {

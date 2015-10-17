@@ -17,33 +17,42 @@ class QueryParser
 {
 	
 public:
-	static string removeFrontSpaces(string);
-	static bool containsOperator(string);
-	static string getFirstOperator(string);
-	static int getOperatorIndex(string);
-	static queue<string> exprBuilder(string);
-	static string removeSpace(string);
-	static vector<string> split(string, char, vector<string>*);
-	static queue<string> queueBuilder(string);
-	static string queueToString(queue<string>);
-	static vector<string> tokeniser(string, char);
-	static bool containsAny(string, vector<string>);
-	static bool containsDeclarationType(string);
-	static bool containsClauseType(string);
-	static bool containsKeyword(string);
-	static string getClauseString(string);
-	static SuchThatClauseBuilder* createCorrectClause(string);
-	static vector<string> splitByDelims(vector<string>, string);
-	static void unexpectedEndCheck(queue<string>);
+	static QueryParser* getInstance();			// gets singleton instance
 
-	static void parseDeclarations(Query*, vector<string>);
-	static void parseSelectSynonyms(Query*, queue<string>);
-	static void parseClause(Query*, queue<string>);
-	static void parsePattern(Query*, queue<string>);
-	static void parsePatternOther(Query*, queue<string>, string);
-	static void parsePatternIf(Query*, queue<string>, string);
-	static void parseWith(Query*, queue<string>);
+	string removeFrontSpaces(string);
+	bool containsOperator(string);
+	string getFirstOperator(string);
+	int getOperatorIndex(string);
+	queue<string> exprBuilder(string);
+	string removeSpace(string);
+	vector<string> split(string, char, vector<string>*);
+	void queueBuilder(string, queue<string>*);
+	string queueToString(queue<string>);
+	void tokeniser(string, char, vector<string>*);
+	bool containsAny(string, vector<string>*);
+	bool containsDeclarationType(string);
+	bool containsClauseType(string);
+	bool containsKeyword(string);
+	string getClauseString(string);
+	SuchThatClauseBuilder* createCorrectClause(string, queue<string>*);
+	void splitByDelims(vector<string>*, string, vector<string>);
+	void unexpectedEndCheck(queue<string>*);
 
-	static Query parseQuery(string);
+	void parseDeclarations(Query*, vector<string>*);
+	void parseSelectSynonyms(Query*, queue<string>*);
+	void parseClause(Query*, queue<string>*);
+	void parsePattern(Query*, queue<string>*);
+	void parsePatternOther(Query*, queue<string>*, string);
+	void parsePatternIf(Query*, queue<string>*, string);
+	void parseWith(Query*, queue<string>*);
+
+	Query* parseQuery(string);
+
+private:
+	// SINGLETON
+	static bool instanceFlag;
+	static QueryParser* parser;
+
+	// SINGLETON CONSTRUCTOR
+	QueryParser();
 };
-

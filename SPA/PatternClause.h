@@ -9,7 +9,6 @@ class PatternClause
 	: public Clause {
 
 protected:
-	ClauseType clauseType;
 	string syn;
 	string synType;
 	string var;

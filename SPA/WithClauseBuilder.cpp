@@ -66,7 +66,7 @@ void WithClauseBuilder::setAttrType(int argNum, AttrType type)
 		break;
 
 	case 2 :
-		this->firstAttrType = type;
+		this->secondAttrType = type;
 		break;
 
 	default :
