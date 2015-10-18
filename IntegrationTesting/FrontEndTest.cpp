@@ -862,7 +862,7 @@ void FrontEndTest::testCFGIfStmt() {
 	parser.parse("procedure proc {x = 2; if x then {y = 3; z = 4;} else {y = 10; z = 11;} z = y + x;}");
 
 	CPPUNIT_ASSERT(stmtTable1->getAllStmts().size() == 7);
-	CPPUNIT_ASSERT(stmtTable1->getStmtObj(2)->getType() == NodeType::IF_STMT_);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(2)->getType() == IF_STMT_);
 	
 	Statement* ifStmt = stmtTable1->getStmtObj(2);
 	int ifStmtPrev[] = {1};
@@ -891,11 +891,11 @@ void FrontEndTest::testCFGIfNested() {
 				a = 3;					/ \     / \
 			}						   5   6   9   10
 		} else {					    \ /     \ /
-			w = 4;						 -       -
+			w = 4;						 7      -
 			if w then {					   \   /	
-				x = 3;						 11
-			} else {
-				b = z;
+				x = 3;						 -
+			} else {						 |
+				b = z;						 11	 
 			}
 		}
 		y = 3;

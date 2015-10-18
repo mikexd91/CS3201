@@ -700,8 +700,10 @@ void PQLIntegration::testSelectProcUses() {
 }
 
 void PQLIntegration::testSelectPatternAssg() {
-	cout << "pattern assg" << endl;
-	string query = "assign a; variable v; Select v pattern a(v, _\"beer - water\"_)";
+	// problem with brackets in more * (beer - water)
+	// receiving the rpn of more beer water - *
+	cout << "pattern assg with brackets" << endl;
+	string query = "assign a; variable v; Select v pattern a(v, \"more * (beer - water)\")";
 	// [drink] (size 1)
 
 	PQLController* pcc = new PQLController();
@@ -712,7 +714,7 @@ void PQLIntegration::testSelectPatternAssg() {
 		cout << a << endl;
 	}
 	// FAIL: returns no results when it should return "drink"
-	// NOTE: might be the minus sign. pls check.
+	// NOTE: The issue is with the rpn parse wongly.
 	CPPUNIT_ASSERT(res.size() == 1);
 	CPPUNIT_ASSERT(res.count("drink") == 1);
 }

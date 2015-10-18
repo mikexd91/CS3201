@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AffectsCalculator.cpp" />
     <ClCompile Include="AffectsClause.cpp" />
     <ClCompile Include="AssgGNode.cpp" />
     <ClCompile Include="AssgNode.cpp" />
@@ -43,7 +44,6 @@
     <ClCompile Include="GNode.cpp" />
     <ClCompile Include="IfGNode.cpp" />
     <ClCompile Include="IfNode.cpp" />
-    <ClCompile Include="Main.cpp" />
     <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="MultiSynInsert.cpp" />
     <ClCompile Include="NextClause.cpp" />
@@ -60,8 +60,8 @@
     <ClCompile Include="PatternIfClause.cpp" />
     <ClCompile Include="PatternWhileClause.cpp" />
     <ClCompile Include="PDR.cpp" />
-    <ClCompile Include="PQLController.cpp" />
     <ClCompile Include="PKB.cpp" />
+    <ClCompile Include="PQLController.cpp" />
     <ClCompile Include="Procedure.cpp" />
     <ClCompile Include="ProcGNode.cpp" />
     <ClCompile Include="ProcNode.cpp" />
@@ -87,8 +87,12 @@
     <ClCompile Include="VarTable.cpp" />
     <ClCompile Include="WhileGNode.cpp" />
     <ClCompile Include="WhileNode.cpp" />
+    <ClCompile Include="WithClause.cpp" />
+    <ClCompile Include="WithClauseBuilder.cpp" />
+    <ClCompile Include="WithClauseRef.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AffectsCalculator.h" />
     <ClInclude Include="AffectsClause.h" />
     <ClInclude Include="AssgGNode.h" />
     <ClInclude Include="AssgNode.h" />
@@ -161,6 +165,12 @@
     <ClInclude Include="VarTable.h" />
     <ClInclude Include="WhileGNode.h" />
     <ClInclude Include="WhileNode.h" />
+    <ClInclude Include="WithClause.h" />
+    <ClInclude Include="WithClauseBuilder.h" />
+    <ClInclude Include="WithClauseRef.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="source.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>

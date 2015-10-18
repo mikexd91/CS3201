@@ -14,8 +14,8 @@ class PQLIntegration : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testSelectPatternAssg );
 	CPPUNIT_TEST( testSelectPatternWhile );
 	CPPUNIT_TEST( testSelectParentStar );
-	CPPUNIT_TEST( testSelectNextStar );
-	CPPUNIT_TEST( testSelectAffectsStar );
+	//CPPUNIT_TEST( testSelectNextStar );
+	//CPPUNIT_TEST( testSelectAffectsStar );
 	CPPUNIT_TEST( testSelectCValueWith );
 
 	CPPUNIT_TEST( testSelectVVarNameWithPatternAssg );

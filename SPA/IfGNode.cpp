@@ -22,6 +22,10 @@ GNode* IfGNode::getElseChild() {
 	return NULL;
 }
 
+GNode* IfGNode::getExit() {
+	return this->exit;
+}
+
 int IfGNode::getStmtNum() {
 	return this->getStartStmt();
 }
@@ -32,6 +36,10 @@ void IfGNode::setThenChild(GNode* child) {
 
 void IfGNode::setElseChild(GNode* child) {
 	this->setSecondChild(child);
+}
+
+void IfGNode::setExit(GNode* exit) {
+	this->exit = exit;
 }
 
 void IfGNode::setStmtNum(int stmtNum) {
