@@ -24,4 +24,10 @@ import os
 
 # FOLLOWS(*) CLAUSE
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Follows-ss1.txt SystemTests/Results/follows.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Follows-MultiClause-ss1.txt SystemTests/Results/follows_multiclause.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Follows-StmtOverflow-ss1.txt SystemTests/Results/follows_stmtoverflow.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Follows-Misc-ss1.txt SystemTests/Results/follows_misc.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-ss1.txt SystemTests/Results/followsstar.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-MultiClause-ss1.txt SystemTests/Results/followsstar_multiclause.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-StmtOverflow-ss1.txt SystemTests/Results/followsstar_stmtoverflow.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-Misc-ss1.txt SystemTests/Results/followsstar_misc.xml")
