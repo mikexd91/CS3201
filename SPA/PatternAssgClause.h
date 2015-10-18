@@ -28,6 +28,8 @@ private:
 	bool isExprWild();
 	bool isExprSidesWild();
 
+	void buildNodeStack(stack<TNode*>*, TNode* currnode);
+
 	string _expr;
 };
 

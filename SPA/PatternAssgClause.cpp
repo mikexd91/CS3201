@@ -110,68 +110,61 @@ bool PatternAssgClause::matchExpr(AssgNode* assg, string expr) {
 	std::vector<string> rpnarr = vector<string>();
 	boost::split(rpnarr, rpn, boost::is_any_of(" "));
 
-
-	// this is buggy. it breaks a many-letter var into all its letters.
-	// use string split instead
-	//for (size_t i = 0; i < rpn.length(); i++) {
-	//	string token = rpn.substr(i, 1);
-	//	if (token != " ") {
-	//		//tempstack.push(token);
-	//		rpnarr.push_back(token);
-	//	}
-	//}
-
 	// do dfs
 	set<TNode*> visited;
-	stack<TNode*> nodestack = stack<TNode*>();
+	stack<TNode*>* nodestack = new stack<TNode*>();
 	TNode* exprnode = assg->getExprNode();
+	buildNodeStack(nodestack, exprnode);
+
 	//cout << exprnode->getName() << endl;
-	nodestack.push(exprnode);
-	TNode* nextnode = nodestack.top();
-	while (nextnode != NULL && i < 9999) {
-		i++;
-		if (nextnode->getNodeType() == OPERATOR_) {
-			OpNode* op = (OpNode*) nextnode;
-			if (op->getRightNode()->getNodeType() == OPERATOR_) {
-				nodestack.push(op->getLeftNode());
-				nodestack.push(op->getRightNode());
-			} else {
-				nodestack.push(op->getRightNode());
-				nodestack.push(op->getLeftNode());
-			}
-			nextnode = nodestack.top();
-			//cout << nextnode->getName() << endl;
-		} else if (nextnode->getNodeType() == CONSTANT_) {
-			nextnode = NULL;
-		} else if (nextnode->getNodeType() == VARIABLE_) {
-			nextnode = NULL;
-		} else {
-			return false;
-		}
-	}
+	//nodestack.push(exprnode);
+	//TNode* currnode = nodestack.top();
+	//while (currnode != NULL && i < 9999) {
+	//	i++; // keep a counter so that we don't infinite loop
+	//	if (currnode->getNodeType() == OPERATOR_) {
+	//		// then i can find nextNode.
+	//		OpNode* op = (OpNode*) currnode;
+	//		TNode* nextNode = op->getRightNode();
+	//		if (op->getRightNode()->getNodeType() == OPERATOR_) {
+	//			nodestack.push(op->getRightNode());
+	//		} else {
+	//			nodestack.push(op->getRightNode());
+	//			nodestack.push(op->getLeftNode());
+	//		}
+	//		nextnode = nodestack.top();
+	//		//cout << nextnode->getName() << endl;
+	//	} else if (nextnode->getNodeType() == CONSTANT_) {
+	//		nextnode = NULL;
+	//	} else if (nextnode->getNodeType() == VARIABLE_) {
+	//		nextnode = NULL;
+	//	} else {
+	//		return false;
+	//	}
+	//	currnode = nodestack.top();
+	//}
 
 	// compare rpn with dfs nodes
 	// once start to match rpn must match all the way
 	// then only considered subtree
 	for (size_t compared = 0; compared < rpnarr.size() && i < 9999; compared++) {
-		if (nodestack.empty()) {
+		if (nodestack->empty()) {
 			//run out of nodes before we finish comparing all the rpn
 			return false;
 		}
-		TNode* node = nodestack.top();
+		TNode* node = nodestack->top();
 		string token = rpnarr.at(compared);
 		//cout << "conparing" << endl;
 		//cout << node->getName() << endl;
 		//cout << token << endl;
 		if (node->getName() == token) {
-			nodestack.pop();
+			nodestack->pop();
 			// if we break a streak of matches,
 			// then it's not subtree
 		} else {
 			// start from the front of the rpn again
 			// -1 cos it will ++ on the iteration
 			compared = -1;
-			nodestack.pop();
+			nodestack->pop();
 		}
 	}
 
@@ -180,6 +173,15 @@ bool PatternAssgClause::matchExpr(AssgNode* assg, string expr) {
 		return true;
 	} else {
 		// if the sides are not wild, then we need to check that the nodestack is also empty
-		return nodestack.empty();
+		return nodestack->empty();
+	}
+}
+
+void PatternAssgClause::buildNodeStack(stack<TNode*>* nodestack, TNode* currnode) {
+	nodestack->push(currnode);
+	if (currnode->getNodeType() == OPERATOR_) {
+		OpNode* opnode = (OpNode*) currnode;
+		buildNodeStack(nodestack, opnode->getRightNode());
+		buildNodeStack(nodestack, opnode->getLeftNode());
 	}
 }
