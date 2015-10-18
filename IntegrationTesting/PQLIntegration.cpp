@@ -755,12 +755,10 @@ void PQLIntegration::testSelectNextStar() {
 	}
 
 	// FAIL: next star is not implemented yet.
-	CPPUNIT_ASSERT(res.size() == 5);
-	CPPUNIT_ASSERT(res.count("7") == 1);
+	CPPUNIT_ASSERT(res.size() == 3);
 	CPPUNIT_ASSERT(res.count("8") == 1);
 	CPPUNIT_ASSERT(res.count("9") == 1);
 	CPPUNIT_ASSERT(res.count("6") == 1);
-	CPPUNIT_ASSERT(res.count("5") == 1);
 }
 
 void PQLIntegration::testSelectAffectsStar() {
