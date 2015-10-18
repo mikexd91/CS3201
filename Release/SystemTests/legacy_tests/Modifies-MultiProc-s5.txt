@@ -1,0 +1,30 @@
+1 - modifies-procedure
+procedure p;
+Select p such that Modifies("firstProc", "a")
+firstProc, pokemon, ABC
+5000
+2 - modifies-procedure
+procedure p;
+Select p such that Modifies(p, "c")
+firstProc, ABC
+5000
+3 - modifies-boolean
+
+Select BOOLEAN such that Modifies("pokemon", "charmander")
+true
+5000
+4 - modifies-stmt
+stmt s;
+Select s such that Modifies(s, "a")
+1, 5, 6, 44, 45, 59
+5000
+5 - modifies-procedure-pattern: procedure synonym, variable fixed
+procedure p;
+Select p such that Modifies(p, "c") pattern a(_, _"c-1"_)
+firstProc
+5000
+6 - modifies-variable: procedure fixed, variable fixed
+variable v;
+Select v such that Modifies("firstProc", v) and Modifies("ABC", v)
+a, b, c
+5000
