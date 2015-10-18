@@ -17,10 +17,6 @@ SuchThatClause::SuchThatClause(ClauseType type){
 SuchThatClause::~SuchThatClause(void){
 }
 
-ClauseType SuchThatClause::getClauseType() {
-	return clauseType;
-}
-
 void SuchThatClause::setFirstArg(string first){
 	this->firstArg = first;
 }

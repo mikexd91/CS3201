@@ -37,14 +37,19 @@ class QueryEvaluatorTest: public CPPUNIT_NS::TestFixture {
 
 	// Testing Follows clause, 1 clause in query
 	// select BOOLEAN
-	//CPPUNIT_TEST( testFollowsEvaluateFixedFixedPass );
-	//CPPUNIT_TEST( testFollowsEvaluateFixedFixedFail );
+	CPPUNIT_TEST( testFollowsEvaluateFixedFixedPass );
+	CPPUNIT_TEST( testFollowsEvaluateFixedFixedFail );
 	
-	// Testing FollowsStar, Parent, Modifies clause in query
+	// Testing Follows, Parent, Modifies clause in query
 	// select BOOLEAN
-	//CPPUNIT_TEST( testFollowsStarEvaluateUnderscoreFixedPass );
-	//CPPUNIT_TEST( testParentEvaluateFixedUnderscorePass );
-	//CPPUNIT_TEST( testModifiesEvaluateFixedFixedPass );
+	CPPUNIT_TEST( testUnderscoreFixedPass );
+	CPPUNIT_TEST( testUnderscoreFixedFail );
+	CPPUNIT_TEST( testFixedUnderscorePass );
+	CPPUNIT_TEST( testFixedUnderscoreFail );
+	CPPUNIT_TEST( testUnderscoreUnderscorePass );
+	CPPUNIT_TEST( testFixedFixedPass );
+	CPPUNIT_TEST( testFixedFixedFail );
+	
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -70,5 +75,16 @@ public:
 	void testHalfInClauseWithModifiesSynSynStmtPass();
 
 	void testModifiesEvaluateSynGenericStmtPass();
+
+	void testFollowsEvaluateFixedFixedPass();
+	void testFollowsEvaluateFixedFixedFail();
+
+	void testUnderscoreFixedPass();
+	void testUnderscoreFixedFail();
+	void testFixedUnderscorePass();
+	void testFixedUnderscoreFail();
+	void testUnderscoreUnderscorePass();
+	void testFixedFixedPass();
+	void testFixedFixedFail();
 };
 

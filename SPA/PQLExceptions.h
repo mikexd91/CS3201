@@ -1,6 +1,5 @@
 #include <iostream>
 #include <exception>
-
 using namespace std;
 
 struct MissingDeclarationException : public std::exception{
@@ -54,5 +53,11 @@ struct InvalidClauseException : public std::exception{
 struct InvalidSyntaxException : public std::exception{
 	const char* what() const throw(){
 		return "Clause: Invalid syntax";
+	}
+};
+
+struct InvalidAttributeException : public std::exception{
+	const char* what () const throw(){
+		return "Attribute condition mismatch";
 	}
 };

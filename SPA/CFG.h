@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "CNode.h"
+#include "ProcGNode.h"
 
 class CFG {
 
@@ -14,9 +14,9 @@ public:
 
 	static CFG* getInstance();
 
-	void addProcedure(CNode*);
-	vector<CNode*> getAllProcedures();
-	CNode* getProcedure(string);
+	void addProcedure(ProcGNode*);
+	vector<ProcGNode*> getAllProcedures();
+	ProcGNode* getProcedure(string);
 	bool hasProcedure(string);
 
 	//clear
@@ -28,6 +28,6 @@ private:
 	static bool hasInstance;
 	static CFG* instance;
 
-	vector<CNode*> procedures;
+	vector<ProcGNode*> procedures;
 
 };

@@ -130,6 +130,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AffectsClauseTest.cpp" />
     <ClCompile Include="AllUnitTest.cpp" />
     <ClCompile Include="AssgNodeTest.cpp" />
     <ClCompile Include="ASTTest.cpp" />
@@ -140,9 +141,11 @@
     <ClCompile Include="ConstNodeTest.cpp" />
     <ClCompile Include="ConstTableTest.cpp" />
     <ClCompile Include="FollowsClauseTest.cpp" />
+    <ClCompile Include="FollowsStarClauseTest.cpp" />
     <ClCompile Include="IfNodeTest.cpp" />
     <ClCompile Include="ModifiesClauseTest.cpp" />
     <ClCompile Include="MultiSynInsertTest.cpp" />
+    <ClCompile Include="NextClauseTest.cpp" />
     <ClCompile Include="OpNodeTest.cpp" />
     <ClCompile Include="ParentClauseTest.cpp" />
     <ClCompile Include="ParentStarClauseTest.cpp" />
@@ -155,6 +158,7 @@
     <ClCompile Include="ProcTableTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
     <ClCompile Include="QueryEvaluatorTest.cpp" />
+    <ClCompile Include="QueryParserTest.cpp" />
     <ClCompile Include="ResultTest.cpp" />
     <ClCompile Include="SingleSynInsertTest.cpp" />
     <ClCompile Include="StmtLstNodeTest.cpp" />
@@ -167,6 +171,7 @@
     <ClCompile Include="WhileNodeTest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AffectsClauseTest.h" />
     <ClInclude Include="AssgNodeTest.h" />
     <ClInclude Include="ASTTest.h" />
     <ClInclude Include="CallNodeTest.h" />
@@ -176,9 +181,11 @@
     <ClInclude Include="ConstNodeTest.h" />
     <ClInclude Include="ConstTableTest.h" />
     <ClInclude Include="FollowsClauseTest.h" />
+    <ClInclude Include="FollowsStarClauseTest.h" />
     <ClInclude Include="IfNodeTest.h" />
     <ClInclude Include="ModifiesClauseTest.h" />
     <ClInclude Include="MultiSynInsertTest.h" />
+    <ClInclude Include="NextClauseTest.h" />
     <ClInclude Include="OpNodeTest.h" />
     <ClInclude Include="ParentClauseTest.h" />
     <ClInclude Include="ParentStarClauseTest.h" />
@@ -191,6 +198,7 @@
     <ClInclude Include="ProcTableTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
     <ClInclude Include="QueryEvaluatorTest.h" />
+    <ClInclude Include="QueryParserTest.h" />
     <ClInclude Include="ResultTest.h" />
     <ClInclude Include="SingleSynInsertTest.h" />
     <ClInclude Include="StmtLstNodeTest.h" />

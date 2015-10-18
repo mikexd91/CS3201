@@ -146,14 +146,20 @@ Statement::ChildrenSet ParentClause::getChildren(int stmtNum, string stmtArgType
 	}
 }
 
+//argType is argType of parent
 int ParentClause::getParent(int stmtNum, string argType) {
 	NodeType nodeType = Utils::convertArgTypeToNodeType(argType);
 	Statement* stmtObj = stmtTable->getStmtObj(stmtNum);
-	if (stmtObj == nullptr || (nodeType != NULL_ && stmtObj->getType() != nodeType)) {
+	if (stmtObj == nullptr) {
 		return -1;
 	} else {
-		int stmt = stmtObj->getParent();
-		return stmt;
+		int parentNum = stmtObj->getParent();
+		Statement* parentObj = stmtTable->getStmtObj(parentNum);
+		if (nodeType != NULL_ && parentObj->getType() != nodeType) {
+			return -1;
+		} else {
+			return parentNum;
+		}
 	}
 }
 

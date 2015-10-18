@@ -6,27 +6,50 @@
 #include "boost/algorithm/string.hpp"
 #include "Clause.h"
 #include "FollowsClause.h"
-//#include "FollowsStarClause.h"
+#include "FollowsStarClause.h"
 #include "ModifiesClause.h"
 #include "ParentClause.h"
-//#include "ParentStarClause.h"
+#include "ParentStarClause.h"
 #include "PatternClause.h"
 #include "UsesClause.h"
+#include "CallsClause.h"
 #include "PatternIfClause.h"
 #include "PatternAssgClause.h"
 #include "PatternWhileClause.h"
 #include "PatternClauseBuilder.h"
-#include "boost/unordered_map.hpp"
 #include "ExpressionParser.h"
+#include "WithClauseRef.h"
+#include "WithClauseBuilder.h"
+#include "WithClause.h"
+#include "boost/unordered_map.hpp"
 #include <queue>
 #include <string>
 #include <vector>
 #include <sstream>
 #include <exception>
+#include <ios>
 
 using namespace std;
 using boost::unordered_map;
-using namespace boost;	
+using namespace boost;
+
+bool QueryParser::instanceFlag = false;		// instance flag
+QueryParser* QueryParser::parser = NULL;	// parser instance
+
+// SINGLETON ACCESSOR
+QueryParser* QueryParser::getInstance() {
+	// if instance does not exist, create and return instance
+	if(!instanceFlag) {
+		parser = new QueryParser();
+		instanceFlag = true;
+	}
+
+	return parser;
+}
+
+// empty private constructor
+QueryParser::QueryParser() {}
+
 
 string QueryParser::removeSpace(string s){
 	std::string::iterator end_pos = std::remove(s.begin(), s.end(), ' ');
@@ -50,39 +73,26 @@ vector<string> QueryParser::split(string s, char delim, vector<string>* elems) {
     return *elems;
 }
 
-//ADD OPERATORS TO Q: splitByDelims( operator )
-queue<string> QueryParser::queueBuilder(string in){
-	queue<string> out;
-	vector<string> temp;
-	vector<string> outHolder;
-	temp = QueryParser::tokeniser(in, ' ');
-	outHolder = QueryParser::splitByDelims(temp, "(");
-	temp = outHolder;
-	outHolder = QueryParser::splitByDelims(temp, ")");
-	temp = outHolder;
-	outHolder = QueryParser::splitByDelims(temp, ",");
-	temp = outHolder;
-	outHolder = QueryParser::splitByDelims(temp, "\"");
-	temp = outHolder;
-	outHolder = QueryParser::splitByDelims(temp, "+");
-	temp = outHolder;
-	outHolder = QueryParser::splitByDelims(temp, "-");
-	temp = outHolder;
-	outHolder = QueryParser::splitByDelims(temp, "*");
-	temp = outHolder;
-	outHolder = QueryParser::splitByDelims(temp, "-");
-	temp = outHolder;
-	outHolder = QueryParser::splitByDelims(temp, ".");
-	temp = outHolder;
-	outHolder = QueryParser::splitByDelims(temp, "=");
-	temp = outHolder;
-	outHolder = QueryParser::splitByDelims(temp, "<");
-	temp = outHolder;
-	outHolder = QueryParser::splitByDelims(temp, ">");
-	for (size_t i=0; i<outHolder.size(); i++){
-		out.push(outHolder.at(i));
+//queueBuilder must take in empty queue
+void QueryParser::queueBuilder(string in, queue<string>* out){
+	queue<string>* queryQueue = &queue<string>();
+	vector<string> temp = vector<string>();
+	QueryParser::tokeniser(in, ' ', &temp);
+	QueryParser::splitByDelims(&temp, "(", temp);
+	QueryParser::splitByDelims(&temp, ")", temp);
+	QueryParser::splitByDelims(&temp, ",", temp);
+	QueryParser::splitByDelims(&temp, "\"", temp);
+	QueryParser::splitByDelims(&temp, "+", temp);
+	QueryParser::splitByDelims(&temp, "-", temp);
+	QueryParser::splitByDelims(&temp, "*", temp);
+	QueryParser::splitByDelims(&temp, "-", temp);
+	QueryParser::splitByDelims(&temp, ".", temp);
+	QueryParser::splitByDelims(&temp, "=", temp);
+	QueryParser::splitByDelims(&temp, "<", temp);
+	QueryParser::splitByDelims(&temp, ">", temp);
+	for (size_t i=0; i<temp.size(); i++){
+		out->push(temp.at(i));
 	}
-	return out;
 }
 
 string QueryParser::queueToString(queue<string> input){
@@ -96,8 +106,7 @@ string QueryParser::queueToString(queue<string> input){
 	return ss.str();
 }
 
-vector<string> QueryParser::tokeniser(string input, char delim){
-	vector<string> elems;
+void QueryParser::tokeniser(string input, char delim, vector<string>* elems){
 	size_t pos = input.find_first_of(delim);
 	while (pos != string::npos){
 		if (pos == 0){
@@ -105,19 +114,18 @@ vector<string> QueryParser::tokeniser(string input, char delim){
 			input = temp;
 			pos = temp.find_first_of(delim);
 		} else if (pos == input.length()){
-			elems.push_back(input.substr(0, pos - 1));
+			elems->push_back(input.substr(0, pos - 1));
 			pos = string::npos;
 		} else {
 			string s = input.substr(0, pos);
-			elems.push_back(s);
+			elems->push_back(s);
 			input = input.substr(pos + 1);
 			pos = input.find_first_of(delim);
 		}
 	}
 	if (pos == string::npos && !input.empty()){
-		elems.push_back(input);
+		elems->push_back(input);
 	}
-	return elems;
 }
 
 bool QueryParser::containsOperator(string s){
@@ -126,7 +134,7 @@ bool QueryParser::containsOperator(string s){
 	opVector.push_back("/");
 	opVector.push_back("-");
 	opVector.push_back("*");
-	return containsAny(s, opVector);
+	return containsAny(s, &opVector);
 }
 
 string QueryParser::getFirstOperator(string s){
@@ -155,31 +163,9 @@ int QueryParser::getOperatorIndex(string s){
 	return -1;
 }
 
-queue<string> QueryParser::exprBuilder(string input){
-	vector<string> elems;
-	string duplicate = input;
-	while (containsOperator(duplicate)){
-		int index = getOperatorIndex(duplicate);
-		string op = getFirstOperator(duplicate);
-		string left = duplicate.substr(0, index);
-		string right = duplicate.substr(index+1, duplicate.size() - index);
-		elems.push_back(left);
-		elems.push_back(op);
-		duplicate = right;
-	}
-	elems.push_back(duplicate);
-	queue<string> toReturn;
-	for (size_t i = 0; i<elems.size(); i++){
-		string current = elems.at(i);
-		string toReplace = removeSpace(current);
-		toReturn.push(toReplace);
-	}
-	return toReturn;
-}
-
-bool QueryParser::containsAny(string s, vector<string> list){
-	for (size_t i=0; i<list.size(); i++){
-		string current = list.at(i);
+bool QueryParser::containsAny(string s, vector<string>* list){
+	for (size_t i=0; i<list->size(); i++){
+		string current = list->at(i);
 		if (contains(s, current)){
 			return true;
 		}
@@ -197,7 +183,8 @@ bool QueryParser::containsDeclarationType(string s){
 	decVector.push_back(stringconst::ARG_PROGLINE);
 	decVector.push_back(stringconst::ARG_CONSTANT);
 	decVector.push_back(stringconst::ARG_PROCEDURE);
-	return containsAny(s, decVector);
+	decVector.push_back(stringconst::ARG_CALL);
+	return containsAny(s, &decVector);
 }
 
 bool QueryParser::containsClauseType(string s){
@@ -206,18 +193,17 @@ bool QueryParser::containsClauseType(string s){
 	clauseVector.push_back(stringconst::TYPE_PARENT);
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
 	clauseVector.push_back(stringconst::TYPE_USES);
-	//clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
-	//clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
-	return containsAny(s, clauseVector);
+	clauseVector.push_back(stringconst::TYPE_CALLS);
+	clauseVector.push_back(stringconst::TYPE_NEXT);
+	clauseVector.push_back(stringconst::TYPE_AFFECTS);
+	return containsAny(s, &clauseVector);
 }
 
 bool QueryParser::containsKeyword(string s){
 	vector<string> wordVector;
 	wordVector.push_back(stringconst::STRING_SUCH);
 	wordVector.push_back(stringconst::STRING_THAT);
-	wordVector.push_back(stringconst::STRING_WITH);
-	wordVector.push_back(stringconst::STRING_AND);
-	return containsAny(s, wordVector);
+	return containsAny(s, &wordVector);
 }
 
 string QueryParser::getClauseString(string s){
@@ -226,8 +212,9 @@ string QueryParser::getClauseString(string s){
 	clauseVector.push_back(stringconst::TYPE_PARENT);
 	clauseVector.push_back(stringconst::TYPE_MODIFIES);
 	clauseVector.push_back(stringconst::TYPE_USES);
-	//clauseVector.push_back(stringconst::TYPE_FOLLOWS_STAR);
-	//clauseVector.push_back(stringconst::TYPE_PARENT_STAR);
+	clauseVector.push_back(stringconst::TYPE_CALLS);
+	clauseVector.push_back(stringconst::TYPE_NEXT);
+	clauseVector.push_back(stringconst::TYPE_AFFECTS);
 	for (size_t i=0; i<clauseVector.size(); i++){
 		string current = clauseVector.at(i);
 		if (contains(s, current)){
@@ -237,58 +224,77 @@ string QueryParser::getClauseString(string s){
 	return stringconst::STRING_EMPTY;
 }
 
-SuchThatClauseBuilder* QueryParser::createCorrectClause(string type){
-	//if (type == stringconst::TYPE_FOLLOWS_STAR){
-		//SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(FOLLOWSSTAR_);
-		//return clause;		
-	/*} else if (type == stringconst::TYPE_PARENT_STAR){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(PARENTSTAR_);
-		return clause;
-	} else*/ if (type == stringconst::TYPE_FOLLOWS){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(FOLLOWS_);
-		return clause;		
+SuchThatClauseBuilder* QueryParser::createCorrectClause(string type, queue<string>* line){
+	string isStar = line->front();
+	if (type == stringconst::TYPE_FOLLOWS){
+		if (isStar == "*"){
+			Utils::getWordAndPop(*line);
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+			return clause;
+		} else {
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(FOLLOWS_);
+			return clause;
+		}
 	} else if (type == stringconst::TYPE_PARENT){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(PARENT_);
-		return clause;			
+		if (isStar == "*"){
+			Utils::getWordAndPop(*line);
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(PARENTSTAR_);
+			return clause;
+		} else {
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(PARENT_);
+			return clause;
+		}
 	} else if (type == stringconst::TYPE_MODIFIES){
 		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(MODIFIES_);
 		return clause;		
 	} else if (type == stringconst::TYPE_USES){
 		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(USES_);
 		return clause;
-	/*INSERT WHEN CLAUSES ARE DONE
 	} else if (type == stringconst::TYPE_CALLS){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(CALLS_);
-		return clause;
+		if (isStar == "*"){
+			Utils::getWordAndPop(*line);
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(CALLSSTAR_);
+			return clause;
+		} else {
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(CALLS_);
+			return clause;
+		}
 	} else if (type == stringconst::TYPE_NEXT){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXT_);
-		return clause;
+		if (isStar == "*"){
+			Utils::getWordAndPop(*line);
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXTSTAR_);
+			return clause;
+		} else {
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXT_);
+			return clause;
+		}
 	} else if (type == stringconst::TYPE_AFFECTS){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTS_);
-		return clause;
-	} else if (type == stringconst::TYPE_NEXT_STAR){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXTSTAR_);
-		return clause;
-	} else if (type == stringconst::TYPE_AFFECTS_STAR){
-		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTSSTAR_);
-		return clause;
-	}
-	*/
+		if (isStar == "*"){
+			Utils::getWordAndPop(*line);
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTSSTAR_);
+			return clause;
+		} else {
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTS_);
+			return clause;
+		}
 	} else {
 		throw UnexpectedClauseException();
 	}
 }
 
-void QueryParser::parseDeclarations(Query* query, vector<string> list){
-	for (size_t i=0; i<list.size(); i++){
-		string current = list.at(i);
+void QueryParser::parseDeclarations(Query* query, vector<string>* list){
+	for (size_t i=0; i<list->size(); i++){
+		string current = list->at(i);
 		boost::algorithm::trim(current);
-		vector<string> tokens = tokeniser(current, ',');
+		vector<string> tokens = vector<string>();
+		tokeniser(current, ',', &tokens);
 		string first = tokens.at(0);
-		vector<string> split = tokeniser(first, ' ');
+		vector<string> split = vector<string>();
+		tokeniser(first, ' ', &split);
 		string decType = split.at(0); 
 		boost::trim(decType);
 		if (!containsDeclarationType(decType)){
+			cout << decType;
 			throw InvalidDeclarationException();
 		}
 		if (decType == stringconst::ARG_PROGLINE){
@@ -311,25 +317,27 @@ void QueryParser::parseDeclarations(Query* query, vector<string> list){
 	}
 }
 
-void QueryParser::unexpectedEndCheck(queue<string> in){
-	if (in.empty()){
+void QueryParser::unexpectedEndCheck(queue<string>* in){
+	if (in->empty()){
 		throw UnexpectedEndException();
 	}
 }
 
 //TODO add attribute keyword list
-void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
+void QueryParser::parseSelectSynonyms(Query* query, queue<string>* line){
 	unordered_map<string, string> decList = query->getDeclarationList();
-	string first = Utils::getWordAndPop(line);
+	string first = Utils::getWordAndPop(*line);
+	unexpectedEndCheck(line);
 	if (first != stringconst::STRING_SELECT){
 		throw InvalidSelectException();
 	} else {
-		string current = Utils::getWordAndPop(line);
+		string current = Utils::getWordAndPop(*line);
 		if (current == "<"){
 			bool expectSelect = true;
 			while (expectSelect){
-				string syn = Utils::getWordAndPop(line);
+				string syn = Utils::getWordAndPop(*line);
 				if (decList.find(syn) == decList.end()){
+					cout << "missing dec: " << syn;
 					throw MissingDeclarationException();
 				}
 				string type = decList.at(syn);
@@ -337,13 +345,13 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 				newPair->setFirst(syn);
 				newPair->setSecond(type);
 				query->addSelectSynonym(*newPair);
-				string next = line.front();
+				string next = line->front();
 				if (next == ">"){
 					expectSelect = false;
 				} else if (next != ","){
 					throw InvalidSyntaxException();
 				}
-				Utils::getWordAndPop(line);
+				Utils::getWordAndPop(*line);
 			}
 		} else {
 			if (current == "BOOLEAN"){
@@ -354,6 +362,7 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 				query->addSelectSynonym(*newPair);		
 			} else {
 				if (decList.find(current) == decList.end()){
+					cout << "missing dec: " << current;
 					throw MissingDeclarationException();
 				}
 				string type = decList.at(current);
@@ -361,13 +370,13 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 				newPair->setFirst(current);
 				newPair->setSecond(type);
 				string next;
-				if (!line.empty()){
-					next = line.front();
+				if (!line->empty()){
+					next = line->front();
 				}
 				if (next == "."){
-					Utils::getWordAndPop(line);
+					Utils::getWordAndPop(*line);
 					unexpectedEndCheck(line);
-					string attr = Utils::getWordAndPop(line);
+					string attr = Utils::getWordAndPop(*line);
 					newPair->setAttribute(attr);
 				}
 				query->addSelectSynonym(*newPair);
@@ -377,36 +386,43 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string> line){
 }
 
 //TODO: UPDATE PARSE CLAUSE WITH NEW QUEUE (DONE, UNIT TESTING)
-void QueryParser::parseClause(Query* query, queue<string> line){
+void QueryParser::parseClause(Query* query, queue<string>* line){
 	unordered_map<string, string> decList = query->getDeclarationList();
-	bool expectFirstFixed = false;
-	bool expectSecondFixed = false;
+	bool expectFirstFixedSynonym = false;
+	bool expectSecondFixedSynonym = false;
 
-	string clauseType = Utils::getWordAndPop(line);
+	string clauseType = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
-	SuchThatClauseBuilder* newClause = createCorrectClause(clauseType);
+	SuchThatClauseBuilder* newClause = createCorrectClause(clauseType, line);
 
-	string openParen = Utils::getWordAndPop(line);
+	string openParen = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
 	if (openParen != "("){
 		throw InvalidSyntaxException();
 	}
 
-	string firstVar = Utils::getWordAndPop(line);
+	string firstVar = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
 	if (firstVar == "\""){
-		expectFirstFixed = true;
-		firstVar = Utils::getWordAndPop(line);
+		expectFirstFixedSynonym = true;
+		firstVar = Utils::getWordAndPop(*line);
 		unexpectedEndCheck(line);
 		if (firstVar == "\""){
 			throw InvalidSyntaxException();
 		}
-	}
-	newClause->setArgFixed(1, expectFirstFixed);
+	} /*else if (firstVar == "-"){
+		string firstVal = Utils::getWordAndPop(line);
+		unexpectedEndCheck(line);
+		if (!firstVal){
+
+		}
+	}*/
+	newClause->setArgFixed(1, expectFirstFixedSynonym);
 	if (decList.find(firstVar) == decList.end()){
 		if (!Utils::isValidConstant(firstVar)){
-			if (!expectFirstFixed){
+			if (!expectFirstFixedSynonym){
 				if (firstVar != stringconst::STRING_EMPTY){
+					cout << "missing dec: " << firstVar;
 					throw MissingDeclarationException();
 				} else {
 					newClause->setArg(1, stringconst::STRING_EMPTY);
@@ -417,6 +433,7 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 				newClause->setArgType(1, stringconst::ARG_VARIABLE);
 			}
 		} else {
+			newClause->setArgFixed(1, true);
 			newClause->setArg(1, firstVar);
 			newClause->setArgType(1, stringconst::ARG_STATEMENT);
 		}
@@ -425,34 +442,34 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 		newClause->setArg(1, firstVar);
 		newClause->setArgType(1, firstArgType);
 	}
-	if (expectFirstFixed){
-		string closeFixed = Utils::getWordAndPop(line);
+	if (expectFirstFixedSynonym){
+		string closeFixed = Utils::getWordAndPop(*line);
 		unexpectedEndCheck(line);
 		if (closeFixed != "\""){
 			throw InvalidSyntaxException();
 		}
 	}
 
-	string comma = Utils::getWordAndPop(line);
+	string comma = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
 	if (comma != ","){
 		throw InvalidSyntaxException();
 	}
 
-	string secondVar = Utils::getWordAndPop(line);
+	string secondVar = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
 	if (secondVar == "\""){
-		expectSecondFixed = true;
-		secondVar = Utils::getWordAndPop(line);
+		expectSecondFixedSynonym = true;
+		secondVar = Utils::getWordAndPop(*line);
 		unexpectedEndCheck(line);
 		if (secondVar == "\""){
 			throw InvalidSyntaxException();
 		}
 	}
-	newClause->setArgFixed(2, expectSecondFixed);
+	newClause->setArgFixed(2, expectSecondFixedSynonym);
 	if (decList.find(secondVar) == decList.end()){
 		if (!Utils::isValidConstant(secondVar)){
-			if (!expectSecondFixed){
+			if (!expectSecondFixedSynonym){
 				if (secondVar != stringconst::STRING_EMPTY){
 					throw MissingDeclarationException();
 				} else {
@@ -464,6 +481,7 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 				newClause->setArgType(2, stringconst::ARG_VARIABLE);
 			}
 		} else {
+			newClause->setArgFixed(2, true);
 			newClause->setArg(2, secondVar);
 			newClause->setArgType(2, stringconst::ARG_STATEMENT);
 		}
@@ -472,15 +490,15 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 		newClause->setArg(2, secondVar);
 		newClause->setArgType(2, secondArgType);
 	}
-	if (expectSecondFixed){
-		string closeFixed = Utils::getWordAndPop(line);
+	if (expectSecondFixedSynonym){
+		string closeFixed = Utils::getWordAndPop(*line);
 		unexpectedEndCheck(line);
 		if (closeFixed != "\""){
 			throw InvalidSyntaxException();
 		}
 	}
 
-	string closeParen = Utils::getWordAndPop(line);
+	string closeParen = Utils::getWordAndPop(*line);
 	if (closeParen != ")"){
 		throw InvalidSyntaxException();
 	}
@@ -488,13 +506,14 @@ void QueryParser::parseClause(Query* query, queue<string> line){
 	query->addClause(clause);
 }
 
-void QueryParser::parsePattern(Query* query, queue<string> line){
+void QueryParser::parsePattern(Query* query, queue<string>* line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string patternType;
 
-	string synonym = Utils::getWordAndPop(line);
+	string synonym = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
 	if (decList.find(synonym) == decList.end()){
+		cout << "missing dec: " << synonym;
 		throw InvalidDeclarationException();
 	} else {
 		patternType = decList.at(synonym);
@@ -505,15 +524,8 @@ void QueryParser::parsePattern(Query* query, queue<string> line){
 		parsePatternIf(query, line, synonym);
 	}
 }
-//TRY THIS NEW SHIT
-//PatternClauseBuilder* assgBuilder = new PatternClauseBuilder(PATTERNASSG_);
-//assgBuilder->setSynonym("a");
-//assgBuilder->setVar("_");
-//assgBuilder->setVarType(ARG_GENERIC);
-//assgBuilder->setVarFixed(false);
-//assgBuilder->setExpr(1, "_");
-//PatternAssgClause* p1 = (PatternAssgClause*) assgBuilder->build();
-void QueryParser::parsePatternOther(Query* query, queue<string> line, string synonym){
+
+void QueryParser::parsePatternOther(Query* query, queue<string>* line, string synonym){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string patternType = decList.at(synonym);
 	string var;
@@ -521,18 +533,18 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 	string varType;
 	string expr;
 
-	string openParen = Utils::getWordAndPop(line);
+	string openParen = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
 	if (openParen != "("){
 		throw InvalidSyntaxException();
 	}
-
-	var = Utils::getWordAndPop(line);
+	
+	var = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
 	if (var == "\""){
 		varFixed = true;
 		varType = stringconst::ARG_VARIABLE;
-		var = Utils::getWordAndPop(line);
+		var = Utils::getWordAndPop(*line);
 		unexpectedEndCheck(line);
 		if (var == "\""){
 			throw InvalidSyntaxException();
@@ -541,6 +553,7 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 		varType = stringconst::ARG_GENERIC;
 	} else {
 		if (decList.find(var) == decList.end()){
+			cout << "missing dec: " << var;
 			throw MissingDeclarationException();
 		} else {
 			varType = decList.at(var);
@@ -548,28 +561,28 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 	}
 
 	if (varFixed){
-		string close = Utils::getWordAndPop(line);
+		string close = Utils::getWordAndPop(*line);
 		unexpectedEndCheck(line);
 		if (close != "\""){
 			throw InvalidSyntaxException();
 		}
 	}
 
-	string comma = Utils::getWordAndPop(line);
+	string comma = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
 	if (comma != ","){
 		throw InvalidSyntaxException();
 	}
 
-	string condition = Utils::getWordAndPop(line);
+	string condition = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
 	if (condition == stringconst::STRING_EMPTY){
-		if (line.front() == ")"){
+		if (line->front() == ")"){
 			expr = condition;
-		} else if (line.front() == "\""){
-			Utils::getWordAndPop(line);
+		} else if (line->front() == "\""){
+			Utils::getWordAndPop(*line);
 			unexpectedEndCheck(line);
-			string next = Utils::getWordAndPop(line);
+			string next = Utils::getWordAndPop(*line);
 			unexpectedEndCheck(line);
 			if (next == "\""){
 				throw InvalidSyntaxException();
@@ -577,10 +590,10 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 			queue<string> exprHolder;
 			while (next != "\""){
 				exprHolder.push(next);
-				next = Utils::getWordAndPop(line);
+				next = Utils::getWordAndPop(*line);
 				unexpectedEndCheck(line);
 			}
-			string endBound = Utils::getWordAndPop(line);
+			string endBound = Utils::getWordAndPop(*line);
 			unexpectedEndCheck(line);
 			if (endBound != "_"){
 				throw InvalidSyntaxException();
@@ -590,14 +603,14 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 		}
 	} else if (condition == "\""){
 		queue<string> exprHolder;
-		string next = Utils::getWordAndPop(line);
+		string next = Utils::getWordAndPop(*line);
 		unexpectedEndCheck(line);
 		if (next == "\""){
 			throw InvalidSyntaxException();
 		}
 		while (next != "\""){
 			exprHolder.push(next);
-			next = Utils::getWordAndPop(line);
+			next = Utils::getWordAndPop(*line);
 			unexpectedEndCheck(line);
 		}
 		ExpressionParser expP;
@@ -606,7 +619,7 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 		throw InvalidSyntaxException();
 	}
 
-	string closeParen = Utils::getWordAndPop(line);
+	string closeParen = Utils::getWordAndPop(*line);
 	if (closeParen != ")"){
 		throw InvalidSyntaxException();
 	}
@@ -632,7 +645,7 @@ void QueryParser::parsePatternOther(Query* query, queue<string> line, string syn
 	}
 }
 
-void QueryParser::parsePatternIf(Query* query, queue<string> line, string synonym){
+void QueryParser::parsePatternIf(Query* query, queue<string>* line, string synonym){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	string var;
 	bool varFixed = false;
@@ -640,19 +653,19 @@ void QueryParser::parsePatternIf(Query* query, queue<string> line, string synony
 	string expr1;
 	string expr2;
 
-	string openParen = Utils::getWordAndPop(line);
+	string openParen = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
 	if (openParen != "("){
 		throw InvalidSyntaxException();
 	}
 
-	var = Utils::getWordAndPop(line);
+	var = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
 	if (var == "\""){
 		varFixed = true;
-		var = Utils::getWordAndPop(line);
+		var = Utils::getWordAndPop(*line);
 		varType = stringconst::ARG_VARIABLE;
-		string close = Utils::getWordAndPop(line);
+		string close = Utils::getWordAndPop(*line);
 		unexpectedEndCheck(line);
 		if (close != "\""){
 			throw InvalidSyntaxException();
@@ -660,6 +673,7 @@ void QueryParser::parsePatternIf(Query* query, queue<string> line, string synony
 	} else {
 		if (decList.find(var) == decList.end()){
 			if (var != stringconst::STRING_EMPTY){
+				cout << "missing dec: " << var;
 				throw MissingDeclarationException();
 			} else {
 				varType = stringconst::ARG_GENERIC;
@@ -669,31 +683,31 @@ void QueryParser::parsePatternIf(Query* query, queue<string> line, string synony
 		}
 	}
 
-	string comma1 = Utils::getWordAndPop(line);
+	string comma1 = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
 	if (comma1 != ","){
 		throw InvalidSyntaxException();
 	}
 
-	expr1 = Utils::getWordAndPop(line);
+	expr1 = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
 	if (expr1 != "_"){
 		throw InvalidSyntaxException();
 	}
 
-	string comma2 = Utils::getWordAndPop(line);
+	string comma2 = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
 	if (comma2 != ","){
 		throw InvalidSyntaxException();
 	}
 
-	expr2 = Utils::getWordAndPop(line);
+	expr2 = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
 	if (expr2 != "_"){
 		throw InvalidSyntaxException();
 	}
 
-	string closeParen = Utils::getWordAndPop(line);
+	string closeParen = Utils::getWordAndPop(*line);
 	if (closeParen != ")"){
 		throw InvalidSyntaxException();
 	}
@@ -709,63 +723,270 @@ void QueryParser::parsePatternIf(Query* query, queue<string> line, string synony
 	query->addClause(newClause);
 }
 
-Query QueryParser::parseQuery(string input){
-	Query* output = new Query();
-	vector<string> splitBySC = tokeniser(input, ';');
-	int numDeclarations = splitBySC.size() - 1;
-	string selectStatement = splitBySC.at(splitBySC.size()-1);
-	queue<string> selectQueue = queueBuilder(selectStatement);
-	splitBySC.pop_back();
-	parseDeclarations(output, splitBySC);
-	bool expectPattern = false;
-	while(!selectQueue.empty()){
-		string current = selectQueue.front();
-		if (current == stringconst::STRING_SELECT){
-			expectPattern = false;
-			parseSelectSynonyms(output, selectQueue);
-		} else if (containsClauseType(current)){
-			expectPattern = false;
-			parseClause(output, selectQueue);
-		} else if (contains(current, stringconst::TYPE_PATTERN)){
-			string wordPattern = Utils::getWordAndPop(selectQueue);
-			unexpectedEndCheck(selectQueue);
-			parsePattern(output, selectQueue);
-			expectPattern = true;
-		} else if (current == stringconst::STRING_AND && expectPattern){
-			string wordAnd = Utils::getWordAndPop(selectQueue);
-			unexpectedEndCheck(selectQueue);
-			parsePattern(output, selectQueue);
-		} else if (containsKeyword(current)){
-			expectPattern = false;
+void QueryParser::parseWith(Query* query, queue<string>* line){
+
+	unordered_map<string, string> decList = query->getDeclarationList();
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+
+	string leftEntityValue = "";
+	string leftEntityCond = "";
+	string rightEntityValue = "";
+	string rightEntityCond = "";
+	string nextToken = "";
+
+	leftEntityValue = Utils::getWordAndPop(*line);
+	unexpectedEndCheck(line);
+
+	if (Utils::isValidConstant(leftEntityValue)){
+		withBuilder->setEntity(1, leftEntityValue);
+		withBuilder->setRefType(1, INTEGER_);
+		withBuilder->setAttrType(1, NULLATTR_);
+	} else if (leftEntityValue == "\""){
+		leftEntityValue = Utils::getWordAndPop(*line);
+		nextToken = line->front();
+		if (nextToken != "\""){
+			cout << "expected \", got " << nextToken;
+			throw InvalidSyntaxException();
+		} else {
+			Utils::getWordAndPop(*line);
 		}
-		selectQueue.pop();
+		withBuilder->setEntity(1, leftEntityValue);
+		withBuilder->setRefType(1, IDENT_);
+		withBuilder->setAttrType(1, NULLATTR_);
+	} else if (decList.find(leftEntityValue) == decList.end()){
+		cout << "missing declaration " << leftEntityValue;
+		throw MissingDeclarationException();
+	} else {
+		string leftDeclarationType = decList.at(leftEntityValue);
+		nextToken = line->front();
+		if (nextToken == "="){
+			withBuilder->setEntity(1, leftEntityValue);
+			withBuilder->setRefType(1, SYNONYM_);
+			withBuilder->setAttrType(1, NULLATTR_);
+		} else if (nextToken == "."){
+			Utils::getWordAndPop(*line);
+			unexpectedEndCheck(line);
+			leftEntityCond = Utils::getWordAndPop(*line);
+			if (leftEntityCond == stringconst::ATTR_COND_PROCNAME){
+				if (leftDeclarationType != stringconst::ARG_PROCEDURE){
+					throw InvalidAttributeException();
+				}
+				withBuilder->setEntity(1, leftEntityValue);
+				withBuilder->setRefType(1, ATTRREF_);
+				withBuilder->setAttrType(1, PROCNAME_);
+			} else if (leftEntityCond == stringconst::ATTR_COND_STMTNUM){
+				if (leftDeclarationType != stringconst::ARG_STATEMENT
+					|| leftDeclarationType != stringconst::ARG_IF
+					|| leftDeclarationType != stringconst::ARG_WHILE
+					|| leftDeclarationType != stringconst::ARG_PROGLINE){
+						throw InvalidAttributeException();
+				}
+				withBuilder->setEntity(1, leftEntityValue);
+				withBuilder->setRefType(1, ATTRREF_);
+				withBuilder->setAttrType(1, STMTNUM_);
+			} else if (leftEntityCond == stringconst::ATTR_COND_VALUE){
+				if (leftDeclarationType != stringconst::ARG_CONSTANT){
+					throw InvalidAttributeException();
+				}
+				withBuilder->setEntity(1, leftEntityValue);
+				withBuilder->setRefType(1, ATTRREF_);
+				withBuilder->setAttrType(1, CONSTVALUE_);
+			} else if (leftEntityCond == stringconst::ATTR_COND_VARNAME){
+				if (leftDeclarationType == stringconst::ARG_VARIABLE){
+					throw InvalidAttributeException();
+				}
+				withBuilder->setEntity(1, leftEntityValue);
+				withBuilder->setRefType(1, ATTRREF_);
+				withBuilder->setAttrType(1, VARNAME_);
+			} else {
+				cout << "unknown attr cond";
+				throw InvalidSyntaxException();
+			}
+		}
 	}
-	vector<Clause*> clauseList = output->getClauseList();
-	for (size_t i=0; i<clauseList.size(); i++){
-		Clause* current = clauseList.at(i);
-		//if (!current->isValid()){
-			//throw InvalidClauseException();
-		//}
+
+	nextToken = Utils::getWordAndPop(*line);
+	unexpectedEndCheck(line);
+
+	if (nextToken != "="){
+		throw InvalidSyntaxException();
 	}
-	return *output;
+
+	rightEntityValue = Utils::getWordAndPop(*line);
+
+	if (Utils::isValidConstant(rightEntityValue)){
+		withBuilder->setEntity(2, rightEntityValue);
+		withBuilder->setRefType(2, INTEGER_);
+		withBuilder->setAttrType(2, NULLATTR_);
+	} else if (rightEntityValue == "\""){
+		unexpectedEndCheck(line);
+		rightEntityValue = Utils::getWordAndPop(*line);
+		nextToken = line->front();
+		if (nextToken != "\""){
+			cout << "expected \", got " << nextToken;
+			throw InvalidSyntaxException();
+		} else {
+			Utils::getWordAndPop(*line);
+		}
+		withBuilder->setEntity(2, rightEntityValue);
+		withBuilder->setRefType(2, IDENT_);
+		withBuilder->setAttrType(2, NULLATTR_);
+	} else if (decList.find(rightEntityValue) == decList.end()){
+		cout << "missing declaration " << rightEntityValue;
+		throw MissingDeclarationException();
+	} else {
+		string rightDeclarationType = decList.at(rightEntityValue);
+		nextToken = line->front();
+		if (nextToken == "="){
+			withBuilder->setEntity(2, rightEntityValue);
+			withBuilder->setRefType(2, SYNONYM_);
+			withBuilder->setAttrType(2, NULLATTR_);
+		} else if (nextToken == "."){
+			Utils::getWordAndPop(*line);
+			unexpectedEndCheck(line);
+			rightEntityCond = Utils::getWordAndPop(*line);
+			if (rightEntityCond == stringconst::ATTR_COND_PROCNAME){
+				if (rightDeclarationType != stringconst::ARG_PROCEDURE){
+					throw InvalidAttributeException();
+				}
+				withBuilder->setEntity(2, rightEntityValue);
+				withBuilder->setRefType(2, ATTRREF_);
+				withBuilder->setAttrType(2, PROCNAME_);
+			} else if (rightEntityCond == stringconst::ATTR_COND_STMTNUM){
+				if (rightDeclarationType != stringconst::ARG_STATEMENT
+					|| rightDeclarationType != stringconst::ARG_IF
+					|| rightDeclarationType != stringconst::ARG_WHILE
+					|| rightDeclarationType != stringconst::ARG_PROGLINE){
+						throw InvalidAttributeException();
+				}
+				withBuilder->setEntity(2, rightEntityValue);
+				withBuilder->setRefType(2, ATTRREF_);
+				withBuilder->setAttrType(2, STMTNUM_);
+			} else if (rightEntityCond == stringconst::ATTR_COND_VALUE){
+				if (rightDeclarationType != stringconst::ARG_CONSTANT){
+					throw InvalidAttributeException();
+				}
+				withBuilder->setEntity(2, rightEntityValue);
+				withBuilder->setRefType(2, ATTRREF_);
+				withBuilder->setAttrType(2, CONSTVALUE_);
+			} else if (rightEntityCond == stringconst::ATTR_COND_VARNAME){
+				if (rightDeclarationType == stringconst::ARG_VARIABLE){
+					throw InvalidAttributeException();
+				}
+				withBuilder->setEntity(2, rightEntityValue);
+				withBuilder->setRefType(2, ATTRREF_);
+				withBuilder->setAttrType(2, VARNAME_);
+			} else {
+				cout << "unknown attr cond";
+				throw InvalidSyntaxException();
+			}
+		}
+	}
+	WithClause* wClause = withBuilder->build();
+	query->addClause(wClause);
+
 }
 
-vector<string> QueryParser::splitByDelims(vector<string> in, string delim){
-	vector<string> out;
+Query* QueryParser::parseQuery(string input){
+
+	Query* outputQuery = new Query();
+	vector<string>* decVector = new vector<string>();
+	tokeniser(input, ';', decVector);
+	int numDecTypes = decVector->size() - 1;
+
+	string queryLine = decVector->at(decVector->size() - 1);
+	queue<string>* selectLine = new queue<string>();
+	queueBuilder(queryLine, selectLine);
+	decVector->pop_back();
+
+	parseDeclarations(outputQuery, decVector);
+	bool expectPattern = false;
+	bool expectWith = false;
+
+	while (!selectLine->empty()){
+
+		string currentWord = selectLine->front();
+		
+		if (currentWord == stringconst::STRING_SELECT){
+			
+			parseSelectSynonyms(outputQuery, selectLine);
+		
+		} else if (containsClauseType(currentWord)){
+			
+			expectPattern = false;
+			expectWith = false;
+			parseClause(outputQuery, selectLine);
+		
+		} else if (currentWord == stringconst::TYPE_PATTERN){
+			
+			expectPattern = true;
+			expectWith = false;
+			string wordPattern = Utils::getWordAndPop(*selectLine);
+			unexpectedEndCheck(selectLine);
+			parsePattern(outputQuery, selectLine);
+		
+		} else if (currentWord == stringconst::TYPE_WITH){
+		
+			expectPattern = false;
+			expectWith = true;
+			string wordWith = Utils::getWordAndPop(*selectLine);
+			unexpectedEndCheck(selectLine);
+			parseWith(outputQuery, selectLine);
+		
+		} else if (currentWord == stringconst::STRING_AND && expectPattern){
+		
+			string wordAnd = Utils::getWordAndPop(*selectLine);
+			unexpectedEndCheck(selectLine);
+			parsePattern(outputQuery, selectLine);
+
+		} else if (currentWord == stringconst::STRING_AND && expectWith){
+		
+			string wordAnd = Utils::getWordAndPop(*selectLine);
+			unexpectedEndCheck(selectLine);
+			parseWith(outputQuery, selectLine);
+
+		} else if (currentWord == stringconst::STRING_AND && !expectWith && !expectPattern){
+
+			Utils::getWordAndPop(*selectLine);
+			unexpectedEndCheck(selectLine);
+
+		} else if (currentWord == stringconst::STRING_SUCH || currentWord == stringconst::STRING_THAT){
+			
+			expectPattern = false;
+			expectWith = false;
+			Utils::getWordAndPop(*selectLine);
+			unexpectedEndCheck(selectLine);
+
+		} else {
+			
+			cout << currentWord << " not in dictionary";
+			throw InvalidSyntaxException();
+
+		}
+
+		if (selectLine->empty()){
+			return outputQuery;
+		}
+	}
+
+	return outputQuery;
+}
+
+void QueryParser::splitByDelims(vector<string>* out, string delim, vector<string> in){
+	out->clear();
 	for (size_t i = 0; i < in.size(); i++){
 		string current = in.at(i);
 		size_t pos = current.find_first_of(delim);
 		while (pos != std::string::npos){
 			string before = current.substr(0, pos);
-			out.push_back(before);
-			out.push_back(delim);
+			out->push_back(before);
+			out->push_back(delim);
 			string after = current.substr(pos+1);
 			current = after;
 			pos = current.find_first_of(delim);			
 		}
 		if (!current.empty()){
-			out.push_back(current);
+			out->push_back(current);
 		}
 	}
-	return out;
 }

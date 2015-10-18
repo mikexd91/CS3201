@@ -17,10 +17,11 @@ enum ClauseType{
 	NEXT_,
 	NEXTSTAR_,
 	AFFECTS_,
-	AFFETCSSTAR_,
+	AFFECTSSTAR_,
 	PATTERNASSG_,
 	PATTERNIF_,
-	PATTERNWHILE_
+	PATTERNWHILE_,
+	WITH_
 };
 
 class Clause {
@@ -29,11 +30,14 @@ public:
 	Clause(void);
 	~Clause(void);
 
-	ClauseType getClauseType();
+	ClauseType getClauseType(void);
 	
 	virtual bool evaluate(Result*)=0;
 
 	//Check the validity of the specific clause
 	//Substitute the original clause isValid for this one
 	virtual bool isValid(void)=0;
+
+protected:
+	ClauseType clauseType;
 };

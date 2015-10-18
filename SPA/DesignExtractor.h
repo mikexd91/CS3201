@@ -11,10 +11,16 @@ class DesignExtractor {
 public: 
 	DesignExtractor();
 	void executeSecondPass();
+
 private:
+	void checkCyclicCalls();
 	void populateParentStar();
 	void populateFollowStar();
 	void recurseParentStar(StmtNode*, vector<int>&);
 	void populateFollowInStmtLst(StmtLstNode*, queue<StmtLstNode*>&);
+	void populateModUsesProc();
+	void populateModUsesCalls();
 
+	unordered_set<string> recurseModifies(Procedure*);
+	unordered_set<string> recurseUses(Procedure*);
 };

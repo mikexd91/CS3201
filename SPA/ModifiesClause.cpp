@@ -9,8 +9,6 @@
 using namespace stringconst;
 using namespace boost;
 
-
-
 ModifiesClause::ModifiesClause(void):SuchThatClause(MODIFIES_){
 	stmtTable = StmtTable::getInstance();
 	procTable = ProcTable::getInstance();
@@ -24,7 +22,7 @@ ModifiesClause::~ModifiesClause(void){
 bool ModifiesClause::isValid(void) {
 	bool isValidFirstArg = (firstArgType == ARG_GENERIC) || (firstArgType == ARG_STATEMENT) 
 		|| (firstArgType == ARG_ASSIGN) || (firstArgType == ARG_PROCEDURE) || (firstArgType == ARG_IF)
-		|| (firstArgType == ARG_WHILE) || (firstArgType == ARG_PROGLINE);
+		|| (firstArgType == ARG_WHILE) || (firstArgType == ARG_PROGLINE) || (firstArgType == ARG_CALL);
 	bool isValidSecondArg = (secondArgType == ARG_GENERIC) || (secondArgType == ARG_VARIABLE);
 
 	return isValidFirstArg && isValidSecondArg;
@@ -44,11 +42,11 @@ bool ModifiesClause::evaluateS1FixedS2Fixed(string s1, string s2) {
 
 // Modifies(_, _) 
 bool ModifiesClause::evaluateS1GenericS2Generic() {
-	vector<Variable*>* allVar = varTable->getAllVariables();
-	vector<Variable*>::iterator iter;
+	unordered_set<Variable*> allVar = varTable->getAllVariables();
 	
-	for(iter = allVar->begin(); iter != allVar->end(); iter++) {
-		if(!(*iter)->getModifiedByProc().empty() || !(*iter)->getModifiedByStmts().empty()) {
+	BOOST_FOREACH(auto i, allVar) {
+		Variable* var = i;
+		if(!var->getModifiedByProc().empty() || !var->getModifiedByStmts().empty()) {
 			return true;
 		}
 	}
@@ -76,6 +74,7 @@ bool ModifiesClause::evaluateS1FixedS2Generic(string s1) {
 		}
 	} else if(firstArgType == ARG_PROGLINE || firstArgType == ARG_STATEMENT) {
 		Statement* stmt = stmtTable->getStmtObj(atoi(s1.c_str()));
+		
 		if(!stmt->getModifies().empty()) {
 			return true;
 		}
@@ -87,21 +86,15 @@ bool ModifiesClause::evaluateS1FixedS2Generic(string s1) {
 // Modifies("procedure", v) or Modifies(1, v);
 unordered_set<string> ModifiesClause::getAllS2WithS1Fixed(string s1) {
 	unordered_set<string> results;
-	unordered_set<string> modifiesVar;
 	unordered_set<string>::iterator iter;
 
 	if(firstArgType == ARG_PROCEDURE) {
 		Procedure* proc = procTable->getProcObj(s1);
-		modifiesVar = proc->getModifies();
+		results = proc->getModifies();
 	} else {
 		Statement* stmt = stmtTable->getStmtObj(atoi(s1.c_str()));
-		modifiesVar = stmt->getModifies();
+		results = stmt->getModifies();
 	}
-
-	for(iter = modifiesVar.begin(); iter != modifiesVar.end(); iter++) {
-		results.insert(*iter);
-	}
-
 	return results;
 }
 
@@ -109,11 +102,10 @@ unordered_set<string> ModifiesClause::getAllS2WithS1Fixed(string s1) {
 unordered_set<string> ModifiesClause::getAllS2() {
 	unordered_set<string> results;
 
-	vector<Variable*>* allVar = varTable->getAllVariables();
-	vector<Variable*>::iterator iter;
+	unordered_set<Variable*> allVar = varTable->getAllVariables();
 
-	for(iter = allVar->begin(); iter != allVar->end(); iter++) {
-		Variable* var = *iter;
+	BOOST_FOREACH(auto i, allVar) {
+		Variable* var = i;
 		unordered_set<string> modifiedByProc = var->getModifiedByProc();
 		unordered_set<int> modifiedByStmt = var->getModifiedByStmts();
 
@@ -125,7 +117,7 @@ unordered_set<string> ModifiesClause::getAllS2() {
 	return results;
 }
 
-// Modifies(p, "x") or Modifies(if, "x") or Modifies(w, "x") or Modifies(s, "x") or Modifies(a, "x")
+// Modifies(p, "x") or Modifies(if, "x") or Modifies(w, "x") or Modifies(s, "x") or Modifies(a, "x") or Modifies(c, "x")
 unordered_set<string> ModifiesClause::getAllS1WithS2Fixed(string s2) {
 	unordered_set<string> results;
 	Variable* var = varTable->getVariable(s2);
@@ -140,12 +132,14 @@ unordered_set<string> ModifiesClause::getAllS1WithS2Fixed(string s2) {
 			stmts = stmtTable->getIfStmts();
 		} else if(firstArgType == ARG_WHILE) {
 			stmts = stmtTable->getWhileStmts();
+		} else if(firstArgType == ARG_CALL) {
+			stmts = stmtTable->getCallStmts();
 		} else {
 			stmts = stmtTable->getAssgStmts();
 		}
 
-		for(auto i = stmts.begin(); i != stmts.end(); i++) {
-			int stmtNum = (*i)->getStmtNum();
+		BOOST_FOREACH(auto i, stmts) {
+			int stmtNum = (i)->getStmtNum();
 			if(isStmtModifies(stmtNum, s2)) {
 				results.insert(lexical_cast<string>(stmtNum));
 			}
@@ -155,15 +149,15 @@ unordered_set<string> ModifiesClause::getAllS1WithS2Fixed(string s2) {
 	return results;
 }
 
-// Modifies(p, _) or Modifies(if, _) or Modifies(w, _) or Modifies(s, _) or Modifies(a, _)
+// Modifies(p, _) or Modifies(if, _) or Modifies(w, _) or Modifies(s, _) or Modifies(a, _) or Modifies(c, _)
 unordered_set<string> ModifiesClause::getAllS1() {
 	unordered_set<string> results;
 
 	if(firstArgType == ARG_PROCEDURE) {
 		unordered_set<Procedure*> allProc = procTable->getAllProcs();
-		for(auto i = allProc.begin(); i != allProc.end(); i++) {
-			if(!(*i)->getModifies().empty()) {
-				results.insert((*i)->getProcName());
+		BOOST_FOREACH(auto i, allProc) {
+			if(!i->getModifies().empty()) {
+				results.insert(i->getProcName());
 			}
 		}
 	} else {
@@ -174,13 +168,15 @@ unordered_set<string> ModifiesClause::getAllS1() {
 			stmts = stmtTable->getWhileStmts();
 		} else if(firstArgType == ARG_ASSIGN) {
 			stmts = stmtTable->getAssgStmts();
+		} else if(firstArgType == ARG_CALL) {
+			stmts = stmtTable->getCallStmts();
 		} else {
 			stmts = stmtTable->getAllStmts();
 		}
 
-		for(auto i = stmts.begin(); i != stmts.end(); i++) {
-			if(!(*i)->getModifies().empty()) {
-				results.insert(lexical_cast<string>((*i)->getStmtNum()));
+		BOOST_FOREACH(auto s, stmts) {
+			if(!s->getModifies().empty()) {
+				results.insert(lexical_cast<string>(s->getStmtNum()));
 			}
 		}
 	}
@@ -188,17 +184,17 @@ unordered_set<string> ModifiesClause::getAllS1() {
 	return results;
 }
 
-// Modifies(p, v) or Modifies(s, v) or Modifies(if, v) or Modifies(w, v)
+// Modifies(p, v) or Modifies(s, v) or Modifies(if, v) or Modifies(w, v) or Modifies(c, v)
 unordered_set<vector<string>> ModifiesClause::getAllS1AndS2() {
 	unordered_set<vector<string>> results = unordered_set<vector<string>>();
 
 	if(firstArgType == ARG_PROCEDURE) {
 		unordered_set<Procedure*> allProc = procTable->getAllProcs();
-		for(auto i = allProc.begin(); i != allProc.end(); i++) {
-			Procedure* proc = *i;
+		BOOST_FOREACH(auto i, allProc) {
+			Procedure* proc = i;
 			unordered_set<string> modifies = proc->getModifies();
-			for(auto j = modifies.begin(); j != modifies.end(); j++) {
-				string var = *j;
+			BOOST_FOREACH(auto j, modifies) {
+				string var = j;
 				vector<string> tuple = vector<string>();
 				tuple.push_back(proc->getProcName());
 				tuple.push_back(var);
@@ -213,18 +209,19 @@ unordered_set<vector<string>> ModifiesClause::getAllS1AndS2() {
 			stmts = stmtTable->getWhileStmts();
 		} else if(firstArgType == ARG_ASSIGN) {
 			stmts = stmtTable->getAssgStmts();
+		} else if(firstArgType == ARG_CALL) {
+			stmts = stmtTable->getCallStmts();
 		} else {
 			stmts = stmtTable->getAllStmts();
 		}
 
-		for(auto i = stmts.begin(); i != stmts.end(); i++) {
-			Statement* statement = *i;
-			unordered_set<string> modifies = statement->getModifies();
-			for(auto j = modifies.begin(); j != modifies.end(); j++) {
-				string var = *j;
-				vector<string> tuple = vector<string>();
-				tuple.push_back(lexical_cast<string>(statement->getStmtNum()));
-				tuple.push_back(var);
+		BOOST_FOREACH(auto s, stmts) {
+			unordered_set<string> modifies = s->getModifies();
+
+			BOOST_FOREACH(auto v, modifies) {
+				vector<string> tuple;
+				tuple.push_back(lexical_cast<string>(s->getStmtNum()));
+				tuple.push_back(v);
 				results.insert(tuple);
 			}
 		}
@@ -242,7 +239,7 @@ bool ModifiesClause::isProcedureModifies(string proc, string var) {
 
 bool ModifiesClause::isStmtModifies(int stmtNum, string var) {
 	Statement* stmt = stmtTable->getStmtObj(stmtNum);
-	
+
 	unordered_set<string> modifiesSet = stmt->getModifies();
 	return modifiesSet.find(var) != modifiesSet.end();
 }

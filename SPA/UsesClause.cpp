@@ -31,6 +31,7 @@ bool UsesClause::isValid(){
 		|| (firstType == ARG_ASSIGN) 
 		|| (firstType == ARG_WHILE) 
 		|| (firstType == ARG_IF)
+		|| (firstType == ARG_CALL)
 		|| (firstType == ARG_PROGLINE)
 		|| (firstType == ARG_PROCEDURE);
 	bool secondArg = (secondType == ARG_GENERIC) 
@@ -55,12 +56,12 @@ bool UsesClause::evaluateS1FixedS2Fixed(string s1, string s2) {
 bool UsesClause::evaluateS1GenericS2Generic() {
 
 	// get all variables
-	vector<Variable*>* allVars = varTable->getAllVariables();
+	unordered_set<Variable*> allVars = varTable->getAllVariables();
 
 	// check if any of variables are being used (by stmt or proc)
-	for(vector<Variable*>::iterator i=allVars->begin(); i!=allVars->end(); i++) {
-		unordered_set<int> usedByStmts = (*i)->getUsedByStmts();
-		unordered_set<string> usedByProc = (*i)->getUsedByProc();
+	BOOST_FOREACH(auto i, allVars) {
+		unordered_set<int> usedByStmts = i->getUsedByStmts();
+		unordered_set<string> usedByProc = i->getUsedByProc();
 
 		if(!usedByStmts.empty() || !usedByProc.empty()) {
 			return true;
@@ -157,7 +158,7 @@ unordered_set<string> UsesClause::getAllS2() {
 	// consolidate proc variables
 	BOOST_FOREACH(auto p, procs) {
 		Procedure::UsesSet uses = p->getUses();
-		BOOST_FOREACH(auto v, vars) {
+		BOOST_FOREACH(auto v, uses) {
 			vars.insert(v);
 		}
 	}
@@ -186,6 +187,8 @@ unordered_set<string> UsesClause::getAllS1WithS2Fixed(string s2) {
 			stmts = stmtTable->getWhileStmts();
 		} else if(firstArgType == ARG_IF) {
 			stmts = stmtTable->getIfStmts();
+		} else if(firstArgType == ARG_CALL) {
+			stmts = stmtTable->getCallStmts();
 		} else {
 			stmts = stmtTable->getAllStmts();
 		}
@@ -228,6 +231,8 @@ unordered_set<string> UsesClause::getAllS1() {
 			stmts = stmtTable->getWhileStmts();
 		} else if(firstArgType == ARG_IF) {
 			stmts = stmtTable->getIfStmts();
+		} else if(firstArgType == ARG_CALL) {
+			stmts = stmtTable->getCallStmts();
 		} else {
 			stmts = stmtTable->getAllStmts();
 		}
@@ -269,6 +274,8 @@ unordered_set<vector<string>> UsesClause::getAllS1AndS2() {
 			stmts = stmtTable->getWhileStmts();
 		} else if(firstArgType == ARG_IF) {
 			stmts = stmtTable->getIfStmts();
+		} else if(firstArgType == ARG_CALL) {
+			stmts = stmtTable->getCallStmts();
 		} else {
 			stmts = stmtTable->getAllStmts();
 		}
@@ -306,7 +313,9 @@ unordered_set<vector<string>> UsesClause::getAllS1AndS2() {
 }
 
 bool UsesClause::isStmtType(string argType) {
-	if(firstArgType==ARG_STATEMENT || firstArgType==ARG_ASSIGN || firstArgType==ARG_WHILE || firstArgType==ARG_IF || firstArgType==ARG_PROGLINE) {
+	if(firstArgType == ARG_STATEMENT || firstArgType == ARG_ASSIGN || 
+		firstArgType == ARG_WHILE || firstArgType == ARG_IF || 
+		firstArgType == ARG_PROGLINE || firstArgType == ARG_CALL) {
 		return true;
 	} else {
 		return false;

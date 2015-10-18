@@ -4,7 +4,6 @@
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <string>
-#include <sstream>
 
 QueryEvaluator::QueryEvaluator(void)
 {
@@ -18,26 +17,42 @@ QueryEvaluator::~QueryEvaluator(void)
 {
 }
 
-// If clauseList is empty, insert values from table of the right type into Result obj.
-// Else, evaluate all clauses.
-Result* QueryEvaluator::evaluateQuery(Query query) {
+Result* QueryEvaluator::evaluateQuery(Query* query) {
 	Result *obj = new Result();
-	setClauseList(query.getClauseList());
-	setSelectList(query.getSelectList());
+	setClauseList(query->getClauseList());
+	setSelectList(query->getSelectList());
 	obj = evaluateClauses(obj, clauseList);
 	return obj;
 }
 
-// Return values to be printed.
+string QueryEvaluator::boolToString(bool b) {
+	if (b) {
+		return "true";
+	} else {
+		return "false";
+	}
+}
+
 unordered_set<string> QueryEvaluator::getValuesToPrint(Result* obj, vector<StringPair> selectList) {
 	unordered_set<string> resultSet = unordered_set<string>();
+	string syn, type;
 	int numOfSyn = selectList.size();
+	bool isQueryPassed = obj->isPass();
+
 	if (numOfSyn == 1) {
-		string syn = selectList.at(0).getFirst();
-		resultSet = printSingleSynValues(*obj, syn);
+		syn = selectList.at(0).getFirst();
+		type = selectList.at(0).getSecond();
+		if (syn == "BOOLEAN" && type == stringconst::ARG_BOOLEAN) {
+			resultSet.insert(boolToString(isQueryPassed));
+		} else if (isQueryPassed) {
+			resultSet = printSingleSynValues(*obj, syn);
+		}
 	} else {
-		resultSet = printTupleSynValues(*obj, selectList);
+		if (isQueryPassed) {
+			resultSet = printTupleSynValues(*obj, selectList);
+		}
 	}
+
 	return resultSet;
 }
 
@@ -77,17 +92,19 @@ void QueryEvaluator::setSelectList(vector<StringPair> selectList) {
 	this->selectList = selectList;
 }
 
-// evalute clauses in clause List
-// inserts in synonyms that appear in select list but not in clause list
 Result* QueryEvaluator::evaluateClauses(Result* obj, vector<Clause*> clauseList) {
 	for (vector<Clause*>::iterator i = clauseList.begin(); i != clauseList.end(); ++i) {
 		Clause* c = *i;
-		c->evaluate(obj);
-		if (obj->isPass() == false) {
-			break;
+		if (c->evaluate(obj) == false) {
+			obj->setFail();
+			return obj;
 		} 
 	}
-	getRemainingSynValuesFromTable(*obj);
+	string syn = selectList.at(0).getFirst();
+	string type = selectList.at(0).getSecond();
+	if (syn != "BOOLEAN" && type != stringconst::ARG_BOOLEAN) {
+		getRemainingSynValuesFromTable(*obj);
+	}
 	return obj;
 }
 
@@ -199,9 +216,9 @@ unordered_set<string> QueryEvaluator::getAllCall() {
 
 unordered_set<string> QueryEvaluator::getAllVar() {
 	// get all variables
-	vector<string>* varVector = varTable->getAllVarNames();
-	unordered_set<string> varStringSet = stringVectorToSet(*varVector);
-	return varStringSet;
+	unordered_set<string> varVector = varTable->getAllVarNames();
+
+	return varVector;
 }
 
 unordered_set<string> QueryEvaluator::getAllProc() {

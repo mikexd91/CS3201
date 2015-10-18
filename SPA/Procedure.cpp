@@ -35,6 +35,14 @@ TNode* Procedure::getTNodeRef() {
 	return TNodeRef;
 }
 
+ProcGNode* Procedure::getGNodeRef() {
+	return GNodeRef;
+}
+
+const Procedure::ContainsStmtSet& Procedure::getContainStmts() {
+	return stmts;
+}
+
 // get set of variables proc uses
 const Procedure::UsesSet& Procedure::getUses() {
 	return uses;
@@ -65,6 +73,14 @@ void Procedure::setProcName(const string &name) {
 
 void Procedure::setTNodeRef(TNode *ref) {
 	TNodeRef = ref;
+}
+
+void Procedure::setGNodeRef(ProcGNode* ref) {
+	GNodeRef = ref;
+}
+
+void Procedure::setContainStmts(const unordered_set<int> &containsStmtSet) {
+	stmts = containsStmtSet;
 }
 
 void Procedure::setUses(const unordered_set<string> &useSet) {

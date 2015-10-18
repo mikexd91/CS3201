@@ -1,12 +1,13 @@
-#include "AssgCallCNode.h"
 
-AssgCallCNode::AssgCallCNode(int stmtNum)
-	: CNode(ASSIGN_CALL_) {
+#include "AssgGNode.h"
+
+AssgGNode::AssgGNode(int stmtNum)
+	: GNode(ASSIGN_) {
 	this->startStmt = stmtNum;
 	this->endStmt = stmtNum;
 }
 
-CNode* AssgCallCNode::getChild() {
+GNode* AssgGNode::getChild() {
 	if(this->children.size() > 0) {
 		return this->children.at(0);
 	}
@@ -14,11 +15,11 @@ CNode* AssgCallCNode::getChild() {
 	return NULL;
 }
 
-void AssgCallCNode::setChild(CNode* child) {
+void AssgGNode::setChild(GNode* child) {
 	this->setFirstChild(child);
 }
 
-bool AssgCallCNode::hasMoreThanOneStmt() {
+bool AssgGNode::hasMoreThanOneStmt() {
 	if(this->startStmt == this->endStmt) {
 		return false;
 	}
