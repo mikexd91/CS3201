@@ -1,7 +1,7 @@
 1 - PARENT: stmt# - select clause (has results)
 assign a;
 Select a.stmt# such that Parent(15, a)
-16, 19, 21, 22, 23
+16, 23
 5000
 2 - PARENT: stmt# - select clause (no results)
 assign a;

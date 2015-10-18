@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AffectsCalculator.cpp" />
     <ClCompile Include="AffectsClause.cpp" />
     <ClCompile Include="AssgGNode.cpp" />
     <ClCompile Include="AssgNode.cpp" />
@@ -90,6 +91,7 @@
     <ClCompile Include="WithClauseRef.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AffectsCalculator.h" />
     <ClInclude Include="AffectsClause.h" />
     <ClInclude Include="AssgGNode.h" />
     <ClInclude Include="AssgNode.h" />
