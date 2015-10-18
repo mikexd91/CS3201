@@ -178,7 +178,7 @@ void PatternAssgClauseTest::evaulateVarWildExpr() {
 	assgBuilder->setVarType(ARG_GENERIC);
 	assgBuilder->setVarFixed(false);
 	//assgBuilder->setExpr(1, "_\"1 2 -\"_");
-	assgBuilder->setExpr(1, "_\"1 2 - 10 *\"_");
+	assgBuilder->setExpr(1, "_\"10 1 2 - *\"_");
 	PatternAssgClause* p1 = (PatternAssgClause*) assgBuilder->build();
 	CPPUNIT_ASSERT(p1->isValid());
 	Result* res = new Result();
@@ -196,7 +196,7 @@ void PatternAssgClauseTest::evaulateVarWildExpr() {
 	assgBuilder2->setVar("_");
 	assgBuilder2->setVarType(ARG_GENERIC);
 	assgBuilder2->setVarFixed(false);
-	assgBuilder2->setExpr(1, "\"1 2 - 10 *\"");
+	assgBuilder2->setExpr(1, "\"10 1 2 - *\"");
 	PatternAssgClause* p2 = (PatternAssgClause*) assgBuilder2->build();
 	CPPUNIT_ASSERT(p2->isValid());
 	Result* res2 = new Result();
