@@ -4,22 +4,32 @@
 
 class PQLIntegration : public CPPUNIT_NS::TestFixture { 
 	CPPUNIT_TEST_SUITE( PQLIntegration );
-	CPPUNIT_TEST( testSelectOnly );
-	
-	CPPUNIT_TEST( testSelectModifies );
-	CPPUNIT_TEST( testSelectUses );
-	//CPPUNIT_TEST( testSelectFollows );
-	//CPPUNIT_TEST( testSelectFollowsStar );
-	CPPUNIT_TEST( testSelectParent );
-	//CPPUNIT_TEST( testSelectParentStar );
-	CPPUNIT_TEST( testSelectPattern );
-	//CPPUNIT_TEST( testSelectModifiesPattern );
-	//CPPUNIT_TEST( testSelectFollowsPattern );
-	CPPUNIT_TEST( testSelectUsesPattern );
-	//CPPUNIT_TEST( testSelectConstant );
-	//CPPUNIT_TEST( testSelectProgLine );
-	CPPUNIT_TEST( testFailParent );
-	CPPUNIT_TEST( testFailUses );
+	CPPUNIT_TEST( testSelectAssign );
+	CPPUNIT_TEST( testSelectProgLine );
+	CPPUNIT_TEST( testSelectBoolean );
+	CPPUNIT_TEST( testSelectProcName );
+
+	CPPUNIT_TEST( testSelectStmtModifies );
+	CPPUNIT_TEST( testSelectProcUses );
+	CPPUNIT_TEST( testSelectPatternAssg );
+	CPPUNIT_TEST( testSelectPatternWhile );
+	CPPUNIT_TEST( testSelectParentStar );
+	//CPPUNIT_TEST( testSelectNextStar );
+	//CPPUNIT_TEST( testSelectAffectsStar );
+	CPPUNIT_TEST( testSelectCValueWith );
+
+	CPPUNIT_TEST( testSelectVVarNameWithPatternAssg );
+	CPPUNIT_TEST( testSelectPatternIfParent );
+	CPPUNIT_TEST( testSelectCallsStarUses );
+	CPPUNIT_TEST( testSelectFollowsStarModifies );
+
+	CPPUNIT_TEST( testSelectPProcNameWithPatternAssgCalls );
+
+	CPPUNIT_TEST( testFailSelectIStmtNumWith );
+	CPPUNIT_TEST( testFailSelectBooleanFollowsStar );
+	CPPUNIT_TEST( testFailSelectPatternAssgPatternAssg );
+	CPPUNIT_TEST( testFailSelectModifiesModifies );
+	CPPUNIT_TEST( testFailSelectModifiesPatternAssg );
 	
 	CPPUNIT_TEST_SUITE_END();
 
@@ -27,19 +37,35 @@ public:
 	void setUp();
 	void tearDown();
 
-	void testSelectOnly();
-	void testSelectModifies();
-	void testSelectUses();
-	void testSelectFollows();
-	void testSelectFollowsStar();
-	void testSelectParent();
-	void testSelectParentStar();
-	void testSelectPattern();
-	void testSelectModifiesPattern();
-	void testSelectFollowsPattern();
-	void testSelectUsesPattern();
-	void testSelectConstant();
+	// SELECT WITHOUT CLAUSES
+	void testSelectAssign();
 	void testSelectProgLine();
-	void testFailParent();
-	void testFailUses();
+	void testSelectBoolean();
+	void testSelectProcName();
+
+	// SELECT WITH ONE CLAUSE
+	void testSelectStmtModifies();
+	void testSelectProcUses();
+	void testSelectPatternAssg();
+	void testSelectPatternWhile();
+	void testSelectParentStar();
+	void testSelectNextStar();
+	void testSelectAffectsStar();
+	void testSelectCValueWith();
+
+	// SELECT WITH TWO CLAUSES
+	void testSelectVVarNameWithPatternAssg();
+	void testSelectPatternIfParent();
+	void testSelectCallsStarUses();
+	void testSelectFollowsStarModifies();
+
+	// SELECT WITH THREE CLAUSES
+	void testSelectPProcNameWithPatternAssgCalls();
+
+	// SELECT WITH NO RESULTS
+	void testFailSelectIStmtNumWith();
+	void testFailSelectBooleanFollowsStar();
+	void testFailSelectPatternAssgPatternAssg();
+	void testFailSelectModifiesModifies();
+	void testFailSelectModifiesPatternAssg();
 };

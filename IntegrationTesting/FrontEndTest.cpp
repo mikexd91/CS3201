@@ -862,7 +862,7 @@ void FrontEndTest::testCFGIfStmt() {
 	parser.parse("procedure proc {x = 2; if x then {y = 3; z = 4;} else {y = 10; z = 11;} z = y + x;}");
 
 	CPPUNIT_ASSERT(stmtTable1->getAllStmts().size() == 7);
-	CPPUNIT_ASSERT(stmtTable1->getStmtObj(2)->getType() == NodeType::IF_STMT_);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(2)->getType() == IF_STMT_);
 	
 	Statement* ifStmt = stmtTable1->getStmtObj(2);
 	int ifStmtPrev[] = {1};
@@ -891,11 +891,11 @@ void FrontEndTest::testCFGIfNested() {
 				a = 3;					/ \     / \
 			}						   5   6   9   10
 		} else {					    \ /     \ /
-			w = 4;						 -       -
+			w = 4;						 7      -
 			if w then {					   \   /	
-				x = 3;						 11
-			} else {
-				b = z;
+				x = 3;						 -
+			} else {						 |
+				b = z;						 11	 
 			}
 		}
 		y = 3;
@@ -1161,4 +1161,56 @@ void FrontEndTest::testCFGMixedNested() {
 void FrontEndTest::testCyclicCalls() {
 	string code = "procedure proc1 {x = 1;} procedure proc2 {y = 2; call proc4; } procedure proc3 { call proc2; x = 2; } procedure proc4 {call proc3; }";
 	CPPUNIT_ASSERT_THROW(parser.parse(code), InvalidCodeException);
+}
+
+void FrontEndTest::testMultiProc() {
+	parser.parse("procedure proc1 {v = 1; w = v; y = w; } procedure proc2 {c = 2; d = c; call proc1;} procedure proc3 {a = 1; b = a; call proc2; call proc4;} procedure proc4 {g = 2; h = g;}");
+
+	Procedure* proc1 = procTable->getProcObj("proc1");
+	string proc1Uses[] = {"v", "w"};
+	string proc1Modifies[] = {"v", "w", "y"};
+	unordered_set<string> proc1UsesSet(proc1Uses, proc1Uses + 2);
+	unordered_set<string> proc1ModifiesSet(proc1Modifies, proc1Modifies + 3);
+	CPPUNIT_ASSERT(proc1->getUses() == proc1UsesSet);
+	CPPUNIT_ASSERT(proc1->getModifies() == proc1ModifiesSet);
+
+	Procedure* proc2 = procTable->getProcObj("proc2");
+	string proc2Uses[] = {"v", "w", "c"};
+	string proc2Modifies[] = {"v", "w", "y", "c", "d"};
+	unordered_set<string> proc2UsesSet(proc2Uses, proc2Uses + 3);
+	unordered_set<string> proc2ModifiesSet(proc2Modifies, proc2Modifies + 5);
+	CPPUNIT_ASSERT(proc2->getUses() == proc2UsesSet);
+	CPPUNIT_ASSERT(proc2->getModifies() == proc2ModifiesSet);
+
+	Procedure* proc3 = procTable->getProcObj("proc3");
+	string proc3Uses[] = {"v", "w", "c", "a", "g"};
+	string proc3Modifies[] = {"v", "w", "y", "c", "d", "a", "b", "g", "h"};
+	unordered_set<string> proc3UsesSet(proc3Uses, proc3Uses + 5);
+	unordered_set<string> proc3ModifiesSet(proc3Modifies, proc3Modifies + 9);
+	CPPUNIT_ASSERT(proc3->getUses() == proc3UsesSet);
+	CPPUNIT_ASSERT(proc3->getModifies() == proc3ModifiesSet);
+
+	Procedure* proc4 = procTable->getProcObj("proc4");
+	string proc4Uses[] = {"g"};
+	string proc4Modifies[] = {"g", "h"};
+	unordered_set<string> proc4UsesSet(proc4Uses, proc4Uses + 1);
+	unordered_set<string> proc4ModifiesSet(proc4Modifies, proc4Modifies + 2);
+	CPPUNIT_ASSERT(proc4->getUses() == proc4UsesSet);
+	CPPUNIT_ASSERT(proc4->getModifies() == proc4ModifiesSet);
+
+	Statement* call1 = stmtTable1->getStmtObj(6);
+	string call1Uses[] = {"v", "w"};
+	string call1Modifies[] = {"v", "w", "y"};
+	unordered_set<string> call1UsesSet(call1Uses, call1Uses + 2);
+	unordered_set<string> call1ModifiesSet(call1Modifies, call1Modifies + 3);
+	CPPUNIT_ASSERT(call1->getUses() == call1UsesSet);
+	CPPUNIT_ASSERT(call1->getModifies() == call1ModifiesSet);
+
+	Statement* call2 = stmtTable1->getStmtObj(9);
+	CPPUNIT_ASSERT(call2->getUses() == proc2UsesSet);
+	CPPUNIT_ASSERT(call2->getModifies() == proc2ModifiesSet);
+
+	Statement* call3 = stmtTable1->getStmtObj(10);
+	CPPUNIT_ASSERT(call3->getUses() == proc4UsesSet);
+	CPPUNIT_ASSERT(call3->getModifies() == proc4ModifiesSet);
 }

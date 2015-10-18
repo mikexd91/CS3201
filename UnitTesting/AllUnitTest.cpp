@@ -36,11 +36,13 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("StmtTableTest").ma
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ProcTableTest").makeTest());
 
 // PQL Clauses
-
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("AffectsClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("FollowsClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("FollowsStarClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("UsesClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ModifiesClauseTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("NextClauseTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("NextStarClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ParentClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ParentStarClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("CallsClauseTest").makeTest());

@@ -1,0 +1,15 @@
+1 - FOLLOWS: stmt overflow
+variable v;
+Select v such that Follows(45, v)
+none
+5000
+2 - FOLLOWS: stmt underflow
+variable v;
+Select v such that Follows(-1, v)
+none
+5000
+3 - FOLLOWS: stmt underflow
+variable v;
+Select v such that Follows(0, v)
+none
+5000
