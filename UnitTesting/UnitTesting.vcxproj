@@ -130,6 +130,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AffectsClauseTest.cpp" />
     <ClCompile Include="AllUnitTest.cpp" />
     <ClCompile Include="AssgNodeTest.cpp" />
     <ClCompile Include="ASTTest.cpp" />
@@ -144,6 +145,7 @@
     <ClCompile Include="IfNodeTest.cpp" />
     <ClCompile Include="ModifiesClauseTest.cpp" />
     <ClCompile Include="MultiSynInsertTest.cpp" />
+    <ClCompile Include="NextClauseTest.cpp" />
     <ClCompile Include="OpNodeTest.cpp" />
     <ClCompile Include="ParentClauseTest.cpp" />
     <ClCompile Include="ParentStarClauseTest.cpp" />
@@ -168,6 +170,7 @@
     <ClCompile Include="WhileNodeTest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AffectsClauseTest.h" />
     <ClInclude Include="AssgNodeTest.h" />
     <ClInclude Include="ASTTest.h" />
     <ClInclude Include="CallNodeTest.h" />
@@ -181,6 +184,7 @@
     <ClInclude Include="IfNodeTest.h" />
     <ClInclude Include="ModifiesClauseTest.h" />
     <ClInclude Include="MultiSynInsertTest.h" />
+    <ClInclude Include="NextClauseTest.h" />
     <ClInclude Include="OpNodeTest.h" />
     <ClInclude Include="ParentClauseTest.h" />
     <ClInclude Include="ParentStarClauseTest.h" />

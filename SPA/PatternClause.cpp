@@ -15,10 +15,6 @@ PatternClause::PatternClause() {
 PatternClause::~PatternClause(void) {
 }
 
-ClauseType PatternClause::getClauseType(){
-	return this->clauseType;
-}
-
 string PatternClause::getSyn() {
 	return this->syn;
 }

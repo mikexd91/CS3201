@@ -20,6 +20,8 @@ class CFGBuilderTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testIfNested );
 	CPPUNIT_TEST( testWhileNested );
 	CPPUNIT_TEST( testIfWhile );
+	CPPUNIT_TEST( testWhileIf );
+	CPPUNIT_TEST( testCornerCase1 );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -37,6 +39,8 @@ public:
 	void testIfNested();
 	void testWhileNested();
 	void testIfWhile();
+	void testWhileIf();
+	void testCornerCase1();
 
 private:
 	void parse(ParsedData);
