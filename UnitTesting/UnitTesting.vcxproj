@@ -15,11 +15,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AffectsClauseTest.cpp" />
     <ClCompile Include="AllUnitTest.cpp" />
-    <ClCompile Include="PatternAssgClauseTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PatternAssgClauseTest.h" />
+    <ClInclude Include="AffectsClauseTest.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{353E6B76-DB90-4258-AC06-2DF35773532C}</ProjectGuid>
