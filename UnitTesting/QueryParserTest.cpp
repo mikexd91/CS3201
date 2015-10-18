@@ -197,42 +197,42 @@ void QueryParserTest::testWith(){
 	parser->parseWith(ASSERTION, WITH_Q);
 	vector<Clause*> cl = ASSERTION->getClauseList();
 	Clause* w = cl.at(0);
-	ClauseType type = w->getClauseType();
-	if (type == FOLLOWS_){
-		cout << 1;
-	} else if (type == FOLLOWSSTAR_){
-		cout << 2;
-	} else if (type == PARENT_){
-		cout << 3;
-	} else if (type == PARENTSTAR_){
-		cout << 4;
-	} else if (type == USES_){
-		cout << 5;
-	}  else if (type == MODIFIES_){
-		cout << 6;
-	} else if (type == CALLS_){
-		cout << 7;
-	} else if (type == CALLSSTAR_){
-		cout << 8;
-	} else if (type == NEXT_){
-		cout << 9;
-	} else if (type == NEXTSTAR_){
-		cout << 10;
-	} else if (type == AFFECTS_){
-		cout << 11;
-	} else if (type == AFFECTSSTAR_){
-		cout << 12;
-	}  else if (type == PATTERNASSG_){
-		cout << 13;
-	}  else if (type == PATTERNIF_){
-		cout << 14;
-	}  else if (type == PATTERNWHILE_){
-		cout << 15;
-	}  else if (type == WITH_){
-		cout << 16;
-	} else {
-		cout << "nope";
-	}
+	//ClauseType type = w->getClauseType();
+	//if (type == FOLLOWS_){
+	//	cout << 1;
+	//} else if (type == FOLLOWSSTAR_){
+	//	cout << 2;
+	//} else if (type == PARENT_){
+	//	cout << 3;
+	//} else if (type == PARENTSTAR_){
+	//	cout << 4;
+	//} else if (type == USES_){
+	//	cout << 5;
+	//}  else if (type == MODIFIES_){
+	//	cout << 6;
+	//} else if (type == CALLS_){
+	//	cout << 7;
+	//} else if (type == CALLSSTAR_){
+	//	cout << 8;
+	//} else if (type == NEXT_){
+	//	cout << 9;
+	//} else if (type == NEXTSTAR_){
+	//	cout << 10;
+	//} else if (type == AFFECTS_){
+	//	cout << 11;
+	//} else if (type == AFFECTSSTAR_){
+	//	cout << 12;
+	//}  else if (type == PATTERNASSG_){
+	//	cout << 13;
+	//}  else if (type == PATTERNIF_){
+	//	cout << 14;
+	//}  else if (type == PATTERNWHILE_){
+	//	cout << 15;
+	//}  else if (type == WITH_){
+	//	cout << 16;
+	//} else {
+	//	cout << "nope";
+	//}
 	//CPPUNIT_ASSERT(type == WITH_);
 	//WithClauseRef wl = w->getLeftRef();
 	//WithClauseRef wr = w->getRightRef();
@@ -257,40 +257,40 @@ void QueryParserTest::testParser(){
 	CPPUNIT_ASSERT(VC.at(1)->getClauseType() == FOLLOWSSTAR_);
 	CPPUNIT_ASSERT(VC.at(2)->getClauseType() == PARENT_);
 	//CPPUNIT_ASSERT(VC.at(3)->getClauseType() == PATTERNWHILE_);
-	ClauseType type = VC.at(3)->getClauseType();
-	if (type == FOLLOWS_){
-		cout << 1;
-	} else if (type == FOLLOWSSTAR_){
-		cout << 2;
-	} else if (type == PARENT_){
-		cout << 3;
-	} else if (type == PARENTSTAR_){
-		cout << 4;
-	} else if (type == USES_){
-		cout << 5;
-	}  else if (type == MODIFIES_){
-		cout << 6;
-	} else if (type == CALLS_){
-		cout << 7;
-	} else if (type == CALLSSTAR_){
-		cout << 8;
-	} else if (type == NEXT_){
-		cout << 9;
-	} else if (type == NEXTSTAR_){
-		cout << 10;
-	} else if (type == AFFECTS_){
-		cout << 11;
-	} else if (type == AFFECTSSTAR_){
-		cout << 12;
-	}  else if (type == PATTERNASSG_){
-		cout << 13;
-	}  else if (type == PATTERNIF_){
-		cout << 14;
-	}  else if (type == PATTERNWHILE_){
-		cout << 15;
-	}  else if (type == WITH_){
-		cout << 16;
-	} else {
-		cout << "nope";
-	}
+	//ClauseType type = VC.at(3)->getClauseType();
+	//if (type == FOLLOWS_){
+	//	cout << 1;
+	//} else if (type == FOLLOWSSTAR_){
+	//	cout << 2;
+	//} else if (type == PARENT_){
+	//	cout << 3;
+	//} else if (type == PARENTSTAR_){
+	//	cout << 4;
+	//} else if (type == USES_){
+	//	cout << 5;
+	//}  else if (type == MODIFIES_){
+	//	cout << 6;
+	//} else if (type == CALLS_){
+	//	cout << 7;
+	//} else if (type == CALLSSTAR_){
+	//	cout << 8;
+	//} else if (type == NEXT_){
+	//	cout << 9;
+	//} else if (type == NEXTSTAR_){
+	//	cout << 10;
+	//} else if (type == AFFECTS_){
+	//	cout << 11;
+	//} else if (type == AFFECTSSTAR_){
+	//	cout << 12;
+	//}  else if (type == PATTERNASSG_){
+	//	cout << 13;
+	//}  else if (type == PATTERNIF_){
+	//	cout << 14;
+	//}  else if (type == PATTERNWHILE_){
+	//	cout << 15;
+	//}  else if (type == WITH_){
+	//	cout << 16;
+	//} else {
+	//	cout << "nope";
+	//}
 }
