@@ -11,11 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FrontEndTest.cpp" />
     <ClCompile Include="IntegrationTest.cpp" />
+    <ClCompile Include="PQLIntegration.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FrontEndTest.h" />
+    <ClInclude Include="PQLIntegration.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="test1.simple" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{44B65641-96D6-4FB5-B78A-F0CAD8DDA42C}</ProjectGuid>
