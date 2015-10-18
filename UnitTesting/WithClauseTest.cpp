@@ -193,19 +193,70 @@ void WithClauseTest::evaluateRightIntLeftInt() {
 // "asd" = "asd"
 void WithClauseTest::evaluateRightStringLeftString()
 {
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(ClauseType::WITH_);
+	withBuilder->setRefType(1, RefType::IDENT_);
+	withBuilder->setEntity(1, "asd");
+	withBuilder->setRefType(2, RefType::IDENT_);
+	withBuilder->setEntity(2, "asd");
+	WithClause* w1 = withBuilder->build();
+	Result* r1 = new Result();
+	CPPUNIT_ASSERT(w1->evaluate(r1));
 
+	WithClauseBuilder* withBuilder2 = new WithClauseBuilder(ClauseType::WITH_);
+	withBuilder2->setRefType(1, RefType::IDENT_);
+	withBuilder2->setEntity(1, "asd");
+	withBuilder2->setRefType(2, RefType::IDENT_);
+	withBuilder2->setEntity(2, "www");
+	WithClause* w2 = withBuilder2->build();
+	Result* r2 = new Result();
+	CPPUNIT_ASSERT(w2->evaluate(r2) == false);
 }
 
 // n1 = n2 where n1, n2 are prog_line
 void WithClauseTest::evaluateRightSynLeftSyn()
 {
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(ClauseType::WITH_);
+	withBuilder->setRefType(1, RefType::INTEGER_);
+	withBuilder->setEntity(1, "1");
+	withBuilder->setRefType(2, RefType::INTEGER_);
+	withBuilder->setEntity(2, "1");
+	WithClause* w1 = withBuilder->build();
+	Result* r1 = new Result();
+	CPPUNIT_ASSERT(w1->evaluate(r1));
+
 
 }
 
 // n = 1 where n is prog_line
 void WithClauseTest::evaluateRightSynLeftInt()
 {
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(ClauseType::WITH_);
+	withBuilder->setRefType(1, RefType::SYNONYM_);
+	withBuilder->setEntityType(1, stringconst::ARG_PROGLINE);
+	withBuilder->setEntity(1, "p");
+	withBuilder->setAttrType(1, NULLATTR_);
 
+	withBuilder->setRefType(2, RefType::INTEGER_);
+	withBuilder->setEntity(2, "1");
+	withBuilder->setEntityType(2, stringconst::ENTITY_TYPE_INTEGER);
+	withBuilder->setAttrType(2, NULLATTR_);
+	WithClause* w1 = withBuilder->build();
+	Result* r1 = new Result();
+	CPPUNIT_ASSERT(w1->evaluate(r1));
+
+	WithClauseBuilder* withBuilder2 = new WithClauseBuilder(ClauseType::WITH_);
+	withBuilder2->setRefType(2, RefType::SYNONYM_);
+	withBuilder2->setEntityType(2, stringconst::ARG_PROGLINE);
+	withBuilder2->setEntity(2, "p");
+	withBuilder2->setAttrType(2, NULLATTR_);
+
+	withBuilder2->setRefType(1, RefType::INTEGER_);
+	withBuilder2->setEntity(1, "1");
+	withBuilder2->setEntityType(1, stringconst::ENTITY_TYPE_INTEGER);
+	withBuilder2->setAttrType(1, NULLATTR_);
+	WithClause* w2 = withBuilder2->build();
+	Result* r2 = new Result();
+	CPPUNIT_ASSERT(w2->evaluate(r2));
 }
 
 // s.stmt# = 1 where s is stmt

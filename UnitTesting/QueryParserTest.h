@@ -8,6 +8,7 @@ class QueryParserTest : public CPPUNIT_NS::TestFixture{
 	CPPUNIT_TEST( testSelectSingle );
 	CPPUNIT_TEST( testSelectBoolean );
 	CPPUNIT_TEST( testSelectTuple );
+	CPPUNIT_TEST( testSelectAttribute );
 	CPPUNIT_TEST( testParseClauseUses );
 	CPPUNIT_TEST( testParseParentStar );
 	CPPUNIT_TEST( testWith );
@@ -22,6 +23,7 @@ public:
 	void testSelectSingle();
 	void testSelectBoolean();
 	void testSelectTuple();
+	void testSelectAttribute();
 	void testParseClauseUses();
 	void testParseParentStar();
 	void testWith();

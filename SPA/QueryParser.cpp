@@ -284,6 +284,7 @@ SuchThatClauseBuilder* QueryParser::createCorrectClause(string type, queue<strin
 
 void QueryParser::parseDeclarations(Query* query, vector<string>* list){
 	for (size_t i=0; i<list->size(); i++){
+		unordered_map<string, string> decList = query->getDeclarationList();
 		string current = list->at(i);
 		boost::algorithm::trim(current);
 		vector<string> tokens = vector<string>();
@@ -301,10 +302,14 @@ void QueryParser::parseDeclarations(Query* query, vector<string>* list){
 		newPair->setFirst(split.at(1));
 		newPair->setSecond(decType);
 		query->addDeclaration(*newPair);
+
 		if (tokens.size() > 1){
 			for (size_t i=1; i<tokens.size(); i++){
 				string here = tokens.at(i);
 				here = removeSpace(here);
+				if (decList.find(here) != decList.end()){
+					throw DuplicateDeclarationException();
+				}
 				StringPair* newPair = new StringPair();
 				newPair->setFirst(here);
 				newPair->setSecond(decType);
@@ -374,7 +379,31 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string>* line){
 					Utils::getWordAndPop(*line);
 					unexpectedEndCheck(line);
 					string attr = Utils::getWordAndPop(*line);
-					newPair->setAttribute(attr);
+					if (attr == stringconst::ATTR_COND_PROCNAME){
+						if (type != stringconst::ARG_PROCEDURE){
+							throw InvalidAttributeException();
+						} else {
+							newPair->setAttribute(attr);
+						}
+					} else if (attr == stringconst::ATTR_COND_STMTNUM){
+						if (type != stringconst::ARG_STATEMENT){
+							throw InvalidAttributeException();
+						} else {
+							newPair->setAttribute(attr);
+						}
+					} else if (attr == stringconst::ATTR_COND_VALUE){
+						if (type != stringconst::ARG_CONSTANT){
+							throw InvalidAttributeException();
+						} else {
+							newPair->setAttribute(attr);
+						}
+					} else if (attr == stringconst::ATTR_COND_VARNAME){
+						if (type != stringconst::ARG_VARIABLE){
+							throw InvalidAttributeException();
+						} else {
+							newPair->setAttribute(attr);
+						}
+					}
 				}
 				query->addSelectSynonym(*newPair);
 			}

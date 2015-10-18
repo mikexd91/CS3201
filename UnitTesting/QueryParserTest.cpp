@@ -50,12 +50,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION( QueryParserTest);
 
 void QueryParserTest::testDeclaration(){
 	parser = QueryParser::getInstance();
-	string const DEC = "variable v; constant c; while w; stmt s; assign a; procedure p; if i; call cl";
+	string const DEC = "variable v; constant c; while w; stmt s, v; assign a; procedure p; if i; call cl";
 	Query* Q = new Query();
 	vector<string>* split = new vector<string>();
 	parser->tokeniser(DEC, ';', split);
-	parser->parseDeclarations(Q, split);
-	unordered_map<string,string> declist = Q->getDeclarationList();
+	CPPUNIT_ASSERT_THROW(parser->parseDeclarations(Q, split), DuplicateDeclarationException);
+	/*unordered_map<string,string> declist = Q->getDeclarationList();
 	CPPUNIT_ASSERT(declist.at("v") == stringconst::ARG_VARIABLE);
 	CPPUNIT_ASSERT(declist.at("c") == "constant");
 	CPPUNIT_ASSERT(declist.at("cl") == "call");
@@ -63,7 +63,7 @@ void QueryParserTest::testDeclaration(){
 	CPPUNIT_ASSERT(declist.at("w") == "while");
 	CPPUNIT_ASSERT(declist.at("a") == "assign");
 	CPPUNIT_ASSERT(declist.at("p") == "procedure");
-	CPPUNIT_ASSERT(declist.at("i") == "if");
+	CPPUNIT_ASSERT(declist.at("i") == "if");*/
 }
 
 void QueryParserTest::testSelectSingle(){
@@ -118,6 +118,24 @@ void QueryParserTest::testSelectTuple(){
 	CPPUNIT_ASSERT(SEL_V1.getSecond() == stringconst::ARG_VARIABLE);
 	CPPUNIT_ASSERT(SEL_V2.getFirst() == "c");
 	CPPUNIT_ASSERT(SEL_V2.getSecond() == stringconst::ARG_CONSTANT);
+}
+
+void QueryParserTest::testSelectAttribute(){
+	parser = QueryParser::getInstance();
+	string const DEC = "variable v; constant c; while w; stmt s; assign a; procedure p; if i; call cl";
+	string const SEL = "Select v.varName with";
+	Query* Q = new Query();
+	vector<string>* V_DEC = new vector<string>();
+	parser->tokeniser(DEC, ';', V_DEC);
+	parser->parseDeclarations(Q, V_DEC);
+	queue<string>* Q_SEL = new queue<string>();
+	parser->queueBuilder(SEL, Q_SEL);
+	parser->parseSelectSynonyms(Q, Q_SEL);
+	vector<StringPair> L_SEL = Q->getSelectList();
+	StringPair SEL_V1 = L_SEL.at(0);
+	CPPUNIT_ASSERT(SEL_V1.getFirst() == "v");
+	CPPUNIT_ASSERT(SEL_V1.getSecond() == stringconst::ARG_VARIABLE);
+	CPPUNIT_ASSERT(SEL_V1.getAttribute() == stringconst::ATTR_COND_VARNAME);
 }
 
 void QueryParserTest::testParseClauseUses(){

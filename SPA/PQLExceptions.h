@@ -14,6 +14,12 @@ struct InvalidDeclarationException : public std::exception{
 	}
 };
 
+struct DuplicateDeclarationException : public std::exception{
+	const char * what() const throw(){
+		return "Duplicate declaration!";
+	}
+};
+
 struct InvalidSelectException : public std::exception{
 	const char * what() const throw(){
 		return "Query invalid!";
