@@ -20,7 +20,7 @@ using namespace stringconst;
 void PatternAssgClauseTest::setUp() {
 	/* testing this source
 	procedure zumba {
-		i = 1+2;	//1
+		i = 10*(1-2);	//1
 		j = 2+3+4;	//2
 		k = 3;	//3
 	}
@@ -37,12 +37,16 @@ void PatternAssgClauseTest::setUp() {
 	AssgNode* assg1 = new AssgNode(1);
 	VarNode* i1 = new VarNode("i");
 	assg1->linkVarNode(i1);
-	OpNode* plus1 = new OpNode("+");
+	OpNode* times1 = new OpNode("*");
+	assg1->linkExprNode(times1);
+	ConstNode* ten1 = new ConstNode("10");
+	times1->linkLeftNode(ten1);
+	OpNode* minus1 = new OpNode("-");
+	times1->linkRightNode(minus1);
 	ConstNode* one1 = new ConstNode("1");
 	ConstNode* two1 = new ConstNode("2");
-	plus1->linkLeftNode(one1);
-	plus1->linkRightNode(two1);
-	assg1->linkExprNode(plus1);
+	minus1->linkLeftNode(one1);
+	minus1->linkRightNode(two1);
 	procsl->linkStmtNode(assg1);
 
 	AssgNode* assg2 = new AssgNode(2);
@@ -165,7 +169,7 @@ void PatternAssgClauseTest::evaluateVarWildExprWild() {
 
 void PatternAssgClauseTest::evaulateVarWildExpr() {
 	//cout << "varwildexpr";
-	/*PatternAssgClause* p1 = new PatternAssgClause("a", "_", "_\"1 2 +\"_");
+	/*PatternAssgClause* p1 = new PatternAssgClause("a", "_", "_\"1 2 -\"_");
 	p1->setVarType(stringconst::ARG_GENERIC);
 	p1->setVarFixed(false);*/
 	PatternClauseBuilder* assgBuilder = new PatternClauseBuilder(PATTERNASSG_);
@@ -173,7 +177,8 @@ void PatternAssgClauseTest::evaulateVarWildExpr() {
 	assgBuilder->setVar("_");
 	assgBuilder->setVarType(ARG_GENERIC);
 	assgBuilder->setVarFixed(false);
-	assgBuilder->setExpr(1, "_\"1 2 +\"_");
+	//assgBuilder->setExpr(1, "_\"1 2 -\"_");
+	assgBuilder->setExpr(1, "_\"1 2 - 10 *\"_");
 	PatternAssgClause* p1 = (PatternAssgClause*) assgBuilder->build();
 	CPPUNIT_ASSERT(p1->isValid());
 	Result* res = new Result();
@@ -185,21 +190,37 @@ void PatternAssgClauseTest::evaulateVarWildExpr() {
 	CPPUNIT_ASSERT(res->getSyn(syn1).size() == 1);
 	CPPUNIT_ASSERT(res->getSyn(syn1).count("1") == 1);
 
-	// expr fail
-	/*PatternAssgClause* p2 = new PatternAssgClause("a", "_", "_\"3 4 +\"_");
-	p2->setVarType(stringconst::ARG_GENERIC);
-	p2->setVarFixed(false);*/
+	// try without underscores at the side, should pass
 	PatternClauseBuilder* assgBuilder2 = new PatternClauseBuilder(PATTERNASSG_);
 	assgBuilder2->setSynonym("a");
 	assgBuilder2->setVar("_");
 	assgBuilder2->setVarType(ARG_GENERIC);
 	assgBuilder2->setVarFixed(false);
-	assgBuilder2->setExpr(1, "_\"3 4 +\"_");
+	assgBuilder2->setExpr(1, "\"1 2 - 10 *\"");
 	PatternAssgClause* p2 = (PatternAssgClause*) assgBuilder2->build();
 	CPPUNIT_ASSERT(p2->isValid());
+	Result* res2 = new Result();
+	CPPUNIT_ASSERT(p2->evaluate(res2));
+
+	CPPUNIT_ASSERT(res2->isSynPresent(syn1));
+	CPPUNIT_ASSERT(res2->getSyn(syn1).size() == 1);
+	CPPUNIT_ASSERT(res2->getSyn(syn1).count("1") == 1);
+
+	// expr fail
+	/*PatternAssgClause* p2 = new PatternAssgClause("a", "_", "_\"3 4 +\"_");
+	p2->setVarType(stringconst::ARG_GENERIC);
+	p2->setVarFixed(false);*/
+	PatternClauseBuilder* assgBuilder3 = new PatternClauseBuilder(PATTERNASSG_);
+	assgBuilder3->setSynonym("a");
+	assgBuilder3->setVar("_");
+	assgBuilder3->setVarType(ARG_GENERIC);
+	assgBuilder3->setVarFixed(false);
+	assgBuilder3->setExpr(1, "\"1 2 +\"");
+	PatternAssgClause* p3 = (PatternAssgClause*) assgBuilder3->build();
+	CPPUNIT_ASSERT(p3->isValid());
 	
 	Result* resFail = new Result();
-	CPPUNIT_ASSERT(!p2->evaluate(resFail));
+	CPPUNIT_ASSERT(!p3->evaluate(resFail));
 	
 	return;
 }

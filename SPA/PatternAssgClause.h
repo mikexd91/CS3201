@@ -9,7 +9,6 @@ class PatternAssgClause :
 	public PatternClause {
 
 public:
-	PatternAssgClause(const string& syn); // deprecated
 	PatternAssgClause(const string& syn, const string& var, const string& expr);
 	~PatternAssgClause(void);
 	
@@ -27,6 +26,7 @@ private:
 	bool matchVar(AssgNode* assg, string var);
 	
 	bool isExprWild();
+	bool isExprSidesWild();
 
 	string _expr;
 };

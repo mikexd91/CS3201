@@ -16,15 +16,6 @@
 using namespace stringconst;
 using namespace boost;
 
-PatternAssgClause::PatternAssgClause(const string& syn) 
-	: PatternClause() {
-	/*firstArgType = ARG_ASSIGN;
-	firstArg = syn;
-	firstArgFixed = false;
-	secondArgType = ARG_GENERIC;
-	secondArgFixed = false;*/
-} 
-
 PatternAssgClause::PatternAssgClause(const string& syn, const string& var, const string& expr) 
 	: PatternClause() {
 	synType = ARG_ASSIGN;
@@ -43,6 +34,13 @@ string PatternAssgClause::getExpression() {
 
 bool PatternAssgClause::isExprWild() {
 	return getExpression() == STRING_EMPTY;
+}
+
+bool PatternAssgClause::isExprSidesWild() {
+	string expr = getExpression();
+	char firstChar = expr.at(0);
+	char lastChar = expr.at(expr.length() - 1);
+	return firstChar == '_' && lastChar == '_';
 }
 
 bool PatternAssgClause::isValid() {
@@ -79,6 +77,8 @@ bool PatternAssgClause::matchVar(AssgNode* assgnode, string var) {
 
 bool PatternAssgClause::matchExpr(AssgNode* assg, string expr) {
 
+	cout << "THIS IS THE RPN " << expr << " : printed from PtnAssgClause" << endl;
+
 	// match expr based on the assgnode
 	if (assg == NULL) {
 		return false;
@@ -92,10 +92,19 @@ bool PatternAssgClause::matchExpr(AssgNode* assg, string expr) {
 	// account for both _"x+y"_ and "x+y"
 	// so far only got _"x+y"_
 
+	// seems like i remove the underscores from _"x+y"_
+	// so I am actually doing exact x+y
+
 	int i = 0;
 
 	// stuff the rpn into the stack
-	string rpn = expr.substr(2, expr.length() - 4);
+	// this step removes the underscores if there are any.
+	string rpn;
+	if (isExprSidesWild()) {
+		rpn = expr.substr(2, expr.length() - 4);
+	} else {
+		rpn = expr.substr(1, expr.length() - 2);
+	}
 	//std::stack<string> tempstack = stack<string>();
 	//std::stack<string> rpnstack = stack<string>();
 	std::vector<string> rpnarr = vector<string>();
@@ -123,8 +132,13 @@ bool PatternAssgClause::matchExpr(AssgNode* assg, string expr) {
 		i++;
 		if (nextnode->getNodeType() == OPERATOR_) {
 			OpNode* op = (OpNode*) nextnode;
-			nodestack.push(op->getRightNode());
-			nodestack.push(op->getLeftNode());
+			if (op->getRightNode()->getNodeType() == OPERATOR_) {
+				nodestack.push(op->getLeftNode());
+				nodestack.push(op->getRightNode());
+			} else {
+				nodestack.push(op->getRightNode());
+				nodestack.push(op->getLeftNode());
+			}
 			nextnode = nodestack.top();
 			//cout << nextnode->getName() << endl;
 		} else if (nextnode->getNodeType() == CONSTANT_) {
@@ -141,6 +155,7 @@ bool PatternAssgClause::matchExpr(AssgNode* assg, string expr) {
 	// then only considered subtree
 	for (size_t compared = 0; compared < rpnarr.size() && i < 9999; compared++) {
 		if (nodestack.empty()) {
+			//run out of nodes before we finish comparing all the rpn
 			return false;
 		}
 		TNode* node = nodestack.top();
@@ -160,5 +175,11 @@ bool PatternAssgClause::matchExpr(AssgNode* assg, string expr) {
 		}
 	}
 
-	return true;
+	// so rpn should be empty now.
+	if (isExprSidesWild()) {
+		return true;
+	} else {
+		// if the sides are not wild, then we need to check that the nodestack is also empty
+		return nodestack.empty();
+	}
 }
