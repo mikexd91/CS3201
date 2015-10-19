@@ -821,7 +821,7 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 				withBuilder->setRefType(1, ATTRREF_);
 				withBuilder->setAttrType(1, CONSTVALUE_);
 			} else if (leftEntityCond == stringconst::ATTR_COND_VARNAME){
-				if (leftDeclarationType == stringconst::ARG_VARIABLE){
+				if (leftDeclarationType != stringconst::ARG_VARIABLE){
 					throw InvalidAttributeException();
 				}
 				withBuilder->setRefType(1, ATTRREF_);
