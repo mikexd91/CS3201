@@ -8,13 +8,10 @@ using namespace std;
 class SynNode
 {
 private:
-	typedef vector<pair<int, SynNode*>> Edge;
-	
 	string synonym;
 	int weight;
-	Edge edgeList;
+	int componentNum;
 
-	void setOtherEdge(int, SynNode*);
 	bool isSame(SynNode*, SynNode*);
 
 public:
@@ -24,10 +21,10 @@ public:
 	// Getters
 	string getSynonym();		
 	int getWeight();			// get Synonym weight
-	Edge getEdges();
+	int getComponentNum();		// get Component synNode is in
 
 	// Setters
+	void setSynonym(string);	// set Synonym name
 	void setWeight(int);		// set Synonym weight
-	void setEdge(int, SynNode*); // set edge weight
-
+	void setComponentNum(int);	// set Component synNode is in
 };

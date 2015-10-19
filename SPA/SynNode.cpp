@@ -3,7 +3,6 @@
 using namespace std;
 
 SynNode::SynNode(string name) {
-	edgeList = vector<pair<int, SynNode*>>();
 	this->synonym = name;
 }
 
@@ -15,14 +14,22 @@ int SynNode::getWeight() {
 	return weight;
 }
 
-vector<pair<int, SynNode*>> SynNode::getEdges() {
-	return edgeList;
+int SynNode::getComponentNum() {
+	return componentNum;
+}
+
+void SynNode::setSynonym(string name) {
+	this->synonym = name;
 }
 
 void SynNode::setWeight(int num) {
 	this->weight = num;
 }
 
+void SynNode::setComponentNum(int num) {
+	this->componentNum = num;
+}
+/*
 void SynNode::setEdge(int edgeWeight, SynNode* node) {
 	pair<int, SynNode*> edge (edgeWeight, node);
 	edgeList.push_back(edge);
@@ -45,3 +52,4 @@ bool SynNode::isSame(SynNode* node1, SynNode* node2) {
 	string syn2 = node2->getSynonym();
 	return syn1 == syn2;
 }
+*/

@@ -54,7 +54,8 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("PatternWhileClause
 //unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ResultsTest").makeTest());
 //unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("QueryEvaluatorTest").makeTest());
 //unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("QueryParserTest").makeTest());
-unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("SynNodeTest").makeTest());
+//unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("SynNodeTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("QueryOptimiserTest").makeTest());
 
 //Result
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("SingleSynInsertTest").makeTest());

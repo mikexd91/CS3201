@@ -15,7 +15,6 @@ using std::string;
 
 class QueryParser
 {
-	
 public:
 	static QueryParser* getInstance();			// gets singleton instance
 
