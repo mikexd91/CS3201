@@ -1,0 +1,85 @@
+1 - PARENT*: 2 clauses (similar) - fixed-fixed, fixed-fixed
+
+Select BOOLEAN such that Parent*(15, 17) and Parent*(17, 18)
+true
+5000
+2 - PARENT*: 2 clauses (similar) - syn-syn, syn-syn
+stmt s1, s2;
+Select <s1,s2> such that Parent*(s1, s2) and Parent*(s2, s1)
+none
+5000
+3 - PARENT*: 2 clauses (similar) - fixed-syn, fixed-syn
+stmt s;
+Select s such that Parent*(15, s) and Parent*(17, s)
+18, 19, 20, 21, 22
+5000
+4 - PARENT*: 2 clauses (similar) - syn-fixed, syn-fixed
+while w;
+Select w such that Parent*(15, w) and Parent*(w, 18)
+17
+5000
+5 - PARENT*: 2 clauses (similar) - fixed-generic, fixed-generic
+
+Select BOOLEAN such that Parent*(5, _) and Parent*(20, _)
+true
+5000
+6 - PARENT*: 2 clauses (similar) - generic-fixed, generic-fixed
+stmt s
+Select s such that Parent*(_, 12) and Parent*(_, 22)
+none
+5000
+7 - PARENT*: 2 clauses (similar) - syn-generic, syn-generic
+while w; if i;
+Select <i,w> such that Parent*(w, _) and Parent*(i, _)
+20 5, 20 15, 20 17, 20 18
+5000
+8 - PARENT*: 2 clauses (similar) - generic-syn, generic-syn
+stmt s; if i;
+Select i such that Parent*(_, s) and Parent*(_, i)
+20
+5000
+9 - PARENT*: 2 clauses (mixed) - fixed-fixed, fixed-syn
+stmt s;
+Select s such that Parent*(15, 23) and Parent*(20, s)
+21, 22
+5000
+10 - PARENT*: 2 clauses (mixed) - syn-syn, syn-fixed
+stmt s1, s2;
+Select <s1,s2> such that Parent*(s1, s2) and Parent*(s1, 18)
+15 16, 15 17, 15 18, 15 19, 15 20, 15 21, 15 22, 15 23, 17 18, 17 19, 17 20, 17 21, 17 22
+5000
+11 - PARENT*: 2 clauses (mixed) - generic-generic, fixed-generic
+while w;
+Select w such that Parent*(_, _) and Parent*(20, _)
+5, 15, 17, 18
+5000
+12 - PARENT*: 2 clauses (mixed) - fixed-syn, generic-fixed
+assign a;
+Select a such that Parent*(5, a) and Parent*(_, 23)
+6, 7, 8
+5000
+13 - PARENT*: 2 clauses (mixed) - syn-fixed, syn-generic
+if i; assign a;
+Select  such that Parent*(i, 22) and Parent*(a, _)
+none
+5000
+14 - PARENT*: 2 clauses (mixed) - fixed-generic, generic-syn
+
+Select BOOLEAN such that Parent*(18, _) and Parent*(_, 18)
+true
+5000
+15 - PARENT*: 2 clauses (mixed) - generic-fixed, syn-generic
+stmt s;
+Select s such that Parent*(_, 16) and Parent*(s, _)
+5, 15, 17, 18, 20
+5000
+16 - PARENT*: 2 clauses (mixed) - syn-generic, generic-syn
+while w;
+Select w such that Parent*(w, _) and Parent*(_, w)
+17, 18
+5000
+17 - PARENT*: 2 clauses (mixed) - generic-fixed, generic-syn
+assign a;
+Select a such that Parent*(_, 21) and Parent*(_, a)
+6, 7, 8, 16, 19, 21, 22, 23
+5000

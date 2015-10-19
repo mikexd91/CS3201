@@ -3,8 +3,8 @@
 #include "CFGIterator.h"
 #include "AssgGNode.h"
 #include "CallGNode.h"
-#include "DummyGNode.h"
 #include "IfGNode.h"
+#include "EndGNode.h"
 
 using namespace std;
 
@@ -17,13 +17,6 @@ CFGIterator::CFGIterator(GNode* start) {
 }
 
 CFGIterator::~CFGIterator() {
-}
-
-void CFGIterator::skipWhileLoop(WhileGNode* node) {
-	if (nodeStack.top().node == node) {
-		nodeStack.pop();
-		nextNode = node->getAfterLoopChild();
-	}
 }
 
 //only if node is in if container directly, does not work if node is in a while container inside an if statement
@@ -39,12 +32,51 @@ IfGNode* CFGIterator::getCurrentIfNode() {
 	}
 }
 
+//only if node is in if container directly, does not work if node is in a while container inside an if statement
+bool CFGIterator::isInWhileLoop() {
+	return !nodeStack.empty() && nodeStack.top().node->getNodeType() == WHILE_;
+}
+
+//only if node is in if container directly, does not work if node is in a while container inside an if statement
+bool CFGIterator::isInIfContainer() {
+	return !nodeStack.empty() && nodeStack.top().node->getNodeType() == IF_;
+}
+
+WhileGNode* CFGIterator::getCurrentWhileNode() {
+	if (nodeStack.top().node->getNodeType() == WHILE_) {
+		return static_cast<WhileGNode*>(nodeStack.top().node);
+	} else {
+		return NULL;
+	}
+}
+
+void CFGIterator::skipWhileLoop(WhileGNode* node) {
+	if (nodeStack.top().node == node) {
+		nextNode = node->getAfterLoopChild();
+		nodeStack.pop();
+	}
+}
+
 void CFGIterator::skipThenStmt(IfGNode* node) {
 	if (toConsiderElseStmt() && nodeStack.top().node == node) {
 		nextNode = node->getElseChild();
+		nodeStack.top().toContinue = false;
 		nodeStack.top().count--;
 	}
 }
+
+void CFGIterator::skipElseStmt(IfGNode* node) {
+	if (nodeStack.top().node == node) {
+		if (nodeStack.top().toContinue) {
+			IfGNode* ifNode = static_cast<IfGNode*>(node);
+			nextNode = ifNode->getExit();
+		} else {
+			nextNode = new EndGNode();
+		}
+	}
+}
+
+//skip else statement 
 
 bool CFGIterator::isStart() {
 	return numIter == 0;

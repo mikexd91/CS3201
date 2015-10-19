@@ -55,3 +55,4 @@ private:
 	// SINGLETON CONSTRUCTOR
 	QueryParser();
 };
+

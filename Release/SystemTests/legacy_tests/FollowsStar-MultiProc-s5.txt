@@ -1,0 +1,25 @@
+1 - followsstar: synonym, synonym
+stmt s1, s2;
+Select <s1,s2> such that Follows*(s1, s2) and Follows*(s2, s1)
+none
+5000
+2 - followsstar: synonym, fixed
+stmt s;
+Select s such that Follows*(s, "27")
+25
+5000
+3 - followsstar: fixed, synonym
+while w;
+Select w such that Follow*("40", w)
+43
+5000
+4 - followsstar-boolean
+
+Select BOOLEAN such that Follows*("40", "42")
+false
+5000
+5 - followsstar-no results
+stmt s;
+Select s such that Follows*(s, "38")
+none
+5000
