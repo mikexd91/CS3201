@@ -808,6 +808,7 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 					&& leftDeclarationType != stringconst::ARG_ASSIGN
 					&& leftDeclarationType != stringconst::ARG_IF
 					&& leftDeclarationType != stringconst::ARG_WHILE
+					&& leftSideRef.getEntityType() != stringconst::ARG_CALL
 					&& leftDeclarationType != stringconst::ARG_PROGLINE){
 						throw InvalidAttributeException();
 				}

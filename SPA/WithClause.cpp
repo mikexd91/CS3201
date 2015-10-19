@@ -45,7 +45,8 @@ bool WithClause::isValid(void){
 			if (leftSideRef.getEntityType() != stringconst::ARG_STATEMENT
 				&& leftSideRef.getEntityType() != stringconst::ARG_ASSIGN
 				&& leftSideRef.getEntityType() != stringconst::ARG_WHILE
-				&& leftSideRef.getEntityType() != stringconst::ARG_IF){
+				&& leftSideRef.getEntityType() != stringconst::ARG_IF
+				&& leftSideRef.getEntityType() != stringconst::ARG_CALL){
 				return false;
 			} 
 		}
