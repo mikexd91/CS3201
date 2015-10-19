@@ -805,9 +805,10 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 				withBuilder->setAttrType(1, PROCNAME_);
 			} else if (leftEntityCond == stringconst::ATTR_COND_STMTNUM){
 				if (leftDeclarationType != stringconst::ARG_STATEMENT
-					|| leftDeclarationType != stringconst::ARG_IF
-					|| leftDeclarationType != stringconst::ARG_WHILE
-					|| leftDeclarationType != stringconst::ARG_PROGLINE){
+					&& leftDeclarationType != stringconst::ARG_ASSIGN
+					&& leftDeclarationType != stringconst::ARG_IF
+					&& leftDeclarationType != stringconst::ARG_WHILE
+					&& leftDeclarationType != stringconst::ARG_PROGLINE){
 						throw InvalidAttributeException();
 				}
 				withBuilder->setRefType(1, ATTRREF_);
