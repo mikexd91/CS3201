@@ -244,8 +244,8 @@ void NextStarClause::dfsFindPair(Statement* stmt, vector<string> visited, string
 	if(contains(visited, currStmt)) {
 		int pos = getPosition(visited, currStmt);
 
-		for(auto a = pos; a < visited.size(); a++) {
-			for(auto b = a; b < visited.size(); b++) {
+		for(size_t a = pos; a < visited.size(); a++) {
+			for(size_t b = a; b < visited.size(); b++) {
 				string first = visited.at(b);
 				string second = visited.at(a);
 
@@ -264,7 +264,7 @@ void NextStarClause::dfsFindPair(Statement* stmt, vector<string> visited, string
 			}
 		}
 	} else {
-		for(auto i = 0; i < visited.size(); i++) {
+		for(size_t i = 0; i < visited.size(); i++) {
 			string first = visited.at(i);
 			string second = currStmt;
 
