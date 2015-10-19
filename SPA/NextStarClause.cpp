@@ -243,25 +243,28 @@ void NextStarClause::dfsFindPair(Statement* stmt, vector<string> visited, string
 
 	if(contains(visited, currStmt)) {
 		int pos = getPosition(visited, currStmt);
-		for(auto i = pos; i < visited.size(); i++) {
-			string first = visited.at(i);
-			string second = currStmt;
 
-			if(sameArg) {
-				if(!(first == second)) {
-					continue;
+		for(size_t a = pos; a < visited.size(); a++) {
+			for(size_t b = a; b < visited.size(); b++) {
+				string first = visited.at(b);
+				string second = visited.at(a);
+
+				if(sameArg) {
+					if(!(first == second)) {
+						continue;
+					}
 				}
-			}
 
-			if(isNeededArgType(type1, atoi(first.c_str())) && isNeededArgType(type2, atoi(second.c_str()))) {
-				vector<string> pair;
-				pair.push_back(first);
-				pair.push_back(second);
-				resultsPair.insert(pair);
+				if(isNeededArgType(type1, atoi(first.c_str())) && isNeededArgType(type2, atoi(second.c_str()))) {
+					vector<string> pair;
+					pair.push_back(first);
+					pair.push_back(second);
+					resultsPair.insert(pair);
+				}
 			}
 		}
 	} else {
-		for(auto i = 0; i < visited.size(); i++) {
+		for(size_t i = 0; i < visited.size(); i++) {
 			string first = visited.at(i);
 			string second = currStmt;
 
