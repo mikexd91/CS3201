@@ -13,6 +13,7 @@ class QueryParserTest : public CPPUNIT_NS::TestFixture{
 	CPPUNIT_TEST( testParseParentStar );
 	CPPUNIT_TEST( testWith );
 	CPPUNIT_TEST ( testParser );
+	CPPUNIT_TEST ( debugTests);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -28,4 +29,5 @@ public:
 	void testParseParentStar();
 	void testWith();
 	void testParser();
+	void debugTests();
 };
