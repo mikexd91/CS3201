@@ -154,6 +154,9 @@ int ParentClause::getParent(int stmtNum, string argType) {
 		return -1;
 	} else {
 		int parentNum = stmtObj->getParent();
+		if (parentNum == -1) {
+			return parentNum;
+		}
 		Statement* parentObj = stmtTable->getStmtObj(parentNum);
 		if (nodeType != NULL_ && parentObj->getType() != nodeType) {
 			return -1;
