@@ -386,7 +386,7 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string>* line){
 							newPair->setAttribute(attr);
 						}
 					} else if (attr == stringconst::ATTR_COND_STMTNUM){
-						if (type != stringconst::ARG_STATEMENT){
+						if (type != stringconst::ARG_STATEMENT && type != stringconst::ARG_ASSIGN && type != stringconst::ARG_CALL && type != stringconst::ARG_IF && type!= stringconst::ARG_WHILE){
 							throw InvalidAttributeException();
 						} else {
 							newPair->setAttribute(attr);
@@ -808,7 +808,7 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 					&& leftDeclarationType != stringconst::ARG_ASSIGN
 					&& leftDeclarationType != stringconst::ARG_IF
 					&& leftDeclarationType != stringconst::ARG_WHILE
-					&& leftSideRef.getEntityType() != stringconst::ARG_CALL
+					&& leftDeclarationType != stringconst::ARG_CALL
 					&& leftDeclarationType != stringconst::ARG_PROGLINE){
 						throw InvalidAttributeException();
 				}
