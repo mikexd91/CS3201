@@ -3,14 +3,20 @@
 #include "../SPA/PQLController.h"
 #include "../SPA/AST.h"
 #include "../SPA/WhileNode.h"
+#include "../SPA/WhileGNode.h"
 #include "../SPA/AssgNode.h"
+#include "../SPA/AssgGNode.h"
+#include "../SPA/CallGNode.h"
 #include "../SPA/ConstNode.h"
+#include "../SPA/DummyGNode.h"
+#include "../SPA/EndGNode.h"
 #include "../SPA/OpNode.h"
 #include "../SPA/StmtTable.h"
 #include "../SPA/VarTable.h"
 #include "../SPA/Utils.h"
 #include "../SPA/ConstTable.h"
 #include "../SPA/IfNode.h"
+#include "../SPA/IfGNode.h"
 #include "../SPA/Procedure.h"
 
 #include <iostream>
@@ -50,6 +56,69 @@ void PQLIntegration::setUp() {
 	}
 
 	*/
+
+//------------- CFG SETUP ---------------//
+	CFG* cfg = CFG::getInstance();
+
+	ProcGNode* procNode1 = new ProcGNode("Pizza");
+	
+	IfGNode* node1 = new IfGNode(1);
+	node1->setFirstParent(procNode1);
+	procNode1->setFirstChild(node1);
+
+	AssgGNode* node2 = new AssgGNode(2);
+	node2->setFirstParent(node1);
+	node1->setThenChild(node2);
+
+	AssgGNode* node3 = new AssgGNode(3);
+	node3->setFirstParent(node1);
+	node1->setElseChild(node3);
+
+	CallGNode* node4 = new CallGNode(4);
+	node4->setFirstParent(node3);
+	node3->setFirstChild(node4);
+
+	DummyGNode* firstDum = new DummyGNode();
+	firstDum->setFirstParent(node2);
+	firstDum->setSecondParent(node4);
+	firstDum->setEntrance(node1);
+	node2->setFirstChild(firstDum);
+	node4->setFirstChild(firstDum);
+	node1->setExit(firstDum);
+
+	EndGNode* firstEnd = new EndGNode();
+	firstDum->setFirstChild(firstEnd);
+	firstEnd->setFirstParent(firstDum);
+
+	ProcGNode* procNode2 = new ProcGNode("YourMom");
+	
+	WhileGNode* node5 = new WhileGNode(5);
+	node5->setFirstParent(procNode2);
+	procNode2->setFirstChild(node5);
+
+	AssgGNode* node6 = new AssgGNode(6);
+	node6->setFirstParent(node5);
+	node5->setFirstChild(node6);
+
+	WhileGNode* node7 = new WhileGNode(7);
+	node7->setFirstParent(node6);
+	node7->setSecondChild(node5);
+	node6->setFirstChild(node7);
+	node5->setSecondParent(node7);
+
+	AssgGNode* node8 = new AssgGNode(8);
+	node8->setFirstParent(node7);
+	node8->setFirstChild(node7);
+	node7->setSecondParent(node8);
+
+	AssgGNode* node9 = new AssgGNode(9);
+	node9->setFirstParent(node5);
+
+	EndGNode* secEnd = new EndGNode();
+	secEnd->setFirstParent(node9);
+	node9->setFirstChild(secEnd);
+
+//-----------  CFG SETUP DONE -----------//
 
 //-------------  SET UP AST -------------//
 	AST* ast = AST::getInstance();
@@ -176,7 +245,7 @@ void PQLIntegration::setUp() {
 
 	Statement* stmt1 = new Statement();
 	stmt1->setStmtNum(1);
-	stmt1->setType(NodeType::IF_STMT_);
+	stmt1->setType(IF_STMT_);
 	stmt1->setTNodeRef(if1);
 	//stmt1->setCalls();
 	string stmt1UsesArr[] = {"eaten", "more", "beer", "water", "nagging", "i", "drink"};
@@ -200,7 +269,7 @@ void PQLIntegration::setUp() {
 
 	Statement* stmt2 = new Statement();
 	stmt2->setStmtNum(2);
-	stmt2->setType(NodeType::ASSIGN_STMT_);
+	stmt2->setType(ASSIGN_STMT_);
 	stmt2->setTNodeRef(assg2);
 	//stmt2->setCalls();
 	string stmt2UsesArr[] = {"eaten"};
@@ -226,7 +295,7 @@ void PQLIntegration::setUp() {
 
 	Statement* stmt3 = new Statement();
 	stmt3->setStmtNum(3);
-	stmt3->setType(NodeType::ASSIGN_STMT_);
+	stmt3->setType(ASSIGN_STMT_);
 	stmt3->setTNodeRef(assg3);
 	//stmt3->setCalls();
 	string stmt3UsesArr[] = {"more", "beer", "water"};
@@ -254,7 +323,7 @@ void PQLIntegration::setUp() {
 
 	Statement* stmt4 = new Statement();
 	stmt4->setStmtNum(4);
-	stmt4->setType(NodeType::CALL_STMT_);
+	stmt4->setType(CALL_STMT_);
 	stmt4->setTNodeRef(call4);
 	stmt4->setCalls("YourMom");
 	string stmt4UsesArr[] = {"nagging", "i", "drink", "eaten"};
@@ -281,7 +350,7 @@ void PQLIntegration::setUp() {
 
 	Statement* stmt5 = new Statement();
 	stmt5->setStmtNum(5);
-	stmt5->setType(NodeType::WHILE_STMT_);
+	stmt5->setType(WHILE_STMT_);
 	stmt5->setTNodeRef(while5);
 	//stmt5->setCalls("YourMom");
 	string stmt5UsesArr[] = {"nagging", "i"};
@@ -309,7 +378,7 @@ void PQLIntegration::setUp() {
 
 	Statement* stmt6 = new Statement();
 	stmt6->setStmtNum(6);
-	stmt6->setType(NodeType::ASSIGN_STMT_);
+	stmt6->setType(ASSIGN_STMT_);
 	stmt6->setTNodeRef(assg6);
 	//stmt6->setCalls("YourMom");
 	string stmt6UsesArr[] = {"nagging"};
@@ -337,7 +406,7 @@ void PQLIntegration::setUp() {
 
 	Statement* stmt7 = new Statement();
 	stmt7->setStmtNum(7);
-	stmt7->setType(NodeType::WHILE_STMT_);
+	stmt7->setType(WHILE_STMT_);
 	stmt7->setTNodeRef(while7);
 	//stmt7->setCalls("YourMom");
 	string stmt7UsesArr[] = {"i", "nagging"};
@@ -365,7 +434,7 @@ void PQLIntegration::setUp() {
 
 	Statement* stmt8 = new Statement();
 	stmt8->setStmtNum(8);
-	stmt8->setType(NodeType::ASSIGN_STMT_);
+	stmt8->setType(ASSIGN_STMT_);
 	stmt8->setTNodeRef(assg8);
 	//stmt8->setCalls("YourMom");
 	string stmt8UsesArr[] = {"nagging"};
@@ -393,7 +462,7 @@ void PQLIntegration::setUp() {
 
 	Statement* stmt9 = new Statement();
 	stmt9->setStmtNum(9);
-	stmt9->setType(NodeType::ASSIGN_STMT_);
+	stmt9->setType(ASSIGN_STMT_);
 	stmt9->setTNodeRef(assg9);
 	//stmt9->setCalls("YourMom");
 	string stmt9UsesArr[] = {"drink", "eat"};
