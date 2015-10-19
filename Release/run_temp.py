@@ -34,4 +34,4 @@ import os
 
 # NEXT(*) CLAUSE
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-ss1.txt SystemTests/Results/next.xml")
-os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-ss1.txt SystemTests/Results/nextstar.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-ss1.txt SystemTests/Results/nextstar.xml")
