@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AffectsCalculator.cpp" />
     <ClCompile Include="AffectsClause.cpp" />
     <ClCompile Include="AssgGNode.cpp" />
     <ClCompile Include="AssgNode.cpp" />
@@ -46,6 +47,7 @@
     <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="MultiSynInsert.cpp" />
     <ClCompile Include="NextClause.cpp" />
+    <ClCompile Include="NextStarClause.cpp" />
     <ClCompile Include="NoSynInsert.cpp" />
     <ClCompile Include="OpNode.cpp" />
     <ClCompile Include="ParentClause.cpp" />
@@ -90,6 +92,7 @@
     <ClCompile Include="WithClauseRef.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AffectsCalculator.h" />
     <ClInclude Include="AffectsClause.h" />
     <ClInclude Include="AssgGNode.h" />
     <ClInclude Include="AssgNode.h" />
@@ -120,6 +123,7 @@
     <ClInclude Include="ModifiesClause.h" />
     <ClInclude Include="MultiSynInsert.h" />
     <ClInclude Include="NextClause.h" />
+    <ClInclude Include="NextStarClause.h" />
     <ClInclude Include="NoSynInsert.h" />
     <ClInclude Include="OpNode.h" />
     <ClInclude Include="ParentClause.h" />
@@ -164,6 +168,9 @@
     <ClInclude Include="WithClause.h" />
     <ClInclude Include="WithClauseBuilder.h" />
     <ClInclude Include="WithClauseRef.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="source.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>
