@@ -42,7 +42,11 @@ bool WithClause::isValid(void){
 				return false;
 			} 
 		} else if (leftSideRef.getAttrType() == STMTNUM_){
-			if (leftSideRef.getEntityType() != stringconst::ARG_STATEMENT){
+			if (leftSideRef.getEntityType() != stringconst::ARG_STATEMENT
+				&& leftSideRef.getEntityType() != stringconst::ARG_ASSIGN
+				&& leftSideRef.getEntityType() != stringconst::ARG_WHILE
+				&& leftSideRef.getEntityType() != stringconst::ARG_IF
+				&& leftSideRef.getEntityType() != stringconst::ARG_CALL){
 				return false;
 			} 
 		}
@@ -66,7 +70,10 @@ bool WithClause::isValid(void){
 				return false;
 			} 
 		} else if (rightSideRef.getAttrType() == STMTNUM_){
-			if (rightSideRef.getEntityType() != stringconst::ARG_STATEMENT){
+			if (rightSideRef.getEntityType() != stringconst::ARG_STATEMENT
+				&& leftSideRef.getEntityType() != stringconst::ARG_ASSIGN
+				&& leftSideRef.getEntityType() != stringconst::ARG_WHILE
+				&& leftSideRef.getEntityType() != stringconst::ARG_IF){
 				return false;
 			} 
 		}
