@@ -4,7 +4,7 @@ Select BOOLEAN such that Next(1, 2) and Next(7, 8)
 true
 5000
 2 - NEXT: 2 clauses (similar) - syn-syn, syn-syn
-stmt s; while w;
+stmt s; while w; assign a;
 Select <s,w> such that Next(s, w) and Next(a, w)
 4 5, 8 5, 14 15, 23 15, 16 17, 21 17, 22 17, 17 18, 19 18
 5000
