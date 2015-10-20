@@ -3,14 +3,20 @@
 #include "../SPA/PQLController.h"
 #include "../SPA/AST.h"
 #include "../SPA/WhileNode.h"
+#include "../SPA/WhileGNode.h"
 #include "../SPA/AssgNode.h"
+#include "../SPA/AssgGNode.h"
+#include "../SPA/CallGNode.h"
 #include "../SPA/ConstNode.h"
+#include "../SPA/DummyGNode.h"
+#include "../SPA/EndGNode.h"
 #include "../SPA/OpNode.h"
 #include "../SPA/StmtTable.h"
 #include "../SPA/VarTable.h"
 #include "../SPA/Utils.h"
 #include "../SPA/ConstTable.h"
 #include "../SPA/IfNode.h"
+#include "../SPA/IfGNode.h"
 #include "../SPA/Procedure.h"
 
 #include <iostream>
@@ -50,6 +56,74 @@ void PQLIntegration::setUp() {
 	}
 
 	*/
+
+//------------- CFG SETUP ---------------//
+	CFG* cfg = CFG::getInstance();
+
+	ProcGNode* procNode1 = new ProcGNode("Pizza");
+	ProcGNode* procNode2 = new ProcGNode("YourMom");
+	cfg->addProcedure(procNode1);
+	cfg->addProcedure(procNode2);	
+
+	IfGNode* node1 = new IfGNode(1);
+	AssgGNode* node2 = new AssgGNode(2);
+	AssgGNode* node3 = new AssgGNode(3);
+	CallGNode* node4 = new CallGNode(4);
+	WhileGNode* node5 = new WhileGNode(5);
+	AssgGNode* node6 = new AssgGNode(6);
+	WhileGNode* node7 = new WhileGNode(7);
+	AssgGNode* node8 = new AssgGNode(8);
+	AssgGNode* node9 = new AssgGNode(9);
+
+	DummyGNode* firstDum = new DummyGNode();
+	EndGNode* firstEnd = new EndGNode();
+	EndGNode* secEnd = new EndGNode();
+	
+	procNode1->setFirstChild(node1);
+	procNode2->setFirstChild(node5);
+
+	node1->setFirstParent(procNode1);
+	node1->setThenChild(node2);
+	node1->setElseChild(node3);
+	node1->setExit(firstDum);
+
+	node2->setFirstParent(node1);
+	node2->setFirstChild(firstDum);
+
+	node3->setFirstParent(node1);
+	node3->setFirstChild(node4);
+
+	node4->setFirstParent(node3);
+	node4->setFirstChild(firstDum);
+
+	firstDum->setFirstParent(node2);
+	firstDum->setSecondParent(node4);
+	firstDum->setEntrance(node1);
+	firstDum->setFirstChild(firstEnd);
+	
+	firstEnd->setFirstParent(firstDum);
+
+	node5->setFirstParent(procNode2);
+	node5->setSecondParent(node7);
+	node5->setFirstChild(node6);
+	node5->setSecondChild(node9);
+
+	node6->setFirstParent(node5);
+	node6->setFirstChild(node7);
+
+	node7->setFirstParent(node6);
+	node7->setSecondParent(node8);
+	node7->setFirstChild(node8);
+	node7->setSecondChild(node5);
+
+	node8->setFirstParent(node7);
+	node8->setFirstChild(node7);
+
+	node9->setFirstParent(node5);
+	node9->setFirstChild(secEnd);
+
+	secEnd->setFirstParent(node9);
+//-----------  CFG SETUP DONE -----------//
 
 //-------------  SET UP AST -------------//
 	AST* ast = AST::getInstance();
