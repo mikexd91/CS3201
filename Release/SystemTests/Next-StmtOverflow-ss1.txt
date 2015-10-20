@@ -1,0 +1,15 @@
+1 - NEXT: stmt overflow
+variable v;
+Select v such that Next(45, v)
+none
+5000
+2 - NEXT: stmt underflow
+variable v;
+Select v such that Next(-1, v)
+none
+5000
+3 - NEXT: stmt underflow
+variable v;
+Select v such that Next(0, v)
+none
+5000

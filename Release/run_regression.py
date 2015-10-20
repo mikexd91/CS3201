@@ -34,4 +34,7 @@ os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Follow
 
 # NEXT(*) CLAUSE
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-ss1.txt SystemTests/Results/next.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-MultiClause-ss1.txt SystemTests/Results/next_multiclause.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-StmtOverflow-ss1.txt SystemTests/Results/next_stmtoverflow.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-Misc-ss1.txt SystemTests/Results/next_misc.xml")
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-ss1.txt SystemTests/Results/nextstar.xml")
