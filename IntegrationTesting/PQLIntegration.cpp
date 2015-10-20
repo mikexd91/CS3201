@@ -61,63 +61,68 @@ void PQLIntegration::setUp() {
 	CFG* cfg = CFG::getInstance();
 
 	ProcGNode* procNode1 = new ProcGNode("Pizza");
-	
+	ProcGNode* procNode2 = new ProcGNode("YourMom");
+	cfg->addProcedure(procNode1);
+	cfg->addProcedure(procNode2);	
+
 	IfGNode* node1 = new IfGNode(1);
-	node1->setFirstParent(procNode1);
-	procNode1->setFirstChild(node1);
-
 	AssgGNode* node2 = new AssgGNode(2);
-	node2->setFirstParent(node1);
-	node1->setThenChild(node2);
-
 	AssgGNode* node3 = new AssgGNode(3);
-	node3->setFirstParent(node1);
-	node1->setElseChild(node3);
-
 	CallGNode* node4 = new CallGNode(4);
-	node4->setFirstParent(node3);
-	node3->setFirstChild(node4);
+	WhileGNode* node5 = new WhileGNode(5);
+	AssgGNode* node6 = new AssgGNode(6);
+	WhileGNode* node7 = new WhileGNode(7);
+	AssgGNode* node8 = new AssgGNode(8);
+	AssgGNode* node9 = new AssgGNode(9);
 
 	DummyGNode* firstDum = new DummyGNode();
+	EndGNode* firstEnd = new EndGNode();
+	EndGNode* secEnd = new EndGNode();
+	
+	procNode1->setFirstChild(node1);
+	procNode2->setFirstChild(node5);
+
+	node1->setFirstParent(procNode1);
+	node1->setThenChild(node2);
+	node1->setElseChild(node3);
+	node1->setExit(firstDum);
+
+	node2->setFirstParent(node1);
+	node2->setFirstChild(firstDum);
+
+	node3->setFirstParent(node1);
+	node3->setFirstChild(node4);
+
+	node4->setFirstParent(node3);
+	node4->setFirstChild(firstDum);
+
 	firstDum->setFirstParent(node2);
 	firstDum->setSecondParent(node4);
 	firstDum->setEntrance(node1);
-	node2->setFirstChild(firstDum);
-	node4->setFirstChild(firstDum);
-	node1->setExit(firstDum);
-
-	EndGNode* firstEnd = new EndGNode();
 	firstDum->setFirstChild(firstEnd);
+	
 	firstEnd->setFirstParent(firstDum);
 
-	ProcGNode* procNode2 = new ProcGNode("YourMom");
-	
-	WhileGNode* node5 = new WhileGNode(5);
 	node5->setFirstParent(procNode2);
-	procNode2->setFirstChild(node5);
-
-	AssgGNode* node6 = new AssgGNode(6);
-	node6->setFirstParent(node5);
-	node5->setFirstChild(node6);
-
-	WhileGNode* node7 = new WhileGNode(7);
-	node7->setFirstParent(node6);
-	node7->setSecondChild(node5);
-	node6->setFirstChild(node7);
 	node5->setSecondParent(node7);
+	node5->setFirstChild(node6);
+	node5->setSecondChild(node9);
 
-	AssgGNode* node8 = new AssgGNode(8);
+	node6->setFirstParent(node5);
+	node6->setFirstChild(node7);
+
+	node7->setFirstParent(node6);
+	node7->setSecondParent(node8);
+	node7->setFirstChild(node8);
+	node7->setSecondChild(node5);
+
 	node8->setFirstParent(node7);
 	node8->setFirstChild(node7);
-	node7->setSecondParent(node8);
 
-	AssgGNode* node9 = new AssgGNode(9);
 	node9->setFirstParent(node5);
-
-	EndGNode* secEnd = new EndGNode();
-	secEnd->setFirstParent(node9);
 	node9->setFirstChild(secEnd);
 
+	secEnd->setFirstParent(node9);
 //-----------  CFG SETUP DONE -----------//
 
 //-------------  SET UP AST -------------//
