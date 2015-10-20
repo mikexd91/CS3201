@@ -111,9 +111,69 @@ bool AffectsClause::evaluateS1GenericS2Generic() {
 	return calc.computeGeneric();
 }
 
-//e.g. Parent(_,2)
-bool AffectsClause::evaluateS1GenericS2Fixed(string s2) {
-	return false;
+//e.g. Parent(2, s2)
+unordered_set<string> AffectsClause::getAllS2WithS1Fixed(string s1) {
+	//check modifies/uses aspects of firstArg and secondArg
+	unordered_set<string> results = unordered_set<string>();
+	int stmtNum1 = boost::lexical_cast<int>(s1);
+	Statement* stmt1 = stmtTable->getStmtObj(stmtNum1);
+	if (stmt1->getType() != ASSIGN_STMT_) {
+		return unordered_set<string>();
+	}
+	unordered_set<string> modifies1 = stmt1->getModifies();
+	string modifyingVar;
+	if (modifies1.size() != 1) {
+		//error
+		cout << "Assignment statements should only have 1 modify variable";	
+		return results;
+	} else {
+		modifyingVar = *modifies1.begin();
+	}
+
+	//if both are in same procedure
+	//check if stmt2 next* stmt1
+	CFGIterator iterator = CFGIterator(stmt1->getGNodeRef());
+	GNode* currentNode = iterator.getNextNode();
+	while (!currentNode->isNodeType(END_)){
+		if (currentNode->isNodeType(ASSIGN_)) {
+			AssgGNode* assgNode = static_cast<AssgGNode*>(currentNode);
+			int startNum;
+			if (iterator.isStart()) {
+				startNum = stmtNum1+1;
+			} else {
+				startNum = assgNode->getStartStmt();
+			}
+			for (int i =startNum; i <= assgNode->getEndStmt(); i++) {
+				Statement* assgStmt = stmtTable->getStmtObj(i);
+				if (assgStmt->getUses().find(modifyingVar) != assgStmt->getUses().end()) {
+					results.insert(lexical_cast<string>(assgStmt->getStmtNum()));
+				}
+				if (assgStmt->getModifies().find(modifyingVar) != assgStmt->getModifies().end()) {
+					if(!toContinue(iterator)) {
+						return results;
+					}
+				}
+			}
+		} else if (currentNode->isNodeType(CALL_)) {
+			//check if called procedure modifies var
+			CallGNode* callNode = static_cast<CallGNode*>(currentNode);
+			Statement* callStmt = stmtTable->getStmtObj(callNode->getStartStmt());
+			if (callStmt->getModifies().find(modifyingVar) != callStmt->getModifies().end()) {
+				if (!toContinue(iterator)) {
+					return results;
+				}
+			}
+		}
+		currentNode = iterator.getNextNode();
+	}
+	return results;
+}
+
+//e.g. Parent(_, s2)
+//get all children
+unordered_set<string> AffectsClause::getAllS2() {
+	AffectsCalculator calc = AffectsCalculator();
+	return calc.computeAllS2();
 }
 
 //e.g. Parent(2,_)
@@ -180,75 +240,79 @@ bool AffectsClause::evaluateS1FixedS2Generic(string s1){
 	return false;
 }
 
-//e.g. Parent(2, s2)
-unordered_set<string> AffectsClause::getAllS2WithS1Fixed(string s1) {
-	//check modifies/uses aspects of firstArg and secondArg
-	unordered_set<string> results = unordered_set<string>();
-	int stmtNum1 = boost::lexical_cast<int>(s1);
+//e.g. Parent(_,2)
+// nick - using all pairs to calculate affect(1, 2) - can be improved
+bool AffectsClause::evaluateS1GenericS2Fixed(string s2) {
+	// get the statement object and make sure it is an assign stmt
+	int stmtNum1 = lexical_cast<int>(s2);
 	Statement* stmt1 = stmtTable->getStmtObj(stmtNum1);
 	if (stmt1->getType() != ASSIGN_STMT_) {
-		return unordered_set<string>();
+		return false;
 	}
+
+	// return false if the statement doesn't modify anything.
 	unordered_set<string> modifies1 = stmt1->getModifies();
-	string modifyingVar;
 	if (modifies1.size() != 1) {
 		//error
 		cout << "Assignment statements should only have 1 modify variable";	
-		return results;
-	} else {
-		modifyingVar = *modifies1.begin();
+		return false;
 	}
 
-	//if both are in same procedure
-	//check if stmt2 next* stmt1
-	CFGIterator iterator = CFGIterator(stmt1->getGNodeRef());
-	GNode* currentNode = iterator.getNextNode();
-	while (!currentNode->isNodeType(END_)){
-		if (currentNode->isNodeType(ASSIGN_)) {
-			AssgGNode* assgNode = static_cast<AssgGNode*>(currentNode);
-			int startNum;
-			if (iterator.isStart()) {
-				startNum = stmtNum1+1;
-			} else {
-				startNum = assgNode->getStartStmt();
-			}
-			for (int i =startNum; i <= assgNode->getEndStmt(); i++) {
-				Statement* assgStmt = stmtTable->getStmtObj(i);
-				if (assgStmt->getUses().find(modifyingVar) != assgStmt->getUses().end()) {
-					results.insert(lexical_cast<string>(assgStmt->getStmtNum()));
-				}
-				if (assgStmt->getModifies().find(modifyingVar) != assgStmt->getModifies().end()) {
-					if(!toContinue(iterator)) {
-						return results;
-					}
-				}
-			}
-		} else if (currentNode->isNodeType(CALL_)) {
-			//check if called procedure modifies var
-			CallGNode* callNode = static_cast<CallGNode*>(currentNode);
-			Statement* callStmt = stmtTable->getStmtObj(callNode->getStartStmt());
-			if (callStmt->getModifies().find(modifyingVar) != callStmt->getModifies().end()) {
-				if (!toContinue(iterator)) {
-					return results;
-				}
-			}
+	// get the containing procedure
+	Procedure* containingProc = stmt1->getProc();
+	// get all the statements in the proc
+	unordered_set<int> procStmts = containingProc->getContainStmts();
+	// check every pair for affects(pg, s2)
+	BOOST_FOREACH(auto pg, procStmts) {
+		string pgstr = lexical_cast<string>(pg);
+		//cout << "checking " << pgstr << " " << s2 << endl;
+		if (evaluateS1FixedS2Fixed(pgstr, s2)) {
+			return true;
 		}
-		currentNode = iterator.getNextNode();
 	}
-	return results;
-}
 
-//e.g. Parent(_, s2)
-//get all children
-unordered_set<string> AffectsClause::getAllS2() {
-	AffectsCalculator calc = AffectsCalculator();
-	return calc.computeAllS2();
+	// if no match then return false
+	return false;
 }
 
 //e.g. Parent(s1,2)
 //get parent of string
+// nick - using all pairs to calculate affect(1, 2) - can be improved
 unordered_set<string> AffectsClause::getAllS1WithS2Fixed(string s2) {
-	return unordered_set<string>();
+	// prepare result obj
+	unordered_set<string> result;
+
+	// get the statement object and make sure it is an assign stmt
+	int stmtNum1 = lexical_cast<int>(s2);
+	Statement* stmt1 = stmtTable->getStmtObj(stmtNum1);
+	if (stmt1->getType() != ASSIGN_STMT_) {
+		return result;
+	}
+
+	// return nothing if the statement doesn't modify anything.
+	unordered_set<string> modifies1 = stmt1->getModifies();
+	if (modifies1.size() != 1) {
+		//error
+		cout << "Assignment statements should only have 1 modify variable";	
+		return result;
+	}
+
+	// get the containing procedure
+	Procedure* containingProc = stmt1->getProc();
+	// get all the statements in the proc
+	unordered_set<int> procStmts = containingProc->getContainStmts();
+	// check every pair for affects(pg, s2)
+	BOOST_FOREACH(auto pg, procStmts) {
+		string pgstr = lexical_cast<string>(pg);
+		//cout << "checking " << pgstr << " " << s2 << endl;
+		if (evaluateS1FixedS2Fixed(pgstr, s2)) {
+			// add it to the result
+			result.insert(pgstr);
+		}
+	}
+
+	// return whatever we have placed inside the result set.
+	return result;
 }
 
 //e.g. Parent(s1,_)
