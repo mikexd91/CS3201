@@ -8,8 +8,13 @@ variable v;
 Select v such that Next(-1, v)
 none
 5000
-3 - NEXT: stmt underflow
+3 - NEXT: invalid type
 variable v;
-Select v such that Next(0, v)
+Select v such that Next(2, v)
+none
+5000
+4 - NEXT: invalid type
+procedure p;
+Select p such that Next(p, 2)
 none
 5000
