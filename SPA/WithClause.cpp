@@ -1,8 +1,17 @@
 #include "WithClause.h"
 #include "Utils.h"
+#include "ConstTable.h"
+#include "Constant.h"
+#include "VarTable.h"
+#include "Variable.h"
+#include "StmtTable.h"
+#include "Statement.h"
+#include "ProcTable.h"
+#include "Procedure.h"
 #include "boost/foreach.hpp"
 #include "boost/lexical_cast.hpp"
 
+#include <iostream>
 using namespace boost;
 
 WithClause::WithClause(ClauseType) {
@@ -15,11 +24,67 @@ WithClause::~WithClause(void)
 bool WithClause::isValid(void){
 	WithClauseRef leftSideRef = this->getLeftRef();
 	WithClauseRef rightSideRef = this->getLeftRef();
-	if (leftSideRef.getAttrType() == SYNONYM_){
-		//(return false if !=progline)
+	if (leftSideRef.getRefType() == SYNONYM_){
+		if (leftSideRef.getEntityType() != stringconst::ARG_PROGLINE ){
+			return false;
+		}
+	} else if (leftSideRef.getRefType() == ATTRREF_){
+		if (leftSideRef.getAttrType() == PROCNAME_){
+			if (leftSideRef.getEntityType() != stringconst::ARG_PROCEDURE){
+				return false;
+			} 
+		} else if (leftSideRef.getAttrType() == VARNAME_){
+			if (leftSideRef.getEntityType() != stringconst::ARG_VARIABLE){
+				return false;
+			} 
+		} else if (leftSideRef.getAttrType() == CONSTVALUE_){
+			if (leftSideRef.getEntityType() != stringconst::ARG_CONSTANT){
+				return false;
+			} 
+		} else if (leftSideRef.getAttrType() == STMTNUM_){
+			if (leftSideRef.getEntityType() != stringconst::ARG_STATEMENT
+				&& leftSideRef.getEntityType() != stringconst::ARG_ASSIGN
+				&& leftSideRef.getEntityType() != stringconst::ARG_WHILE
+				&& leftSideRef.getEntityType() != stringconst::ARG_IF
+				&& leftSideRef.getEntityType() != stringconst::ARG_CALL){
+				return false;
+			} 
+		}
 	}
-	if (rightSideRef.getAttrType() == SYNONYM_){
-		//(return false if !=progline)
+
+	if (rightSideRef.getRefType() == SYNONYM_){
+		if (rightSideRef.getEntityType() != stringconst::ARG_PROGLINE){
+			return false;
+		}
+	} else if (rightSideRef.getRefType() == ATTRREF_){
+		if (rightSideRef.getAttrType() == PROCNAME_){
+			if (rightSideRef.getEntityType() != stringconst::ARG_PROCEDURE){
+				return false;
+			} 
+		} else if (rightSideRef.getAttrType() == VARNAME_){
+			if (rightSideRef.getEntityType() != stringconst::ARG_VARIABLE){
+				return false;
+			} 
+		} else if (rightSideRef.getAttrType() == CONSTVALUE_){
+			if (rightSideRef.getEntityType() != stringconst::ARG_CONSTANT){
+				return false;
+			} 
+		} else if (rightSideRef.getAttrType() == STMTNUM_){
+			if (rightSideRef.getEntityType() != stringconst::ARG_STATEMENT
+				&& leftSideRef.getEntityType() != stringconst::ARG_ASSIGN
+				&& leftSideRef.getEntityType() != stringconst::ARG_WHILE
+				&& leftSideRef.getEntityType() != stringconst::ARG_IF){
+				return false;
+			} 
+		}
+	}
+	 
+	if (leftSideRef.getRefType() == ATTRREF_ && rightSideRef.getAttrType() == ATTRREF_){
+		if (leftSideRef.getEntityType() != rightSideRef.getEntityType()){
+			return false;
+		} else if (leftSideRef.getAttrType() != rightSideRef.getAttrType()){
+			return false;
+		}
 	}
 
 	bool returnTypesMatch = (leftSideRef.getReturnType() == rightSideRef.getReturnType());
@@ -49,151 +114,273 @@ void WithClause::setRightRef(WithClauseRef rightRef)
 bool WithClause::evaluate(Result* res){
 	
 	if(!isValid()){
+		cout << "failed valid";
 		return false;
 	}
 
 	WithClauseRef leftEntityRef = this->getLeftRef();
 	WithClauseRef rightEntityRef = this->getRightRef();
 	
-	RefType LeftEntityRefType = leftEntityRef.getRefType();
-	RefType RightEntityRefType = rightEntityRef.getRefType();
+	string leftEntity = leftEntityRef.getEntity();
+	string rightEntity = rightEntityRef.getEntity();
+	string leftEntityType = leftEntityRef.getEntityType();
+	string rightEntityType = rightEntityRef.getEntityType();
+	AttrType leftEntityAttr = leftEntityRef.getAttrType();
+	AttrType rightEntityAttr = rightEntityRef.getAttrType();
+	RefType leftEntityRefType = leftEntityRef.getRefType();
+	RefType rightEntityRefType = rightEntityRef.getRefType();
 
-	//int = int
-	if (LeftEntityRefType == INTEGER_ && RightEntityRefType == INTEGER_){
-		return (leftEntityRef.getEntity() == rightEntityRef.getEntity());
-	}
-
-	//string = int
-	if (LeftEntityRefType == IDENT_ && RightEntityRefType == INTEGER_){
-		return (leftEntityRef.getEntity() == rightEntityRef.getEntity());
-	}
-
-	//syn = int
-	if (LeftEntityRefType == SYNONYM_ && RightEntityRefType == INTEGER_){
-		return false;
-		//to discuss
-	}
-
-	//attrRef = int
-	if (LeftEntityRefType == ATTRREF_ && RightEntityRefType == INTEGER_){
-
-		string rightEntity = rightEntityRef.getEntity();
-		int leftEntityCond = leftEntityRef.getAttrType();
-		string leftEntity = leftEntityRef.getEntity();
-
-		if (leftEntityCond == PROCNAME_ || leftEntityCond == VARNAME_){
+	if (leftEntityRefType == rightEntityRefType){
+		if (leftEntityRefType == IDENT_ || leftEntityRefType == INTEGER_){
+			return leftEntity == rightEntity;
+		} else if (leftEntityRefType == SYNONYM_){
+			//WIP
+			return evalSynSyn(leftEntityRef, rightEntityRef, res);
 			return false;
-		} else if (leftEntityCond == CONSTVALUE_ || leftEntityCond == STMTNUM_){
-			SingleSynInsert insert = SingleSynInsert();
-			insert.setSyn(leftEntity);
-			if (leftEntityCond == STMTNUM_){
-				StmtTable* stmttable = StmtTable::getInstance();
-				unordered_set<Statement*> stmtList = stmttable->getAllStmts();
-				int casted = lexical_cast<int>(rightEntity);
-				BOOST_FOREACH(Statement* stmt, stmtList){
-					if (casted == stmt->getStmtNum()){
-						insert.insertValue(rightEntity);
-						return res->push(insert);
-					}
-				}
-			} else if (leftEntityCond == CONSTVALUE_){
-				ConstTable* consttable = ConstTable::getInstance();
-				if (consttable->contains(rightEntity)){
-					insert.insertValue(rightEntity);
-					return res->push(insert);
-				}
+		} else {
+			if (leftEntityAttr == PROCNAME_){
+				//WIP
+				return evalPNamePName(leftEntityRef, rightEntityRef, res);
+			} else if (leftEntityAttr == VARNAME_){
+				//WIP
+				return evalVNameVName(leftEntityRef, rightEntityRef, res);
+			} else if (leftEntityAttr == CONSTVALUE_){
+				//WIP
+				return evalValueValue(leftEntityRef, rightEntityRef, res);
+			} else if (leftEntityAttr == STMTNUM_){
+				//WIP
+				return evalStmtStmt(leftEntityRef, rightEntityRef, res);
 			}
-		}
-		return false;
-	}
-	
-	//int = string
-	if (LeftEntityRefType == INTEGER_ && RightEntityRefType == IDENT_){
-		return (leftEntityRef.getEntity() == rightEntityRef.getEntity());
-	}
-
-	//string = string
-	if (LeftEntityRefType == IDENT_ && RightEntityRefType == IDENT_){
-		return (leftEntityRef.getEntity() == rightEntityRef.getEntity());
-	}
-
-	//syn = string
-	if (LeftEntityRefType == SYNONYM_ && RightEntityRefType == IDENT_){
-		return false;
-		//to discuss
-	}
-
-	//attrRef = string
-	if (LeftEntityRefType == ATTRREF_ && RightEntityRefType == IDENT_){
-		
-		int leftEntityCond = leftEntityRef.getAttrType();
-		string rightEntity = rightEntityRef.getEntity();
-		string leftEntity = leftEntityRef.getEntity();
-
-		if (leftEntityCond == CONSTVALUE_ || leftEntityCond == STMTNUM_){
-			return false;
-		} else if (leftEntityCond == PROCNAME_){
-			ProcTable* proctable = ProcTable::getInstance();
-			
-		} else if (leftEntityCond == VARNAME_){
-			VarTable* vartable = VarTable::getInstance();
-		
-		}
-		return false;
-	}
-	
-	//int = syn
-	if (LeftEntityRefType == INTEGER_ && RightEntityRefType == SYNONYM_){
-		return false;
-		//to discuss
-	}
-
-	//string = syn
-	if (LeftEntityRefType == IDENT_ && RightEntityRefType == SYNONYM_){
-		return false;
-		//to discuss
-	}
-
-	//syn = syn
-	if (LeftEntityRefType == SYNONYM_ && RightEntityRefType == SYNONYM_){
-		//TODO
-	}
-
-	//attrRef = syn
-	if (LeftEntityRefType == ATTRREF_ && RightEntityRefType == SYNONYM_){
-		return false;
-		//to discuss
-	}
-	
-	//int = attrRef
-	if (LeftEntityRefType == INTEGER_ && RightEntityRefType == ATTRREF_){
-		//TODO
-	}
-
-	//string = attrRef
-	if (LeftEntityRefType == IDENT_ && RightEntityRefType == ATTRREF_){
-		int rightEntityCond = rightEntityRef.getAttrType();
-		if (rightEntityCond == CONSTVALUE_ || rightEntityCond == STMTNUM_){
-			return false;
-		} else if (rightEntityCond == PROCNAME_){
-			//todo
-			return false;
-		} else if (rightEntityCond == VARNAME_){
-			//todo
 			return false;
 		}
-	}
+	} else {
+		// add switch case
+		if (leftEntityAttr == CONSTVALUE_ && rightEntityRefType == INTEGER_){
+			//c.value = 1
+			return evalValueInt(leftEntityRef, rightEntityRef, res);
 
-	//syn = attrRef
-	if (LeftEntityRefType == SYNONYM_ && RightEntityRefType == ATTRREF_){
+		} else if (leftEntityRefType == INTEGER_ && rightEntityAttr == CONSTVALUE_){
+			//1 = c.value
+			return evalValueInt(rightEntityRef, leftEntityRef, res);
+
+		} else if (leftEntityRefType == SYNONYM_ && rightEntityRefType == INTEGER_){
+			//pline = 1
+			return evalSynInt(leftEntityRef, rightEntityRef, res);
+
+		} else if (leftEntityRefType == INTEGER_ && rightEntityRefType == SYNONYM_){
+			//1 = pline
+			return evalSynInt(rightEntityRef, leftEntityRef, res);
+
+		} else if (leftEntityAttr == STMTNUM_ && rightEntityRefType == INTEGER_){
+			//stmt# = 1
+			return evalStmtInt(leftEntityRef, rightEntityRef, res);
+
+		} else if (leftEntityRefType == INTEGER_ && rightEntityAttr == STMTNUM_){
+			//1 = stmt#
+			return evalStmtInt(rightEntityRef, leftEntityRef, res);
+
+		} else if (leftEntityAttr == PROCNAME_ && rightEntityRefType == IDENT_){
+			//proc.name = str
+			return evalPNameString(leftEntityRef, rightEntityRef, res);
+
+		} else if (leftEntityRefType == IDENT_ && rightEntityAttr == PROCNAME_){
+			//str = proc.name
+			return evalPNameString(rightEntityRef, leftEntityRef, res);
+
+		} else if (leftEntityAttr == VARNAME_ && rightEntityRefType == IDENT_){
+			//var.name = str
+			return evalVNameString(leftEntityRef, rightEntityRef, res);
+
+		} else if (leftEntityRefType == IDENT_ && rightEntityAttr == VARNAME_){
+			//str = var.name
+			return evalVNameString(rightEntityRef, leftEntityRef, res);
+
+		}
 		return false;
-		//to discuss
+		// false for the rest of the cases
 	}
+}
 
-	//attrRef = attrRef
-	if (LeftEntityRefType == ATTRREF_ && RightEntityRefType == ATTRREF_){
-		//TODO
+bool WithClause::evalSynSyn(WithClauseRef syn1, WithClauseRef syn2, Result* result){
+	if (syn1.getEntity() == syn2.getEntity()){
+		return true;
+	} else {
+		//todo
 	}
 	return false;
 }
 
+bool WithClause::evalValueInt(WithClauseRef constEnt, WithClauseRef intEnt, Result* result){
+	SingleSynInsert insert = SingleSynInsert();
+	insert.setSyn(constEnt.getEntity());
+	if (result->isSynPresent(constEnt.getEntity())){
+		unordered_set<string> synValues = result->getSyn(constEnt.getEntity());
+		bool found = false;
+		BOOST_FOREACH(string s, synValues){
+			if (s == intEnt.getEntity()){
+				found = true;
+				insert.insertValue(s);
+			}
+		}
+		if (found){
+			result->push(insert);
+		}
+		return found;
+	} else {
+		ConstTable* ctable = ConstTable::getInstance();
+		vector<int> allC = ctable->getAllConstValues();
+		bool found = false;
+		BOOST_FOREACH(int i, allC){
+			if (i == stoi(intEnt.getEntity())){
+				found = true;
+				insert.insertValue(intEnt.getEntity());
+			}
+		}
+		if (found){
+			result->push(insert);
+		}
+		return found;
+	}
+	return false;
+}
+
+bool WithClause::evalSynInt(WithClauseRef progEnt, WithClauseRef intEnt, Result* result){
+	SingleSynInsert insert = SingleSynInsert();
+	insert.setSyn(progEnt.getEntity());
+	if (result->isSynPresent(progEnt.getEntity())){
+		unordered_set<string> synValues = result->getSyn(progEnt.getEntity());
+		bool found = false;
+		BOOST_FOREACH(string s, synValues){
+			if (s == intEnt.getEntity()){
+				found = true;
+				insert.insertValue(s);
+			}
+		}
+		if (found){
+			result->push(insert);
+		}
+		return found;
+	} else {
+		StmtTable* stable = StmtTable::getInstance();
+		unordered_set<Statement*> allS = stable->getAllStmts();
+		bool found = false;
+		BOOST_FOREACH(Statement* s, allS){
+			if (s->getStmtNum() == stoi(intEnt.getEntity())){
+				found = true;
+				insert.insertValue(intEnt.getEntity());
+			}
+		}
+		if (found){
+			result->push(insert);
+		}
+		return found;
+	}
+	return false;
+}
+
+bool WithClause::evalStmtInt(WithClauseRef stmtEnt, WithClauseRef intEnt, Result* result){
+	SingleSynInsert insert = SingleSynInsert();
+	insert.setSyn(stmtEnt.getEntity());
+	if (result->isSynPresent(stmtEnt.getEntity())){
+		unordered_set<string> synValues = result->getSyn(stmtEnt.getEntity());
+		bool found = false;
+		BOOST_FOREACH(string s, synValues){
+			if (s == intEnt.getEntity()){
+				found = true;
+				insert.insertValue(s);
+			}
+		}
+		if (found){
+			result->push(insert);
+		}
+		return found;
+	} else {
+		StmtTable* stable = StmtTable::getInstance();
+		unordered_set<Statement*> allS = stable->getAllStmts();
+		bool found = false;
+		BOOST_FOREACH(Statement* s, allS){
+			if (s->getStmtNum() == stoi(intEnt.getEntity())){
+				found = true;
+				insert.insertValue(intEnt.getEntity());
+			}
+		}
+		if (found){
+			result->push(insert);
+		}
+		return found;
+	}
+	return false;
+}
+
+bool WithClause::evalVNameString(WithClauseRef varEnt, WithClauseRef strEnt, Result* result){
+	SingleSynInsert insert = SingleSynInsert();
+	insert.setSyn(varEnt.getEntity());
+	if (result->isSynPresent(varEnt.getEntity())){
+		unordered_set<string> synValues = result->getSyn(varEnt.getEntity());
+		bool found = false;
+		BOOST_FOREACH(string s, synValues){
+			if (s == strEnt.getEntity()){
+				found = true;
+				insert.insertValue(s);
+			}
+		}
+		if (found){
+			result->push(insert);
+		}
+		return found;
+	} else {
+		VarTable* vtable = VarTable::getInstance();
+		unordered_set<Variable*> allV = vtable->getAllVariables();
+		bool found = false;
+		BOOST_FOREACH(Variable* v, allV){
+			if (v->getName() == strEnt.getEntity()){
+				found = true;
+				insert.insertValue(strEnt.getEntity());
+			}
+		}
+		if (found){
+			result->push(insert);
+		}
+		return found;
+	}
+	return false;
+}
+
+bool WithClause::evalPNameString(WithClauseRef procEnt, WithClauseRef strEnt, Result* result){
+	SingleSynInsert insert = SingleSynInsert();
+	insert.setSyn(procEnt.getEntity());
+	if (result->isSynPresent(procEnt.getEntity())){
+		unordered_set<string> synValues = result->getSyn(procEnt.getEntity());
+		bool found = false;
+		BOOST_FOREACH(string s, synValues){
+			if (s == strEnt.getEntity()){
+				found = true;
+				insert.insertValue(s);
+			}
+		}
+		if (found){
+			result->push(insert);
+		}
+		return found;
+	} else {
+		ProcTable* ptable = ProcTable::getInstance();
+		unordered_set<Procedure*> allP = ptable->getAllProcs();
+		bool found = false;
+		BOOST_FOREACH(Procedure* p, allP){
+			if (p->getProcName() == strEnt.getEntity()){
+				found = true;
+				insert.insertValue(strEnt.getEntity());
+			}
+		}
+		if (found){
+			result->push(insert);
+		}
+		return found;
+	}
+	return false;
+}
+
+bool WithClause::evalPNamePName(WithClauseRef leftEnt, WithClauseRef rightEnt, Result* result){return false;}
+bool WithClause::evalVNameVName(WithClauseRef leftEnt, WithClauseRef rightEnt, Result* result){return false;}
+bool WithClause::evalValueValue(WithClauseRef leftEnt, WithClauseRef rightEnt, Result* result){return false;}
+bool WithClause::evalStmtStmt(WithClauseRef leftEnt, WithClauseRef rightEnt, Result* result){return false;}

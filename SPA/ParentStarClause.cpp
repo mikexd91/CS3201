@@ -96,11 +96,11 @@ unordered_set<string> ParentStarClause::getAllS1WithS2Fixed(string s2) {
 unordered_set<string> ParentStarClause::getAllS1() {
 	unordered_set<string> stmtNumSet;
 	//get all while statements
-	if (firstArgType == stringconst::ARG_STATEMENT || firstArgType == stringconst::ARG_WHILE) {
+	if (firstArgType == stringconst::ARG_STATEMENT || firstArgType == stringconst::ARG_PROGLINE || firstArgType == stringconst::ARG_WHILE) {
 		unordered_set<Statement*> whileStmts = stmtTable->getWhileStmts();
 		insertParentStarIntoStmtNum(stmtNumSet, whileStmts, this->secondArgType);
 	}
-	if (firstArgType == stringconst::ARG_STATEMENT || firstArgType == stringconst::ARG_IF) {
+	if (firstArgType == stringconst::ARG_STATEMENT || firstArgType == stringconst::ARG_PROGLINE || firstArgType == stringconst::ARG_IF) {
 		unordered_set<Statement*>ifStmts = stmtTable->getIfStmts();
 		insertParentStarIntoStmtNum(stmtNumSet, ifStmts, this->secondArgType);
 	}

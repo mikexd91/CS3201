@@ -31,3 +31,10 @@ import os
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-MultiClause-ss1.txt SystemTests/Results/followsstar_multiclause.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-StmtOverflow-ss1.txt SystemTests/Results/followsstar_stmtoverflow.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-Misc-ss1.txt SystemTests/Results/followsstar_misc.xml")
+
+# NEXT(*) CLAUSE
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-ss1.txt SystemTests/Results/next.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-ss1.txt SystemTests/Results/nextstar.xml")
+
+# TEMP
+# os.system("AutoTester SystemTests/Sources/Source-File-2.txt SystemTests/test.txt SystemTests/Results/test.xml")
