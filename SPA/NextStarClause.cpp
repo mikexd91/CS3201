@@ -38,10 +38,15 @@ bool NextStarClause::isValid(void) {
 
 // Next*(4, 2)
 bool NextStarClause::evaluateS1FixedS2Fixed(string s1, string s2) {
-	Statement* stmt = stmtTable->getStmtObj(atoi(s1.c_str()));
+	Statement* stmt1 = stmtTable->getStmtObj(atoi(s1.c_str()));
+	Statement* stmt2 = stmtTable->getStmtObj(atoi(s2.c_str()));
 	match = false;
 
-	unordered_set<int> next = stmt->getNext();
+	if(stmt1->getProc() != stmt2->getProc()) {
+		return match;
+	}
+
+	unordered_set<int> next = stmt1->getNext();
 	BOOST_FOREACH(auto s, next) {
 		Statement* child = stmtTable->getStmtObj(s);
 		vector<string> visited;
