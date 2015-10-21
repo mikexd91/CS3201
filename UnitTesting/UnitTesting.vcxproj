@@ -131,6 +131,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AffectsClauseTest.cpp" />
+    <ClCompile Include="AffectsStarClauseTest.cpp" />
     <ClCompile Include="AllUnitTest.cpp" />
     <ClCompile Include="AssgNodeTest.cpp" />
     <ClCompile Include="ASTTest.cpp" />
@@ -140,6 +141,7 @@
     <ClCompile Include="CFGBuilderTest.cpp" />
     <ClCompile Include="ConstNodeTest.cpp" />
     <ClCompile Include="ConstTableTest.cpp" />
+    <ClCompile Include="ExpressionParserTest.cpp" />
     <ClCompile Include="FollowsClauseTest.cpp" />
     <ClCompile Include="FollowsStarClauseTest.cpp" />
     <ClCompile Include="IfNodeTest.cpp" />
@@ -171,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AffectsClauseTest.h" />
+    <ClInclude Include="AffectsStarClauseTest.h" />
     <ClInclude Include="AssgNodeTest.h" />
     <ClInclude Include="ASTTest.h" />
     <ClInclude Include="CallNodeTest.h" />
@@ -179,6 +182,7 @@
     <ClInclude Include="CFGBuilderTest.h" />
     <ClInclude Include="ConstNodeTest.h" />
     <ClInclude Include="ConstTableTest.h" />
+    <ClInclude Include="ExpressionParserTest.h" />
     <ClInclude Include="FollowsClauseTest.h" />
     <ClInclude Include="FollowsStarClauseTest.h" />
     <ClInclude Include="IfNodeTest.h" />
