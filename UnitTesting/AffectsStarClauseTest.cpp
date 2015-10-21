@@ -45,6 +45,12 @@ void AffectsStarClauseTest::setUp() {
 		}
 14		y=z;
 15		a = c;
+16 		while d {
+17			a = b;
+18			b = c;
+19			c = d;
+20			d = a;
+		}
 	}
 	*/
 
@@ -116,9 +122,17 @@ void AffectsStarClauseTest::setUp() {
 	assg14->setEndStmt(15);
 	assg14->setFirstParent(dummy1);
 	dummy1->setFirstChild(assg14);
+	WhileGNode* while16 = new WhileGNode(16);
+	while16->setFirstParent(assg14);
+	assg14->setFirstChild(while16);
+	AssgGNode* assg17 = new AssgGNode(17); 
+	assg17->setEndStmt(20);
+	assg17->setFirstChild(while16);
+	while16->setBeforeLoopChild(assg17);
+	assg17->setFirstParent(while16);
 	EndGNode* end2 = new EndGNode();
-	end2->setParent(assg14);
-	assg14->setFirstChild(end2);
+	end2->setParent(while16);
+	while16->setAfterLoopChild(end2);
 	cfg->addProcedure(proc1);
 	cfg->addProcedure(proc2);
 
@@ -332,6 +346,71 @@ void AffectsStarClauseTest::setUp() {
 	stmt15->setGNodeRef(assg14);
 	stmt15->setProcedure(procedure2);
 	stable->addStmt(stmt15);
+
+	Statement* stmt16 = new Statement();
+	stmt16->setStmtNum(16);
+	stmt16->setType(WHILE_STMT_);
+	string modifiesArray16[] = {"a", "b", "c", "d"};
+	unordered_set<string> mods16(modifiesArray16, modifiesArray16 + 4);
+	stmt16->setModifies(mods16);
+	string usesArray16[] = {"a", "b","c", "d"};
+	unordered_set<string> uses16(usesArray16, usesArray16 + 4);
+	stmt16->setUses(uses16);
+	stmt16->setGNodeRef(while16);
+	stmt16->setProcedure(procedure2);
+	stable->addStmt(stmt16);
+
+	Statement* stmt17 = new Statement();
+	stmt17->setStmtNum(17);
+	stmt17->setType(ASSIGN_STMT_);
+	string modifiesArray17[] = {"a"};
+	unordered_set<string> mods17(modifiesArray17, modifiesArray17 + 1);
+	stmt17->setModifies(mods17);
+	string usesArray17[] = {"b"};
+	unordered_set<string> uses17(usesArray17, usesArray17 + 1);
+	stmt17->setUses(uses17);
+	stmt17->setGNodeRef(assg17);
+	stmt17->setProcedure(procedure2);
+	stable->addStmt(stmt17);
+
+	Statement* stmt18 = new Statement();
+	stmt18->setStmtNum(18);
+	stmt18->setType(ASSIGN_STMT_);
+	string modifiesArray18[] = {"b"};
+	unordered_set<string> mods18(modifiesArray18, modifiesArray18 + 1);
+	stmt18->setModifies(mods18);
+	string usesArray18[] = {"c"};
+	unordered_set<string> uses18(usesArray18, usesArray18 + 1);
+	stmt18->setUses(uses18);
+	stmt18->setGNodeRef(assg17);
+	stmt18->setProcedure(procedure2);
+	stable->addStmt(stmt18);
+
+	Statement* stmt19 = new Statement();
+	stmt19->setStmtNum(19);
+	stmt19->setType(ASSIGN_STMT_);
+	string modifiesArray19[] = {"c"};
+	unordered_set<string> mods19(modifiesArray19, modifiesArray19 + 1);
+	stmt19->setModifies(mods19);
+	string usesArray19[] = {"d"};
+	unordered_set<string> uses19(usesArray19, usesArray19 + 1);
+	stmt19->setUses(uses19);
+	stmt19->setGNodeRef(assg17);
+	stmt19->setProcedure(procedure2);
+	stable->addStmt(stmt19);
+
+	Statement* stmt20 = new Statement();
+	stmt20->setStmtNum(20);
+	stmt20->setType(ASSIGN_STMT_);
+	string modifiesArray20[] = {"d"};
+	unordered_set<string> mods20(modifiesArray20, modifiesArray20 + 1);
+	stmt20->setModifies(mods20);
+	string usesArray20[] = {"a"};
+	unordered_set<string> uses20(usesArray20, usesArray20 + 1);
+	stmt20->setUses(uses20);
+	stmt20->setGNodeRef(assg17);
+	stmt20->setProcedure(procedure2);
+	stable->addStmt(stmt20);
 }
 
 void AffectsStarClauseTest::tearDown() {
@@ -366,6 +445,23 @@ void AffectsStarClauseTest::testFixedFixedPass() {
 	affectsBuilder->setArgFixed(1, true);
 	affectsBuilder->setArgType(1, ARG_PROGLINE);
 	affectsBuilder->setArg(2, "13");
+	affectsBuilder->setArgFixed(2, true);
+	affectsBuilder->setArgType(2, ARG_PROGLINE);
+	AffectsStarClause* m1 = (AffectsStarClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
+}
+
+void AffectsStarClauseTest::testFixedFixedPassInWhile() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSSTAR_);
+	affectsBuilder->setArg(1, "20");
+	affectsBuilder->setArgFixed(1, true);
+	affectsBuilder->setArgType(1, ARG_PROGLINE);
+	affectsBuilder->setArg(2, "17");
 	affectsBuilder->setArgFixed(2, true);
 	affectsBuilder->setArgType(2, ARG_PROGLINE);
 	AffectsStarClause* m1 = (AffectsStarClause*) affectsBuilder->build();

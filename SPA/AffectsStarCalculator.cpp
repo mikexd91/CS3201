@@ -12,27 +12,31 @@ AffectsStarCalculator::AffectsStarCalculator() {
 	multiSynResults = unordered_set<vector<string>>();
 	globalState = State();
 	globalResult = AffectsStarResult();
+	isStart = true;
+	inWhile = false;
 }
 
 AffectsStarCalculator::~AffectsStarCalculator() {
 }
 bool AffectsStarCalculator::computeFixedFixed(string s1String, string s2String) {
 	//get node for s1 and s2
-	Statement* s1 = stmtTable->getStmtObj(boost::lexical_cast<int>(s1String));
-	Statement* s2 = stmtTable->getStmtObj(boost::lexical_cast<int>(s2String));
+	s1Num = boost::lexical_cast<int>(s1String);
+	s2Num = boost::lexical_cast<int>(s2String);
+	Statement* s1 = stmtTable->getStmtObj(s1Num);
+	Statement* s2 = stmtTable->getStmtObj(s2Num);
 	type = FIXED_FIXED;
 	if (s1->getType() != ASSIGN_STMT_ || s2->getType() != ASSIGN_STMT_ ) {
 		return false;
 	}
-	s1GNode = s1->getGNodeRef();
-	s2GNode = s2->getGNodeRef();
+	GNode* s1GNode = s1->getGNodeRef();
+	GNode* s2GNode = s2->getGNodeRef();
 	//adds s1's modifies to the list
 	BOOST_FOREACH(string modifiedVar, s1->getModifies()) {
 		unordered_set<int> modifyingStmts = unordered_set<int>();
 		modifyingStmts.insert(s1->getStmtNum());
 		globalState[modifiedVar] = modifyingStmts;
 	}
-	GNode* currentNode = s1GNode->getChildren().at(0);
+	GNode* currentNode = s1GNode;
 	try {
 		while (!currentNode->isNodeType(END_)) {
 			currentNode = evaluateNode(currentNode, globalState);
@@ -49,22 +53,26 @@ GNode* AffectsStarCalculator::evaluateNode(GNode* node, State& state) {
 		AssgGNode* assgNode = static_cast<AssgGNode*>(node);
 		updateStateForAssign(assgNode, state);
 		return assgNode->getChild();
-	} else if (node->getNodeType() == IF_) {
-		IfGNode* ifNode = static_cast<IfGNode*>(node);
-		updateStateForIf(ifNode, state);
-		return ifNode->getExit()->getChildren().at(0);
-	} else if (node->getNodeType() == WHILE_) {
-		WhileGNode* whileNode = static_cast<WhileGNode*>(node);
-		updateStateForWhile(whileNode, state);
-		return whileNode->getAfterLoopChild();
-	} else if (node->getNodeType() == CALL_) {
-		CallGNode* callNode = static_cast<CallGNode*>(node);
-		updateStateForCall(callNode, state);
-		return callNode->getChild();
 	} else {
-		//only dummy node
-		DummyGNode* dummyNode = static_cast<DummyGNode*>(node);
-		return dummyNode->getChildren().at(0);
+		if (node->getNodeType() == IF_) {
+			IfGNode* ifNode = static_cast<IfGNode*>(node);
+			updateStateForIf(ifNode, state);
+			return ifNode->getExit()->getChildren().at(0);
+		} else if (node->getNodeType() == WHILE_) {
+			WhileGNode* whileNode = static_cast<WhileGNode*>(node);
+			inWhile = true;
+			updateStateForWhile(whileNode, state);
+			inWhile = false;
+			return whileNode->getAfterLoopChild();
+		} else if (node->getNodeType() == CALL_) {
+			CallGNode* callNode = static_cast<CallGNode*>(node);
+			updateStateForCall(callNode, state);
+			return callNode->getChild();
+		} else {
+			//only dummy node
+			DummyGNode* dummyNode = static_cast<DummyGNode*>(node);
+			return dummyNode->getChildren().at(0);
+		}
 	}
 }
 
@@ -86,7 +94,18 @@ void AffectsStarCalculator::updateStateForWhile(WhileGNode* whileNode, State& st
 	do {
 		 previousResult = globalResult;
 		 state1 = recurseWhile(whileNode, state1);
-	} while (!areResultsEqual(globalResult, previousResult));
+	} while (!areResultsEqual(previousResult, globalResult));
+	//check if stmt we want is in results
+	if (type == FIXED_FIXED) {
+		if (globalResult.find(s2Num) != globalResult.end()) {
+			//s2 was already evaluated, if it is in result (meaning that it satisfy the relationship, we return true!
+			//let's enforce a stricter rule
+			unordered_set<int> affectsStarS2 = globalResult[s2Num];
+			result = affectsStarS2.find(s1Num) != affectsStarS2.end();
+			throw AffectsTermination();
+		}
+	}
+
 	state = mergeStates(state, state1);
 }
 
@@ -114,7 +133,13 @@ AffectsStarCalculator::State AffectsStarCalculator::recurseIf(GNode* node, State
 
 
 void AffectsStarCalculator::updateStateForAssign(AssgGNode* node, State& state) {
-	int startNum = node->getStartStmt();
+	int startNum;
+	if (isStart) {
+		startNum = s1Num+1;
+		isStart = false;
+	} else {
+		startNum = node->getStartStmt();
+	}
 	int endNum = node->getEndStmt();
 	for (int stmtNum = startNum; stmtNum <= endNum; stmtNum++) {
 		Statement* assgStmt = stmtTable->getStmtObj(stmtNum);
@@ -148,8 +173,9 @@ void AffectsStarCalculator::updateStateForAssign(AssgGNode* node, State& state) 
 			} 
 			//else -> used var has not been modified by stmt before, ignore
 		}
-		//we found the node, just terminate
-		if (node == s2GNode) {
+		//we found the node, just terminate only if not in while loop
+		//otherwise can only eval after looping thru
+		if (!inWhile && stmtNum == s2Num) {
 			throw AffectsTermination();
 		}
 	}

@@ -55,8 +55,10 @@ private:
 	bool areResultsEqual(AffectsStarResult, AffectsStarResult);
 
 	//For Affect*(1,2)
-	GNode* s1GNode;
-	GNode* s2GNode;
+	int s1Num;
+	int s2Num;
 	bool result;
+	bool isStart;
+	bool inWhile;
 };
 

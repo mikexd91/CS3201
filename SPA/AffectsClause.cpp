@@ -337,7 +337,7 @@ bool AffectsClause::toContinue(CFGIterator iterator) {
 		} else {
 			//we have considered both then and else stmt, let's see whether we should proceed with evaluation
 			iterator.skipElseStmt(ifNode);
-		}//jyjyjyjyjy!!!!!megapoke!
+		}
 		return true;
 	} else if (iterator.isInWhileLoop()) {
 		//if the bad assg stmt is in a while loop, skip the while loop
