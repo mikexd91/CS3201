@@ -42,5 +42,8 @@ import os
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-StmtOverflow-ss1.txt SystemTests/Results/nextstar_stmtoverflow.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-Misc-ss1.txt SystemTests/Results/nextstar_misc.xml")
 
+# PATTERN CLAUSE
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Pattern-ss1.txt SystemTests/Results/pattern.xml")
+
 # TEMP
 # os.system("AutoTester SystemTests/Sources/Source-File-2.txt SystemTests/test.txt SystemTests/Results/test.xml")
