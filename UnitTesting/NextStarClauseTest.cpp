@@ -34,169 +34,32 @@ using namespace boost;
 void NextStarClauseTest::setUp() {
 	/*
 	procedure proc {
-		i = 1;
-		z = i;
+	1	i = 1;
+	2	z = i;
 
-		if i then {
-			while z {
-				y = 4;
+	3	if i then {
+	4		while z {
+	5			y = 4;
 			}
-			a = 4;
+	6		a = 4;
 		} else {
-			call choc;
-			x = 3;
+	7		call choc;
+	8		x = 3;
 		}
 	}
 
 	procedure choc {
-		x = 3;
-		while x {
-			if y then {
-				x = 4;
+	9	x = 3;
+	10	while x {
+	11		if y then {
+	12			x = 4;
 			} else {
-				y = 3;
+	13			y = 3;
 			}
 		}
 	}
 	*/
-	
-	/* ---------- StmtTable setup -----------*/
-	StmtTable* stmtTable = StmtTable::getInstance();
 
-	Statement* stmt1 = new Statement();
-	int stmt1Next[] = {2};
-	unordered_set<int> stmt1NextSet(stmt1Next, stmt1Next + 1);
-	unordered_set<int> stmt1PrevSet;
-	stmt1->setStmtNum(1);
-	stmt1->setType(ASSIGN_STMT_);
-	stmt1->setNext(stmt1NextSet);
-	stmt1->setPrev(stmt1PrevSet);
-	stmtTable->addStmt(stmt1);
-
-	Statement* stmt2 = new Statement();
-	int stmt2Next[] = {3};
-	int stmt2Prev[] = {1};
-	unordered_set<int> stmt2NextSet(stmt2Next, stmt2Next + 1);
-	unordered_set<int> stmt2PrevSet(stmt2Prev, stmt2Prev + 1);
-	stmt2->setStmtNum(2);
-	stmt2->setType(ASSIGN_STMT_);
-	stmt2->setNext(stmt2NextSet);
-	stmt2->setPrev(stmt2PrevSet);
-	stmtTable->addStmt(stmt2);
-
-	Statement* stmt3 = new Statement();
-	int stmt3Next[] = {4, 7};
-	int stmt3Prev[] = {2};
-	unordered_set<int> stmt3NextSet(stmt3Next, stmt3Next + 2);
-	unordered_set<int> stmt3PrevSet(stmt3Prev, stmt3Prev + 1);
-	stmt3->setStmtNum(3);
-	stmt3->setType(IF_STMT_);
-	stmt3->setNext(stmt3NextSet);
-	stmt3->setPrev(stmt3PrevSet);
-	stmtTable->addStmt(stmt3);
-
-	Statement* stmt4 = new Statement();
-	int stmt4Next[] = {5, 6};
-	int stmt4Prev[] = {3, 5};
-	unordered_set<int> stmt4NextSet(stmt4Next, stmt4Next + 2);
-	unordered_set<int> stmt4PrevSet(stmt4Prev, stmt4Prev + 2);
-	stmt4->setStmtNum(4);
-	stmt4->setType(WHILE_STMT_);
-	stmt4->setNext(stmt4NextSet);
-	stmt4->setPrev(stmt4PrevSet);
-	stmtTable->addStmt(stmt4);
-
-	Statement* stmt5 = new Statement();
-	int stmt5arr[] = {4};
-	unordered_set<int> stmt5NextSet(stmt5arr, stmt5arr + 1);
-	unordered_set<int> stmt5PrevSet(stmt5arr, stmt5arr + 1);
-	stmt5->setStmtNum(5);
-	stmt5->setType(ASSIGN_STMT_);
-	stmt5->setNext(stmt5NextSet);
-	stmt5->setPrev(stmt5PrevSet);
-	stmtTable->addStmt(stmt5);
-
-	Statement* stmt6 = new Statement();
-	int stmt6Prev[] = {4};
-	unordered_set<int> stmt6PrevSet(stmt6Prev, stmt6Prev + 1);
-	unordered_set<int> stmt6NextSet;
-	stmt6->setStmtNum(6);
-	stmt6->setType(ASSIGN_STMT_);
-	stmt6->setNext(stmt6NextSet);
-	stmt6->setPrev(stmt6PrevSet);
-	stmtTable->addStmt(stmt6);
-
-	Statement* stmt7 = new Statement();
-	int stmt7Next[] = {8};
-	int stmt7Prev[] = {3};
-	unordered_set<int> stmt7NextSet(stmt7Next, stmt7Next + 1);
-	unordered_set<int> stmt7PrevSet(stmt7Prev, stmt7Prev + 1);
-	stmt7->setStmtNum(7);
-	stmt7->setType(CALL_STMT_);
-	stmt7->setNext(stmt7NextSet);
-	stmt7->setPrev(stmt7PrevSet);
-	stmtTable->addStmt(stmt7);
-
-	Statement* stmt8 = new Statement();
-	int stmt8Prev[] = {7};
-	unordered_set<int> stmt8NextSet;
-	unordered_set<int> stmt8PrevSet(stmt8Prev, stmt8Prev + 1);
-	stmt8->setStmtNum(8);
-	stmt8->setType(ASSIGN_STMT_);
-	stmt8->setNext(stmt8NextSet);
-	stmt8->setPrev(stmt8PrevSet);
-	stmtTable->addStmt(stmt8);
-
-	Statement* stmt9 = new Statement();
-	int stmt9Next[] = {10};
-	unordered_set<int> stmt9NextSet(stmt9Next, stmt9Next + 1);
-	unordered_set<int> stmt9PrevSet;
-	stmt9->setStmtNum(9);
-	stmt9->setType(ASSIGN_STMT_);
-	stmt9->setNext(stmt9NextSet);
-	stmt9->setPrev(stmt9PrevSet);
-	stmtTable->addStmt(stmt9);
-
-	Statement* stmt10 = new Statement();
-	int stmt10Next[] = {11};
-	int stmt10Prev[] = {9, 12, 13};
-	unordered_set<int> stmt10NextSet(stmt10Next, stmt10Next + 1);
-	unordered_set<int> stmt10PrevSet(stmt10Prev, stmt10Prev + 3);
-	stmt10->setStmtNum(10);
-	stmt10->setType(WHILE_STMT_);
-	stmt10->setNext(stmt10NextSet);
-	stmt10->setPrev(stmt10PrevSet);
-	stmtTable->addStmt(stmt10);
-
-	Statement* stmt11 = new Statement();
-	int stmt11Next[] = {12, 13};
-	int stmt11Prev[] = {10};
-	unordered_set<int> stmt11NextSet(stmt11Next, stmt11Next + 2);
-	unordered_set<int> stmt11PrevSet(stmt11Prev, stmt11Prev + 1);
-	stmt11->setStmtNum(11);
-	stmt11->setType(IF_STMT_);
-	stmt11->setNext(stmt11NextSet);
-	stmt11->setPrev(stmt11PrevSet);
-	stmtTable->addStmt(stmt11);
-
-	Statement* stmt12 = new Statement();
-	Statement* stmt13 = new Statement();
-	int stmtNext[] = {10};
-	int stmtPrev[] = {11};
-	unordered_set<int> stmtNextSet(stmtNext, stmtNext + 1);
-	unordered_set<int> stmtPrevSet(stmtPrev, stmtPrev + 1);
-	stmt12->setStmtNum(12);
-	stmt12->setType(ASSIGN_STMT_);
-	stmt12->setNext(stmtNextSet);
-	stmt12->setPrev(stmtPrevSet);
-	stmtTable->addStmt(stmt12);
-	stmt13->setStmtNum(13);
-	stmt13->setType(ASSIGN_STMT_);
-	stmt13->setNext(stmtNextSet);
-	stmt13->setPrev(stmtPrevSet);
-	stmtTable->addStmt(stmt13);
-
-	
 	/* --------- ProcTable setup --------*/
 	ProcTable* procTable = ProcTable::getInstance();
 	
@@ -214,7 +77,156 @@ void NextStarClauseTest::setUp() {
 	proc2->setContainStmts(p2Set);
 	procTable->addProc(proc2);
 
+	
+	/* ---------- StmtTable setup -----------*/
+	StmtTable* stmtTable = StmtTable::getInstance();
 
+	Statement* stmt1 = new Statement();
+	int stmt1Next[] = {2};
+	unordered_set<int> stmt1NextSet(stmt1Next, stmt1Next + 1);
+	unordered_set<int> stmt1PrevSet;
+	stmt1->setStmtNum(1);
+	stmt1->setType(ASSIGN_STMT_);
+	stmt1->setNext(stmt1NextSet);
+	stmt1->setPrev(stmt1PrevSet);
+	stmt1->setProcedure(proc1);
+	stmtTable->addStmt(stmt1);
+
+	Statement* stmt2 = new Statement();
+	int stmt2Next[] = {3};
+	int stmt2Prev[] = {1};
+	unordered_set<int> stmt2NextSet(stmt2Next, stmt2Next + 1);
+	unordered_set<int> stmt2PrevSet(stmt2Prev, stmt2Prev + 1);
+	stmt2->setStmtNum(2);
+	stmt2->setType(ASSIGN_STMT_);
+	stmt2->setNext(stmt2NextSet);
+	stmt2->setPrev(stmt2PrevSet);
+	stmt2->setProcedure(proc1);
+	stmtTable->addStmt(stmt2);
+
+	Statement* stmt3 = new Statement();
+	int stmt3Next[] = {4, 7};
+	int stmt3Prev[] = {2};
+	unordered_set<int> stmt3NextSet(stmt3Next, stmt3Next + 2);
+	unordered_set<int> stmt3PrevSet(stmt3Prev, stmt3Prev + 1);
+	stmt3->setStmtNum(3);
+	stmt3->setType(IF_STMT_);
+	stmt3->setNext(stmt3NextSet);
+	stmt3->setPrev(stmt3PrevSet);
+	stmt3->setProcedure(proc1);
+	stmtTable->addStmt(stmt3);
+
+	Statement* stmt4 = new Statement();
+	int stmt4Next[] = {5, 6};
+	int stmt4Prev[] = {3, 5};
+	unordered_set<int> stmt4NextSet(stmt4Next, stmt4Next + 2);
+	unordered_set<int> stmt4PrevSet(stmt4Prev, stmt4Prev + 2);
+	stmt4->setStmtNum(4);
+	stmt4->setType(WHILE_STMT_);
+	stmt4->setNext(stmt4NextSet);
+	stmt4->setPrev(stmt4PrevSet);
+	stmt4->setProcedure(proc1);
+	stmtTable->addStmt(stmt4);
+
+	Statement* stmt5 = new Statement();
+	int stmt5arr[] = {4};
+	unordered_set<int> stmt5NextSet(stmt5arr, stmt5arr + 1);
+	unordered_set<int> stmt5PrevSet(stmt5arr, stmt5arr + 1);
+	stmt5->setStmtNum(5);
+	stmt5->setType(ASSIGN_STMT_);
+	stmt5->setNext(stmt5NextSet);
+	stmt5->setPrev(stmt5PrevSet);
+	stmt5->setProcedure(proc1);
+	stmtTable->addStmt(stmt5);
+
+	Statement* stmt6 = new Statement();
+	int stmt6Prev[] = {4};
+	unordered_set<int> stmt6PrevSet(stmt6Prev, stmt6Prev + 1);
+	unordered_set<int> stmt6NextSet;
+	stmt6->setStmtNum(6);
+	stmt6->setType(ASSIGN_STMT_);
+	stmt6->setNext(stmt6NextSet);
+	stmt6->setPrev(stmt6PrevSet);
+	stmt6->setProcedure(proc1);
+	stmtTable->addStmt(stmt6);
+
+	Statement* stmt7 = new Statement();
+	int stmt7Next[] = {8};
+	int stmt7Prev[] = {3};
+	unordered_set<int> stmt7NextSet(stmt7Next, stmt7Next + 1);
+	unordered_set<int> stmt7PrevSet(stmt7Prev, stmt7Prev + 1);
+	stmt7->setStmtNum(7);
+	stmt7->setType(CALL_STMT_);
+	stmt7->setNext(stmt7NextSet);
+	stmt7->setPrev(stmt7PrevSet);
+	stmt7->setProcedure(proc1);
+	stmtTable->addStmt(stmt7);
+
+	Statement* stmt8 = new Statement();
+	int stmt8Prev[] = {7};
+	unordered_set<int> stmt8NextSet;
+	unordered_set<int> stmt8PrevSet(stmt8Prev, stmt8Prev + 1);
+	stmt8->setStmtNum(8);
+	stmt8->setType(ASSIGN_STMT_);
+	stmt8->setNext(stmt8NextSet);
+	stmt8->setPrev(stmt8PrevSet);
+	stmt8->setProcedure(proc1);
+	stmtTable->addStmt(stmt8);
+
+	Statement* stmt9 = new Statement();
+	int stmt9Next[] = {10};
+	unordered_set<int> stmt9NextSet(stmt9Next, stmt9Next + 1);
+	unordered_set<int> stmt9PrevSet;
+	stmt9->setStmtNum(9);
+	stmt9->setType(ASSIGN_STMT_);
+	stmt9->setNext(stmt9NextSet);
+	stmt9->setPrev(stmt9PrevSet);
+	stmt9->setProcedure(proc2);
+	stmtTable->addStmt(stmt9);
+
+	Statement* stmt10 = new Statement();
+	int stmt10Next[] = {11};
+	int stmt10Prev[] = {9, 12, 13};
+	unordered_set<int> stmt10NextSet(stmt10Next, stmt10Next + 1);
+	unordered_set<int> stmt10PrevSet(stmt10Prev, stmt10Prev + 3);
+	stmt10->setStmtNum(10);
+	stmt10->setType(WHILE_STMT_);
+	stmt10->setNext(stmt10NextSet);
+	stmt10->setPrev(stmt10PrevSet);
+	stmt10->setProcedure(proc2);
+	stmtTable->addStmt(stmt10);
+
+	Statement* stmt11 = new Statement();
+	int stmt11Next[] = {12, 13};
+	int stmt11Prev[] = {10};
+	unordered_set<int> stmt11NextSet(stmt11Next, stmt11Next + 2);
+	unordered_set<int> stmt11PrevSet(stmt11Prev, stmt11Prev + 1);
+	stmt11->setStmtNum(11);
+	stmt11->setType(IF_STMT_);
+	stmt11->setNext(stmt11NextSet);
+	stmt11->setPrev(stmt11PrevSet);
+	stmt11->setProcedure(proc2);
+	stmtTable->addStmt(stmt11);
+
+	Statement* stmt12 = new Statement();
+	Statement* stmt13 = new Statement();
+	int stmtNext[] = {10};
+	int stmtPrev[] = {11};
+	unordered_set<int> stmtNextSet(stmtNext, stmtNext + 1);
+	unordered_set<int> stmtPrevSet(stmtPrev, stmtPrev + 1);
+	stmt12->setStmtNum(12);
+	stmt12->setType(ASSIGN_STMT_);
+	stmt12->setNext(stmtNextSet);
+	stmt12->setPrev(stmtPrevSet);
+	stmt12->setProcedure(proc2);
+	stmtTable->addStmt(stmt12);
+	stmt13->setStmtNum(13);
+	stmt13->setType(ASSIGN_STMT_);
+	stmt13->setNext(stmtNextSet);
+	stmt13->setPrev(stmtPrevSet);
+	stmt13->setProcedure(proc2);
+	stmtTable->addStmt(stmt13);
+	
 	/* ----------- CFG Setup ------------*/
 	CFG* cfg = CFG::getInstance();
 	
@@ -1490,4 +1502,20 @@ void NextStarClauseTest::testSynWhileSynIfPass() {
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
 	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
+}
+
+void NextStarClauseTest::testFixFixDiffProcPass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTAR_);
+	builder->setArg(1, "3");
+	builder->setArg(2, "10");
+	builder->setArgType(1, ARG_STATEMENT);
+	builder->setArgType(2, ARG_STATEMENT);
+	builder->setArgFixed(1, true);
+	builder->setArgFixed(2, true);
+	NextStarClause* clause = (NextStarClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
