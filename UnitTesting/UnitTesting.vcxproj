@@ -224,7 +224,6 @@
     <ClCompile Include="CFGBuilderTest.cpp" />
     <ClCompile Include="ConstNodeTest.cpp" />
     <ClCompile Include="ConstTableTest.cpp" />
-    <ClCompile Include="ExpressionParserTest.cpp" />
     <ClCompile Include="FollowsClauseTest.cpp" />
     <ClCompile Include="FollowsStarClauseTest.cpp" />
     <ClCompile Include="IfNodeTest.cpp" />
@@ -265,7 +264,6 @@
     <ClInclude Include="CFGBuilderTest.h" />
     <ClInclude Include="ConstNodeTest.h" />
     <ClInclude Include="ConstTableTest.h" />
-    <ClInclude Include="ExpressionParserTest.h" />
     <ClInclude Include="FollowsClauseTest.h" />
     <ClInclude Include="FollowsStarClauseTest.h" />
     <ClInclude Include="IfNodeTest.h" />
