@@ -1,0 +1,25 @@
+1 - NEXT: stmt# - select clause (has results)
+assign a;
+Select a.stmt# such that Next(a, _)
+1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 19, 21, 22, 23
+5000
+2 - NEXT: stmt# - select clause (no results)
+if i; assign a;
+Select i.stmt# such that Next(a, i)
+none
+5000
+3 - NEXT: stmt# - with clause (has results)
+while w;
+Select w such that Next(w, _) with w.stmt# = 17
+17
+5000
+4 - NEXT: stmt# - with clause (no results)
+if i;
+Select i such that Next(i, _) with i.stmt# = 5
+none
+5000
+5 - NEXT: prog_line
+prog_line n; if i;
+Select n such that Next(n, i)
+18
+5000

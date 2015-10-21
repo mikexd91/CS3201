@@ -74,7 +74,7 @@ void WithClauseTest::setUp() {
 
 	// to set up the stmttable manually
 	StmtTable* stable = StmtTable::getInstance();
-
+	stable->clearTable();
 	Statement* stmt1 = new Statement();
 	stmt1->setStmtNum(1);
 	stmt1->setType(ASSIGN_STMT_);
@@ -111,7 +111,7 @@ void WithClauseTest::setUp() {
 
 	// to set up the vartable manually
 	VarTable* vtable = VarTable::getInstance();
-
+	vtable->reset();
 	Variable* vi = new Variable("i");
 	vi->addModifyingStmt(1);
 	vi->addTNode(assg1);
@@ -129,13 +129,13 @@ void WithClauseTest::setUp() {
 
 	// to set up the proctable manually
 	ProcTable* procTable = ProcTable::getInstance();
-
+	procTable->clearTable();
 	Procedure* pi = new Procedure("i");
 	procTable->addProc(pi);
 
 	// to set up the constable manually
 	ConstTable* constTable = ConstTable::getInstance();
-
+	constTable->clearTable();
 	Constant* c1 = new Constant("1");
 	c1->addAppearsIn(1);
 	c1->addTNodeRef(one1);
@@ -172,10 +172,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( WithClauseTest );
 
 // 1 = 1
 void WithClauseTest::evaluateRightIntLeftInt() {
-	WithClauseBuilder* withBuilder = new WithClauseBuilder(ClauseType::WITH_);
-	withBuilder->setRefType(1, RefType::INTEGER_);
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, INTEGER_);
 	withBuilder->setEntity(1, "1");
-	withBuilder->setRefType(2, RefType::INTEGER_);
+	withBuilder->setRefType(2, INTEGER_);
 	withBuilder->setEntity(2, "1");
 	WithClause* w1 = withBuilder->build();
 
@@ -193,77 +193,255 @@ void WithClauseTest::evaluateRightIntLeftInt() {
 // "asd" = "asd"
 void WithClauseTest::evaluateRightStringLeftString()
 {
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, IDENT_);
+	withBuilder->setEntity(1, "asd");
+	withBuilder->setRefType(2, IDENT_);
+	withBuilder->setEntity(2, "asd");
+	WithClause* w1 = withBuilder->build();
+	Result* r1 = new Result();
+	CPPUNIT_ASSERT(w1->evaluate(r1));
 
+	WithClauseBuilder* withBuilder2 = new WithClauseBuilder(WITH_);
+	withBuilder2->setRefType(1, IDENT_);
+	withBuilder2->setEntity(1, "asd");
+	withBuilder2->setRefType(2, IDENT_);
+	withBuilder2->setEntity(2, "www");
+	WithClause* w2 = withBuilder2->build();
+	Result* r2 = new Result();
+	CPPUNIT_ASSERT(w2->evaluate(r2) == false);
+
+	WithClauseBuilder* withBuilder3 = new WithClauseBuilder(WITH_);
+	withBuilder3->setRefType(1, INTEGER_);
+	withBuilder3->setEntity(1, "1");
+	withBuilder3->setRefType(2, INTEGER_);
+	withBuilder3->setEntity(2, "1");
+	WithClause* w3 = withBuilder3->build();
+	Result* r3 = new Result();
+	CPPUNIT_ASSERT(w3->evaluate(r3));
 }
 
 // n1 = n2 where n1, n2 are prog_line
 void WithClauseTest::evaluateRightSynLeftSyn()
 {
+	
+
 
 }
 
 // n = 1 where n is prog_line
 void WithClauseTest::evaluateRightSynLeftInt()
 {
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, SYNONYM_);
+	withBuilder->setEntityType(1, stringconst::ARG_PROGLINE);
+	withBuilder->setEntity(1, "p");
+	withBuilder->setAttrType(1, NULLATTR_);
 
+	withBuilder->setRefType(2, INTEGER_);
+	withBuilder->setEntity(2, "1");
+	withBuilder->setEntityType(2, stringconst::ENTITY_TYPE_INTEGER);
+	withBuilder->setAttrType(2, NULLATTR_);
+	WithClause* w1 = withBuilder->build();
+	Result* r1 = new Result();
+	CPPUNIT_ASSERT(w1->evaluate(r1));
+	CPPUNIT_ASSERT(r1->getResultTableSize() == 1);
+
+	WithClauseBuilder* withBuilder2 = new WithClauseBuilder(WITH_);
+	withBuilder2->setRefType(2, SYNONYM_);
+	withBuilder2->setEntityType(2, stringconst::ARG_PROGLINE);
+	withBuilder2->setEntity(2, "p");
+	withBuilder2->setAttrType(2, NULLATTR_);
+
+	withBuilder2->setRefType(1, INTEGER_);
+	withBuilder2->setEntity(1, "1");
+	withBuilder2->setEntityType(1, stringconst::ENTITY_TYPE_INTEGER);
+	withBuilder2->setAttrType(1, NULLATTR_);
+	WithClause* w2 = withBuilder2->build();
+	Result* r2 = new Result();
+	CPPUNIT_ASSERT(w2->evaluate(r2));
 }
 
 // s.stmt# = 1 where s is stmt
 void WithClauseTest::evaluateRightAttrStmtNumLeftInt()
 {
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, ATTRREF_);
+	withBuilder->setEntityType(1, stringconst::ARG_STATEMENT);
+	withBuilder->setEntity(1, "s");
+	withBuilder->setAttrType(1, STMTNUM_);
 
+	withBuilder->setRefType(2, INTEGER_);
+	withBuilder->setEntity(2, "1");
+	withBuilder->setEntityType(2, stringconst::ENTITY_TYPE_INTEGER);
+	withBuilder->setAttrType(2, NULLATTR_);
+	WithClause* w1 = withBuilder->build();
+	Result* r1 = new Result();
+	CPPUNIT_ASSERT(w1->evaluate(r1));
+	CPPUNIT_ASSERT(r1->getResultTableSize() == 1);
 }
 
 // c.value = 1 where c is constant
 void WithClauseTest::evaluateRightAttrValueLeftInt()
 {
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, ATTRREF_);
+	withBuilder->setEntityType(1, stringconst::ARG_CONSTANT);
+	withBuilder->setEntity(1, "s");
+	withBuilder->setAttrType(1, CONSTVALUE_);
 
+	withBuilder->setRefType(2, INTEGER_);
+	withBuilder->setEntity(2, "1");
+	withBuilder->setEntityType(2, stringconst::ENTITY_TYPE_INTEGER);
+	withBuilder->setAttrType(2, NULLATTR_);
+	WithClause* w1 = withBuilder->build();
+	Result* r1 = new Result();
+	CPPUNIT_ASSERT(w1->evaluate(r1));
+	CPPUNIT_ASSERT(r1->getResultTableSize() == 1);
 }
 
 // v.varName = "x" where v is var
 void WithClauseTest::evaluateRightAttrVarNameLeftString()
 {
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, ATTRREF_);
+	withBuilder->setEntityType(1, stringconst::ARG_VARIABLE);
+	withBuilder->setEntity(1, "s");
+	withBuilder->setAttrType(1, VARNAME_);
 
+	withBuilder->setRefType(2, IDENT_);
+	withBuilder->setEntity(2, "i");
+	withBuilder->setEntityType(2, stringconst::ENTITY_TYPE_IDENT);
+	withBuilder->setAttrType(2, NULLATTR_);
+	WithClause* w1 = withBuilder->build();
+	Result* r1 = new Result();
+	CPPUNIT_ASSERT(w1->evaluate(r1));
+	CPPUNIT_ASSERT(r1->getResultTableSize() == 1);
 }
 
 // p.procName = "proc" where p is procedure
 void WithClauseTest::evaluateRightAttrProcNameLeftString()
 {
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, ATTRREF_);
+	withBuilder->setEntityType(1, stringconst::ARG_PROCEDURE);
+	withBuilder->setEntity(1, "p");
+	withBuilder->setAttrType(1, PROCNAME_);
 
+	withBuilder->setRefType(2, IDENT_);
+	withBuilder->setEntity(2, "i");
+	withBuilder->setEntityType(2, stringconst::ENTITY_TYPE_IDENT);
+	withBuilder->setAttrType(2, NULLATTR_);
+	WithClause* w1 = withBuilder->build();
+	Result* r1 = new Result();
+	CPPUNIT_ASSERT(w1->evaluate(r1));
+	CPPUNIT_ASSERT(r1->getResultTableSize() == 1);
 }
 
 // p1.procName = p2.procName
 void WithClauseTest::evaluateRightAttrProcNameLeftAttrProcName()
 {
-
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, ATTRREF_);
+	withBuilder->setEntityType(1, stringconst::ARG_PROCEDURE);
+	withBuilder->setEntity(1, "p");
+	withBuilder->setAttrType(1, PROCNAME_);
+	withBuilder->setRefType(2, ATTRREF_);
+	withBuilder->setEntity(2, "p1");
+	withBuilder->setEntityType(2, stringconst::ARG_PROCEDURE);
+	withBuilder->setAttrType(2, PROCNAME_);
+	WithClause* w1 = withBuilder->build();
+	Result* r1 = new Result();
+	CPPUNIT_ASSERT(w1->evaluate(r1));
+	CPPUNIT_ASSERT(r1->getResultTableSize() == 1);
 }
 
 // v1.varName = v2.varName
 void WithClauseTest::evaluateRightAttrVarNameLeftAttrVarName()
 {
-
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, ATTRREF_);
+	withBuilder->setEntityType(1, stringconst::ARG_VARIABLE);
+	withBuilder->setEntity(1, "v1");
+	withBuilder->setAttrType(1, VARNAME_);
+	withBuilder->setRefType(2, ATTRREF_);
+	withBuilder->setEntity(2, "v2");
+	withBuilder->setEntityType(2, stringconst::ARG_VARIABLE);
+	withBuilder->setAttrType(2, VARNAME_);
+	WithClause* w1 = withBuilder->build();
+	Result* r1 = new Result();
+	CPPUNIT_ASSERT(w1->evaluate(r1));
+	CPPUNIT_ASSERT(r1->getResultTableSize() == 3);
 }
 
 // s1.stmt# = s2.stmt#
 void WithClauseTest::evaluateRightAttrStmtNumLeftAttrStmtNum()
 {
-
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, ATTRREF_);
+	withBuilder->setEntityType(1, stringconst::ARG_STATEMENT);
+	withBuilder->setEntity(1, "s1");
+	withBuilder->setAttrType(1, STMTNUM_);
+	withBuilder->setRefType(2, ATTRREF_);
+	withBuilder->setEntity(2, "s2");
+	withBuilder->setEntityType(2, stringconst::ARG_STATEMENT);
+	withBuilder->setAttrType(2, STMTNUM_);
+	WithClause* w1 = withBuilder->build();
+	Result* r1 = new Result();
+	CPPUNIT_ASSERT(w1->evaluate(r1));
+	CPPUNIT_ASSERT(r1->getResultTableSize() == 3);
 }
 
 // c1.value = c2.value
 void WithClauseTest::evaluateRightAttrValueLeftAttrValue()
 {
-
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, ATTRREF_);
+	withBuilder->setEntityType(1, stringconst::ARG_CONSTANT);
+	withBuilder->setEntity(1, "s1");
+	withBuilder->setAttrType(1, CONSTVALUE_);
+	withBuilder->setRefType(2, ATTRREF_);
+	withBuilder->setEntity(2, "s2");
+	withBuilder->setEntityType(2, stringconst::ARG_CONSTANT);
+	withBuilder->setAttrType(2, CONSTVALUE_);
+	WithClause* w1 = withBuilder->build();
+	Result* r1 = new Result();
+	CPPUNIT_ASSERT(w1->evaluate(r1));
+	CPPUNIT_ASSERT(r1->getResultTableSize()== 4);
 }
 
 // p.procName = v.varName
 void WithClauseTest::evaluateRightAttrProcNameLeftAttrVarName()
 {
-
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, ATTRREF_);
+	withBuilder->setEntityType(1, stringconst::ARG_PROCEDURE);
+	withBuilder->setEntity(1, "v1");
+	withBuilder->setAttrType(1, PROCNAME_);
+	withBuilder->setRefType(2, ATTRREF_);
+	withBuilder->setEntity(2, "v2");
+	withBuilder->setEntityType(2, stringconst::ARG_VARIABLE);
+	withBuilder->setAttrType(2, VARNAME_);
+	WithClause* w1 = withBuilder->build();
+	Result* r1 = new Result();
+	CPPUNIT_ASSERT(w1->evaluate(r1));
+	CPPUNIT_ASSERT(r1->getResultTableSize() == 1);
 }
 
 // s.stmt# = c.value
 void WithClauseTest::evaluateRightAttrStmtNumLeftAttrValue()
 {
-
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, ATTRREF_);
+	withBuilder->setEntityType(1, stringconst::ARG_STATEMENT);
+	withBuilder->setEntity(1, "s1");
+	withBuilder->setAttrType(1, STMTNUM_);
+	withBuilder->setRefType(2, ATTRREF_);
+	withBuilder->setEntity(2, "s2");
+	withBuilder->setEntityType(2, stringconst::ARG_CONSTANT);
+	withBuilder->setAttrType(2, CONSTVALUE_);
+	WithClause* w1 = withBuilder->build();
+	Result* r1 = new Result();
+	CPPUNIT_ASSERT(w1->evaluate(r1));
+	CPPUNIT_ASSERT(r1->getResultTableSize()== 3);
 }

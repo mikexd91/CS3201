@@ -1,0 +1,25 @@
+1 - FOLLOWS: stmt# - select clause (has results)
+assign a;
+Select a.stmt# such that Follows(a, _)
+1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 16
+5000
+2 - FOLLOWS: stmt# - select clause (no results)
+if i;
+Select i.stmt# such that Follows(i, _)
+none
+5000
+3 - FOLLOWS: stmt# - with clause (has results)
+while w;
+Select w such that Follows(_, w) with w.stmt# = 17
+17
+5000
+4 - FOLLOWS: stmt# - with clause (no results)
+stmt s; while w;
+Select w such that Follows(_, w) with w.stmt# = 1
+none
+5000
+5 - FOLLOWS: prog_line
+prog_line n; if i;
+Select n such that Follows(n, i)
+18
+5000

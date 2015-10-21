@@ -1,5 +1,0 @@
-1 - modifies-assign: syn, syn
-procedure p; variable v;
-Select p such that Modifies(p, v)
-pokemon
-5000

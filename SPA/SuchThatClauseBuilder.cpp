@@ -11,6 +11,7 @@
 #include "CallsClause.h"
 #include "CallsStarClause.h"
 #include "NextClause.h"
+#include "NextStarClause.h"
 #include "AffectsClause.h"
 #include "AffectsStarClause.h"
 
@@ -98,10 +99,9 @@ SuchThatClause* SuchThatClauseBuilder::build() {
 	} else if (this->clauseType == AFFECTS_){
 		clause = new AffectsClause();
 	
-	/*	
 	} else if (this->clauseType == NEXTSTAR_){
 		clause = new NextStarClause();
-		*/
+
 	} else if (this->clauseType == AFFECTSSTAR_){
 		clause = new AffectsStarClause();
 		
