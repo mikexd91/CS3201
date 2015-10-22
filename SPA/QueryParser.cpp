@@ -813,8 +813,7 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 					&& leftDeclarationType != stringconst::ARG_ASSIGN
 					&& leftDeclarationType != stringconst::ARG_IF
 					&& leftDeclarationType != stringconst::ARG_WHILE
-					&& leftDeclarationType != stringconst::ARG_CALL
-					&& leftDeclarationType != stringconst::ARG_PROGLINE){
+					&& leftDeclarationType != stringconst::ARG_CALL){
 						cout << leftDeclarationType << " & " << leftEntityCond << "mismatch";
 						throw InvalidAttributeException();
 				}
@@ -903,8 +902,8 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 						&& rightDeclarationType != stringconst::ARG_IF
 						&& rightDeclarationType != stringconst::ARG_WHILE
 						&& rightDeclarationType != stringconst::ARG_CALL
-						&& rightDeclarationType != stringconst::ARG_PROGLINE){
-							cout << rightDeclarationType << " & " << rightEntityCond << "mismatch";
+						&& rightDeclarationType != stringconst::ARG_ASSIGN){
+							cout << rightDeclarationType << " & " << rightEntityCond << "`";
 							throw InvalidAttributeException();
 					}
 					withBuilder->setRefType(2, ATTRREF_);
