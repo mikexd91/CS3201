@@ -77,7 +77,7 @@ bool PatternAssgClause::matchVar(AssgNode* assgnode, string var) {
 
 bool PatternAssgClause::matchExpr(AssgNode* assg, string expr) {
 
-	cout << "THIS IS THE RPN " << expr << " : printed from PtnAssgClause" << endl;
+	//cout << "THIS IS THE RPN " << expr << " : printed from PtnAssgClause" << endl;
 
 	// match expr based on the assgnode
 	if (assg == NULL) {

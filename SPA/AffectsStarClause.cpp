@@ -49,7 +49,8 @@ bool AffectsStarClause::evaluateS1FixedS2Generic(string s1){
 
 //e.g. Parent(2, s2)
 unordered_set<string> AffectsStarClause::getAllS2WithS1Fixed(string s1) {
-	return unordered_set<string>();
+	AffectsStarCalculator calc = AffectsStarCalculator();
+	return calc.computeFixedSyn(s1);
 }
 
 //e.g. Parent(_, s2)

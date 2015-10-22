@@ -47,6 +47,33 @@ bool AffectsStarCalculator::computeFixedFixed(string s1String, string s2String) 
 	return false;
 }
 
+unordered_set<string> AffectsStarCalculator::computeFixedSyn(string s1String) {
+	//get node for s1 and s2
+	s1Num = boost::lexical_cast<int>(s1String);
+	Statement* s1 = stmtTable->getStmtObj(s1Num);
+	type = FIXED_SYN;
+	if (s1->getType() != ASSIGN_STMT_) {
+		return unordered_set<string>();
+	}
+	GNode* s1GNode = s1->getGNodeRef();
+	//adds s1's modifies to the list
+	BOOST_FOREACH(string modifiedVar, s1->getModifies()) {
+		unordered_set<int> modifyingStmts = unordered_set<int>();
+		modifyingStmts.insert(s1->getStmtNum());
+		globalState[modifiedVar] = modifyingStmts;
+	}
+	GNode* currentNode = s1GNode;
+	while (!currentNode->isNodeType(END_)) {
+		currentNode = evaluateNode(currentNode, globalState);
+	}
+	//get result
+	unordered_set<string> s2 = unordered_set<string>();
+	BOOST_FOREACH(auto result, globalResult) {
+		s2.insert(boost::lexical_cast<string>(result.first));
+	}
+	return s2;
+}
+
 //returns next node
 GNode* AffectsStarCalculator::evaluateNode(GNode* node, State& state) {
 	if (node->getNodeType() == ASSIGN_) {
@@ -156,11 +183,14 @@ void AffectsStarCalculator::updateStateForAssign(AssgGNode* node, State& state) 
 					//insert itself first
 					globalResult[stmtNum].insert(affectsStmtNum);
 					//find all statement that has affected* affectsStmtNum, and add it into the result
-					globalResult[stmtNum].insert(globalResult[affectsStmtNum].begin(), globalResult[affectsStmtNum].end());
+					if (globalResult.find(affectsStmtNum) != globalResult.end()) {
+						globalResult[stmtNum].insert(globalResult[affectsStmtNum].begin(), globalResult[affectsStmtNum].end());
+					}
 				}
-				unordered_set<int> modifyingStmts = entry->second;
-				result = true;
-				break;
+				if (type == FIXED_FIXED) {
+					result = true;
+					break;
+				}
 			} 
 			//else -> used var has not been modified by stmt before
 		}
@@ -168,23 +198,25 @@ void AffectsStarCalculator::updateStateForAssign(AssgGNode* node, State& state) 
 		//we found the node, just terminate only if not in while loop
 		//or we already know that it affects
 		//otherwise can only eval after looping thru
-		if (result || (!inWhile && stmtNum == s2Num)) {
+		if (type == FIXED_FIXED && (result || (!inWhile && stmtNum == s2Num))) {
 			throw AffectsStarTermination();
 		}
 
-		//for fixed fixed
-		//for each statement, add it in directly if it has been affected
-		//if it is not affected, add it in if it replaces an existing value
 		Statement::ModifiesSet modifiedVariables = assgStmt->getModifies();
 		//should only iterate once
 		BOOST_FOREACH(string modifiedVar, modifiedVariables) {
 			bool isAffectedStmt = globalResult.find(stmtNum) != globalResult.end();
 			bool isReplaceExistingVal = state.find(modifiedVar) != state.end();
-			if (isAffectedStmt || isReplaceExistingVal) {
+			if (isAffectedStmt) {
+				//for each statement, add it in directly if it has been affected
 				//insert or replace value
 				unordered_set<int> modifyingStmts = unordered_set<int>();
 				modifyingStmts.insert(stmtNum);
 				state[modifiedVar] = modifyingStmts;
+			} else if (isReplaceExistingVal) {
+				//if it has not been affected but it replaces an existing value, reset the value
+				//do not add the stmt to the table
+				state[modifiedVar] = unordered_set<int>();
 			}
 		}
 	}

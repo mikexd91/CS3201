@@ -11,6 +11,8 @@ class AffectsStarClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testFixedFixedFail );
 	CPPUNIT_TEST( testFixedGenericPass );
 	CPPUNIT_TEST( testFixedGenericFail );
+	CPPUNIT_TEST( testGenericGenericPass );
+	CPPUNIT_TEST( testFixedSynPass );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -23,6 +25,7 @@ public:
 	void testFixedFixedFail();
 	void testFixedGenericPass();
 	void testFixedGenericFail();
-
+	void testGenericGenericPass();
+	void testFixedSynPass();
 };
     

@@ -26,11 +26,12 @@ public:
 	AffectsStarCalculator(void);
 	~AffectsStarCalculator(void);
 	bool computeFixedFixed(string, string);
+	unordered_set<string> computeFixedSyn(string);
 
 private:
 	typedef unordered_map<string, unordered_set<int>> State;
 	typedef unordered_map<int, unordered_set<int>> AffectsStarResult;
-	enum AffectsStarResultType {FIXED_FIXED};
+	enum AffectsStarResultType {FIXED_FIXED, FIXED_SYN};
 
 	StmtTable* stmtTable;
 	ProcTable* procTable;

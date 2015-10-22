@@ -13,12 +13,14 @@
 #include "../SPA/SuchThatClauseBuilder.h"
 #include "../SPA/Utils.h"
 #include "../SPA/AffectsStarClause.h"
+#include <boost/foreach.hpp>
 
 #include <iostream>
 #include <string>
 
 using namespace stringconst;
 using namespace std;
+using namespace boost;
 
 void AffectsStarClauseTest::setUp() {
 	/*
@@ -521,4 +523,47 @@ void AffectsStarClauseTest::testFixedGenericFail() {
 	bool result = m1->evaluate(&res);
 	CPPUNIT_ASSERT(!result);
 	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
+}
+
+void AffectsStarClauseTest::testGenericGenericPass() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSSTAR_);
+	affectsBuilder->setArg(1, "_");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_GENERIC);
+	affectsBuilder->setArg(2, "_");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_GENERIC);
+	AffectsStarClause* m1 = (AffectsStarClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
+}
+
+void AffectsStarClauseTest::testFixedSynPass() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSSTAR_);
+	affectsBuilder->setArg(1, "6");
+	affectsBuilder->setArgFixed(1, true);
+	affectsBuilder->setArgType(1, ARG_PROGLINE);
+	affectsBuilder->setArg(2, "s");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsStarClause* m1 = (AffectsStarClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	CPPUNIT_ASSERT(m1->evaluate(&res));
+	CPPUNIT_ASSERT(res.isSynPresent("s"));
+	CPPUNIT_ASSERT(res.getResultTableSize() == 7);
+	unordered_set<string> s = res.getSyn("s");
+	CPPUNIT_ASSERT(s.size() == 7);
+	CPPUNIT_ASSERT(s.find("11") != s.end());
+	CPPUNIT_ASSERT(s.find("13") != s.end());
+	CPPUNIT_ASSERT(s.find("14") != s.end());
+	CPPUNIT_ASSERT(s.find("17") != s.end());
+	CPPUNIT_ASSERT(s.find("18") != s.end());
+	CPPUNIT_ASSERT(s.find("19") != s.end());
+	CPPUNIT_ASSERT(s.find("20") != s.end());
 }
