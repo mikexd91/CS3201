@@ -296,7 +296,7 @@ void QueryParserTest::testParser(){
 }
 
 void QueryParserTest::debugTests(){
-	string INPUT = "stmt s; Select s with 5 = s.stmt#";
+	string INPUT = "prog_line s; Select s with 5 = s";
 	Query* QUERY = new Query();
 	parser = QueryParser::getInstance();
 	QUERY = parser->parseQuery(INPUT);
@@ -306,9 +306,9 @@ void QueryParserTest::debugTests(){
 	WithClauseRef WCRstmt = WC->getRightRef();
 
 	CPPUNIT_ASSERT(WCRstmt.getEntity() == "s");
-	CPPUNIT_ASSERT(WCRstmt.getEntityType() == stringconst::ARG_STATEMENT);
-	CPPUNIT_ASSERT(WCRstmt.getAttrType() == STMTNUM_);
-	CPPUNIT_ASSERT(WCRstmt.getRefType() == ATTRREF_);
+	CPPUNIT_ASSERT(WCRstmt.getEntityType() == stringconst::ARG_PROGLINE);
+	CPPUNIT_ASSERT(WCRstmt.getAttrType() == NULLATTR_);
+	CPPUNIT_ASSERT(WCRstmt.getRefType() == SYNONYM_);
 	
 	CPPUNIT_ASSERT(WCRint.getEntity() == "5");
 	CPPUNIT_ASSERT(WCRint.getEntityType() == stringconst::ENTITY_TYPE_INTEGER);
