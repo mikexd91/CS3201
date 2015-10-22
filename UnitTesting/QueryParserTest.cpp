@@ -296,22 +296,22 @@ void QueryParserTest::testParser(){
 }
 
 void QueryParserTest::debugTests(){
-	string INPUT = "prog_line s; Select s with 5 = s";
+	string INPUT = "variable v; Select v with \"asd\" = v.varName";
 	Query* QUERY = new Query();
 	parser = QueryParser::getInstance();
 	QUERY = parser->parseQuery(INPUT);
 	vector<Clause*> VC = QUERY->getClauseList();
 	WithClause* WC = dynamic_cast<WithClause*>(VC.at(0));
-	WithClauseRef WCRint = WC->getLeftRef();
-	WithClauseRef WCRstmt = WC->getRightRef();
+	WithClauseRef WCRstr = WC->getLeftRef();
+	WithClauseRef WCRvar = WC->getRightRef();
 
-	CPPUNIT_ASSERT(WCRstmt.getEntity() == "s");
-	CPPUNIT_ASSERT(WCRstmt.getEntityType() == stringconst::ARG_PROGLINE);
-	CPPUNIT_ASSERT(WCRstmt.getAttrType() == NULLATTR_);
-	CPPUNIT_ASSERT(WCRstmt.getRefType() == SYNONYM_);
+	CPPUNIT_ASSERT(WCRstr.getEntity() == "asd");
+	CPPUNIT_ASSERT(WCRstr.getEntityType() == stringconst::ENTITY_TYPE_IDENT);
+	CPPUNIT_ASSERT(WCRstr.getAttrType() == NULLATTR_);
+	CPPUNIT_ASSERT(WCRstr.getRefType() == IDENT_);
 	
-	CPPUNIT_ASSERT(WCRint.getEntity() == "5");
-	CPPUNIT_ASSERT(WCRint.getEntityType() == stringconst::ENTITY_TYPE_INTEGER);
-	CPPUNIT_ASSERT(WCRint.getAttrType() == NULLATTR_);
-	CPPUNIT_ASSERT(WCRint.getRefType() == INTEGER_);
+	CPPUNIT_ASSERT(WCRvar.getEntity() == "v");
+	CPPUNIT_ASSERT(WCRvar.getEntityType() == stringconst::ARG_VARIABLE);
+	CPPUNIT_ASSERT(WCRvar.getAttrType() == VARNAME_);
+	CPPUNIT_ASSERT(WCRvar.getRefType() == ATTRREF_);
 }
