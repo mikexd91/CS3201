@@ -160,22 +160,31 @@ void AffectsStarCalculator::updateStateForAssign(AssgGNode* node, State& state) 
 					globalResult[stmtNum].insert(globalResult[affectsStmtNum].begin(), globalResult[affectsStmtNum].end());
 				}
 				unordered_set<int> modifyingStmts = entry->second;
-				//for fixed fixed
-				//only add its modifies to the list, if it has been affect* by the statement
-				Statement::ModifiesSet modifiedVariables = assgStmt->getModifies();
-				BOOST_FOREACH(string modifiedVar, modifiedVariables) {
-					unordered_set<int> modifyingStmts = unordered_set<int>();
-					modifyingStmts.insert(stmtNum);
-					state[modifiedVar] = modifyingStmts;
-				}
 				result = true;
 				break;
 			} 
-			//else -> used var has not been modified by stmt before, ignore
+			//else -> used var has not been modified by stmt before
 		}
+		//for fixed fixed
+		//for each statement, add it in directly if it has been affected
+		//if it does not affect, add it in if it replaces an existing value
+		Statement::ModifiesSet modifiedVariables = assgStmt->getModifies();
+		//should only iterate once
+		BOOST_FOREACH(string modifiedVar, modifiedVariables) {
+			bool isAffectedStmt = globalResult.find(stmtNum) != globalResult.end();
+			bool isReplaceExistingVal = state.find(modifiedVar) != state.end();
+			if (isAffectedStmt || isReplaceExistingVal) {
+				//insert or replace value
+				unordered_set<int> modifyingStmts = unordered_set<int>();
+				modifyingStmts.insert(stmtNum);
+				state[modifiedVar] = modifyingStmts;
+			}
+		}
+
 		//we found the node, just terminate only if not in while loop
+		//or we already know that it affects
 		//otherwise can only eval after looping thru
-		if (!inWhile && stmtNum == s2Num) {
+		if (result || (!inWhile && stmtNum == s2Num)) {
 			throw AffectsTermination();
 		}
 	}
