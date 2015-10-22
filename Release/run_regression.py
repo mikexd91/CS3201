@@ -31,3 +31,16 @@ os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Follow
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-MultiClause-ss1.txt SystemTests/Results/followsstar_multiclause.xml")
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-StmtOverflow-ss1.txt SystemTests/Results/followsstar_stmtoverflow.xml")
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-Misc-ss1.txt SystemTests/Results/followsstar_misc.xml")
+
+# NEXT(*) CLAUSE
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-ss1.txt SystemTests/Results/next.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-MultiClause-ss1.txt SystemTests/Results/next_multiclause.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-StmtOverflow-ss1.txt SystemTests/Results/next_stmtoverflow.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-Misc-ss1.txt SystemTests/Results/next_misc.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-ss1.txt SystemTests/Results/nextstar.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-MultiClause-ss1.txt SystemTests/Results/nextstar_multiclause.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-StmtOverflow-ss1.txt SystemTests/Results/nextstar_stmtoverflow.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-Misc-ss1.txt SystemTests/Results/nextstar_misc.xml")
+
+# PATTERN CLAUSE
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Pattern-ss1.txt SystemTests/Results/pattern.xml")

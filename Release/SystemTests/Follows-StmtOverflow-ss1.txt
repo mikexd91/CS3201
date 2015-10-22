@@ -8,8 +8,13 @@ variable v;
 Select v such that Follows(-1, v)
 none
 5000
-3 - FOLLOWS: stmt underflow
+3 - FOLLOWS: invalid argument
 variable v;
-Select v such that Follows(0, v)
+Select v such that Follows(1, v)
+none
+5000
+4 - FOLLOWS: invalid argument
+procedure p;
+Select p such that Follows(1, p)
 none
 5000

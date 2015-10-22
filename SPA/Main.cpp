@@ -28,10 +28,8 @@ int main() {
 		exit(EXIT_FAILURE);
 	}
 
-	// designExtractor.extract();
-
 	PQLController* pqlController = new PQLController();
-	string query = "while w; Select w pattern w(\"battle3\", _)";
+	string query = "while w; Select w such that Parent(w, 4)";
 	try {
 		unordered_set<string> resultSet = pqlController->parse(query);
 		BOOST_FOREACH(auto r, resultSet) {

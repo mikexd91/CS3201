@@ -14,6 +14,12 @@ struct InvalidDeclarationException : public std::exception{
 	}
 };
 
+struct DuplicateDeclarationException : public std::exception{
+	const char * what() const throw(){
+		return "Duplicate declaration!";
+	}
+};
+
 struct InvalidSelectException : public std::exception{
 	const char * what() const throw(){
 		return "Query invalid!";
@@ -59,5 +65,11 @@ struct InvalidSyntaxException : public std::exception{
 struct InvalidAttributeException : public std::exception{
 	const char* what () const throw(){
 		return "Attribute condition mismatch";
+	}
+};
+
+struct ParseTimeException : public std::exception{
+	const char* what () const throw(){
+		return "Clause building failed";
 	}
 };
