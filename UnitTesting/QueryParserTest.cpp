@@ -186,8 +186,8 @@ void QueryParserTest::testParseParentStar(){
 }
 
 void QueryParserTest::testWith(){
-	string const DECLARATION = "constant c;";
-	string const USER_IN = "c.value = 1";
+	string const DECLARATION = "stmt s;";
+	string const USER_IN = "s.stmt# = 1";
 	vector<string> DEC_LIST = vector<string>();
 	parser->tokeniser(DECLARATION, ';', &DEC_LIST);
 	queue<string>* WITH_Q = new queue<string>();
@@ -296,8 +296,22 @@ void QueryParserTest::testParser(){
 }
 
 void QueryParserTest::debugTests(){
-	string INPUT = "assign a; Select a.stmt# such that Uses(a, \"ivysaur\")";
+	string INPUT = "stmt s; Select s with 5 = s.stmt#";
 	Query* QUERY = new Query();
 	parser = QueryParser::getInstance();
 	QUERY = parser->parseQuery(INPUT);
+	vector<Clause*> VC = QUERY->getClauseList();
+	WithClause* WC = dynamic_cast<WithClause*>(VC.at(0));
+	WithClauseRef WCRint = WC->getLeftRef();
+	WithClauseRef WCRstmt = WC->getRightRef();
+
+	CPPUNIT_ASSERT(WCRstmt.getEntity() == "s");
+	CPPUNIT_ASSERT(WCRstmt.getEntityType() == stringconst::ARG_STATEMENT);
+	CPPUNIT_ASSERT(WCRstmt.getAttrType() == STMTNUM_);
+	CPPUNIT_ASSERT(WCRstmt.getRefType() == ATTRREF_);
+	
+	CPPUNIT_ASSERT(WCRint.getEntity() == "5");
+	CPPUNIT_ASSERT(WCRint.getEntityType() == stringconst::ENTITY_TYPE_INTEGER);
+	CPPUNIT_ASSERT(WCRint.getAttrType() == NULLATTR_);
+	CPPUNIT_ASSERT(WCRint.getRefType() == INTEGER_);
 }
