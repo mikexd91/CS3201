@@ -123,8 +123,18 @@ while w;
 Select w such that Parent*(15, w) pattern w("battle3", _)
 18
 5000
-26 - PARENT*-if: pattern-left defined
+26 - PARENT*-while: pattern-left defined synonym
+while w; variable v;
+Select w such that Parent*(15, w) pattern w(v, _)
+17, 18
+5000
+27 - PARENT*-if: pattern-left defined
 if i;
 Select i such that Parent*(i, 22) pattern i("squirtle", _, _)
 none
+5000
+28 - PARENT*-if: pattern-left defined synonym
+if i; variable v;
+Select i such that Parent*(i, 21) pattern i(v, _, _)
+20
 5000

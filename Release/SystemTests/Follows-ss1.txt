@@ -123,33 +123,53 @@ assign a1, a2;
 Select a1 such that Follows(a1, 4) pattern a2("lastPokemon", _)
 3
 5000
-26 - FOLLOWS-assign: pattern-both defined (match select)
+26 - FOLLOWS-assign: pattern-left defined synonym
+assign a; variable v;
+Select a such that Follows(a, _) pattern a(v, _)
+1, 2, 3, 4, 6, 7, 8, 10, 11, 12, 13, 14, 16
+5000
+27 - FOLLOWS-assign: pattern-both defined (match select)
 assign a;
 Select a such that Follows(a, _) pattern a("wartortle", _"squirtle"_)
 10
 5000
-27 - FOLLOWS-assign: pattern-both defined (does not match select)
+28 - FOLLOWS-assign: pattern-both defined (does not match select)
 assign a1, a2;
 Select a1 such that Follows(a1, 1) pattern a2("battle2", "charmeleon")
 none
 5000
-28 - FOLLOWS-while: pattern (match select)
+29 - FOLLOWS-assign: pattern-both defined, left synonym
+assign a; variable v;
+Select a such that Follows(a, _) pattern a(v, _"squirtle"_)
+10, 14
+5000
+30 - FOLLOWS-while: pattern (match select)
 while w;
 Select w such that Follows(w, _) pattern w("battle3", _)
 18
 5000
-29 - FOLLOWS-while: pattern (does not match select)
+31 - FOLLOWS-while: pattern (does not match select)
 stmt s; while w;
 Select s such that Follows(s, w) pattern w("battle4", _)
 none
 5000
-30 - FOLLOWS-if: pattern (match select)
+32 - FOLLOWS-while: pattern, left synonym
+while w; variable v;
+Select w such that Follows(_, w) pattern w(v, _)
+5, 15, 17
+5000
+33 - FOLLOWS-if: pattern (match select)
 if i;
 Select i such that Follows(i, _) pattern i("wartortle", _, _)
 none
 5000
-31 - FOLLOWS-if: pattern (does not match select)
+34 - FOLLOWS-if: pattern (does not match select)
 assign a; if i;
 Select a such that Follows(a, _) pattern i("battle2", _, _)
 none
+5000
+35 - FOLLOWS-if: pattern, left synonym
+if i; variable v;
+Select i such that Follows(i, _) pattern i(v, _, _)
+20
 5000
