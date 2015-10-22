@@ -45,5 +45,8 @@ import os
 # PATTERN CLAUSE
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Pattern-ss1.txt SystemTests/Results/pattern.xml")
 
+# WITH CLAUSE
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/With-ss1.txt SystemTests/Results/with.xml")
+
 # TEMP
 # os.system("AutoTester SystemTests/Sources/Source-File-2.txt SystemTests/test.txt SystemTests/Results/test.xml")

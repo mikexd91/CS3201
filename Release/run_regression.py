@@ -44,3 +44,6 @@ os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextSt
 
 # PATTERN CLAUSE
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Pattern-ss1.txt SystemTests/Results/pattern.xml")
+
+# WITH CLAUSE
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/With-ss1.txt SystemTests/Results/with.xml")
