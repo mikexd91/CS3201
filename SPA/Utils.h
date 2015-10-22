@@ -79,6 +79,8 @@ namespace stringconst{
 	string const ATTR_COND_VALUE = "value";
 	string const ATTR_COND_STMTNUM = "stmt#";
 	
+	string const ENTITY_TYPE_INTEGER = "integer";
+	string const ENTITY_TYPE_IDENT = "identity";
 
 	const string DELIM_STRING = " ;={}";
 	const char DELIMITERS[] = { ';', '=', '{', '}' };

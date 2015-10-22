@@ -50,12 +50,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION( QueryParserTest);
 
 void QueryParserTest::testDeclaration(){
 	parser = QueryParser::getInstance();
-	string const DEC = "variable v; constant c; while w; stmt s; assign a; procedure p; if i; call cl";
+	string const DEC = "variable v; constant c; while w; stmt s, v; assign a; procedure p; if i; call cl";
 	Query* Q = new Query();
 	vector<string>* split = new vector<string>();
 	parser->tokeniser(DEC, ';', split);
-	parser->parseDeclarations(Q, split);
-	unordered_map<string,string> declist = Q->getDeclarationList();
+	CPPUNIT_ASSERT_THROW(parser->parseDeclarations(Q, split), DuplicateDeclarationException);
+	/*unordered_map<string,string> declist = Q->getDeclarationList();
 	CPPUNIT_ASSERT(declist.at("v") == stringconst::ARG_VARIABLE);
 	CPPUNIT_ASSERT(declist.at("c") == "constant");
 	CPPUNIT_ASSERT(declist.at("cl") == "call");
@@ -63,7 +63,7 @@ void QueryParserTest::testDeclaration(){
 	CPPUNIT_ASSERT(declist.at("w") == "while");
 	CPPUNIT_ASSERT(declist.at("a") == "assign");
 	CPPUNIT_ASSERT(declist.at("p") == "procedure");
-	CPPUNIT_ASSERT(declist.at("i") == "if");
+	CPPUNIT_ASSERT(declist.at("i") == "if");*/
 }
 
 void QueryParserTest::testSelectSingle(){
@@ -118,6 +118,24 @@ void QueryParserTest::testSelectTuple(){
 	CPPUNIT_ASSERT(SEL_V1.getSecond() == stringconst::ARG_VARIABLE);
 	CPPUNIT_ASSERT(SEL_V2.getFirst() == "c");
 	CPPUNIT_ASSERT(SEL_V2.getSecond() == stringconst::ARG_CONSTANT);
+}
+
+void QueryParserTest::testSelectAttribute(){
+	parser = QueryParser::getInstance();
+	string const DEC = "variable v; constant c; while w; stmt s; assign a; procedure p; if i; call cl";
+	string const SEL = "Select v.varName with";
+	Query* Q = new Query();
+	vector<string>* V_DEC = new vector<string>();
+	parser->tokeniser(DEC, ';', V_DEC);
+	parser->parseDeclarations(Q, V_DEC);
+	queue<string>* Q_SEL = new queue<string>();
+	parser->queueBuilder(SEL, Q_SEL);
+	parser->parseSelectSynonyms(Q, Q_SEL);
+	vector<StringPair> L_SEL = Q->getSelectList();
+	StringPair SEL_V1 = L_SEL.at(0);
+	CPPUNIT_ASSERT(SEL_V1.getFirst() == "v");
+	CPPUNIT_ASSERT(SEL_V1.getSecond() == stringconst::ARG_VARIABLE);
+	CPPUNIT_ASSERT(SEL_V1.getAttribute() == stringconst::ATTR_COND_VARNAME);
 }
 
 void QueryParserTest::testParseClauseUses(){
@@ -179,42 +197,42 @@ void QueryParserTest::testWith(){
 	parser->parseWith(ASSERTION, WITH_Q);
 	vector<Clause*> cl = ASSERTION->getClauseList();
 	Clause* w = cl.at(0);
-	ClauseType type = w->getClauseType();
-	if (type == FOLLOWS_){
-		cout << 1;
-	} else if (type == FOLLOWSSTAR_){
-		cout << 2;
-	} else if (type == PARENT_){
-		cout << 3;
-	} else if (type == PARENTSTAR_){
-		cout << 4;
-	} else if (type == USES_){
-		cout << 5;
-	}  else if (type == MODIFIES_){
-		cout << 6;
-	} else if (type == CALLS_){
-		cout << 7;
-	} else if (type == CALLSSTAR_){
-		cout << 8;
-	} else if (type == NEXT_){
-		cout << 9;
-	} else if (type == NEXTSTAR_){
-		cout << 10;
-	} else if (type == AFFECTS_){
-		cout << 11;
-	} else if (type == AFFECTSSTAR_){
-		cout << 12;
-	}  else if (type == PATTERNASSG_){
-		cout << 13;
-	}  else if (type == PATTERNIF_){
-		cout << 14;
-	}  else if (type == PATTERNWHILE_){
-		cout << 15;
-	}  else if (type == WITH_){
-		cout << 16;
-	} else {
-		cout << "nope";
-	}
+	//ClauseType type = w->getClauseType();
+	//if (type == FOLLOWS_){
+	//	cout << 1;
+	//} else if (type == FOLLOWSSTAR_){
+	//	cout << 2;
+	//} else if (type == PARENT_){
+	//	cout << 3;
+	//} else if (type == PARENTSTAR_){
+	//	cout << 4;
+	//} else if (type == USES_){
+	//	cout << 5;
+	//}  else if (type == MODIFIES_){
+	//	cout << 6;
+	//} else if (type == CALLS_){
+	//	cout << 7;
+	//} else if (type == CALLSSTAR_){
+	//	cout << 8;
+	//} else if (type == NEXT_){
+	//	cout << 9;
+	//} else if (type == NEXTSTAR_){
+	//	cout << 10;
+	//} else if (type == AFFECTS_){
+	//	cout << 11;
+	//} else if (type == AFFECTSSTAR_){
+	//	cout << 12;
+	//}  else if (type == PATTERNASSG_){
+	//	cout << 13;
+	//}  else if (type == PATTERNIF_){
+	//	cout << 14;
+	//}  else if (type == PATTERNWHILE_){
+	//	cout << 15;
+	//}  else if (type == WITH_){
+	//	cout << 16;
+	//} else {
+	//	cout << "nope";
+	//}
 	//CPPUNIT_ASSERT(type == WITH_);
 	//WithClauseRef wl = w->getLeftRef();
 	//WithClauseRef wr = w->getRightRef();
@@ -229,13 +247,57 @@ void QueryParserTest::testWith(){
 }
 
 void QueryParserTest::testParser(){
-	string const INPUTLINE1 = "variable v; stmt s; Select s such that Uses(s,v) and Follows*(1,2) and Parent(4,5)";
+	string const INPUTLINE1 = "variable v; assign a; while w; Select a such that Uses(a,v) and Follows*(1,2) and Parent(4,5) and pattern w(_,_)";
 	parser = QueryParser::getInstance();
 	Query* QUERY = new Query();
 	QUERY = parser->parseQuery(INPUTLINE1);
 	vector<Clause*> VC = QUERY->getClauseList();
-	CPPUNIT_ASSERT(VC.size() == 3);
+	CPPUNIT_ASSERT(VC.size() == 4);
 	CPPUNIT_ASSERT(VC.at(0)->getClauseType() == USES_);
 	CPPUNIT_ASSERT(VC.at(1)->getClauseType() == FOLLOWSSTAR_);
 	CPPUNIT_ASSERT(VC.at(2)->getClauseType() == PARENT_);
+	//CPPUNIT_ASSERT(VC.at(3)->getClauseType() == PATTERNWHILE_);
+	//ClauseType type = VC.at(3)->getClauseType();
+	//if (type == FOLLOWS_){
+	//	cout << 1;
+	//} else if (type == FOLLOWSSTAR_){
+	//	cout << 2;
+	//} else if (type == PARENT_){
+	//	cout << 3;
+	//} else if (type == PARENTSTAR_){
+	//	cout << 4;
+	//} else if (type == USES_){
+	//	cout << 5;
+	//}  else if (type == MODIFIES_){
+	//	cout << 6;
+	//} else if (type == CALLS_){
+	//	cout << 7;
+	//} else if (type == CALLSSTAR_){
+	//	cout << 8;
+	//} else if (type == NEXT_){
+	//	cout << 9;
+	//} else if (type == NEXTSTAR_){
+	//	cout << 10;
+	//} else if (type == AFFECTS_){
+	//	cout << 11;
+	//} else if (type == AFFECTSSTAR_){
+	//	cout << 12;
+	//}  else if (type == PATTERNASSG_){
+	//	cout << 13;
+	//}  else if (type == PATTERNIF_){
+	//	cout << 14;
+	//}  else if (type == PATTERNWHILE_){
+	//	cout << 15;
+	//}  else if (type == WITH_){
+	//	cout << 16;
+	//} else {
+	//	cout << "nope";
+	//}
+}
+
+void QueryParserTest::debugTests(){
+	string INPUT = "assign a; Select a.stmt# such that Uses(a, \"ivysaur\")";
+	Query* QUERY = new Query();
+	parser = QueryParser::getInstance();
+	QUERY = parser->parseQuery(INPUT);
 }
