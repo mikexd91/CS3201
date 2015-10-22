@@ -168,32 +168,43 @@ assign a1, a2;
 Select a1 such that Uses(a1, "bulbasaur") pattern a2("lastPokemon", _)
 7, 11
 5000
-35 - USES-assign: pattern-both defined (match select)
+35 - USES-assign: pattern-left defined synonym
+assign a; variable v;
+Select a such that Uses(14, v) pattern a(v, _)
+2, 11
+5000
+36 - USES-assign: pattern-both defined (match select)
 assign a;
 Select a such that Uses(a, _) pattern a("wartortle", _"squirtle"_)
 10, 21
 5000
-36 - USES-assign: pattern-both defined (does not match select)
+37 - USES-assign: pattern-both defined (does not match select)
 assign a1, a2;
 Select a1 such that Uses(a1, "charmander") pattern a2("battle2", "charmeleon")
 none
 5000
-37 - USES-while: pattern (match select)
+38 - USES-assign: pattern-both defined, left synonym
+assign a; variable v;
+Select a such that Uses(a, v) pattern a(v, _"squirtle"_)
+8
+5000
+5000
+39 - USES-while: pattern (match select)
 while w;
 Select w such that Uses(w, _) pattern w("battle3", _)
 18
 5000
-38 - USES-while: pattern (does not match select)
+40 - USES-while: pattern (does not match select)
 stmt s; while w;
 Select s such that Uses(s, w) pattern w("battle4", _)
 none
 5000
-39 - USES-if: pattern (match select)
+41 - USES-if: pattern (match select)
 if i;
 Select i such that Uses(i, _) pattern i("wartortle", _, _)
 20
 5000
-40 - USES-if: pattern (does not match select)
+42 - USES-if: pattern (does not match select)
 assign a; if i;
 Select a such that Uses(a, _) pattern i("battle2", _, _)
 none
