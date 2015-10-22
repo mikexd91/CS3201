@@ -52,7 +52,7 @@ unordered_set<string> AffectsCalculator::computeAllS1() {
 }
 
 
-bool AffectsCalculator::computeGeneric() {
+bool AffectsCalculator::computeS1GenericS2Generic() {
 	//used for insertion
 	type = GENERIC_GENERIC;
 	try {
@@ -142,8 +142,7 @@ GNode* AffectsCalculator::evaluateNode(GNode* node, State& state) {
 		updateStateForCall(callNode, state);
 		return callNode->getChild();
 	} else {
-		//only dummy node
-		cout << "Why are we accessing this unknown node?" << endl;
+		//dummy node
 		return node->getChildren().at(0);
 	}
 }

@@ -515,7 +515,7 @@ void AffectsClauseTest::testFixedFixedOutsideContainerPass() {
 void AffectsClauseTest::testFixedGenericPass() { 
 	Result res = Result();
 	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
-	affectsBuilder->setArg(1, "6");
+	affectsBuilder->setArg(1, "10");
 	affectsBuilder->setArgFixed(1, true);
 	affectsBuilder->setArgType(1, ARG_PROGLINE);
 	affectsBuilder->setArg(2, "_");

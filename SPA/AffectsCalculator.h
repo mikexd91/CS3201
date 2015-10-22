@@ -32,7 +32,7 @@ public:
 	//Affects(_,s2)
 	unordered_set<string> computeAllS2(void);
 	//AFfects(_,_)
-	bool computeGeneric(void);
+	bool computeS1GenericS2Generic(void);
 	//Affects(1,_)
 	bool computeS1FixedS2Generic(string);
 

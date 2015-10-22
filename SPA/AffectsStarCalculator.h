@@ -13,7 +13,7 @@ using boost::unordered_map;
 
 //thrown to break out of recursion so that we will return to the top level
 //used for Affects(_,_), where we want to terminate after finding a single pair
-struct AffectsTermination : public std::exception {
+struct AffectsStarTermination : public std::exception {
   const char * what () const throw () {
     return "We found a pair, we can terminate Affects(_,_) , and this is a bad hack.";
   }

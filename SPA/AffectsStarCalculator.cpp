@@ -41,7 +41,7 @@ bool AffectsStarCalculator::computeFixedFixed(string s1String, string s2String) 
 		while (!currentNode->isNodeType(END_)) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
-	} catch (AffectsTermination e) {
+	} catch (AffectsStarTermination e) {
 		return result;
 	}
 	return false;
@@ -97,12 +97,11 @@ void AffectsStarCalculator::updateStateForWhile(WhileGNode* whileNode, State& st
 	} while (!areResultsEqual(previousResult, globalResult));
 	//check if stmt we want is in results
 	if (type == FIXED_FIXED) {
-		if (globalResult.find(s2Num) != globalResult.end()) {
-			//s2 was already evaluated, if it is in result (meaning that it satisfy the relationship, we return true!
-			//let's enforce a stricter rule
-			unordered_set<int> affectsStarS2 = globalResult[s2Num];
-			result = affectsStarS2.find(s1Num) != affectsStarS2.end();
-			throw AffectsTermination();
+		Statement* whileStmt = stmtTable->getStmtObj(whileNode->getStmtNum());
+		Statement::ChildrenStarSet children = whileStmt->getChildrenStar();
+		if (children.find(s2Num) != children.end()) {
+			result = globalResult.find(s2Num) != globalResult.end();
+			throw AffectsStarTermination();
 		}
 	}
 
@@ -165,9 +164,17 @@ void AffectsStarCalculator::updateStateForAssign(AssgGNode* node, State& state) 
 			} 
 			//else -> used var has not been modified by stmt before
 		}
+
+		//we found the node, just terminate only if not in while loop
+		//or we already know that it affects
+		//otherwise can only eval after looping thru
+		if (result || (!inWhile && stmtNum == s2Num)) {
+			throw AffectsStarTermination();
+		}
+
 		//for fixed fixed
 		//for each statement, add it in directly if it has been affected
-		//if it does not affect, add it in if it replaces an existing value
+		//if it is not affected, add it in if it replaces an existing value
 		Statement::ModifiesSet modifiedVariables = assgStmt->getModifies();
 		//should only iterate once
 		BOOST_FOREACH(string modifiedVar, modifiedVariables) {
@@ -179,13 +186,6 @@ void AffectsStarCalculator::updateStateForAssign(AssgGNode* node, State& state) 
 				modifyingStmts.insert(stmtNum);
 				state[modifiedVar] = modifyingStmts;
 			}
-		}
-
-		//we found the node, just terminate only if not in while loop
-		//or we already know that it affects
-		//otherwise can only eval after looping thru
-		if (result || (!inWhile && stmtNum == s2Num)) {
-			throw AffectsTermination();
 		}
 	}
 }

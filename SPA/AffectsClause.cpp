@@ -108,7 +108,7 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 //e.g. Parent(_,_)
 bool AffectsClause::evaluateS1GenericS2Generic() {
 	AffectsCalculator calc = AffectsCalculator();
-	return calc.computeGeneric();
+	return calc.computeS1GenericS2Generic();
 }
 
 //e.g. Parent(2, s2)

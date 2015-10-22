@@ -471,3 +471,54 @@ void AffectsStarClauseTest::testFixedFixedPassInWhile() {
 	CPPUNIT_ASSERT(result);
 	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
 }
+
+void AffectsStarClauseTest::testFixedFixedFail() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSSTAR_);
+	affectsBuilder->setArg(1, "7");
+	affectsBuilder->setArgFixed(1, true);
+	affectsBuilder->setArgType(1, ARG_PROGLINE);
+	affectsBuilder->setArg(2, "15");
+	affectsBuilder->setArgFixed(2, true);
+	affectsBuilder->setArgType(2, ARG_PROGLINE);
+	AffectsStarClause* m1 = (AffectsStarClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(!result);
+	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
+}
+
+void AffectsStarClauseTest::testFixedGenericPass() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSSTAR_);
+	affectsBuilder->setArg(1, "10");
+	affectsBuilder->setArgFixed(1, true);
+	affectsBuilder->setArgType(1, ARG_PROGLINE);
+	affectsBuilder->setArg(2, "_");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_GENERIC);
+	AffectsStarClause* m1 = (AffectsStarClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
+}
+
+void AffectsStarClauseTest::testFixedGenericFail() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSSTAR_);
+	affectsBuilder->setArg(1, "7");
+	affectsBuilder->setArgFixed(1, true);
+	affectsBuilder->setArgType(1, ARG_PROGLINE);
+	affectsBuilder->setArg(2, "_");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_GENERIC);
+	AffectsStarClause* m1 = (AffectsStarClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(!result);
+	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
+}

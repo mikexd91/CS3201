@@ -1,10 +1,6 @@
 #include "AffectsStarClause.h"
 #include "AffectsStarCalculator.h"
-#include "CFG.h"
-#include "AssgGNode.h"
-#include "DummyGNode.h"
-#include "IfGNode.h"
-#include "WhileGNode.h"
+#include "AffectsCalculator.h"
 #include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
 #include <assert.h>
@@ -36,7 +32,8 @@ bool AffectsStarClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg
 
 //e.g. Parent(_,_)
 bool AffectsStarClause::evaluateS1GenericS2Generic() {
-	return false;
+	AffectsCalculator calc = AffectsCalculator();
+	return calc.computeS1GenericS2Generic();
 }
 
 //e.g. Parent(_,2)
@@ -46,7 +43,8 @@ bool AffectsStarClause::evaluateS1GenericS2Fixed(string s2) {
 
 //e.g. Parent(2,_)
 bool AffectsStarClause::evaluateS1FixedS2Generic(string s1){
-	return false;
+	AffectsCalculator calc = AffectsCalculator();
+	return calc.computeS1FixedS2Generic(s1);
 }
 
 //e.g. Parent(2, s2)

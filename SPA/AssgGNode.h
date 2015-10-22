@@ -1,5 +1,4 @@
 #pragma once
-
 #include "GNode.h"
 
 class AssgGNode : public GNode {
