@@ -152,7 +152,7 @@ void AffectsCalculator::updateStateForCall(CallGNode* callNode, State& state) {
 	Statement::ModifiesSet modifiedVariables = callStmt->getModifies();
 	//for all variables that is modified by call, reset it
 	BOOST_FOREACH(string modifiedVar, modifiedVariables) {
-		state[modifiedVar] =  unordered_set<int>();
+		state.erase(modifiedVar);
 	}
 }
 
