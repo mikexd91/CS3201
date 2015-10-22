@@ -917,7 +917,7 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 					withBuilder->setRefType(2, ATTRREF_);
 					withBuilder->setAttrType(2, CONSTVALUE_);
 				} else if (rightEntityCond == stringconst::ATTR_COND_VARNAME){
-					if (rightDeclarationType == stringconst::ARG_VARIABLE){
+					if (rightDeclarationType != stringconst::ARG_VARIABLE){
 						cout << rightDeclarationType << " & " << rightEntityCond << "mismatch";
 						throw InvalidAttributeException();
 					}

@@ -469,8 +469,21 @@ bool WithClause::evalStmtInt(WithClauseRef stmtEnt, WithClauseRef intEnt, Result
 				result->push(insert);
 			}
 			return found;
-		}  else if (stmtEnt.getEntityType() == stringconst::ARG_CALL){
+		} else if (stmtEnt.getEntityType() == stringconst::ARG_CALL){
 			unordered_set<Statement*> allS = stable->getCallStmts();
+			bool found = false;
+			BOOST_FOREACH(Statement* s, allS){
+				if (s->getStmtNum() == stoi(intEnt.getEntity())){
+					found = true;
+					insert.insertValue(intEnt.getEntity());
+				}
+			}
+			if (found){
+				result->push(insert);
+			}
+			return found;
+		} else if (stmtEnt.getEntityType() == stringconst::ARG_ASSIGN){
+			unordered_set<Statement*> allS = stable->getAssgStmts();
 			bool found = false;
 			BOOST_FOREACH(Statement* s, allS){
 				if (s->getStmtNum() == stoi(intEnt.getEntity())){
