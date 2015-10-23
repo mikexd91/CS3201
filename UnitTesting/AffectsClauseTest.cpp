@@ -633,6 +633,31 @@ void AffectsClauseTest::testSynSynPass() {
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair7) != pairResults.end());
 }
 
+void AffectsClauseTest::testSameSynSynPass() { 
+	//need to wait for pointer from if to dummy node
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder->setArg(1, "s");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_STATEMENT);
+	affectsBuilder->setArg(2, "s");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsClause* m1 = (AffectsClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	CPPUNIT_ASSERT(m1->evaluate(&res));
+	CPPUNIT_ASSERT(res.isSynPresent("s"));
+	vector<string> syns;
+	syns.push_back("s");
+	syns.push_back("s");
+	unordered_set<vector<string>> pairResults = res.getMultiSyn(syns);
+	CPPUNIT_ASSERT(pairResults.size() == 1);
+	string pairString[] = {"5", "5"};
+	vector<string> pair(pairString, pairString+2);
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair) != pairResults.end());
+}
+
 // under nick
 void AffectsClauseTest::testGenericFixedPass() { 
 	Result res = Result();

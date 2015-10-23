@@ -1,4 +1,6 @@
 #include "MultiSynInsert.h"
+#include "SingleSynInsert.h"
+#include <boost/foreach.hpp>
 
 MultiSynInsert::MultiSynInsert() {
 	 multiInsertValues = unordered_set<vector<string>>();
@@ -16,6 +18,14 @@ bool MultiSynInsert::execute(ResultTable& resultTable) {
 	if (multiInsertSyns.empty() || multiInsertValues.empty()) {
 		resultTable.synList.clear();
 		resultTable.rows.clear();
+	} else if (areSynsSame(multiInsertSyns)) {
+		//pass to SingleSynInsert instead
+		SingleSynInsert insert = SingleSynInsert();
+		insert.setSyn(multiInsertSyns.at(0));
+		BOOST_FOREACH(vector<string> value, multiInsertValues) {
+			insert.insertValue(value.at(0));
+		}
+		insert.execute(resultTable);
 	} else {
 		//get number of syns present
 		vector<string> existingSyns = resultTable.synList;
@@ -182,6 +192,11 @@ void MultiSynInsert::addToRow(Row& tableRow, vector<int> uniqueSynsInInsert, vec
 					uniqueSynsInInsertIter++) {
 		tableRow.push_back(insertValues.at(*uniqueSynsInInsertIter));
 	}
+}
+
+bool MultiSynInsert::areSynsSame(vector<string> syns) {
+	return all_of(syns.begin()+1, syns.end(),
+          [&](const string & r) {return r==syns.front();});
 }
 
 
