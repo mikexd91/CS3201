@@ -126,7 +126,7 @@ Select a1 such that Follows(a1, 4) pattern a2("lastPokemon", _)
 26 - FOLLOWS-assign: pattern-left defined synonym
 assign a; variable v;
 Select a such that Follows(a, _) pattern a(v, _)
-1, 2, 3, 4, 6, 7, 8, 10, 11, 12, 13, 14, 16
+1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 16
 5000
 27 - FOLLOWS-assign: pattern-both defined (match select)
 assign a;
@@ -170,6 +170,6 @@ none
 5000
 35 - FOLLOWS-if: pattern, left synonym
 if i; variable v;
-Select i such that Follows(i, _) pattern i(v, _, _)
+Select i such that Follows(_, i) pattern i(v, _, _)
 20
 5000

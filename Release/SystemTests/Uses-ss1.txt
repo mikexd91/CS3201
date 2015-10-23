@@ -171,7 +171,7 @@ Select a1 such that Uses(a1, "bulbasaur") pattern a2("lastPokemon", _)
 35 - USES-assign: pattern-left defined synonym
 assign a; variable v;
 Select a such that Uses(14, v) pattern a(v, _)
-2, 11
+2, 8, 11, 19
 5000
 36 - USES-assign: pattern-both defined (match select)
 assign a;
@@ -187,7 +187,6 @@ none
 assign a; variable v;
 Select a such that Uses(a, v) pattern a(v, _"squirtle"_)
 8
-5000
 5000
 39 - USES-while: pattern (match select)
 while w;

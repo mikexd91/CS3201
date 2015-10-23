@@ -176,7 +176,7 @@ Select a1 such that Modifies(a1, "charmander") pattern a2("battle2", _"charmeleo
 36 - MODIFIES-assign: pattern-both defined, left synonym
 assign a; variable v;
 Select a such that Modifies(a, v) pattern a(v, _"wartortle"_)
-22
+12, 16, 19, 22
 5000
 37 - MODIFIES-while: pattern (match select)
 while w;
