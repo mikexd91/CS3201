@@ -8,8 +8,6 @@
 AffectsStarCalculator::AffectsStarCalculator() {
 	stmtTable = StmtTable::getInstance();
 	cfg = CFG::getInstance();
-	singleSynResults = unordered_set<string>();
-	multiSynResults = unordered_set<vector<string>>();
 	globalState = State();
 	globalResult = AffectsStarResult();
 	isStart = true;
@@ -74,8 +72,61 @@ unordered_set<string> AffectsStarCalculator::computeFixedSyn(string s1String) {
 	return s2;
 }
 
+unordered_set<vector<string>> AffectsStarCalculator::computeSynSyn(bool isSameSyn) {
+	type = SYN_SYN;
+	vector<ProcGNode*> procNodes = cfg->getAllProcedures();
+	//between each proc, reinitialise state
+	BOOST_FOREACH(ProcGNode* procNode, procNodes) {
+		GNode* currentNode = procNode->getChild();
+		while(currentNode->getNodeType() != END_) {
+			currentNode = evaluateNode(currentNode, globalState);
+		}
+		//reset state
+		globalState = State();
+	}
+
+	unordered_set<vector<string>> multiSyns = unordered_set<vector<string>>();
+	if (isSameSyn) {
+		BOOST_FOREACH(auto row, globalResult) {
+			int s2 = row.first;
+			unordered_set<int> s1Set = row.second;
+			BOOST_FOREACH(int s1, s1Set) {
+				if (s1 == s2) {
+					vector<string> toInsert = vector<string>();
+					toInsert.push_back(boost::lexical_cast<string>(s1));
+					toInsert.push_back(boost::lexical_cast<string>(s2));
+					multiSyns.insert(toInsert);
+				}
+			}
+		}
+	} else {
+		BOOST_FOREACH(auto row, globalResult) {
+			int s2 = row.first;
+			unordered_set<int> s1Set = row.second;
+			BOOST_FOREACH(int s1, s1Set) {
+				vector<string> toInsert = vector<string>();
+				toInsert.push_back(boost::lexical_cast<string>(s1));
+				toInsert.push_back(boost::lexical_cast<string>(s2));
+				//cout << "test: " << s1 << ", " << s2 << endl;
+				multiSyns.insert(toInsert);
+			}
+		}
+	}
+	return multiSyns;
+}
+
 //returns next node
 GNode* AffectsStarCalculator::evaluateNode(GNode* node, State& state) {
+	/*
+	cout << "Global results contain: ";
+	BOOST_FOREACH(auto row, globalResult) {
+		cout << row.first << ": ";
+		BOOST_FOREACH(auto blah, row.second) {
+			cout << blah << ",";
+		}
+		cout << endl;
+	}
+	*/
 	if (node->getNodeType() == ASSIGN_) {
 		AssgGNode* assgNode = static_cast<AssgGNode*>(node);
 		updateStateForAssign(assgNode, state);
@@ -160,7 +211,7 @@ AffectsStarCalculator::State AffectsStarCalculator::recurseIf(GNode* node, State
 
 void AffectsStarCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 	int startNum;
-	if (isStart) {
+	if (type != SYN_SYN && isStart) {
 		startNum = s1Num+1;
 		isStart = false;
 	} else {
@@ -177,8 +228,11 @@ void AffectsStarCalculator::updateStateForAssign(AssgGNode* node, State& state) 
 			auto entry = state.find(usedVar);
 			//if variable has been modified before -> current assgStmt has been affected by another statement
 			if (entry != state.end() && entry->second.size() != 0) {
+				if (type == FIXED_FIXED && stmtNum == s2Num) {
+					result = true;
+					throw AffectsStarTermination();
+				}
 				//add the new stmt, and all the statements that affect* it into the list
-				globalResult[stmtNum] = unordered_set<int>();
 				BOOST_FOREACH(int affectsStmtNum, entry->second) {
 					//insert itself first
 					globalResult[stmtNum].insert(affectsStmtNum);
@@ -187,10 +241,6 @@ void AffectsStarCalculator::updateStateForAssign(AssgGNode* node, State& state) 
 						globalResult[stmtNum].insert(globalResult[affectsStmtNum].begin(), globalResult[affectsStmtNum].end());
 					}
 				}
-				if (type == FIXED_FIXED) {
-					result = true;
-					break;
-				}
 			} 
 			//else -> used var has not been modified by stmt before
 		}
@@ -198,26 +248,36 @@ void AffectsStarCalculator::updateStateForAssign(AssgGNode* node, State& state) 
 		//we found the node, just terminate only if not in while loop
 		//or we already know that it affects
 		//otherwise can only eval after looping thru
-		if (type == FIXED_FIXED && (result || (!inWhile && stmtNum == s2Num))) {
+		if (type == FIXED_FIXED && !inWhile && stmtNum == s2Num) {
+			//afailure, throw exception
 			throw AffectsStarTermination();
 		}
 
 		Statement::ModifiesSet modifiedVariables = assgStmt->getModifies();
-		//should only iterate once
-		BOOST_FOREACH(string modifiedVar, modifiedVariables) {
-			bool isAffectedStmt = globalResult.find(stmtNum) != globalResult.end();
-			bool isReplaceExistingVal = state.find(modifiedVar) != state.end();
-			if (isAffectedStmt) {
-				//for each statement, add it in directly if it has been affected
-				//insert or replace value
+		if (type == SYN_SYN) {
+			BOOST_FOREACH(string modifiedVar, modifiedVariables) {
 				unordered_set<int> modifyingStmts = unordered_set<int>();
 				modifyingStmts.insert(stmtNum);
 				state[modifiedVar] = modifyingStmts;
-			} else if (isReplaceExistingVal) {
-				//if it has not been affected but it replaces an existing value, reset the value
-				//do not add the stmt to the table
-//				state[modifiedVar] = unordered_set<int>();
-				state.erase(modifiedVar);
+			}
+		} else {
+			//should only iterate once, since assg stmt only has 1 modified variable
+			//we only add update the modified variable if it has been affected
+			BOOST_FOREACH(string modifiedVar, modifiedVariables) {
+				bool isAffectedStmt = globalResult.find(stmtNum) != globalResult.end();
+				bool isReplaceExistingVal = state.find(modifiedVar) != state.end();
+				if (isAffectedStmt) {
+					//for each statement, add it in directly if it has been affected
+					//insert or replace value
+					unordered_set<int> modifyingStmts = unordered_set<int>();
+					modifyingStmts.insert(stmtNum);
+					state[modifiedVar] = modifyingStmts;
+				} else if (isReplaceExistingVal) {
+					//if it has not been affected but it replaces an existing value, reset the value
+					//do not add the stmt to the table
+	//				state[modifiedVar] = unordered_set<int>();
+					state.erase(modifiedVar);
+				}
 			}
 		}
 	}

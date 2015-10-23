@@ -31,6 +31,7 @@ bool AffectsStarClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg
 }
 
 //e.g. Parent(_,_)
+//Assuming that Affects(_,_) == Affects*(_,_)
 bool AffectsStarClause::evaluateS1GenericS2Generic() {
 	AffectsCalculator calc = AffectsCalculator();
 	return calc.computeS1GenericS2Generic();
@@ -42,6 +43,7 @@ bool AffectsStarClause::evaluateS1GenericS2Fixed(string s2) {
 }
 
 //e.g. Parent(2,_)
+//Assuming that Affects(1,_) == Affects*(1,_)
 bool AffectsStarClause::evaluateS1FixedS2Generic(string s1){
 	AffectsCalculator calc = AffectsCalculator();
 	return calc.computeS1FixedS2Generic(s1);
@@ -55,8 +57,10 @@ unordered_set<string> AffectsStarClause::getAllS2WithS1Fixed(string s1) {
 
 //e.g. Parent(_, s2)
 //get all children
+//Assuming that Affects(_,s2) == Affects*(_,s2)
 unordered_set<string> AffectsStarClause::getAllS2() {
-	return unordered_set<string>();
+	AffectsCalculator calc = AffectsCalculator();
+	return calc.computeAllS2();
 }
 
 //e.g. Parent(s1,2)
@@ -66,14 +70,16 @@ unordered_set<string> AffectsStarClause::getAllS1WithS2Fixed(string s2) {
 }
 
 //e.g. Parent(s1,_)
-//get all parents
+//Assuming that Affects(s1,_) == Affects*(s1,_)
 unordered_set<string> AffectsStarClause::getAllS1() {
-	return unordered_set<string>();
+	AffectsCalculator calc = AffectsCalculator();
+	return calc.computeAllS1();
 }
 
 //Parent(s1, s2)
 unordered_set<vector<string>> AffectsStarClause::getAllS1AndS2() {
-	return unordered_set<vector<string>>();
+	AffectsStarCalculator calc = AffectsStarCalculator();
+	return calc.computeSynSyn(firstArg == secondArg);
 }
 
 

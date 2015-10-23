@@ -13,6 +13,7 @@
 #include "../SPA/SuchThatClauseBuilder.h"
 #include "../SPA/Utils.h"
 #include "../SPA/AffectsClause.h"
+#include "../SPA/AffectsStarClause.h"
 
 #include <iostream>
 #include <string>
@@ -587,7 +588,6 @@ void AffectsClauseTest::testFixedSynPass() {
 }
 
 void AffectsClauseTest::testSynSynPass() { 
-	//need to wait for pointer from if to dummy node
 	Result res = Result();
 	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
 	affectsBuilder->setArg(1, "s1");
