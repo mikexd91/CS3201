@@ -430,18 +430,72 @@ bool WithClause::evalStmtInt(WithClauseRef stmtEnt, WithClauseRef intEnt, Result
 		return found;
 	} else {
 		StmtTable* stable = StmtTable::getInstance();
-		unordered_set<Statement*> allS = stable->getAllStmts();
-		bool found = false;
-		BOOST_FOREACH(Statement* s, allS){
-			if (s->getStmtNum() == stoi(intEnt.getEntity())){
-				found = true;
-				insert.insertValue(intEnt.getEntity());
+		if (stmtEnt.getEntityType() == stringconst::ARG_STATEMENT){
+			unordered_set<Statement*> allS = stable->getAllStmts();
+			bool found = false;
+			BOOST_FOREACH(Statement* s, allS){
+				if (s->getStmtNum() == stoi(intEnt.getEntity())){
+					found = true;
+					insert.insertValue(intEnt.getEntity());
+				}
 			}
+			if (found){
+				result->push(insert);
+			}
+			return found;
+		} else if (stmtEnt.getEntityType() == stringconst::ARG_IF){
+			unordered_set<Statement*> allS = stable->getIfStmts();
+			bool found = false;
+			BOOST_FOREACH(Statement* s, allS){
+				if (s->getStmtNum() == stoi(intEnt.getEntity())){
+					found = true;
+					insert.insertValue(intEnt.getEntity());
+				}
+			}
+			if (found){
+				result->push(insert);
+			}
+			return found;
+		} else if (stmtEnt.getEntityType() == stringconst::ARG_WHILE){
+			unordered_set<Statement*> allS = stable->getWhileStmts();
+			bool found = false;
+			BOOST_FOREACH(Statement* s, allS){
+				if (s->getStmtNum() == stoi(intEnt.getEntity())){
+					found = true;
+					insert.insertValue(intEnt.getEntity());
+				}
+			}
+			if (found){
+				result->push(insert);
+			}
+			return found;
+		} else if (stmtEnt.getEntityType() == stringconst::ARG_CALL){
+			unordered_set<Statement*> allS = stable->getCallStmts();
+			bool found = false;
+			BOOST_FOREACH(Statement* s, allS){
+				if (s->getStmtNum() == stoi(intEnt.getEntity())){
+					found = true;
+					insert.insertValue(intEnt.getEntity());
+				}
+			}
+			if (found){
+				result->push(insert);
+			}
+			return found;
+		} else if (stmtEnt.getEntityType() == stringconst::ARG_ASSIGN){
+			unordered_set<Statement*> allS = stable->getAssgStmts();
+			bool found = false;
+			BOOST_FOREACH(Statement* s, allS){
+				if (s->getStmtNum() == stoi(intEnt.getEntity())){
+					found = true;
+					insert.insertValue(intEnt.getEntity());
+				}
+			}
+			if (found){
+				result->push(insert);
+			}
+			return found;
 		}
-		if (found){
-			result->push(insert);
-		}
-		return found;
 	}
 	return false;
 }

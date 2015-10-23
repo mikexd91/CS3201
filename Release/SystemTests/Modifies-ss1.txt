@@ -158,32 +158,42 @@ assign a1, a2;
 Select a1 such that Modifies(a1, "bulbasaur") pattern a2("lastPokemon", _)
 3, 7
 5000
-33 - MODIFIES-assign: pattern-both defined (match select)
+33 - MODIFIES-assign: pattern-left defined synonym
+assign a; variable v;
+Select a such that Modifies(6, v) pattern a(v, _)
+1, 6
+5000
+34 - MODIFIES-assign: pattern-both defined (match select)
 assign a;
 Select a such that Modifies(a, _) pattern a("wartortle", _"squirtle"_)
 10, 21
 5000
-34 - MODIFIES-assign: pattern-both defined (does not match select)
+35 - MODIFIES-assign: pattern-both defined (does not match select)
 assign a1, a2;
 Select a1 such that Modifies(a1, "charmander") pattern a2("battle2", _"charmeleon"_)
 1, 6
 5000
-35 - MODIFIES-while: pattern (match select)
+36 - MODIFIES-assign: pattern-both defined, left synonym
+assign a; variable v;
+Select a such that Modifies(a, v) pattern a(v, _"wartortle"_)
+12, 16, 19, 22
+5000
+37 - MODIFIES-while: pattern (match select)
 while w;
 Select w such that Modifies(w, _) pattern w("battle3", _)
 18
 5000
-36 - Modifies-while: pattern (does not match select)
+38 - Modifies-while: pattern (does not match select)
 stmt s; while w;
 Select s such that Modifies(s, v) pattern w("battle4", _)
 none
 5000
-37 - MODIFIES-if: pattern (match select)
+39 - MODIFIES-if: pattern (match select)
 if i;
 Select i such that Modifies(i, _) pattern i("wartortle", _, _)
 20
 5000
-38 - MODIFIES-if: pattern (does not match select)
+40 - MODIFIES-if: pattern (does not match select)
 assign a; if i;
 Select a such that Modifies(a, _) pattern i("battle2", _, _)
 none
