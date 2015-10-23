@@ -294,3 +294,10 @@ void QueryParserTest::testParser(){
 	//	cout << "nope";
 	//}
 }
+
+void QueryParserTest::debugTests(){
+	string INPUT = "assign a; Select a.stmt# such that Uses(a, \"ivysaur\")";
+	Query* QUERY = new Query();
+	parser = QueryParser::getInstance();
+	QUERY = parser->parseQuery(INPUT);
+}

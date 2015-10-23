@@ -19,9 +19,11 @@
 #include "WithClause.h"
 #include "AffectsClause.h"
 #include "NextClause.h"
+#include "NextStarClause.h"
 #include "SuchThatClause.h"
 #include "boost/foreach.hpp"
 #include "boost/unordered_map.hpp"
+#include <utility>
 #include <boost/lexical_cast.hpp>
 
 using boost::unordered_map;
@@ -45,29 +47,15 @@ private:
 
 	bool isSelectSyn(vector<StringPair>);
 	void populateGraphTable(Query*);
-	vector<string> getSynonyms(Clause*);
+	void createSelectSynNodes(Query*);
+	void createClauseSynNodes(Query*);
+	void createFixedSynNode(Clause*, int);
+	void createUnfixedSynNode(Clause*, int, vector<string>);
 	void findDisjointedComponents(void);
 
-	vector<string>getFollowsSyn(Clause*);
-	vector<string>getFollowsStarSyn(Clause* c);
-	vector<string>getParentSyn(Clause*);
-	vector<string>getParentStarSyn(Clause*);
-	vector<string>getUsesSyn(Clause*);
-	vector<string>getModifiesSyn(Clause*);
-	vector<string>getCallsSyn(Clause*);
-	vector<string>getCallsStarSyn(Clause*);
-	vector<string>getNextSyn(Clause*);
-	vector<string>getNextStarSyn(Clause*);
-	/*
-	vector<string>getAffectSyn(Clause*);
-	vector<string>getAffectsStarSyn(Clause*);
-	vector<string>getPatternAssignSyn(Clause*);
-	vector<string>getPatternIfSyn(Clause*);
-	vector<string>getPatternWhileSyn(Clause*);
-	vector<string>getWithSyn(Clause*);
-	*/
-
-
+	vector<string> getSynonyms(Clause*);
+	vector<string> getSynFromPatternClause(PatternClause*);
+	vector<string> getSynFromSuchThatClause(SuchThatClause*);
 
 	//vector<string> getSelectSyn(Query);
 	//void createSynNodes(vector<string>, vector<Clause*>);

@@ -90,6 +90,8 @@ class NextStarClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testSynWhileSynAssgPass );
 	CPPUNIT_TEST( testSynWhileSynCallPass );
 	CPPUNIT_TEST( testSynWhileSynIfPass );
+
+	CPPUNIT_TEST( testFixFixDiffProcPass );
 	
 	CPPUNIT_TEST_SUITE_END();
 
@@ -180,4 +182,6 @@ public:
 	void testSynWhileSynAssgPass();
 	void testSynWhileSynCallPass();
 	void testSynWhileSynIfPass();
+
+	void testFixFixDiffProcPass();
 };

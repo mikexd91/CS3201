@@ -386,7 +386,7 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string>* line){
 							newPair->setAttribute(attr);
 						}
 					} else if (attr == stringconst::ATTR_COND_STMTNUM){
-						if (type != stringconst::ARG_STATEMENT){
+						if (type != stringconst::ARG_STATEMENT && type != stringconst::ARG_ASSIGN && type != stringconst::ARG_CALL && type != stringconst::ARG_IF && type!= stringconst::ARG_WHILE){
 							throw InvalidAttributeException();
 						} else {
 							newPair->setAttribute(attr);
@@ -805,9 +805,11 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 				withBuilder->setAttrType(1, PROCNAME_);
 			} else if (leftEntityCond == stringconst::ATTR_COND_STMTNUM){
 				if (leftDeclarationType != stringconst::ARG_STATEMENT
-					|| leftDeclarationType != stringconst::ARG_IF
-					|| leftDeclarationType != stringconst::ARG_WHILE
-					|| leftDeclarationType != stringconst::ARG_PROGLINE){
+					&& leftDeclarationType != stringconst::ARG_ASSIGN
+					&& leftDeclarationType != stringconst::ARG_IF
+					&& leftDeclarationType != stringconst::ARG_WHILE
+					&& leftDeclarationType != stringconst::ARG_CALL
+					&& leftDeclarationType != stringconst::ARG_PROGLINE){
 						throw InvalidAttributeException();
 				}
 				withBuilder->setRefType(1, ATTRREF_);
@@ -820,7 +822,7 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 				withBuilder->setRefType(1, ATTRREF_);
 				withBuilder->setAttrType(1, CONSTVALUE_);
 			} else if (leftEntityCond == stringconst::ATTR_COND_VARNAME){
-				if (leftDeclarationType == stringconst::ARG_VARIABLE){
+				if (leftDeclarationType != stringconst::ARG_VARIABLE){
 					throw InvalidAttributeException();
 				}
 				withBuilder->setRefType(1, ATTRREF_);
