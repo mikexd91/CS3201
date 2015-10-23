@@ -567,3 +567,19 @@ void AffectsStarClauseTest::testFixedSynPass() {
 	CPPUNIT_ASSERT(s.find("19") != s.end());
 	CPPUNIT_ASSERT(s.find("20") != s.end());
 }
+
+void AffectsStarClauseTest::testFixedSynFail() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSSTAR_);
+	affectsBuilder->setArg(1, "15");
+	affectsBuilder->setArgFixed(1, true);
+	affectsBuilder->setArgType(1, ARG_PROGLINE);
+	affectsBuilder->setArg(2, "s");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsStarClause* m1 = (AffectsStarClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	CPPUNIT_ASSERT(m1->evaluate(&res));
+	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
+}
