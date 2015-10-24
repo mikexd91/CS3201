@@ -17,9 +17,6 @@
   <ItemGroup>
     <ClInclude Include="FrontEndTest.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="test1.simple" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{44B65641-96D6-4FB5-B78A-F0CAD8DDA42C}</ProjectGuid>
     <RootNamespace>IntegrationTesting</RootNamespace>
