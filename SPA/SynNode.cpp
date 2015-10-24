@@ -2,8 +2,12 @@
 
 using namespace std;
 
-SynNode::SynNode(string name) {
-	this->synonym = name;
+SynNode::SynNode(void) {
+
+}
+
+SynNode::~SynNode(void) {
+
 }
 
 string SynNode::getSynonym() {
@@ -28,6 +32,12 @@ void SynNode::setWeight(int num) {
 
 void SynNode::setComponentNum(int num) {
 	this->componentNum = num;
+}
+
+bool SynNode::isSame(SynNode node1) {
+	string syn1 = node1.getSynonym();
+	string syn2 = synonym;
+	return syn1 == syn2;
 }
 /*
 void SynNode::setEdge(int edgeWeight, SynNode* node) {

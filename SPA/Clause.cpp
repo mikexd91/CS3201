@@ -2,7 +2,7 @@
 #include <iostream>
 
 Clause::Clause() {
-
+	weight = 0;
 }
 
 Clause::~Clause(void) {
@@ -19,7 +19,9 @@ void Clause::setWeight(int weight) {
 }
 
 int Clause::getWeight() {
-	if (clauseType == WITH_) {
+	if (weight > 0) {
+		return weight;
+	} else if (clauseType == WITH_) {
 		return 1;
 	} else if (clauseType == CALLS_) {
 		return 4;

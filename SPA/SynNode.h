@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <utility>
 
 using namespace std;
 
@@ -12,11 +11,10 @@ private:
 	int weight;
 	int componentNum;
 
-	bool isSame(SynNode*, SynNode*);
-
 public:
 	// Constructor
-	SynNode(string synonym);
+	SynNode(void);
+	~SynNode(void);
 
 	// Getters
 	string getSynonym();		
@@ -27,4 +25,6 @@ public:
 	void setSynonym(string);	// set Synonym name
 	void setWeight(int);		// set Synonym weight
 	void setComponentNum(int);	// set Component synNode is in
+
+	bool isSame(SynNode);
 };
