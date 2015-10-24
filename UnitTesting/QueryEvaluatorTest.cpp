@@ -405,6 +405,25 @@ void QueryEvaluatorTest::tearDown() {
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( QueryEvaluatorTest );
 
+void QueryEvaluatorTest::testEvaluateEmptySelectBoolean() {
+	QueryEvaluator *qe = new QueryEvaluator();
+
+	StringPair *p = new StringPair();
+	p->setFirst("BOOLEAN");
+	p->setSecond(ARG_BOOLEAN);
+	Query *q = new Query();
+	q->addSelectSynonym(*p);
+
+	Result* result = qe->evaluateQuery(q);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
+	vector<StringPair> selectList = q->getSelectList();
+	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
+	CPPUNIT_ASSERT(toPrint.size() == 1);
+	unordered_set<string>::iterator iter = toPrint.begin();
+	CPPUNIT_ASSERT(*iter == "false");
+
+}
+
 void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectAssignSyn() {
 	QueryEvaluator *qe = new QueryEvaluator();
 	
