@@ -18,6 +18,7 @@ class PQLIntegration : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testSelectNextStar );
 	//CPPUNIT_TEST( testSelectAffectsStar );
 	CPPUNIT_TEST( testSelectValueWith );
+	CPPUNIT_TEST( testSelectBooleanWith );
 
 	CPPUNIT_TEST( testSelectVarNameWithPatternAssg );
 	CPPUNIT_TEST( testSelectStmtNumWithPatternAssg );
@@ -55,6 +56,7 @@ public:
 	void testSelectParentStar();
 	void testSelectNextStar();
 	void testSelectAffectsStar();
+	void testSelectBooleanWith();
 	void testSelectValueWith();
 
 	// SELECT WITH TWO CLAUSES
