@@ -869,6 +869,24 @@ void PQLIntegration::testSelectAffectsStar() {
 	CPPUNIT_ASSERT(res.count("6") == 1);
 }
 
+void PQLIntegration::testSelectBooleanWith() {
+	cout << "with 1 = 1" << endl;
+	string query = "Select BOOLEAN with 1 = 1";
+	// [true] (size 1)
+
+	PQLController* pcc = new PQLController();
+	unordered_set<string> res = pcc->parse(query);
+
+	cout << "with 1 = 1 result size " << res.size() << endl;
+	BOOST_FOREACH(auto a, res) {
+		cout << a << endl;
+	}
+
+	// FAIL: something wrong in the with clause
+	CPPUNIT_ASSERT(res.size() == 1);
+	CPPUNIT_ASSERT(res.count("true") == 1);
+}
+
 void PQLIntegration::testSelectValueWith() {
 	cout << "with c.value" << endl;
 	string query = "constant c; Select c with c.value = 1";
