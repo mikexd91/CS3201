@@ -1,119 +1,119 @@
-1 - WITH: prog_line = const
+1 - WITH: prog_line = constant
 prog_line n;
 Select n with n = 15
 15
 5000
-2 - WITH: prog_line = const (underflow)
+2 - WITH: prog_line = constant (underflow)
 prog_line n;
 Select n with n = 0
 none
 5000
-3 - WITH: prog_line = const (overflow)
+3 - WITH: prog_line = constant (overflow)
 prog_line n;
 Select n with n = 45
 none
 5000
-4 - WITH: const = prog_line
+4 - WITH: constant = prog_line
 prog_line n;
 Select n with 5 = n
 5
 5000
-5 - WITH: const = prog_line (underflow)
+5 - WITH: constant = prog_line (underflow)
 prog_line n;
 Select n with 0 = n
 none
 5000
-6 - WITH: const = prog_line (overflow)
+6 - WITH: constant = prog_line (overflow)
 prog_line n;
 Select n with 45 = n
 none
 5000
-7 - WITH-stmt: stmt# = const
+7 - WITH-stmt: stmt# = constant
 stmt s;
 Select s with s.stmt# = 8
 8
 5000
-8 - WITH-stmt: stmt# = const (no result)
+8 - WITH-stmt: stmt# = constant (no result)
 stmt s;
 Select s with s.stmt# = 50
 none
 5000
-9 - WITH-assign: stmt# = const
+9 - WITH-assign: stmt# = constant
 assign a;
 Select a with a.stmt# = 16
 16
 5000
-10 - WITH-assign: stmt# = const (no result)
+10 - WITH-assign: stmt# = constant (no result)
 assign a;
 Select a with a.stmt# = 18
 none
 5000
-11 - WITH-while: stmt# = const
+11 - WITH-while: stmt# = constant
 while w;
 Select w with w.stmt# = 17
 17
 5000
-12 - WITH-while: stmt# = const (no result)
+12 - WITH-while: stmt# = constant (no result)
 while w;
 Select w with w.stmt# = 4
 none
 5000
-13 - WITH-if: stmt# = const
+13 - WITH-if: stmt# = constant
 if i;
 Select i with i.stmt# = 20
 20
 5000
-14 - WITH-if: stmt# = const (no result)
+14 - WITH-if: stmt# = constant (no result)
 if i;
 Select i with i.stmt# = 2
 none
 5000
-15 - WITH-call: stmt# = const (no result)
+15 - WITH-call: stmt# = constant (no result)
 call c;
 Select c with c.stmt# = 16
 none
 5000
-16 - WITH-stmt: const = stmt#
+16 - WITH-stmt: constant = stmt#
 stmt s;
 Select s with 23 = s.stmt#
 23
 5000
-17 - WITH-stmt: const = stmt# (no result)
+17 - WITH-stmt: constant = stmt# (no result)
 stmt s;
 Select s with 48 = s.stmt#
 none
 5000
-18 - WITH-assign: const = stmt#
+18 - WITH-assign: constant = stmt#
 assign a;
 Select a with 19 = a.stmt#
 19
 5000
-19 - WITH-assign: const = stmt# (no result)
+19 - WITH-assign: constant = stmt# (no result)
 assign a;
 Select a with 5 = a.stmt#
 none
 5000
-20 - WITH-while: const = stmt#
+20 - WITH-while: constant = stmt#
 while w;
 Select w with 18 = w.stmt#
 18
 5000
-21 - WITH-while: const = stmt# (no result)
+21 - WITH-while: constant = stmt# (no result)
 while w;
 Select w with 19 = w.stmt#
 none
 5000
-22 - WITH-if: const = i.stmt#
+22 - WITH-if: constant = i.stmt#
 if i;
 Select i with 20 = i.stmt#
 20
 5000
-23 - WITH-if: const = stmt# (no result)
+23 - WITH-if: constant = stmt# (no result)
 if i;
 Select i with 21 = i.stmt#
 none
 5000
-24 - WITH-call: const = stmt# (no result)
+24 - WITH-call: constant = stmt# (no result)
 call c;
 Select c with 20 = c.stmt#
 none
@@ -138,33 +138,33 @@ if i; prog_line n;
 Select i with i.stmt# = n
 20
 5000
-29 - WITH: value = const
-const c;
+29 - WITH: value = constant
+constant c;
 Select c with c.value = 5
 5
 5000
-30 - WITH: value = const (no result)
-const c;
+30 - WITH: value = constant (no result)
+constant c;
 Select c with c.value = 6
 none
 5000
-31 - WITH: const = value
-const c;
+31 - WITH: constant = value
+constant c;
 Select c with 1 = c.value
 1
 5000
-32 - WITH: const = value (no result)
-const c;
+32 - WITH: constant = value (no result)
+constant c;
 Select c with 7 = c.value
 none
 5000
 33 - WITH: prog_line = value
-prog_line n; const c;
+prog_line n; constant c;
 Select n with n = c.value
 1, 3, 5, 11
 5000
 34 - WITH: value = prog_line
-const c; prog_line n;
+constant c; prog_line n;
 Select c with c.value = n
 1, 3, 5, 11
 5000
@@ -228,27 +228,77 @@ call c; procedure p;
 Select c with c.procName = p.procName
 none
 5000
-47 - WITH: const = const
+47 - WITH-stmt: stmt# = value
+stmt s; constant c;
+Select s with s.stmt# = c.value
+1, 3, 5, 11
+5000
+48 - WITH-assign: stmt# = value
+assign a; constant c;
+Select a with a.stmt# = c.value
+1, 3, 11
+5000
+49 - WITH-while: stmt# = value
+while w; constant c;
+Select w with w.stmt# = c.value
+5
+5000
+50 - WITH-if: stmt# = value (no result)
+if i; constant c;
+Select i with i.stmt# = c.value
+none
+5000
+51 - WITH-call: stmt# = value (no result)
+call cl; constant c;
+Select cl with cl.stmt# = c.value
+none
+5000
+52 - WITH-stmt: value = stmt#
+stmt s; constant c;
+Select c with c.value = s.stmt#
+1, 3, 5, 11
+5000
+53 - WITH-assign: value = stmt#
+assign a; constant c;
+Select c with c.value = a.stmt#
+1, 3, 11
+5000
+54 - WITH-while: value = stmt#
+while w; constant c;
+Select c with c.value = w.stmt#
+5
+5000
+55 - WITH-if: value = stmt# (no result)
+if i; constant c;
+Select c with c.value = i.stmt#
+none
+5000
+56 - WITH-call: stmt# = value (no result)
+call cl; constant c;
+Select c with c.value = cl.stmt#
+none
+5000
+57 - WITH: constant = constant
 
 Select BOOLEAN with 1 = 1
 true
 5000
-48 - WITH: const = const (no result)
+58 - WITH: constant = constant (no result)
 
 Select BOOLEAN with 5 = 10
 false
 5000
-49 - WITH: string = string
+59 - WITH: string = string
 
 Select BOOLEAN with "hello" = "hello"
 true
 5000
-50 - WITH: string = string (no result)
+60 - WITH: string = string (no result)
 
 Select BOOLEAN with "harlo" = "hello"
 false
 5000
-51 - WITH: prog_line = prog_line
+61 - WITH: prog_line = prog_line
 prog_line n1; prog_line n2;
 Select BOOLEAN with n1 = n2
 true
