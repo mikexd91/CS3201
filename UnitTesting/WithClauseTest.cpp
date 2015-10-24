@@ -1087,3 +1087,109 @@ void WithClauseTest::testStmtEqualsStmt(){
 	CPPUNIT_ASSERT(w5->evaluate(r5));
 	CPPUNIT_ASSERT(r5->getResultTableSize() == 1);
 }
+
+void WithClauseTest::testSynEqualsValue(){
+	// p = c.value# (true, result# = 5)
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, SYNONYM_);
+	withBuilder->setEntity(1, "p");
+	withBuilder->setAttrType(1, STMTNUM_);
+	withBuilder->setEntityType(1, stringconst::ARG_PROGLINE);
+	withBuilder->setRefType(2, ATTRREF_);
+	withBuilder->setEntity(2, "c");
+	withBuilder->setAttrType(2, CONSTVALUE_);
+	withBuilder->setEntityType(2, stringconst::ARG_CONSTANT);
+
+	WithClause* w1 = withBuilder->build();
+	CPPUNIT_ASSERT(w1->isValid());
+	Result* r1 = new Result();
+	CPPUNIT_ASSERT(w1->evaluate(r1));
+	CPPUNIT_ASSERT(r1->getResultTableSize() == 5);
+}
+
+void WithClauseTest::testSynEqualsStmt(){
+	// p = s.stmt# (true, result# = 14)
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, SYNONYM_);
+	withBuilder->setEntity(1, "p");
+	withBuilder->setAttrType(1, STMTNUM_);
+	withBuilder->setEntityType(1, stringconst::ARG_PROGLINE);
+	withBuilder->setRefType(2, ATTRREF_);
+	withBuilder->setEntity(2, "s");
+	withBuilder->setAttrType(2, STMTNUM_);
+	withBuilder->setEntityType(2, stringconst::ARG_STATEMENT);
+
+	WithClause* w1 = withBuilder->build();
+	CPPUNIT_ASSERT(w1->isValid());
+	Result* r1 = new Result();
+	CPPUNIT_ASSERT(w1->evaluate(r1));
+	CPPUNIT_ASSERT(r1->getResultTableSize() == 14);
+
+	// p = a.stmt# (true, result# = 11)
+	WithClauseBuilder* withBuilder2 = new WithClauseBuilder(WITH_);
+	withBuilder2->setRefType(1, SYNONYM_);
+	withBuilder2->setEntity(1, "p");
+	withBuilder2->setAttrType(1, STMTNUM_);
+	withBuilder2->setEntityType(1, stringconst::ARG_PROGLINE);
+	withBuilder2->setRefType(2, ATTRREF_);
+	withBuilder2->setEntity(2, "a");
+	withBuilder2->setAttrType(2, STMTNUM_);
+	withBuilder2->setEntityType(2, stringconst::ARG_ASSIGN);
+
+	WithClause* w2 = withBuilder2->build();
+	CPPUNIT_ASSERT(w2->isValid());
+	Result* r2 = new Result();
+	CPPUNIT_ASSERT(w2->evaluate(r2));
+	CPPUNIT_ASSERT(r2->getResultTableSize() == 11);
+
+	// p = c.stmt# (true, result# = 1)
+	WithClauseBuilder* withBuilder3 = new WithClauseBuilder(WITH_);
+	withBuilder3->setRefType(1, SYNONYM_);
+	withBuilder3->setEntity(1, "p");
+	withBuilder3->setAttrType(1, STMTNUM_);
+	withBuilder3->setEntityType(1, stringconst::ARG_PROGLINE);
+	withBuilder3->setRefType(2, ATTRREF_);
+	withBuilder3->setEntity(2, "c");
+	withBuilder3->setAttrType(2, STMTNUM_);
+	withBuilder3->setEntityType(2, stringconst::ARG_CALL);
+
+	WithClause* w3 = withBuilder3->build();
+	CPPUNIT_ASSERT(w3->isValid());
+	Result* r3 = new Result();
+	CPPUNIT_ASSERT(w3->evaluate(r3));
+	CPPUNIT_ASSERT(r3->getResultTableSize() == 1);
+
+	// p = i.stmt# (true, result# = 1)
+	WithClauseBuilder* withBuilder4 = new WithClauseBuilder(WITH_);
+	withBuilder4->setRefType(1, SYNONYM_);
+	withBuilder4->setEntity(1, "p");
+	withBuilder4->setAttrType(1, STMTNUM_);
+	withBuilder4->setEntityType(1, stringconst::ARG_PROGLINE);
+	withBuilder4->setRefType(2, ATTRREF_);
+	withBuilder4->setEntity(2, "s");
+	withBuilder4->setAttrType(2, STMTNUM_);
+	withBuilder4->setEntityType(2, stringconst::ARG_IF);
+
+	WithClause* w4 = withBuilder4->build();
+	CPPUNIT_ASSERT(w4->isValid());
+	Result* r4 = new Result();
+	CPPUNIT_ASSERT(w4->evaluate(r4));
+	CPPUNIT_ASSERT(r4->getResultTableSize() == 1);
+
+	// p = w.stmt# (true, result# = 1)
+	WithClauseBuilder* withBuilder5 = new WithClauseBuilder(WITH_);
+	withBuilder5->setRefType(1, SYNONYM_);
+	withBuilder5->setEntity(1, "p");
+	withBuilder5->setAttrType(1, STMTNUM_);
+	withBuilder5->setEntityType(1, stringconst::ARG_PROGLINE);
+	withBuilder5->setRefType(2, ATTRREF_);
+	withBuilder5->setEntity(2, "s");
+	withBuilder5->setAttrType(2, STMTNUM_);
+	withBuilder5->setEntityType(2, stringconst::ARG_WHILE);
+
+	WithClause* w5 = withBuilder5->build();
+	CPPUNIT_ASSERT(w5->isValid());
+	Result* r5 = new Result();
+	CPPUNIT_ASSERT(w5->evaluate(r5));
+	CPPUNIT_ASSERT(r5->getResultTableSize() == 1);
+}

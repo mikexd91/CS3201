@@ -19,6 +19,8 @@ class WithClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testConstEqualsStmt );
 	CPPUNIT_TEST( testSynEqualsSyn );
 	CPPUNIT_TEST( testStmtEqualsStmt );
+	CPPUNIT_TEST( testSynEqualsValue );
+	CPPUNIT_TEST( testSynEqualsStmt );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,6 +41,8 @@ public:
 	void testConstEqualsStmt();
 	void testSynEqualsSyn();
 	void testStmtEqualsStmt();
+	void testSynEqualsValue();
+	void testSynEqualsStmt();
 };
 
 /* sample source

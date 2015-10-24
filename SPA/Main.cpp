@@ -29,7 +29,7 @@ int main() {
 	}
 
 	PQLController* pqlController = new PQLController();
-	string query = "while w; Select w such that Parent(w, 4)";
+	string query = "Select BOOLEAN with 1 = 1";
 	try {
 		unordered_set<string> resultSet = pqlController->parse(query);
 		BOOST_FOREACH(auto r, resultSet) {
