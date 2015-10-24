@@ -85,7 +85,7 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 			}
 		} else if (currentNode->isNodeType(WHILE_)) {
 			WhileGNode* whileNode = static_cast<WhileGNode*>(currentNode);
-			bool isWithinWhile = stmtNum2 >= whileNode->getStartStmt() && stmtNum2 <= whileNode->getEndStmt();
+			bool isWithinWhile = stmtNum2 >= whileNode->getBeforeLoopChild()->getStartStmt() && stmtNum2 < whileNode->getAfterLoopChild()->getStartStmt();
 			if (!isWithinWhile) {
 				iterator.skipWhileLoop(whileNode);
 			}
@@ -325,7 +325,18 @@ unordered_set<string> AffectsClause::getAllS1() {
 //Parent(s1, s2)
 unordered_set<vector<string>> AffectsClause::getAllS1AndS2() {
 	AffectsCalculator calc = AffectsCalculator();
-	return calc.computeAllS1AndS2();
+	unordered_set<vector<string>> results = calc.computeAllS1AndS2();
+	if (firstArg == secondArg) {
+		unordered_set<vector<string>> filteredResult = unordered_set<vector<string>>();
+		BOOST_FOREACH(vector<string> result, results) {
+			if (result.at(0) == result.at(1)) {
+				filteredResult.insert(result);
+			}
+		}
+		return filteredResult;
+	} else {
+		return results;
+	}
 }
 
 bool AffectsClause::toContinue(CFGIterator iterator) {
