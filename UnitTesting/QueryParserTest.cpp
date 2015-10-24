@@ -296,22 +296,12 @@ void QueryParserTest::testParser(){
 }
 
 void QueryParserTest::debugTests(){
-	string INPUT = "Select BOOLEAN with 19 = 19";
+	string INPUT = "stmt s, s1; Select s such that Follows*(s1, s) and Modifies(s, \"full\")";
 	Query* QUERY = new Query();
 	parser = QueryParser::getInstance();
 	QUERY = parser->parseQuery(INPUT);
 	vector<Clause*> VC = QUERY->getClauseList();
-	WithClause* WC = dynamic_cast<WithClause*>(VC.at(0));
-	WithClauseRef WCRint = WC->getLeftRef();
-	WithClauseRef WCRstmt = WC->getRightRef();
-
-	CPPUNIT_ASSERT(WCRint.getEntity() == "19");
-	CPPUNIT_ASSERT(WCRint.getEntityType() == stringconst::ENTITY_TYPE_INTEGER);
-	CPPUNIT_ASSERT(WCRint.getAttrType() == NULLATTR_);
-	CPPUNIT_ASSERT(WCRint.getRefType() == INTEGER_);
-	
-	CPPUNIT_ASSERT(WCRstmt.getEntity() == "19");
-	CPPUNIT_ASSERT(WCRstmt.getEntityType() == stringconst::ENTITY_TYPE_INTEGER);
-	CPPUNIT_ASSERT(WCRstmt.getAttrType() == NULLATTR_);
-	CPPUNIT_ASSERT(WCRstmt.getRefType() == INTEGER_);
+	CPPUNIT_ASSERT(VC.size() == 2);
+	CPPUNIT_ASSERT(VC.at(0)->getClauseType() == FOLLOWSSTAR_);
+	CPPUNIT_ASSERT(VC.at(1)->getClauseType() == MODIFIES_);
 }

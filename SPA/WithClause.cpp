@@ -224,7 +224,7 @@ bool WithClause::evaluate(Result* res){
 			//p = c.v
 			return evalSynValue(leftEntityRef, rightEntityRef, res);
 
-		} else if (leftEntityRefType == CONSTVALUE_ && rightEntityAttr == SYNONYM_){
+		} else if (leftEntityAttr == CONSTVALUE_ && rightEntityRefType == SYNONYM_){
 			//c.v = p
 			return evalSynValue(rightEntityRef, leftEntityRef, res);
 
@@ -232,7 +232,7 @@ bool WithClause::evaluate(Result* res){
 			//p = s.#
 			return evalSynStmt(leftEntityRef, rightEntityRef, res);
 
-		} else if (leftEntityRefType == STMTNUM_ && rightEntityAttr == SYNONYM_){
+		} else if (leftEntityAttr == STMTNUM_ && rightEntityRefType == SYNONYM_){
 			//s.# = p
 			return evalSynStmt(rightEntityRef, leftEntityRef, res);
 		}

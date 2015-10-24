@@ -1093,7 +1093,7 @@ void WithClauseTest::testSynEqualsValue(){
 	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
 	withBuilder->setRefType(1, SYNONYM_);
 	withBuilder->setEntity(1, "p");
-	withBuilder->setAttrType(1, STMTNUM_);
+	withBuilder->setAttrType(1, NULLATTR_);
 	withBuilder->setEntityType(1, stringconst::ARG_PROGLINE);
 	withBuilder->setRefType(2, ATTRREF_);
 	withBuilder->setEntity(2, "c");
@@ -1112,7 +1112,7 @@ void WithClauseTest::testSynEqualsStmt(){
 	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
 	withBuilder->setRefType(1, SYNONYM_);
 	withBuilder->setEntity(1, "p");
-	withBuilder->setAttrType(1, STMTNUM_);
+	withBuilder->setAttrType(1, NULLATTR_);
 	withBuilder->setEntityType(1, stringconst::ARG_PROGLINE);
 	withBuilder->setRefType(2, ATTRREF_);
 	withBuilder->setEntity(2, "s");
@@ -1129,7 +1129,7 @@ void WithClauseTest::testSynEqualsStmt(){
 	WithClauseBuilder* withBuilder2 = new WithClauseBuilder(WITH_);
 	withBuilder2->setRefType(1, SYNONYM_);
 	withBuilder2->setEntity(1, "p");
-	withBuilder2->setAttrType(1, STMTNUM_);
+	withBuilder2->setAttrType(1, NULLATTR_);
 	withBuilder2->setEntityType(1, stringconst::ARG_PROGLINE);
 	withBuilder2->setRefType(2, ATTRREF_);
 	withBuilder2->setEntity(2, "a");
@@ -1146,7 +1146,7 @@ void WithClauseTest::testSynEqualsStmt(){
 	WithClauseBuilder* withBuilder3 = new WithClauseBuilder(WITH_);
 	withBuilder3->setRefType(1, SYNONYM_);
 	withBuilder3->setEntity(1, "p");
-	withBuilder3->setAttrType(1, STMTNUM_);
+	withBuilder3->setAttrType(1, NULLATTR_);
 	withBuilder3->setEntityType(1, stringconst::ARG_PROGLINE);
 	withBuilder3->setRefType(2, ATTRREF_);
 	withBuilder3->setEntity(2, "c");
@@ -1163,7 +1163,7 @@ void WithClauseTest::testSynEqualsStmt(){
 	WithClauseBuilder* withBuilder4 = new WithClauseBuilder(WITH_);
 	withBuilder4->setRefType(1, SYNONYM_);
 	withBuilder4->setEntity(1, "p");
-	withBuilder4->setAttrType(1, STMTNUM_);
+	withBuilder4->setAttrType(1, NULLATTR_);
 	withBuilder4->setEntityType(1, stringconst::ARG_PROGLINE);
 	withBuilder4->setRefType(2, ATTRREF_);
 	withBuilder4->setEntity(2, "s");
@@ -1180,7 +1180,7 @@ void WithClauseTest::testSynEqualsStmt(){
 	WithClauseBuilder* withBuilder5 = new WithClauseBuilder(WITH_);
 	withBuilder5->setRefType(1, SYNONYM_);
 	withBuilder5->setEntity(1, "p");
-	withBuilder5->setAttrType(1, STMTNUM_);
+	withBuilder5->setAttrType(1, NULLATTR_);
 	withBuilder5->setEntityType(1, stringconst::ARG_PROGLINE);
 	withBuilder5->setRefType(2, ATTRREF_);
 	withBuilder5->setEntity(2, "s");
@@ -1192,4 +1192,21 @@ void WithClauseTest::testSynEqualsStmt(){
 	Result* r5 = new Result();
 	CPPUNIT_ASSERT(w5->evaluate(r5));
 	CPPUNIT_ASSERT(r5->getResultTableSize() == 1);
+
+	// p = w.stmt# (true, result# = 1)
+	WithClauseBuilder* withBuilder6 = new WithClauseBuilder(WITH_);
+	withBuilder6->setRefType(2, SYNONYM_);
+	withBuilder6->setEntity(2, "p");
+	withBuilder6->setAttrType(2, NULLATTR_);
+	withBuilder6->setEntityType(2, stringconst::ARG_PROGLINE);
+	withBuilder6->setRefType(1, ATTRREF_);
+	withBuilder6->setEntity(1, "s");
+	withBuilder6->setAttrType(1, STMTNUM_);
+	withBuilder6->setEntityType(1, stringconst::ARG_WHILE);
+
+	WithClause* w6 = withBuilder6->build();
+	CPPUNIT_ASSERT(w6->isValid());
+	Result* r6 = new Result();
+	CPPUNIT_ASSERT(w6->evaluate(r6));
+	CPPUNIT_ASSERT(r6->getResultTableSize() == 1);
 }
