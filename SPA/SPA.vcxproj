@@ -44,6 +44,7 @@
     <ClCompile Include="GNode.cpp" />
     <ClCompile Include="IfGNode.cpp" />
     <ClCompile Include="IfNode.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="MultiSynInsert.cpp" />
     <ClCompile Include="NextClause.cpp" />
@@ -176,6 +177,9 @@
     <ClInclude Include="WithClause.h" />
     <ClInclude Include="WithClauseBuilder.h" />
     <ClInclude Include="WithClauseRef.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="source.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>
