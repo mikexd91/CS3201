@@ -1193,7 +1193,7 @@ void WithClauseTest::testSynEqualsStmt(){
 	CPPUNIT_ASSERT(w5->evaluate(r5));
 	CPPUNIT_ASSERT(r5->getResultTableSize() == 1);
 
-	// p = w.stmt# (true, result# = 1)
+	// w.stmt# = p (true, result# = 1)
 	WithClauseBuilder* withBuilder6 = new WithClauseBuilder(WITH_);
 	withBuilder6->setRefType(2, SYNONYM_);
 	withBuilder6->setEntity(2, "p");
