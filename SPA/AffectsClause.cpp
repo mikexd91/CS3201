@@ -85,7 +85,7 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 			}
 		} else if (currentNode->isNodeType(WHILE_)) {
 			WhileGNode* whileNode = static_cast<WhileGNode*>(currentNode);
-			bool isWithinWhile = stmtNum2 >= whileNode->getStartStmt() && stmtNum2 <= whileNode->getEndStmt();
+			bool isWithinWhile = stmtNum2 >= whileNode->getBeforeLoopChild()->getStartStmt() && stmtNum2 < whileNode->getAfterLoopChild()->getStartStmt();
 			if (!isWithinWhile) {
 				iterator.skipWhileLoop(whileNode);
 			}
