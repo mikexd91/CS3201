@@ -41,3 +41,9 @@ os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextSt
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-MultiClause-ss1.txt SystemTests/Results/nextstar_multiclause.xml")
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-StmtOverflow-ss1.txt SystemTests/Results/nextstar_stmtoverflow.xml")
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-Misc-ss1.txt SystemTests/Results/nextstar_misc.xml")
+
+# PATTERN CLAUSE
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Pattern-ss1.txt SystemTests/Results/pattern.xml")
+
+# WITH CLAUSE
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/With-ss1.txt SystemTests/Results/with.xml")
