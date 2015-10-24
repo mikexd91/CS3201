@@ -41,4 +41,5 @@ private:
 	bool modcheck(string, GNode*, unordered_set<int>*, int);
 	void modadd(string, GNode*, unordered_set<int>*, unordered_set<int>*);
 	void modadd(string, GNode*, unordered_set<int>*, unordered_set<int>*, int);
+	void print(unordered_set<int>);
 };

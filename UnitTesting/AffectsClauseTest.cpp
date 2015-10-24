@@ -103,16 +103,19 @@ AffectsClauseTest::setUp() {
 	AssgGNode* assg13 = new AssgGNode(13);
 	assg13->setEndStmt(14);
 	while12->setBeforeLoopChild(assg13);
-	while12->setStartStmt(11);
-	while12->setEndStmt(11);
+	while12->setStartStmt(12);
+	while12->setEndStmt(12);
 	assg13->setFirstParent(while12);
 	assg13->setChild(while12);
+	while12->setSecondParent(assg13);
 	DummyGNode* dummy1 = new DummyGNode();
 	if9->setExit(dummy1);
 	while12->setAfterLoopChild(dummy1);
 	assg10->setChild(dummy1);
-	dummy1->setElseParentStmt(10);
-	dummy1->setIfParentStmt(8);
+	dummy1->setIfParentStmt(10);
+	dummy1->setFirstParent(assg10);
+	dummy1->setElseParentStmt(12);
+	dummy1->setSecondParent(while12);
 	dummy1->setEntrance(if9);
 	AssgGNode* assg14 = new AssgGNode(14);
 	assg14->setEndStmt(15);
@@ -682,9 +685,13 @@ void AffectsClauseTest::testSynFixedPass() {
 	CPPUNIT_ASSERT(m1->isValid());
 
 	CPPUNIT_ASSERT(m1->evaluate(&res));
+	//cout << "q" << endl;
 	CPPUNIT_ASSERT(res.isSynPresent("s"));
+	//cout << "q" << endl;
 	CPPUNIT_ASSERT(res.getResultTableSize() == 2);
+	//cout << "q" << endl;
 	unordered_set<string> s = res.getSyn("s");
+	//cout << "q" << endl;
 	CPPUNIT_ASSERT(s.size() == 2);
 	CPPUNIT_ASSERT(s.find("6") != s.end());
 	CPPUNIT_ASSERT(s.find("10") != s.end());
