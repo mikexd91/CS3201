@@ -85,11 +85,11 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 			}
 		} else if (currentNode->isNodeType(WHILE_)) {
 			WhileGNode* whileNode = static_cast<WhileGNode*>(currentNode);
-			bool isWithinWhile = stmtNum2 >= whileNode->getBeforeLoopChild()->getStartStmt() && stmtNum2 < whileNode->getAfterLoopChild()->getStartStmt();
+			Statement* whileStmt = stmtTable->getStmtObj(whileNode->getStartStmt());
+			bool isWithinWhile = whileStmt->getChildrenStar().find(stmtNum2) != whileStmt->getChildrenStar().end();
 			if (!isWithinWhile) {
 				iterator.skipWhileLoop(whileNode);
 			}
-			
 		} else if (currentNode->isNodeType(CALL_)) {
 			//check if called procedure modifies var
 			CallGNode* callNode = static_cast<CallGNode*>(currentNode);
