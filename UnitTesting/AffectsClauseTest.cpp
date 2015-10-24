@@ -63,8 +63,6 @@ AffectsClauseTest::setUp() {
 	assg1->setEndStmt(2);
 	proc1->addChild(assg1);
 	WhileGNode* while3 = new WhileGNode(3);
-	while3->setStartStmt(4);
-	while3->setEndStmt(5);
 	assg1->setChild(while3);
 	while3->setFirstParent(assg1);
 	AssgGNode* assg4 = new AssgGNode(4);
@@ -102,8 +100,6 @@ AffectsClauseTest::setUp() {
 	AssgGNode* assg13 = new AssgGNode(13);
 	assg13->setEndStmt(14);
 	while12->setBeforeLoopChild(assg13);
-	while12->setStartStmt(11);
-	while12->setEndStmt(11);
 	assg13->setFirstParent(while12);
 	assg13->setChild(while12);
 	DummyGNode* dummy1 = new DummyGNode();
@@ -179,6 +175,9 @@ AffectsClauseTest::setUp() {
 	unordered_set<string> uses3(usesArray3, usesArray3 + 1);
 	stmt3->setUses(uses3);
 	stmt3->setGNodeRef(while3);
+	int childrenStar3Array[] = {4, 5};
+	unordered_set<int> childrenStar3(childrenStar3Array, childrenStar3Array + 2);
+	stmt3->setChildrenStar(childrenStar3);
 	stmt3->setProcedure(procedure1);
 	stable->addStmt(stmt3);
 	
@@ -297,6 +296,9 @@ AffectsClauseTest::setUp() {
 	stmt12->setModifies(mods12);
 	string usesArray12[] = {"x", "b"};
 	unordered_set<string> uses12(usesArray12, usesArray12 + 2);
+	int childrenStar12Array[] = {13};
+	unordered_set<int> childrenStar12(childrenStar12Array, childrenStar12Array + 1);
+	stmt12->setChildrenStar(childrenStar12);
 	stmt12->setUses(uses12);
 	stmt12->setGNodeRef(while12);
 	stmt12->setProcedure(procedure2);
