@@ -541,8 +541,14 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 				return;
 			}
 			visitedSet->insert(gn->getStartStmt());
-			modadd(var, gn->getParents().at(0), resultSet, visitedSet);
-			return;
+			// need to check if it mods the var
+			// if it does, then we cannot go up
+			if (stmtTable->getStmtObj(gn->getStartStmt())->getModifies().count(var) >= 1) {
+				return;
+			} else {
+				modadd(var, gn->getParents().at(0), resultSet, visitedSet);
+				return;
+			}
 
 		case GType::IF_ :
 			//cout << "if" << endl;
@@ -555,7 +561,7 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 			return;
 
 		case GType::WHILE_ :
-			//cout << "while" << endl;
+			//cout << "while" << gn->getStartStmt() << endl;
 			print(*visitedSet);
 			if (visitedSet->count(gn->getStartStmt()) >= 1) {
 				return;

@@ -64,14 +64,14 @@ AffectsClauseTest::setUp() {
 	assg1->setEndStmt(2);
 	proc1->addChild(assg1);
 	WhileGNode* while3 = new WhileGNode(3);
-	while3->setStartStmt(4);
+	while3->setStartStmt(3);
 	while3->setEndStmt(5);
 	assg1->setChild(while3);
 	while3->setFirstParent(assg1);
 	AssgGNode* assg4 = new AssgGNode(4);
 	assg4->setEndStmt(5);
 	while3->setBeforeLoopChild(assg4);
-	while3->setFirstParent(assg1);
+	while3->setSecondParent(assg4);
 	assg4->setFirstParent(while3);
 	assg4->setChild(while3);
 	EndGNode* end1 = new EndGNode();
@@ -673,6 +673,7 @@ void AffectsClauseTest::testGenericFixedFail() {
 
 // under nick
 void AffectsClauseTest::testSynFixedPass() { 
+	// affects(s, 14) -> s = {6, 10}
 	Result res = Result();
 	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
 	affectsBuilder->setArg(1, "s");
@@ -685,16 +686,32 @@ void AffectsClauseTest::testSynFixedPass() {
 	CPPUNIT_ASSERT(m1->isValid());
 
 	CPPUNIT_ASSERT(m1->evaluate(&res));
-	//cout << "q" << endl;
 	CPPUNIT_ASSERT(res.isSynPresent("s"));
-	//cout << "q" << endl;
 	CPPUNIT_ASSERT(res.getResultTableSize() == 2);
-	//cout << "q" << endl;
 	unordered_set<string> s = res.getSyn("s");
-	//cout << "q" << endl;
 	CPPUNIT_ASSERT(s.size() == 2);
 	CPPUNIT_ASSERT(s.find("6") != s.end());
 	CPPUNIT_ASSERT(s.find("10") != s.end());
+
+	// affects(s, 4) -> s = {1, 5}
+	Result res2 = Result();
+	SuchThatClauseBuilder* affectsBuilder2 = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder2->setArg(1, "s");
+	affectsBuilder2->setArgFixed(1, false);
+	affectsBuilder2->setArgType(1, ARG_STATEMENT);
+	affectsBuilder2->setArg(2, "4");
+	affectsBuilder2->setArgFixed(2, true);
+	affectsBuilder2->setArgType(2, ARG_PROGLINE);
+	AffectsClause* m2 = (AffectsClause*) affectsBuilder2->build();
+	CPPUNIT_ASSERT(m2->isValid());
+
+	CPPUNIT_ASSERT(m2->evaluate(&res2));
+	CPPUNIT_ASSERT(res2.isSynPresent("s"));
+	CPPUNIT_ASSERT(res2.getResultTableSize() == 2);
+	unordered_set<string> s2 = res2.getSyn("s");
+	CPPUNIT_ASSERT(s2.size() == 2);
+	CPPUNIT_ASSERT(s2.find("1") != s2.end());
+	CPPUNIT_ASSERT(s2.find("5") != s2.end());
 }
 
 void AffectsClauseTest::testSynFixedFail() { 
@@ -703,7 +720,7 @@ void AffectsClauseTest::testSynFixedFail() {
 	affectsBuilder->setArg(1, "s");
 	affectsBuilder->setArgFixed(1, false);
 	affectsBuilder->setArgType(1, ARG_STATEMENT);
-	affectsBuilder->setArg(2, "1");
+	affectsBuilder->setArg(2, "15");
 	affectsBuilder->setArgFixed(2, true);
 	affectsBuilder->setArgType(2, ARG_PROGLINE);
 	AffectsClause* m1 = (AffectsClause*) affectsBuilder->build();
