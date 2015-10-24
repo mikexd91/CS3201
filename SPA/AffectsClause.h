@@ -37,4 +37,8 @@ private:
 	ProcTable* procTable;
 	bool toContinue(CFGIterator);
 	bool toContinueForFixed(CFGIterator);
+	bool modcheck(string, GNode*, unordered_set<int>*);
+	bool modcheck(string, GNode*, unordered_set<int>*, int);
+	void modadd(string, GNode*, unordered_set<int>*, unordered_set<int>*);
+	void modadd(string, GNode*, unordered_set<int>*, unordered_set<int>*, int);
 };

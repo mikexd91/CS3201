@@ -240,42 +240,50 @@ bool AffectsClause::evaluateS1FixedS2Generic(string s1){
 	return false;
 }
 
-//e.g. Parent(_,2)
+//e.g. Affects(_, 2)
 // nick - using all pairs to calculate affect(1, 2) - can be improved
 bool AffectsClause::evaluateS1GenericS2Fixed(string s2) {
 	// get the statement object and make sure it is an assign stmt
-	int stmtNum1 = lexical_cast<int>(s2);
-	Statement* stmt1 = stmtTable->getStmtObj(stmtNum1);
-	if (stmt1->getType() != ASSIGN_STMT_) {
+	int stmtNum = lexical_cast<int>(s2);
+	Statement* stmt = stmtTable->getStmtObj(stmtNum);
+	if (stmt->getType() != ASSIGN_STMT_) {
 		return false;
 	}
 
-	// return false if the statement doesn't modify anything.
-	unordered_set<string> modifies1 = stmt1->getModifies();
-	if (modifies1.size() != 1) {
-		//error
-		cout << "Assignment statements should only have 1 modify variable";	
+	// get the uses set
+	unordered_set<string> usesSet = stmt->getUses();
+	if (usesSet.size() <= 0) {
+		//if the assignment doesnt use anything, then nothing affects it
 		return false;
 	}
 
-	// get the containing procedure
-	Procedure* containingProc = stmt1->getProc();
-	// get all the statements in the proc
-	unordered_set<int> procStmts = containingProc->getContainStmts();
-	// check every pair for affects(pg, s2)
-	BOOST_FOREACH(auto pg, procStmts) {
-		string pgstr = lexical_cast<string>(pg);
-		//cout << "checking " << pgstr << " " << s2 << endl;
-		if (evaluateS1FixedS2Fixed(pgstr, s2)) {
+	// get the gnode of this stmt
+	GNode* gn = stmt->getGNodeRef();
+
+	BOOST_FOREACH(string var, usesSet) {
+		if (modcheck(var, gn, new unordered_set<int>(), stmtNum)) {
 			return true;
 		}
 	}
 
-	// if no match then return false
 	return false;
+
+	//// get the containing procedure
+	//Procedure* containingProc = stmt1->getProc();
+	//// get all the statements in the proc
+	//unordered_set<int> procStmts = containingProc->getContainStmts();
+	//// check every pair for affects(pg, s2)
+	//BOOST_FOREACH(auto pg, procStmts) {
+	//	string pgstr = lexical_cast<string>(pg);
+	//	//cout << "checking " << pgstr << " " << s2 << endl;
+	//	if (evaluateS1FixedS2Fixed(pgstr, s2)) {
+	//		return true;
+	//	}
+	//}
+	//return false;
 }
 
-//e.g. Parent(s1,2)
+//e.g. Affects(s,2)
 //get parent of string
 // nick - using all pairs to calculate affect(1, 2) - can be improved
 unordered_set<string> AffectsClause::getAllS1WithS2Fixed(string s2) {
@@ -297,19 +305,20 @@ unordered_set<string> AffectsClause::getAllS1WithS2Fixed(string s2) {
 		return result;
 	}
 
-	// get the containing procedure
-	Procedure* containingProc = stmt1->getProc();
-	// get all the statements in the proc
-	unordered_set<int> procStmts = containingProc->getContainStmts();
-	// check every pair for affects(pg, s2)
-	BOOST_FOREACH(auto pg, procStmts) {
-		string pgstr = lexical_cast<string>(pg);
-		//cout << "checking " << pgstr << " " << s2 << endl;
-		if (evaluateS1FixedS2Fixed(pgstr, s2)) {
-			// add it to the result
-			result.insert(pgstr);
-		}
-	}
+
+	//// get the containing procedure
+	//Procedure* containingProc = stmt1->getProc();
+	//// get all the statements in the proc
+	//unordered_set<int> procStmts = containingProc->getContainStmts();
+	//// check every pair for affects(pg, s2)
+	//BOOST_FOREACH(auto pg, procStmts) {
+	//	string pgstr = lexical_cast<string>(pg);
+	//	//cout << "checking " << pgstr << " " << s2 << endl;
+	//	if (evaluateS1FixedS2Fixed(pgstr, s2)) {
+	//		// add it to the result
+	//		result.insert(pgstr);
+	//	}
+	//}
 
 	// return whatever we have placed inside the result set.
 	return result;
@@ -371,6 +380,184 @@ bool AffectsClause::toContinueForFixed(CFGIterator iterator) {
 	}
 }
 
+bool AffectsClause::modcheck(string var, GNode* gn, unordered_set<int>* visitedSet) {
+	if (visitedSet->count(gn->getStartStmt() >= 1)) {
+		return false;
+	}
+	//modcheck(v, gn) {
+	//	if gn.type == proc or prog or end
+	//		return false
+	//	
+	//	elif gn.type == assg
+	//		for each stmt# in gn, 
+	//			if gn.mod(v) == true
+	//				return true
+	//	
+	//	elif gn.type == calls or if
+	//		return modcheck(v, gn.parent)
+	//	
+	//	elif gn.type == while
+	//		return modcheck(v, gn.parent1, gn.parent2)
+	//	
+	//	elif gn.type == dummy
+	//		return modcheck(v, gn.parent1, gn.parent2)
 
+	int dgn_id;
+	DummyGNode* dgn;
+	switch (gn->getNodeType()) {
+		case GType::PROC_ :
+		case GType::PROG_ :
+		case GType::END_ :
+			cout << "end" << endl;
+			return false;
 
+		case GType::CALL_ :
+		case GType::IF_ :
+			cout << "call/if" << endl;
+			visitedSet->insert(gn->getStartStmt());
+			return modcheck(var, gn->getParents().at(0), visitedSet);
 
+		case GType::WHILE_ :
+			cout << "while" << endl;
+			visitedSet->insert(gn->getStartStmt());
+			return modcheck(var, gn->getParents().at(0), visitedSet) 
+				|| modcheck(var, gn->getParents().at(1), visitedSet);
+			
+		case GType::DUMMY_ :
+			cout << "dummy" << endl;
+			dgn = (DummyGNode*)gn;
+			dgn_id = dgn->getIfParentStmt() * 1000 + dgn->getElseParentStmt() * 100;
+			visitedSet->insert(dgn_id);
+			return modcheck(var, gn->getParents().at(0), visitedSet) 
+				|| modcheck(var, gn->getParents().at(1), visitedSet);
+			
+		case GType::ASSIGN_ :
+			cout << "assign" << endl;
+			return modcheck(var, gn->getParents().at(0), visitedSet, gn->getEndStmt());
+
+		default :
+			cout << "unknown node type" << endl;
+			return false;
+	}
+}
+
+bool AffectsClause::modcheck(string var, GNode* gn, unordered_set<int>* visitedSet, int stmtNum) {
+	cout << "modcheck with stmtnum = " << stmtNum << endl;
+	if (visitedSet->count(gn->getStartStmt() >= 1)) {
+		return false;
+	}
+
+	if (gn->getNodeType() == GType::ASSIGN_) {
+		cout << "end stmt = " << gn->getStartStmt() << endl;
+		for (int i = stmtNum; i >= gn->getStartStmt(); i--) {
+			cout << i << endl;
+			Statement* stmt = stmtTable->getStmtObj(i);
+			unordered_set<string> modSet = stmt->getModifies();
+			if (modSet.size() == 1) {
+				// it must modify something
+				// get that something
+				cout << "a" << endl;
+				string modVar = *(modSet.begin());
+				cout << "s" << endl;
+				if (modVar == var) {
+					// if it modifies then ok
+					return true;
+				}
+			}
+		}
+		cout << gn->getParents().size() << endl;
+		return modcheck(var, gn->getParents().at(0), visitedSet);
+	}
+}
+
+void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet, unordered_set<int>* visitedSet) {
+	if (visitedSet->count(gn->getStartStmt() >= 1)) {
+		return;
+	}
+	//modcheck(v, gn) {
+	//	if gn.type == proc or prog or end
+	//		return false
+	//	
+	//	elif gn.type == assg
+	//		for each stmt# in gn, 
+	//			if gn.mod(v) == true
+	//				return true
+	//	
+	//	elif gn.type == calls or if
+	//		return modcheck(v, gn.parent)
+	//	
+	//	elif gn.type == while
+	//		return modcheck(v, gn.parent1, gn.parent2)
+	//	
+	//	elif gn.type == dummy
+	//		return modcheck(v, gn.parent1, gn.parent2)
+
+	int dgn_id;
+	DummyGNode* dgn;
+	switch (gn->getNodeType()) {
+		case GType::PROC_ :
+		case GType::PROG_ :
+		case GType::END_ :
+			cout << "end" << endl;
+			return;
+
+		case GType::CALL_ :
+		case GType::IF_ :
+			cout << "call/if" << endl;
+			visitedSet->insert(gn->getStartStmt());
+			return modadd(var, gn->getParents().at(0), resultSet, visitedSet);
+
+		case GType::WHILE_ :
+			cout << "while" << endl;
+			visitedSet->insert(gn->getStartStmt());
+			modadd(var, gn->getParents().at(0), resultSet, visitedSet);
+			modadd(var, gn->getParents().at(1), resultSet, visitedSet);
+			return;
+			
+		case GType::DUMMY_ :
+			cout << "dummy" << endl;
+			dgn = (DummyGNode*)gn;
+			dgn_id = dgn->getIfParentStmt() * 1000 + dgn->getElseParentStmt() * 100;
+			visitedSet->insert(dgn_id);
+			modadd(var, gn->getParents().at(0), resultSet, visitedSet);
+			modadd(var, gn->getParents().at(1), resultSet, visitedSet);
+			
+		case GType::ASSIGN_ :
+			cout << "assign" << endl;
+			modadd(var, gn->getParents().at(0), resultSet, visitedSet, gn->getEndStmt());
+
+		default :
+			cout << "unknown node type" << endl;
+			return;
+	}
+}
+
+void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet, unordered_set<int>* visitedSet, int stmtNum) {
+	cout << "modadd with stmtnum = " << stmtNum << endl;
+	if (visitedSet->count(gn->getStartStmt() >= 1)) {
+		return;
+	}
+
+	if (gn->getNodeType() == GType::ASSIGN_) {
+		cout << "end stmt = " << gn->getStartStmt() << endl;
+		for (int i = stmtNum; i >= gn->getStartStmt(); i--) {
+			cout << i << endl;
+			Statement* stmt = stmtTable->getStmtObj(i);
+			unordered_set<string> modSet = stmt->getModifies();
+			if (modSet.size() == 1) {
+				// it must modify something
+				// get that something
+				cout << "a" << endl;
+				string modVar = *(modSet.begin());
+				cout << "s" << endl;
+				if (modVar == var) {
+					// if it modifies then ok
+					resultSet->insert(i);
+					return;
+				}
+			}
+		}
+		cout << gn->getParents().size() << endl;
+		return modadd(var, gn->getParents().at(0), resultSet, visitedSet);
+	}
+}

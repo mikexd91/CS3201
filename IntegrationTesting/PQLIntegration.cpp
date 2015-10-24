@@ -968,8 +968,7 @@ void PQLIntegration::testSelectCallsStarUses() {
 		cout << a << endl;
 	}
 
-	// FAIL: returned both procs when only supposed to return YourMom
-	// NOTE: suspect calls* parse wrongly?
+	// FAIL: returned NO procs when only supposed to return YourMom
 	CPPUNIT_ASSERT(res.size() == 1);
 	CPPUNIT_ASSERT(res.count("YourMom") == 1);
 }
