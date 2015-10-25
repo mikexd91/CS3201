@@ -32,24 +32,24 @@ void DesignExtractor::checkCyclicCalls(){
 }
 
 bool DesignExtractor::isCyclicCall(unordered_set<Procedure*> visitedProcs, unordered_set<Procedure*> recurseProcs, Procedure* currentProc) {
-	 if(visitedProcs.find(currentProc) == visitedProcs.end()) {
-        // Mark the current node as visited and part of recursion stack
-        visitedProcs.insert(currentProc);
+	if(visitedProcs.find(currentProc) == visitedProcs.end()) {
+		// Mark the current node as visited and part of recursion stack
+		visitedProcs.insert(currentProc);
 		recurseProcs.insert(currentProc);
 
-        // Recur for all the vertices adjacent to this vertex
+		// Recur for all the vertices adjacent to this vertex
 		Procedure::CallsSet calledProcs = currentProc->getCalls();
-        BOOST_FOREACH(Procedure* calledProc, calledProcs) {
-            if ( visitedProcs.find(calledProc) == visitedProcs.end() && isCyclicCall(visitedProcs, recurseProcs, calledProc)) {
-                return true;
+		BOOST_FOREACH(Procedure* calledProc, calledProcs) {
+			if ( visitedProcs.find(calledProc) == visitedProcs.end() && isCyclicCall(visitedProcs, recurseProcs, calledProc)) {
+				return true;
 			} else if (recurseProcs.find(calledProc) != recurseProcs.end()) {
-                return true;
+				return true;
 			}
-        }
+		}
  
-    }
-    recurseProcs.erase(currentProc);  // remove the vertex from recursion stack
-    return false;
+	}
+	recurseProcs.erase(currentProc);  // remove the vertex from recursion stack
+	return false;
 }
 
 
