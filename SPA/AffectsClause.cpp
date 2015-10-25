@@ -108,7 +108,7 @@ bool AffectsClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg) {
 //e.g. Parent(_,_)
 bool AffectsClause::evaluateS1GenericS2Generic() {
 	AffectsCalculator calc = AffectsCalculator();
-	return calc.computeGeneric();
+	return calc.computeS1GenericS2Generic();
 }
 
 //e.g. Parent(2, s2)
@@ -178,66 +178,8 @@ unordered_set<string> AffectsClause::getAllS2() {
 
 //e.g. Parent(2,_)
 bool AffectsClause::evaluateS1FixedS2Generic(string s1){
-	//check modifies/uses aspects of firstArg and secondArg
-	int stmtNum1 = boost::lexical_cast<int>(s1);
-	Statement* stmt1 = stmtTable->getStmtObj(stmtNum1);
-	if (stmt1->getType() != ASSIGN_STMT_) {
-		return false;
-	}
-	unordered_set<string> modifies1 = stmt1->getModifies();
-	string modifyingVar;
-	if (modifies1.size() != 1) {
-		//error
-		if (modifies1.size() != 1) {
-			cout << "Assignment statements should only have 1 modify variable";	
-		}
-		return false;
-	} else {
-		modifyingVar = *modifies1.begin();
-	}
-
-	//if both are in same procedure
-	//check if stmt2 next* stmt1
-	CFGIterator iterator = CFGIterator(stmt1->getGNodeRef());
-	GNode* currentNode = iterator.getNextNode();
-	while (!currentNode->isNodeType(END_)){
-		if (currentNode->isNodeType(ASSIGN_)) {
-			AssgGNode* assgNode = static_cast<AssgGNode*>(currentNode);
-			int startNum;
-			if (iterator.isStart()) {
-				startNum = stmtNum1+1;
-			} else {
-				startNum = assgNode->getStartStmt();
-			}
-			for (int i =startNum; i <= assgNode->getEndStmt(); i++) {
-				Statement* assgStmt = stmtTable->getStmtObj(i);
-				if (assgStmt->getUses().find(modifyingVar) != assgStmt->getUses().end()) {
-					return true;
-				} else {
-					Statement* assgStmt = stmtTable->getStmtObj(i);
-					//if there is a statement that uses the variable
-					if (assgStmt->getModifies().find(modifyingVar) != assgStmt->getModifies().end()) {
-						//if we should consider else stmt (consider both branches) -> consider else branch
-						if (!toContinue(iterator)) {
-							return false;
-						}
-					}
-				}
-			}
-			
-		} else if (currentNode->isNodeType(CALL_)) {
-			//check if called procedure modifies var
-			CallGNode* callNode = static_cast<CallGNode*>(currentNode);
-			Statement* callStmt = stmtTable->getStmtObj(callNode->getStartStmt());
-			if (callStmt->getModifies().find(modifyingVar) != callStmt->getModifies().end()) {
-				if (!toContinue(iterator)) {
-					return false;
-				}
-			}
-		}
-		currentNode = iterator.getNextNode();
-	}
-	return false;
+	AffectsCalculator calc = AffectsCalculator();
+	return calc.computeS1FixedS2Generic(s1);
 }
 
 //e.g. Parent(_,2)
