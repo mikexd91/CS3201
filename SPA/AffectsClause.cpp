@@ -339,7 +339,7 @@ unordered_set<vector<string>> AffectsClause::getAllS1AndS2() {
 	}
 }
 
-bool AffectsClause::toContinue(CFGIterator iterator) {
+bool AffectsClause::toContinue(CFGIterator& iterator) {
 	if (iterator.isInIfContainer()) {
 		IfGNode* ifNode = iterator.getCurrentIfNode();
 		if (iterator.toConsiderElseStmt()) {
@@ -362,7 +362,7 @@ bool AffectsClause::toContinue(CFGIterator iterator) {
 	}
 }
 
-bool AffectsClause::toContinueForFixed(CFGIterator iterator) {
+bool AffectsClause::toContinueForFixed(CFGIterator& iterator) {
 	if (iterator.isInIfContainer()) {
 		IfGNode* ifNode = iterator.getCurrentIfNode();
 		if (iterator.toConsiderElseStmt()) {
