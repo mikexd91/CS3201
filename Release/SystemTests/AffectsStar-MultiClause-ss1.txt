@@ -1,0 +1,85 @@
+1 - AFFECTS*: 2 clauses (similar) - fixed-fixed, fixed-fixed
+
+Select BOOLEAN such that Affects*(1, 10) and Affects*(2, 22)
+true
+5000
+2 - AFFECTS*: 2 clauses (similar) - syn-syn, syn-syn
+assign a1, a2, a3;
+Select <a1,a3> such that Affects*(a1, a2) and Affects*(a2, a3)
+1 6, 1 9, 1 12, 1 13, 2 8, 2 10, 2 14, 2 21, 2 12, 2 16, 2 19, 2 22, 3 7, 3 11, 3 13, 3 14, 3 16, 6 9, 6 6, 6 12, 6 13, 7 7, 7 11, 7 13, 7 14, 7 16, 8 8, 8 10, 8 14, 8 12, 8 16, 8 19, 8 21, 8 22, 10 19, 10 16, 10 22, 11 19, 16 16, 19 19, 21 19, 21 16, 21 22, 22 19, 22 16, 22 22
+5000
+3 - AFFECTS*: 2 clauses (similar) - fixed-syn, fixed-syn
+stmt s;
+Select s such that Affects*(2, s) and Affects*(11, s)
+14, 16, 19
+5000
+4 - AFFECTS*: 2 clauses (similar) - syn-fixed, syn-fixed
+assign a1, a2;
+Select BOOLEAN such that Affects*(a1, 16) and Affects*(a2, 14)
+true
+5000
+5 - AFFECTS*: 2 clauses (similar) - fixed-generic, fixed-generic
+while w;
+Select w such that Affects*(19, _) and Affects*(22, _)
+5, 15, 17, 18
+5000
+6 - AFFECTS*: 2 clauses (similar) - generic-fixed, generic-fixed
+if i;
+Selectt i such that Affects*(_, 14) and Affects*(_, 23)
+none
+5000
+7 - AFFECTS*: 2 clauses (similar) - syn-generic, syn-generic
+assign a; stmt s;
+Select a such that Affects*(a, _) and Affects*(s, _)
+1, 2, 3, 6, 7, 8, 9, 10, 11, 16, 19, 21, 22
+5000
+8 - AFFECTS*: 2 clauses (similar) - generic-syn, generic-syn
+assign a; stmt s;
+Select s such that Affects*(_, s) and Affects*(_, a)
+6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 19, 21, 22
+5000
+9 - AFFECTS*: 2 clauses (mixed) - fixed-fixed, fixed-syn
+assign a;
+Select a such that Affects*(16, 19) and Affects*(19, a)
+16, 19
+5000
+10 - AFFECTS*: 2 clauses (mixed) - syn-syn, syn-fixed
+assign a1, a2;
+Select a1 such that Affects*(a1, a2) and Affects*(a1, 13)
+1, 6, 9, 11
+5000
+11 - AFFECTS*: 2 clauses (mixed) - generic-generic, fixed-generic
+
+Select BOOLEAN such that Affects*(_, _) and Affects*(21, _)
+true
+5000
+12 - AFFECTS*: 2 clauses (mixed) - fixed-syn, generic-fixed
+assign a;
+Select a such that Affects*(5, a) and Affects*(_, 23)
+none
+5000
+13 - AFFECTS*: 2 clauses (mixed) - syn-fixed, syn-generic
+stmt s1, s2;
+Select BOOLEAN such that Affects*(s1, 11) and Affects*(s2, _)
+true
+5000
+14 - AFFECTS*: 2 clauses (mixed) - fixed-generic, generic-syn
+assign a; while w;
+Select w such that Affects*(21, _) and Affects*(_, a)
+5, 15, 17, 18
+5000
+15 - AFFECTS*: 2 clauses (mixed) - generic-fixed, syn-generic
+assign a; stmt s;
+Select s such that Affects*(_, 16) and Affects*(a, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23
+5000
+16 - AFFECTS*: 2 clauses (mixed) - syn-generic, generic-syn
+assign a;
+Select a such that Affects*(a, _) and Affects*(_, a)
+6, 7, 8, 9, 10, 11, 16, 19, 21, 22
+5000
+17 - AFFECTS*: 2 clauses (mixed) - generic-fixed, generic-syn
+assign a;
+Select BOOLEAN such that Affects*(_, 4) and Affects*(_, a)
+false
+5000
