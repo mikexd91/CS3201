@@ -692,7 +692,7 @@ void AffectsClauseTest::testGenericFixedFail() {
 	affectsBuilder->setArg(1, "_");
 	affectsBuilder->setArgFixed(1, false);
 	affectsBuilder->setArgType(1, ARG_GENERIC);
-	affectsBuilder->setArg(2, "1");
+	affectsBuilder->setArg(2, "15");
 	affectsBuilder->setArgFixed(2, true);
 	affectsBuilder->setArgType(2, ARG_PROGLINE);
 	AffectsClause* m1 = (AffectsClause*) affectsBuilder->build();
