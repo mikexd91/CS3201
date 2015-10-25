@@ -428,13 +428,13 @@ bool AffectsClause::modcheck(string var, GNode* gn, unordered_set<int>* visitedS
 	int dgn_id;
 	DummyGNode* dgn;
 	switch (gn->getNodeType()) {
-		case GType::PROC_ :
-		case GType::PROG_ :
-		case GType::END_ :
+		case PROC_ :
+		case PROG_ :
+		case END_ :
 			//cout << "end" << endl;
 			return false;
 
-		case GType::CALL_ :
+		case CALL_ :
 			//cout << "call" << endl;
 			if (visitedSet->count(gn->getStartStmt()) >= 1) {
 				return false;
@@ -448,7 +448,7 @@ bool AffectsClause::modcheck(string var, GNode* gn, unordered_set<int>* visitedS
 				return modcheck(var, gn->getParents().at(0), visitedSet);
 			}
 
-		case GType::IF_ :
+		case IF_ :
 			//cout << "if" << endl;
 			if (visitedSet->count(gn->getStartStmt()) >= 1) {
 				return false;
@@ -456,7 +456,7 @@ bool AffectsClause::modcheck(string var, GNode* gn, unordered_set<int>* visitedS
 			visitedSet->insert(gn->getStartStmt());
 			return modcheck(var, gn->getParents().at(0), visitedSet);
 
-		case GType::WHILE_ :
+		case WHILE_ :
 			//cout << "while" << endl;
 			if (visitedSet->count(gn->getStartStmt()) >= 1) {
 				return false;
@@ -465,7 +465,7 @@ bool AffectsClause::modcheck(string var, GNode* gn, unordered_set<int>* visitedS
 			return modcheck(var, gn->getParents().at(0), visitedSet) 
 				|| modcheck(var, gn->getParents().at(1), visitedSet);
 			
-		case GType::DUMMY_ :
+		case DUMMY_ :
 			//cout << "dummy" << endl;
 			dgn = (DummyGNode*)gn;
 			dgn_id = dgn->getIfParentStmt() * 1000 + dgn->getElseParentStmt() * 100;
@@ -476,7 +476,7 @@ bool AffectsClause::modcheck(string var, GNode* gn, unordered_set<int>* visitedS
 			return modcheck(var, gn->getParents().at(0), visitedSet) 
 				|| modcheck(var, gn->getParents().at(1), visitedSet);
 			
-		case GType::ASSIGN_ :
+		case ASSIGN_ :
 			//cout << "assign" << endl;
 			return modcheck(var, gn, visitedSet, gn->getEndStmt());
 
@@ -489,7 +489,7 @@ bool AffectsClause::modcheck(string var, GNode* gn, unordered_set<int>* visitedS
 bool AffectsClause::modcheck(string var, GNode* gn, unordered_set<int>* visitedSet, int stmtNum) {
 	//cout << "modcheck with stmtnum = " << stmtNum << endl;
 
-	if (gn->getNodeType() == GType::ASSIGN_) {
+	if (gn->getNodeType() == ASSIGN_) {
 		//cout << "end stmt = " << gn->getStartStmt() << endl;
 		for (int i = stmtNum; i >= gn->getStartStmt(); i--) {
 			if (visitedSet->count(i) >= 1) {
@@ -538,14 +538,14 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 	int dgn_id;
 	DummyGNode* dgn;
 	switch (gn->getNodeType()) {
-		case GType::PROC_ :
-		case GType::PROG_ :
-		case GType::END_ :
+		case PROC_ :
+		case PROG_ :
+		case END_ :
 			print(*visitedSet);
 			//cout << "end" << endl;
 			return;
 
-		case GType::CALL_ :
+		case CALL_ :
 			//cout << "call" << endl;
 			print(*visitedSet);
 			if (visitedSet->count(gn->getStartStmt()) >= 1) {
@@ -561,7 +561,7 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 				return;
 			}
 
-		case GType::IF_ :
+		case IF_ :
 			//cout << "if" << endl;
 			print(*visitedSet);
 			if (visitedSet->count(gn->getStartStmt()) >= 1) {
@@ -571,7 +571,7 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 			modadd(var, gn->getParents().at(0), resultSet, visitedSet);
 			return;
 
-		case GType::WHILE_ :
+		case WHILE_ :
 			//cout << "while" << gn->getStartStmt() << endl;
 			print(*visitedSet);
 			if (visitedSet->count(gn->getStartStmt()) >= 1) {
@@ -582,7 +582,7 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 			modadd(var, gn->getParents().at(0), resultSet, visitedSet);
 			return;
 			
-		case GType::DUMMY_ :
+		case DUMMY_ :
 			//cout << "dummy" << endl;
 			dgn = (DummyGNode*) gn;
 			dgn_id = dgn->getIfParentStmt() * 100000 + dgn->getElseParentStmt() * 100;
@@ -595,7 +595,7 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 			modadd(var, gn->getParents().at(1), resultSet, visitedSet);
 			return;
 			
-		case GType::ASSIGN_ :
+		case ASSIGN_ :
 			//cout << "assign" << endl;
 			modadd(var, gn, resultSet, visitedSet, gn->getEndStmt());
 			return;
@@ -609,7 +609,7 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet, unordered_set<int>* visitedSet, int stmtNum) {
 	//cout << "modadd with stmtnum = " << stmtNum << endl;
 
-	if (gn->getNodeType() == GType::ASSIGN_) {
+	if (gn->getNodeType() == ASSIGN_) {
 		//cout << "end stmt = " << gn->getStartStmt() << endl;
 		for (int i = stmtNum; i >= gn->getStartStmt(); i--) {
 			//cout << i << endl;

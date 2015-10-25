@@ -8,7 +8,7 @@ using namespace std;
 class QueryEvaluatorTest: public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( QueryEvaluatorTest );
 	// Testing no clause in query, getting table values
-	
+	CPPUNIT_TEST( testEvaluateEmptySelectBoolean );
 	CPPUNIT_TEST( testEvalauteEmptyClauseListSelectAssignSyn );
 	CPPUNIT_TEST( testEvalauteEmptyClauseListSelectStmtSyn );
 	CPPUNIT_TEST( testEvalauteEmptyClauseListSelectWhileSyn );
@@ -57,7 +57,7 @@ public:
 	void tearDown();
 
 	// Testing category NONE_IN_CLAUSE. No clause in query, getting table values
-	
+	void testEvaluateEmptySelectBoolean();
 	void testEvalauteEmptyClauseListSelectAssignSyn();
 	void testEvalauteEmptyClauseListSelectStmtSyn();
 	void testEvalauteEmptyClauseListSelectWhileSyn();

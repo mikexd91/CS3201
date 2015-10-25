@@ -181,6 +181,9 @@ AffectsClauseTest::setUp() {
 	stmt3->setModifies(mods3);
 	string usesArray3[] = {"x"};
 	unordered_set<string> uses3(usesArray3, usesArray3 + 1);
+	int childrenStar3Array[] = {4, 5};
+	unordered_set<int> childrenStar3(childrenStar3Array, childrenStar3Array + 2);
+	stmt3->setChildrenStar(childrenStar3);
 	stmt3->setUses(uses3);
 	stmt3->setGNodeRef(while3);
 	stmt3->setProcedure(procedure1);
@@ -302,6 +305,9 @@ AffectsClauseTest::setUp() {
 	string usesArray12[] = {"x", "b"};
 	unordered_set<string> uses12(usesArray12, usesArray12 + 2);
 	stmt12->setUses(uses12);
+	int childrenStar12Array[] = {13};
+	unordered_set<int> childrenStar12(childrenStar12Array, childrenStar12Array + 1);
+	stmt12->setChildrenStar(childrenStar12);
 	stmt12->setGNodeRef(while12);
 	stmt12->setProcedure(procedure2);
 	stable->addStmt(stmt12);
