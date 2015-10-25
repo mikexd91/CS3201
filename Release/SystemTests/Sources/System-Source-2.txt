@@ -1,7 +1,7 @@
 procedure proc1 {
 	a = (b + c) * d * 5;
 	b = a * d + 3 * c;
-	call p2;
+	call proc2;
 	while c {
 		d = c * c + c;
 		if b then {
@@ -16,7 +16,7 @@ procedure proc1 {
 			while f {
 				g = h * (b - a);
 			}
-			call p3;
+			call proc3;
 		}
 		while a {
 			b = (c + d) * 2;
@@ -42,7 +42,7 @@ procedure proc2 {
 	why = how * what;
 	while how {
 		if why then {
-			call p3;
+			call proc3;
 		}
 		else {
 			how = (how + how) * (why + why) * (what + what);
