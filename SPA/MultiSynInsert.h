@@ -31,5 +31,6 @@ private:
 	void categoriseSyns(ResultTable, vector<int>&, vector<int>&, vector<int>&);
 	void insertSyns(ResultTable&, vector<int>);
 	void addToRow(Row&, vector<int>, vector<string>);
-	bool toInsertRow(Row, vector<string>, vector<int>, vector<int>);		
+	bool toInsertRow(Row, vector<string>, vector<int>, vector<int>);	
+	bool areSynsSame(vector<string> syns);
 };
