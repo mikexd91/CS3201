@@ -1,16 +1,16 @@
 1 - AFFECTS*: stmt overflow
-variable v;
-Select v such that Affects*(45, v)
+assign a;
+Select a such that Affects*(45, a)
 none
 5000
 2 - AFFECTS*: stmt underflow
-variable v;
-Select v such that Affects*(-1, v)
+assign a;
+Select a such that Affects*(-1, a)
 none
 5000
 3 - AFFECTS*: stmt underflow
-variable v;
-Select v such that Affects*(0, v)
+assign a;
+Select v such that Affects*(0, a)
 none
 5000
 4 - AFFECTS*: invalid argument

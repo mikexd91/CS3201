@@ -32,6 +32,16 @@ import os
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-StmtOverflow-ss1.txt SystemTests/Results/followsstar_stmtoverflow.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-Misc-ss1.txt SystemTests/Results/followsstar_misc.xml")
 
+# CALLS(*) CLAUSE
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Calls-ss2.txt SystemTests/Results/calls.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Calls-MultiClause-ss2.txt SystemTests/Results/calls_multiclause.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Calls-StmtOverflow-ss2.txt SystemTests/Results/calls_stmtoverflow.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Calls-Misc-ss2.txt SystemTests/Results/calls_misc.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/CallsStar-ss2.txt SystemTests/Results/callsstar.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/CallsStar-MultiClause-ss2.txt SystemTests/Results/callsstar_multiclause.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/CallsStar-StmtOverflow-ss2.txt SystemTests/Results/callsstar_stmtoverflow.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/CallsStar-Misc-ss2.txt SystemTests/Results/callsstar_misc.xml")
+
 # NEXT(*) CLAUSE
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-ss1.txt SystemTests/Results/next.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-MultiClause-ss1.txt SystemTests/Results/next_multiclause.xml")
@@ -57,6 +67,3 @@ import os
 
 # WITH CLAUSE
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/With-ss1.txt SystemTests/Results/with.xml")
-
-# TEMP
-# os.system("AutoTester SystemTests/Sources/Source-File-2.txt SystemTests/test.txt SystemTests/Results/test.xml")
