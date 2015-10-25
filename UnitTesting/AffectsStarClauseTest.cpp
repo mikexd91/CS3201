@@ -552,12 +552,9 @@ void AffectsStarClauseTest::testFixedSynPass() {
 
 	CPPUNIT_ASSERT(m1->evaluate(&res));
 	CPPUNIT_ASSERT(res.isSynPresent("s"));
-	//CPPUNIT_ASSERT(res.getResultTableSize() == 7);
+	CPPUNIT_ASSERT(res.getResultTableSize() == 7);
 	unordered_set<string> s = res.getSyn("s");
-	BOOST_FOREACH(string a, s) {
-		cout << a << endl;
-	}
-	//CPPUNIT_ASSERT(s.size() == 7);
+	CPPUNIT_ASSERT(s.size() == 7);
 	CPPUNIT_ASSERT(s.find("11") != s.end());
 	CPPUNIT_ASSERT(s.find("13") != s.end());
 	CPPUNIT_ASSERT(s.find("14") != s.end());
