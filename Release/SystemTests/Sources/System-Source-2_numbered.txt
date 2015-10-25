@@ -1,4 +1,4 @@
-	procedure p1 {
+	procedure proc1 {
 1		a = (b + c) * d * 5;
 2		b = a * d + 3 * c;
 3		call p2;
@@ -36,7 +36,7 @@
 		}
 	}
 
-	procedure p2 {
+	procedure proc2 {
 24		what = (how + why) * 9001;
 25		how = (why - what) * 69;
 26		why = how * what;
@@ -50,7 +50,7 @@
 		}
 	}
 
-	procedure p3 {
+	procedure proc3 {
 31		mouse = (keyboard - button) * speakers;
 32		ram = cpu - gpu;
 33		if mouse then {
