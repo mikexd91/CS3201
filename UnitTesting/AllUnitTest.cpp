@@ -53,7 +53,7 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("PatternWhileClause
 
 // PQL Evaluator
 //unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ResultsTest").makeTest());
-//unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("QueryEvaluatorTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("QueryEvaluatorTest").makeTest());
 //unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("QueryParserTest").makeTest());
 
 //Result
