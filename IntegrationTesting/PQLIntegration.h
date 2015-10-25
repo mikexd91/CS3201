@@ -11,14 +11,18 @@ class PQLIntegration : public CPPUNIT_NS::TestFixture {
 
 	CPPUNIT_TEST( testSelectStmtModifies );
 	CPPUNIT_TEST( testSelectProcUses );
-	CPPUNIT_TEST( testSelectPatternAssg );
+	CPPUNIT_TEST( testSelectVarPatternAssg );
+	CPPUNIT_TEST( testSelectSynPatternAssg );
 	CPPUNIT_TEST( testSelectPatternWhile );
 	CPPUNIT_TEST( testSelectParentStar );
-	//CPPUNIT_TEST( testSelectNextStar );
+	CPPUNIT_TEST( testSelectNextStar );
 	//CPPUNIT_TEST( testSelectAffectsStar );
-	CPPUNIT_TEST( testSelectCValueWith );
+	CPPUNIT_TEST( testSelectValueWith );
+	CPPUNIT_TEST( testSelectBooleanWith );
 
-	CPPUNIT_TEST( testSelectVVarNameWithPatternAssg );
+	CPPUNIT_TEST( testSelectVarNameWithPatternAssg );
+	CPPUNIT_TEST( testSelectStmtNumWithPatternAssg );
+	CPPUNIT_TEST( testSelectUsesPatternAssg );
 	CPPUNIT_TEST( testSelectPatternIfParent );
 	CPPUNIT_TEST( testSelectCallsStarUses );
 	CPPUNIT_TEST( testSelectFollowsStarModifies );
@@ -46,15 +50,19 @@ public:
 	// SELECT WITH ONE CLAUSE
 	void testSelectStmtModifies();
 	void testSelectProcUses();
-	void testSelectPatternAssg();
+	void testSelectVarPatternAssg();
+	void testSelectSynPatternAssg();
 	void testSelectPatternWhile();
 	void testSelectParentStar();
 	void testSelectNextStar();
 	void testSelectAffectsStar();
-	void testSelectCValueWith();
+	void testSelectBooleanWith();
+	void testSelectValueWith();
 
 	// SELECT WITH TWO CLAUSES
-	void testSelectVVarNameWithPatternAssg();
+	void testSelectVarNameWithPatternAssg();
+	void testSelectStmtNumWithPatternAssg();
+	void testSelectUsesPatternAssg();
 	void testSelectPatternIfParent();
 	void testSelectCallsStarUses();
 	void testSelectFollowsStarModifies();
