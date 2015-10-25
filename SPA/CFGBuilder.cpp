@@ -158,6 +158,7 @@ void CFGBuilder::processAssgStmt(ParsedData data) {
 		}
 
 		AssgGNode* node = new AssgGNode(++stmtCounter);
+		setStatementReference(node);
 		checkPrevStateAndSetProperties(node);
 	}
 

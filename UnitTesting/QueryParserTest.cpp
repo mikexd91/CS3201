@@ -186,8 +186,8 @@ void QueryParserTest::testParseParentStar(){
 }
 
 void QueryParserTest::testWith(){
-	string const DECLARATION = "constant c;";
-	string const USER_IN = "c.value = 1";
+	string const DECLARATION = "stmt s;";
+	string const USER_IN = "s.stmt# = 1";
 	vector<string> DEC_LIST = vector<string>();
 	parser->tokeniser(DECLARATION, ';', &DEC_LIST);
 	queue<string>* WITH_Q = new queue<string>();
@@ -296,8 +296,12 @@ void QueryParserTest::testParser(){
 }
 
 void QueryParserTest::debugTests(){
-	string INPUT = "assign a; Select a.stmt# such that Uses(a, \"ivysaur\")";
+	string INPUT = "stmt s, s1; Select s such that Follows*(s1, s) and Modifies(s, \"full\")";
 	Query* QUERY = new Query();
 	parser = QueryParser::getInstance();
 	QUERY = parser->parseQuery(INPUT);
+	vector<Clause*> VC = QUERY->getClauseList();
+	CPPUNIT_ASSERT(VC.size() == 2);
+	CPPUNIT_ASSERT(VC.at(0)->getClauseType() == FOLLOWSSTAR_);
+	CPPUNIT_ASSERT(VC.at(1)->getClauseType() == MODIFIES_);
 }
