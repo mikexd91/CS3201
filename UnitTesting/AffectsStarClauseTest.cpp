@@ -70,8 +70,6 @@ void AffectsStarClauseTest::setUp() {
 	assg1->setEndStmt(2);
 	proc1->addChild(assg1);
 	WhileGNode* while3 = new WhileGNode(3);
-	while3->setStartStmt(4);
-	while3->setEndStmt(5);
 	assg1->setChild(while3);
 	while3->setFirstParent(assg1);
 	AssgGNode* assg4 = new AssgGNode(4);
@@ -109,8 +107,6 @@ void AffectsStarClauseTest::setUp() {
 	AssgGNode* assg13 = new AssgGNode(13);
 	assg13->setEndStmt(14);
 	while12->setBeforeLoopChild(assg13);
-	while12->setStartStmt(11);
-	while12->setEndStmt(11);
 	assg13->setFirstParent(while12);
 	assg13->setChild(while12);
 	DummyGNode* dummy1 = new DummyGNode();
