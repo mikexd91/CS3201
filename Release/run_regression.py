@@ -32,6 +32,10 @@ os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Follow
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-StmtOverflow-ss1.txt SystemTests/Results/followsstar_stmtoverflow.xml")
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-Misc-ss1.txt SystemTests/Results/followsstar_misc.xml")
 
+# CALLS(*) CLAUSE
+os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Calls-ss2.txt SystemTests/Results/calls.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/CallsStar-ss2.txt SystemTests/Results/callsstar.xml")
+
 # NEXT(*) CLAUSE
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-ss1.txt SystemTests/Results/next.xml")
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-MultiClause-ss1.txt SystemTests/Results/next_multiclause.xml")
@@ -47,10 +51,10 @@ os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Affect
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Affects-MultiClause-ss1.txt SystemTests/Results/affects_multiclause.xml")
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Affects-StmtOverflow-ss1.txt SystemTests/Results/affects_stmtoverflow.xml")
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Affects-Misc-ss1.txt SystemTests/Results/affects_misc.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/AffectsStar-ss1.txt SystemTests/Results/affectsstar.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/AffectsStar-MultiClause-ss1.txt SystemTests/Results/affectsstar_multiclause.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/AffectsStar-StmtOverflow-ss1.txt SystemTests/Results/affectsstar_stmtoverflow.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/AffectsStar-Misc-ss1.txt SystemTests/Results/affectsstar_misc.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/AffectsStar-ss1.txt SystemTests/Results/affectsstar.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/AffectsStar-MultiClause-ss1.txt SystemTests/Results/affectsstar_multiclause.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/AffectsStar-StmtOverflow-ss1.txt SystemTests/Results/affectsstar_stmtoverflow.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/AffectsStar-Misc-ss1.txt SystemTests/Results/affectsstar_misc.xml")
 
 # PATTERN CLAUSE
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Pattern-ss1.txt SystemTests/Results/pattern.xml")

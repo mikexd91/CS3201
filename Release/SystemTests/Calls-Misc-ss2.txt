@@ -1,0 +1,20 @@
+1 - CALLS: procName - select clause (has results)
+procedure p;
+Select p.procName such that Calls(p, _)
+proc1, proc2
+5000
+2 - CALLS: procName - select clause (no results)
+procedure p;
+Select p.procName such that Calls(p, "proc4")
+none
+5000
+3 - CALLS: procName - with clause (has results)
+procedure p;
+Select p such that Calls(p, _) with p.procName = "proc2"
+proc2
+5000
+4 - CALLS: procName - with clause (no results)
+procedure p;
+Select p such that Calls(_, p) with p.procName = "proc123"
+none
+5000
