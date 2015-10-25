@@ -668,6 +668,7 @@ void PQLIntegration::setUp() {
 	c1->addTNodeRef(one2);
 	c1->addAppearsIn(2);
 	c1->addAppearsIn(6);
+	ctable->addConst(c1);
 
 //-------------  END OF CONST -----------//
 }
@@ -888,19 +889,18 @@ void PQLIntegration::testSelectBooleanWith() {
 }
 
 void PQLIntegration::testSelectValueWith() {
-	cout << "with c.value" << endl;
+	//cout << "with c.value" << endl;
 	string query = "constant c; Select c with c.value = 1";
 	// [1] (size 1)
 
 	PQLController* pcc = new PQLController();
 	unordered_set<string> res = pcc->parse(query);
 
-	cout << "with c.value result size " << res.size() << endl;
-	BOOST_FOREACH(auto a, res) {
-		cout << a << endl;
-	}
+	//cout << "with c.value result size " << res.size() << endl;
+	//BOOST_FOREACH(auto a, res) {
+	//	cout << a << endl;
+	//}
 
-	// FAIL: something wrong in the with clause
 	CPPUNIT_ASSERT(res.size() == 1);
 	CPPUNIT_ASSERT(res.count("1") == 1);
 }
@@ -968,8 +968,7 @@ void PQLIntegration::testSelectCallsStarUses() {
 		cout << a << endl;
 	}
 
-	// FAIL: returned both procs when only supposed to return YourMom
-	// NOTE: suspect calls* parse wrongly?
+	// FAIL: returned NO procs when only supposed to return YourMom
 	CPPUNIT_ASSERT(res.size() == 1);
 	CPPUNIT_ASSERT(res.count("YourMom") == 1);
 }
