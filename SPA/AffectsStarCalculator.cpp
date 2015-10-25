@@ -39,7 +39,7 @@ bool AffectsStarCalculator::computeFixedFixed(string s1String, string s2String) 
 		while (!currentNode->isNodeType(END_)) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
-	} catch (AffectsStarTermination e) {
+	} catch (BasicAffectsStarTermination e) {
 		return result;
 	}
 	return false;
@@ -61,9 +61,11 @@ unordered_set<string> AffectsStarCalculator::computeFixedSyn(string s1String) {
 		globalState[modifiedVar] = modifyingStmts;
 	}
 	GNode* currentNode = s1GNode;
-	while (!currentNode->isNodeType(END_)) {
-		currentNode = evaluateNode(currentNode, globalState);
-	}
+	try {
+		while (!currentNode->isNodeType(END_)) {
+			currentNode = evaluateNode(currentNode, globalState);
+		}
+	} catch (BasicAffectsStarTermination e) {}
 	//get result
 	unordered_set<string> s2 = unordered_set<string>();
 	BOOST_FOREACH(auto result, globalResult) {
@@ -188,15 +190,23 @@ void AffectsStarCalculator::updateStateForWhile(WhileGNode* whileNode, State& st
 
 AffectsStarCalculator::State AffectsStarCalculator::recurseWhile(WhileGNode* whileNode, State state) {
 	GNode* currentNode = whileNode->getBeforeLoopChild();
-	while(currentNode != whileNode && currentNode->getNodeType() != END_) {
-		currentNode = evaluateNode(currentNode, state);
-	}
+	try {
+		while(currentNode != whileNode && currentNode->getNodeType() != END_) {
+			currentNode = evaluateNode(currentNode, state);
+		}
+	} catch(EmptyStateTermination) {}
 	return state;
 }
 
 void AffectsStarCalculator::updateStateForIf(IfGNode* ifNode, State& state) {
-	State thenState = recurseIf(ifNode->getThenChild(), state);
-	State elseState = recurseIf(ifNode->getElseChild(), state);
+	State thenState = State();
+	State elseState = State();
+	try {
+		thenState = recurseIf(ifNode->getThenChild(), state);
+	} catch(EmptyStateTermination) {}
+	try {
+		elseState = recurseIf(ifNode->getElseChild(), state);
+	} catch(EmptyStateTermination) {}
 	//merge both states tgt
 	state = mergeStates(thenState, elseState);
 }
@@ -246,10 +256,9 @@ void AffectsStarCalculator::updateStateForAssign(AssgGNode* node, State& state) 
 		}
 
 		//we found the node, just terminate only if not in while loop
-		//or we already know that it affects
 		//otherwise can only eval after looping thru
 		if (type == FIXED_FIXED && !inWhile && stmtNum == s2Num) {
-			//afailure, throw exception
+			//failure as exception is not thrown earlier, throw exception
 			throw AffectsStarTermination();
 		}
 
@@ -261,6 +270,7 @@ void AffectsStarCalculator::updateStateForAssign(AssgGNode* node, State& state) 
 				state[modifiedVar] = modifyingStmts;
 			}
 		} else {
+			//type == FIXED_FIXED OR FIXED_SYN
 			//should only iterate once, since assg stmt only has 1 modified variable
 			//we only add update the modified variable if it has been affected
 			BOOST_FOREACH(string modifiedVar, modifiedVariables) {
@@ -275,9 +285,14 @@ void AffectsStarCalculator::updateStateForAssign(AssgGNode* node, State& state) 
 				} else if (isReplaceExistingVal) {
 					//if it has not been affected but it replaces an existing value, reset the value
 					//do not add the stmt to the table
-	//				state[modifiedVar] = unordered_set<int>();
 					state.erase(modifiedVar);
 				}
+			}
+			//we should terminate looping through the container if there is no more values in the state table
+			//it is not possible for the source stmt to affect any more statements 
+			//when there is no more value in the state table
+			if (!inWhile && isEmpty(state)) {
+				throw EmptyStateTermination();
 			}
 		}
 	}
@@ -321,6 +336,16 @@ bool AffectsStarCalculator::areResultsEqual(AffectsStarResult result1, AffectsSt
 			}
 		} else {
 			//key not present in result1, result1 and result2 are different
+			return false;
+		}
+	}
+	return true;
+}
+
+//checks if the state is empty
+bool AffectsStarCalculator::isEmpty(State state) {
+	BOOST_FOREACH(auto row, state) {
+		if (!row.second.empty()) {
 			return false;
 		}
 	}
