@@ -20,6 +20,7 @@ private:
 	void populateFollowInStmtLst(StmtLstNode*, queue<StmtLstNode*>&);
 	void populateModUsesProc();
 	void populateModUsesCalls();
+	bool isCyclicCall(unordered_set<Procedure*>, unordered_set<Procedure*>, Procedure*);
 
 	unordered_set<string> recurseModifies(Procedure*);
 	unordered_set<string> recurseUses(Procedure*);
