@@ -10,6 +10,8 @@ AffectsCalculator::AffectsCalculator() {
 	singleSynResults = unordered_set<string>();
 	multiSynResults = unordered_set<vector<string>>();
 	globalState = State();
+	isStart = false;
+	result = false;
 }
 
 AffectsCalculator::~AffectsCalculator() {
@@ -50,9 +52,9 @@ unordered_set<string> AffectsCalculator::computeAllS1() {
 }
 
 
-bool AffectsCalculator::computeGeneric() {
+bool AffectsCalculator::computeS1GenericS2Generic() {
 	//used for insertion
-	type = BOOLEAN;
+	type = GENERIC_GENERIC;
 	try {
 		//iterate for each proc
 		vector<ProcGNode*> procNodes = cfg->getAllProcedures();
@@ -67,6 +69,37 @@ bool AffectsCalculator::computeGeneric() {
 		}
 	} catch (AffectsTermination e) {
 		return true;
+	}
+	return false;
+}
+
+bool AffectsCalculator::computeS1FixedS2Generic(string s1) {
+	type = FIXED_GENERIC;
+	isStart = true;
+	s1Num = boost::lexical_cast<int>(s1);
+	Statement* stmt1 = stmtTable->getStmtObj(s1Num);
+	if (stmt1->getType() != ASSIGN_STMT_) {
+		return false;
+	}
+	unordered_set<string> modifies1 = stmt1->getModifies();
+	string modifyingVar;
+	if (modifies1.size() != 1) {
+		//error
+		cout << "Assignment statements should only have 1 modify variable";
+		return false;
+	} else {
+		modifyingVar = *modifies1.begin();
+	}
+	//add first statement into the state, so we know that which var is modified
+	globalState[modifyingVar] = unordered_set<int>();
+	globalState[modifyingVar].insert(s1Num);
+	try {
+		GNode* currentNode = stmt1->getGNodeRef();
+		while(currentNode->getNodeType() != END_) {
+			currentNode = evaluateNode(currentNode, globalState);
+		}
+	} catch (AffectsTermination e) {
+		return result;
 	}
 	return false;
 }
@@ -100,15 +133,16 @@ GNode* AffectsCalculator::evaluateNode(GNode* node, State& state) {
 		return ifNode->getExit()->getChildren().at(0);
 	} else if (node->getNodeType() == WHILE_) {
 		WhileGNode* whileNode = static_cast<WhileGNode*>(node);
+		inWhileLoop = true;
 		updateStateForWhile(whileNode, state);
+		inWhileLoop = false;
 		return whileNode->getAfterLoopChild();
 	} else if (node->getNodeType() == CALL_) {
 		CallGNode* callNode = static_cast<CallGNode*>(node);
 		updateStateForCall(callNode, state);
 		return callNode->getChild();
 	} else {
-		//only dummy node
-		cout << "Why are we accessing this unknown node?" << endl;
+		//dummy node
 		return node->getChildren().at(0);
 	}
 }
@@ -118,7 +152,7 @@ void AffectsCalculator::updateStateForCall(CallGNode* callNode, State& state) {
 	Statement::ModifiesSet modifiedVariables = callStmt->getModifies();
 	//for all variables that is modified by call, reset it
 	BOOST_FOREACH(string modifiedVar, modifiedVariables) {
-		state[modifiedVar] =  unordered_set<int>();
+		state.erase(modifiedVar);
 	}
 }
 
@@ -155,7 +189,13 @@ AffectsCalculator::State AffectsCalculator::recurseIf(GNode* node, State state) 
 
 
 void AffectsCalculator::updateStateForAssign(AssgGNode* node, State& state) {
-	int startNum = node->getStartStmt();
+	int startNum;
+	if(isStart) {
+		startNum = s1Num+1;
+		isStart = false;
+	} else {
+		startNum = node->getStartStmt();
+	}
 	int endNum = node->getEndStmt();
 	for (int stmtNum = startNum; stmtNum <= endNum; stmtNum++) {
 		Statement* assgStmt = stmtTable->getStmtObj(stmtNum);
@@ -167,7 +207,9 @@ void AffectsCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 			if (entry != state.end() && entry->second.size() != 0) {
 				unordered_set<int> modifyingStmts = entry->second;
 				switch (type) {
-				case BOOLEAN: 
+				case GENERIC_GENERIC: 
+				case FIXED_GENERIC:
+					result = true;
 					throw AffectsTermination();
 					break;
 				case S1_ONLY: 
@@ -189,12 +231,21 @@ void AffectsCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 				}
 			}
 		}
-		//see whether var modified overrides any others
 		Statement::ModifiesSet modifiedVariables = assgStmt->getModifies();
-		BOOST_FOREACH(string modifiedVar, modifiedVariables) {
-			unordered_set<int> modifyingStmts = unordered_set<int>();
-			modifyingStmts.insert(stmtNum);
-			state[modifiedVar] = modifyingStmts;
+		if (type == FIXED_GENERIC) {
+			BOOST_FOREACH(string modifiedVar, modifiedVariables) {
+				if (modifiedVar == *(stmtTable->getStmtObj(s1Num)->getModifies().begin()) && !inWhileLoop) {
+					result = false;
+					throw AffectsTermination();
+				}
+			}
+		} else {
+			//see whether var modified overrides any others
+			BOOST_FOREACH(string modifiedVar, modifiedVariables) {
+				unordered_set<int> modifyingStmts = unordered_set<int>();
+				modifyingStmts.insert(stmtNum);
+				state[modifiedVar] = modifyingStmts;
+			}
 		}
 	}
 }

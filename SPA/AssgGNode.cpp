@@ -1,4 +1,4 @@
-
+#pragma once
 #include "AssgGNode.h"
 
 AssgGNode::AssgGNode(int stmtNum)

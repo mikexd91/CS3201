@@ -2,14 +2,13 @@
 #include "SuchThatClause.h"
 #include "CFG.h"
 #include "StmtTable.h"
-#include "CFGIterator.h"
 
-class AffectsClause 
+class AffectsStarClause 
 	: public SuchThatClause {
 
 public:
-	AffectsClause(void);
-	~AffectsClause(void);
+	AffectsStarClause(void);
+	~AffectsStarClause(void);
 	bool isValid(void);
 
 protected:
@@ -35,6 +34,4 @@ protected:
 private:
 	StmtTable* stmtTable;
 	ProcTable* procTable;
-	bool toContinue(CFGIterator&);
-	bool toContinueForFixed(CFGIterator&);
 };

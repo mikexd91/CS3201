@@ -4,7 +4,7 @@
  *  Created on: 5 Oct, 2015
  *      Author: Leon
  */
-
+#pragma once
 #include "GNode.h"
 #include "ProcGNode.h"
 
