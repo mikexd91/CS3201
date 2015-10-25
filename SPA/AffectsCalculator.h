@@ -32,11 +32,13 @@ public:
 	//Affects(_,s2)
 	unordered_set<string> computeAllS2(void);
 	//AFfects(_,_)
-	bool computeGeneric(void);
+	bool computeS1GenericS2Generic(void);
+	//Affects(1,_)
+	bool computeS1FixedS2Generic(string);
 
 private:
 	typedef unordered_map<string, unordered_set<int>> State;
-	enum AffectsResultType {S1_ONLY, S2_ONLY, S1_AND_S2, BOOLEAN};
+	enum AffectsResultType {S1_ONLY, S2_ONLY, S1_AND_S2, GENERIC_GENERIC, FIXED_GENERIC};
 
 	StmtTable* stmtTable;
 	ProcTable* procTable;
@@ -47,6 +49,13 @@ private:
 	//state: key is variable, value are stmtNums that modify it
 	State globalState;
 	AffectsResultType type;
+	bool isStart;
+
+	//for Affects(1,_), we need to store 1
+	int s1Num;
+	bool result; //it can terminate prematurely and fail
+	//should not terminate prematurely if we are in while loop
+	bool inWhileLoop;
 
 	void updateStateForCall(CallGNode*, State&);
 	void updateStateForWhile(WhileGNode*, State&);

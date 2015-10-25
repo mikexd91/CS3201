@@ -16,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AffectsClauseTest.cpp" />
+    <ClCompile Include="AffectsStarClauseTest.cpp" />
     <ClCompile Include="AllUnitTest.cpp" />
     <ClCompile Include="AssgNodeTest.cpp" />
     <ClCompile Include="ASTTest.cpp" />
@@ -58,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AffectsClauseTest.h" />
+    <ClInclude Include="AffectsStarClauseTest.h" />
     <ClInclude Include="AssgNodeTest.h" />
     <ClInclude Include="ASTTest.h" />
     <ClInclude Include="CallNodeTest.h" />

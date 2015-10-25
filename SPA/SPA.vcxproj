@@ -21,6 +21,8 @@
   <ItemGroup>
     <ClCompile Include="AffectsCalculator.cpp" />
     <ClCompile Include="AffectsClause.cpp" />
+    <ClCompile Include="AffectsStarCalculator.cpp" />
+    <ClCompile Include="AffectsStarClause.cpp" />
     <ClCompile Include="AssgGNode.cpp" />
     <ClCompile Include="AssgNode.cpp" />
     <ClCompile Include="AST.cpp" />
@@ -95,6 +97,8 @@
   <ItemGroup>
     <ClInclude Include="AffectsCalculator.h" />
     <ClInclude Include="AffectsClause.h" />
+    <ClInclude Include="AffectsStarCalculator.h" />
+    <ClInclude Include="AffectsStarClause.h" />
     <ClInclude Include="AssgGNode.h" />
     <ClInclude Include="AssgNode.h" />
     <ClInclude Include="AST.h" />
