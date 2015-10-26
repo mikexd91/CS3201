@@ -26,7 +26,7 @@ proc2, proc3
 6 - CALLS*-stmt: syn-fixed
 stmt s; procedure p;
 Select s such that Calls*(p, "proc3")
-proc1, proc2
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40
 5000
 7 - CALLS*-boolean: fixed-generic
 
@@ -41,10 +41,10 @@ true
 9 - CALLS*-while: syn-generic
 while w; procedure p;
 Select w such that Calls*(p, _)
-5, 15, 17, 18
+4, 8, 11, 14, 21, 27, 36
 5000
 10 - CALLS*-if: generic-syn
 if i; procedure p;
 Select i such that Calls*(_, p)
-20
+6, 19, 28, 33, 34, 35
 5000

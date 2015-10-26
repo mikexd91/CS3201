@@ -21,7 +21,7 @@ Result* QueryEvaluator::evaluateQuery(Query* query) {
 	Result *obj = new Result();
 	setClauseList(query->getClauseList());
 	setSelectList(query->getSelectList());
-	obj = evaluateClauses(obj, clauseList);
+	evaluateClauses(obj, clauseList);
 	return obj;
 }
 
@@ -113,12 +113,11 @@ void QueryEvaluator::setSelectList(vector<StringPair> selectList) {
 	this->selectList = selectList;
 }
 
-Result* QueryEvaluator::evaluateClauses(Result* obj, vector<Clause*> clauseList) {
+void QueryEvaluator::evaluateClauses(Result* obj, vector<Clause*> clauseList) {
 	for (vector<Clause*>::iterator i = clauseList.begin(); i != clauseList.end(); ++i) {
 		Clause* c = *i;
 		if (c->evaluate(obj) == false) {
-			obj->setFail();
-			return obj;
+			return;
 		} 
 	}
 	string syn = selectList.at(0).getFirst();
@@ -126,7 +125,8 @@ Result* QueryEvaluator::evaluateClauses(Result* obj, vector<Clause*> clauseList)
 	if (syn != "BOOLEAN" && type != stringconst::ARG_BOOLEAN) {
 		getRemainingSynValuesFromTable(*obj);
 	}
-	return obj;
+
+	obj->setPass();
 }
 
 void QueryEvaluator::getRemainingSynValuesFromTable(Result &obj) {

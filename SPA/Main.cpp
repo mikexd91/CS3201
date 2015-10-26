@@ -16,7 +16,7 @@ int main() {
 
 	Parser parser = Parser();
 
-	ifstream in("source.txt");
+	ifstream in("source_multi.txt");
 	stringstream buffer;
     buffer << in.rdbuf();
     string programSource = buffer.str();
@@ -29,7 +29,7 @@ int main() {
 	}
 
 	PQLController* pqlController = new PQLController();
-	string query = "Select BOOLEAN with 1 = 1";
+	string query = "procedure p1, p2, p3 Select p2 such that Calls(p1, p2) and Calls(p2, p3)";
 	try {
 		unordered_set<string> resultSet = pqlController->parse(query);
 		BOOST_FOREACH(auto r, resultSet) {
