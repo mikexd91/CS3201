@@ -1,5 +1,4 @@
 #pragma once
-#include "NoSynInsert.h"
 #include "SingleSynInsert.h"
 #include "MultiSynInsert.h"
 #include "Result.h"
