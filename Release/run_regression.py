@@ -34,7 +34,13 @@ os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Follow
 
 # CALLS(*) CLAUSE
 os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Calls-ss2.txt SystemTests/Results/calls.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Calls-MultiClause-ss2.txt SystemTests/Results/calls_multiclause.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Calls-StmtOverflow-ss2.txt SystemTests/Results/calls_stmtoverflow.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Calls-Misc-ss2.txt SystemTests/Results/calls_misc.xml")
 os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/CallsStar-ss2.txt SystemTests/Results/callsstar.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/CallsStar-MultiClause-ss2.txt SystemTests/Results/callsstar_multiclause.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/CallsStar-StmtOverflow-ss2.txt SystemTests/Results/callsstar_stmtoverflow.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/CallsStar-Misc-ss2.txt SystemTests/Results/callsstar_misc.xml")
 
 # NEXT(*) CLAUSE
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-ss1.txt SystemTests/Results/next.xml")
