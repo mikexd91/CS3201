@@ -66,6 +66,7 @@ public:
 
 	Query* reorderQuery(Query*); 		// Reorders the query for optimisation
 	//Query* optimiseForResult(Query*);	// Add in empty clauses to denote the start of a component
+	void populateGraphTable(Query*);
 
 private:
 	vector<Clause*> originalClauseList;
@@ -77,7 +78,7 @@ private:
 	int componentIndex;
 
 	void buildQuery(Query*);
-	void populateGraphTable(Query*);
+	
 	void createSelectSynNodes(Query*);
 	void createClauseSynNodes(Query*);
 	vector<string> getClauseSynonym(Clause*, ClauseType);
