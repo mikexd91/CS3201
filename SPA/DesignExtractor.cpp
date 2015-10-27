@@ -247,3 +247,48 @@ unordered_set<string> DesignExtractor::recurseUses(Procedure* proc) {
 
 	return uses;
 }
+
+void DesignExtractor::constructBip() {
+	StmtTable* stmtTable = stmtTable->getInstance();
+
+	unordered_set<Statement*> callStmts = stmtTable->getCallStmts();
+	BOOST_FOREACH(auto c, callStmts) {
+		breakBonds(c);
+	}
+}
+
+void DesignExtractor::breakBonds(Statement* callStmt) {
+	CFGbip* cfg = CFGbip::getInstance();
+
+	GNode* callNode = callStmt->getGBipNodeRef();
+	GNode* originalChild = callNode->getChildren().at(0);
+
+	ProcGNode* calledProc = cfg->getProcedure(callStmt->getCalls());
+	EndGNode* calledEnd = (EndGNode*) calledProc->getEndNode();
+
+	callNode->setFirstChild(calledProc);
+
+	switch(originalChild->getNodeType()) {
+		case ASSIGN_: case CALL_: case IF_: case END_:
+			originalChild->setFirstParent(calledEnd);
+			break;
+		case WHILE_: case DUMMY_:
+			if(originalChild->getParents().at(0) == callNode) {
+				originalChild->setSecondParent(calledEnd);
+			} else {
+				originalChild->setFirstParent(calledEnd);
+			}
+			break;
+		default:
+			break;
+	}
+
+	vector<GNode*> calledProcParents = calledProc->getParents();
+	vector<GNode*> calledEndChildren = calledEnd->getChildren();
+
+	calledProcParents.push_back(callNode);
+	calledEndChildren.push_back(originalChild);
+
+	calledProc->setParents(calledProcParents);
+	calledEnd->setChildren(calledEndChildren);
+}

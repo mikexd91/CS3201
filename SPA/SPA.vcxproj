@@ -31,6 +31,7 @@
     <ClCompile Include="CallsClause.cpp" />
     <ClCompile Include="CallsStarClause.cpp" />
     <ClCompile Include="CFG.cpp" />
+    <ClCompile Include="CFGbip.cpp" />
     <ClCompile Include="CFGBuilder.cpp" />
     <ClCompile Include="CFGIterator.cpp" />
     <ClCompile Include="Clause.cpp" />
@@ -106,6 +107,7 @@
     <ClInclude Include="CallsClause.h" />
     <ClInclude Include="CallsStarClause.h" />
     <ClInclude Include="CFG.h" />
+    <ClInclude Include="CFGbip.h" />
     <ClInclude Include="CFGBuilder.h" />
     <ClInclude Include="CFGIterator.h" />
     <ClInclude Include="Clause.h" />
