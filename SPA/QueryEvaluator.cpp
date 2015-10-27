@@ -117,6 +117,7 @@ void QueryEvaluator::evaluateClauses(Result* obj, vector<Clause*> clauseList) {
 	for (vector<Clause*>::iterator i = clauseList.begin(); i != clauseList.end(); ++i) {
 		Clause* c = *i;
 		if (c->evaluate(obj) == false) {
+			obj->setFail();
 			return;
 		} 
 	}
@@ -125,8 +126,6 @@ void QueryEvaluator::evaluateClauses(Result* obj, vector<Clause*> clauseList) {
 	if (syn != "BOOLEAN" && type != stringconst::ARG_BOOLEAN) {
 		getRemainingSynValuesFromTable(*obj);
 	}
-
-	obj->setPass();
 }
 
 void QueryEvaluator::getRemainingSynValuesFromTable(Result &obj) {
