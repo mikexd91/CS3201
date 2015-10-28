@@ -41,6 +41,7 @@ public:
 	string getProcName();						// get name of proc
 	TNode* getTNodeRef();						// get reference to proc TNode
 	ProcGNode* getGNodeRef();					// get reference to proc GNode
+	ProcGNode* getGBipNodeRef();
 	const ContainsStmtSet& getContainStmts();	// get set of statements in this proc
 	const UsesSet& getUses();					// get set of variables proc uses
 	const ModifiesSet& getModifies();			// get set of variables proc modifies
@@ -51,6 +52,7 @@ public:
 	void setProcName(const string &name);
 	void setTNodeRef(TNode *ref);
 	void setGNodeRef(ProcGNode *ref);
+	void setGBipNodeRef(ProcGNode *ref);
 	void setContainStmts(const unordered_set<int> &stmtsSet);
 	void setUses(const unordered_set<string> &useSet);
 	void setModifies(const unordered_set<string> &modifiesSet);
@@ -62,6 +64,7 @@ private:
 	string		procName;		// proc name
 	TNode		*TNodeRef;		// TNode reference
 	ProcGNode	*GNodeRef;		// GNode reference
+	ProcGNode	*GBipNodeRef;
 
 	// PRIVATE SETS
 	ContainsStmtSet	stmts;

@@ -1,6 +1,9 @@
 #pragma once
 #include "Utils.h"
 #include "AST.h"
+#include "CFGbip.h"
+#include "EndGNode.h"
+#include "ProcGNode.h"
 #include <string>
 #include <vector>
 
@@ -11,6 +14,7 @@ class DesignExtractor {
 public: 
 	DesignExtractor();
 	void executeSecondPass();
+	void constructBip();
 
 private:
 	void checkCyclicCalls();
@@ -22,6 +26,7 @@ private:
 	void populateModUsesCalls();
 	bool isCyclicCall(unordered_set<Procedure*>, unordered_set<Procedure*>, Procedure*);
 
+	void breakBonds(Statement*);
 	unordered_set<string> recurseModifies(Procedure*);
 	unordered_set<string> recurseUses(Procedure*);
 };
