@@ -1,0 +1,50 @@
+1 - CALLS-boolean: fixed-fixed
+
+Select BOOLEAN such that Calls("proc1", "proc2")
+true
+5000
+2 - CALLS-proc: fixed-fixed (false)
+procedure p;
+Select p such that Calls("proc2", "proc1")
+none
+5000
+3 - CALLS-proc: syn-syn (tuple)
+procedure p1, p2;
+Select <p1,p2> such that Calls(p1, p2)
+proc1 proc2, proc1 proc3, proc2 proc3
+5000
+4 - CALLS-boolean: generic-generic
+
+Select BOOLEAN such that Calls(_, _)
+true
+5000
+5 - CALLS-proc: fixed-syn
+procedure p;
+Select p such that Calls("proc1", p)
+proc2, proc3
+5000
+6 - CALLS-stmt: syn-fixed
+stmt s; procedure p;
+Select s such that Calls(p, "proc3")
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40
+5000
+7 - CALLS-boolean: fixed-generic
+
+Select BOOLEAN such that Calls("proc2", _)
+true
+5000
+8 - CALLS-boolean: generic-fixed
+
+Select BOOLEAN such that Calls(_, "proc2")
+true
+5000
+9 - CALLS-while: syn-generic
+while w; procedure p;
+Select w such that Calls(p, _)
+4, 8, 11, 14, 21, 27, 36
+5000
+10 - CALLS-if: generic-syn
+if i; procedure p;
+Select i such that Calls(_, p)
+6, 19, 28, 33, 34, 35
+5000

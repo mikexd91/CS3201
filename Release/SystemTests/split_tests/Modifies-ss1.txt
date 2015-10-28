@@ -1,0 +1,200 @@
+1 - MODIFIES-boolean: fixed-fixed (regular stmt)
+
+Select BOOLEAN such that Modifies(12, "battle1")
+true
+5000
+2 - MODIFIES-boolean: fixed-fixed (within while stmt)
+
+Select BOOLEAN such that Modifies(17, "wartortle")
+true
+5000
+3 - MODIFIES-boolean: fixed-fixed (if stmt)
+
+Select BOOLEAN such that Modifies(20, "wartortle")
+true
+5000
+4 - MODIFIES-stmt: fixed-fixed (false)
+stmt s;
+Select s such that Modifies(20, "charmeleon")
+none
+5000
+5 - MODIFIES-stmt: syn-syn (tuple)
+stmt s; variable v;
+Select <s,v> such that Modifies(s, v)
+1 charmander, 2 squirtle, 3 bulbasaur, 4 firstStageEvolution, 5 charmander, 5 bulbasaur, 5 squirtle, 6 charmander, 7 bulbasaur, 8 squirtle, 9 charmeleon, 10 wartortle, 11 ivysaur, 12 battle1, 13 battle2, 14 battle3, 15 charmeleon, 15 ivysaur, 15 wartortle, 15 lastPokemon, 16 charmeleon, 17 ivysaur, 17 wartortle, 18 ivysaur, 19 ivysaur, 20 wartortle, 21 wartortle, 22 wartortle, 23 lastPokemon
+5000
+6 - MODIFIES-assign: syn-syn
+assign a; variable v;
+Select a such that Modifies(a, v)
+1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 19, 21, 22, 23
+5000
+7 - MODIFIES-while: syn-syn
+while w; variable v;
+Select w such that Modifies(w, v)
+5, 15, 17, 18
+5000
+8 - MODIFIES-if: syn-syn
+if i; variable v;
+Select i such that Modifies(i, v)
+20
+5000
+9 - MODIFIES-variable: syn-syn
+stmt s; variable v;
+Select v such that Modifies(s, v)
+charmander, squirtle, bulbasaur, firstStageEvolution, charmeleon, wartortle, ivysaur, battle1, battle2, battle3, lastPokemon
+5000
+10 - MODIFIES-procedure: syn-syn
+procedure p; variable v;
+Select p such that Modifies(p, v)
+pokemon
+5000
+11 - MODIFIES-boolean: generic-generic
+
+Select BOOLEAN such that Modifies(_, _)
+true
+5000
+12 - MODIFIES-variable: fixed-syn (regular stmt)
+variable v;
+Select v such that Modifies(13, v)
+battle2
+5000
+13 - MODIFIES-variable: fixed-syn (while stmt)
+variable v;
+Select v such that Modifies(15, v)
+charmeleon, ivysaur, wartortle, lastPokemon
+5000
+14 - MODIFIES-variable: fixed-syn (if stmt)
+variable v;
+Select v such that Modifies(20, v)
+wartortle
+5000
+15 - MODIFIES-stmt: syn-fixed
+stmt s;
+Select s such that Modifies(s, "ivysaur")
+11, 15, 17, 18, 19
+5000
+16 - MODIFIES-assign: syn-fixed
+assign a;
+Select a such that Modifies(a, "battle2")
+13
+5000
+17 - MODIFIES-while: syn-fixed
+while w;
+Select w such that Modifies(w, "ivysaur")
+15, 17, 18
+5000
+18 - MODIFIES-if: syn-fixed
+if i;
+Select i such that Modifies(i, "squirtle")
+none
+5000
+19 - MODIFIES-variable: syn-fixed
+stmt s; variable v;
+Select v such that Modifies(s, "lastPokemon")
+charmander, squirtle, bulbasaur, firstStageEvolution, charmeleon, wartortle, ivysaur, battle1, battle2, battle3, lastPokemon
+5000
+20 - MODIFIES-procedure: syn-fixed
+procedure p;
+Select p such that Modifies(p, "lastPokemon")
+pokemon
+5000
+21 - MODIFIES-boolean: fixed-generic
+
+Select BOOLEAN such that Modifies(14, _)
+true
+5000
+22 - MODIFIES-: generic-fixed
+
+Select BOOLEAN such that Modifies(_, "battle3")
+true
+5000
+23 - MODIFIES-assign: syn-generic
+assign a;
+Select a such that Modifies(a, _)
+1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 19, 21, 22, 23
+5000
+24 - MODIFIES-while: syn-generic
+while w;
+Select w such that Modifies(w, _)
+5, 15, 17, 18
+5000
+25 - MODIFIES-if: syn-generic
+if i;
+Select i such that Modifies(i, _)
+20
+5000
+26 - MODIFIES-variable: syn-generic
+stmt s; variable v;
+Select v such that Modifies(s, _)
+firstStageEvolution, charmander, bulbasaur, squirtle, charmeleon, wartortle, ivysaur, battle1, battle2, battle3, lastPokemon
+5000
+27 - MODIFIES-procedure: syn-generic
+procedure p;
+Select p such that Modifies(p, _)
+pokemon
+5000
+28 - MODIFIES-variable: generic-syn
+variable v;
+Select v such that Modifies(_, v)
+firstStageEvolution, charmander, bulbasaur, squirtle, charmeleon, wartortle, ivysaur, battle1, battle2, battle3, lastPokemon
+5000
+29 - MODIFIES-assign: pattern-right defined (match select)
+assign a;
+Select a such that Modifies(a, _) pattern a(_, _"charmeleon"_)
+12, 13, 19
+5000
+30 - MODIFIES-assign: pattern-right defined (does not match select)
+assign a1, a2;
+Select a1 such that Modifies(a1, "squirtle") pattern a2(_, _"4"_)
+none
+5000
+31 - MODIFIES-assign: pattern-left defined (match select)
+assign a;
+Select a such that Modifies(a, _) pattern a("ivysaur", _)
+11, 19
+5000
+32 - MODIFIES-assign: pattern-left defined (does not match select)
+assign a1, a2;
+Select a1 such that Modifies(a1, "bulbasaur") pattern a2("lastPokemon", _)
+3, 7
+5000
+33 - MODIFIES-assign: pattern-left defined synonym
+assign a; variable v;
+Select a such that Modifies(6, v) pattern a(v, _)
+1, 6
+5000
+34 - MODIFIES-assign: pattern-both defined (match select)
+assign a;
+Select a such that Modifies(a, _) pattern a("wartortle", _"squirtle"_)
+10, 21
+5000
+35 - MODIFIES-assign: pattern-both defined (does not match select)
+assign a1, a2;
+Select a1 such that Modifies(a1, "charmander") pattern a2("battle2", _"charmeleon"_)
+1, 6
+5000
+36 - MODIFIES-assign: pattern-both defined, left synonym
+assign a; variable v;
+Select a such that Modifies(a, v) pattern a(v, _"wartortle"_)
+12, 16, 19, 22
+5000
+37 - MODIFIES-while: pattern (match select)
+while w;
+Select w such that Modifies(w, _) pattern w("battle3", _)
+18
+5000
+38 - Modifies-while: pattern (does not match select)
+stmt s; while w;
+Select s such that Modifies(s, v) pattern w("battle4", _)
+none
+5000
+39 - MODIFIES-if: pattern (match select)
+if i;
+Select i such that Modifies(i, _) pattern i("wartortle", _, _)
+20
+5000
+40 - MODIFIES-if: pattern (does not match select)
+assign a; if i;
+Select a such that Modifies(a, _) pattern i("battle2", _, _)
+none
+5000
