@@ -194,8 +194,8 @@ Select w such that Uses(w, _) pattern w("battle3", _)
 18
 5000
 40 - USES-while: pattern (does not match select)
-stmt s; while w;
-Select s such that Uses(s, w) pattern w("battle4", _)
+while w1, w2;
+Select s such that Uses(w1, _) pattern w("battle4", _)
 none
 5000
 41 - USES-if: pattern (match select)
