@@ -39,6 +39,10 @@ ProcGNode* Procedure::getGNodeRef() {
 	return GNodeRef;
 }
 
+ProcGNode* Procedure::getGBipNodeRef() {
+	return GBipNodeRef;
+}
+
 const Procedure::ContainsStmtSet& Procedure::getContainStmts() {
 	return stmts;
 }
@@ -77,6 +81,10 @@ void Procedure::setTNodeRef(TNode *ref) {
 
 void Procedure::setGNodeRef(ProcGNode* ref) {
 	GNodeRef = ref;
+}
+
+void Procedure::setGBipNodeRef(ProcGNode* ref) {
+	GBipNodeRef = ref;
 }
 
 void Procedure::setContainStmts(const unordered_set<int> &containsStmtSet) {

@@ -60,6 +60,10 @@ GNode* Statement::getGNodeRef() {
 	return GNodeRef;
 }
 
+GNode* Statement::getGBipNodeRef() {
+	return GBipNodeRef;
+}
+
 // get set of variables stmt uses
 const Statement::UsesSet& Statement::getUses() {
 	return uses;
@@ -103,6 +107,14 @@ const Statement::NextSet& Statement::getNext() {
 // get stmt whose next is this stmt
 const Statement::PreviousSet& Statement::getPrev() {
 	return prev;
+}
+
+const Statement::NextBipSet& Statement::getNextBip() {
+	return nextBip;
+}
+
+const Statement::PreviousBipSet& Statement::getPrevBip() {
+	return prevBip;
 }
 
 // get parent star of this stmt
@@ -149,6 +161,10 @@ void Statement::setGNodeRef(GNode *ref) {
 	GNodeRef = ref;
 } 
 
+void Statement::setGBipNodeRef(GNode* ref) {
+	GBipNodeRef = ref;
+}
+
 void Statement::setUses(const unordered_set<string> &useSet) {
 	uses = useSet;
 }
@@ -183,6 +199,14 @@ void Statement::setNext(const unordered_set<int> &nextSet) {
 
 void Statement::setPrev(const unordered_set<int> &prevSet) {
 	this->prev = prevSet;
+}
+
+void Statement::setNextBip(const unordered_set<int> &nextBipSet) {
+	this->nextBip = nextBipSet;
+}
+
+void Statement::setPrevBip(const unordered_set<int> &prevBipSet) {
+	this->prevBip = prevBipSet;
 }
 
 void Statement::setParentStar(const unordered_set<int> &parentStarSet) {
