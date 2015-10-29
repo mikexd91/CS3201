@@ -122,7 +122,7 @@ unordered_set<string> AffectsBipClause::getAllS2WithS1Fixed(string s1) {
 	//check if stmt2 next* stmt1
 	CFGBipIterator iterator = CFGBipIterator(stmt1->getGNodeRef());
 	GNode* currentNode = iterator.getNextNode();
-	while (!currentNode->isNodeType(END_) && !iterator.isEnd()){
+	while (!(currentNode->isNodeType(END_) && iterator.isEnd())){
 		if (currentNode->isNodeType(ASSIGN_)) {
 			AssgGNode* assgNode = static_cast<AssgGNode*>(currentNode);
 			int startNum;

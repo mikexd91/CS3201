@@ -503,3 +503,46 @@ void AffectsBipClauseTest::testFixedFixedCallFail() {
 	bool result = m1->evaluate(&res);
 	CPPUNIT_ASSERT(!result);
 }
+
+void AffectsBipClauseTest::testFixedSynPass() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSBIP_);
+	affectsBuilder->setArg(1, "6");
+	affectsBuilder->setArgFixed(1, true);
+	affectsBuilder->setArgType(1, ARG_PROGLINE);
+	affectsBuilder->setArg(2, "s");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsBipClause* m1 = (AffectsBipClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	CPPUNIT_ASSERT(m1->evaluate(&res));
+	CPPUNIT_ASSERT(res.isSynPresent("s"));
+	CPPUNIT_ASSERT(res.getResultTableSize() == 3);
+	unordered_set<string> s = res.getSyn("s");
+	CPPUNIT_ASSERT(s.size() == 3);
+	CPPUNIT_ASSERT(s.find("1") != s.end());
+	CPPUNIT_ASSERT(s.find("11") != s.end());
+	CPPUNIT_ASSERT(s.find("14") != s.end());
+}
+
+void AffectsBipClauseTest::testFixedSynPassWithoutCall() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSBIP_);
+	affectsBuilder->setArg(1, "1");
+	affectsBuilder->setArgFixed(1, true);
+	affectsBuilder->setArgType(1, ARG_PROGLINE);
+	affectsBuilder->setArg(2, "s");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsBipClause* m1 = (AffectsBipClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	CPPUNIT_ASSERT(m1->evaluate(&res));
+	CPPUNIT_ASSERT(res.isSynPresent("s"));
+	CPPUNIT_ASSERT(res.getResultTableSize() == 2);
+	unordered_set<string> s = res.getSyn("s");
+	CPPUNIT_ASSERT(s.size() == 2);
+	CPPUNIT_ASSERT(s.find("4") != s.end());
+	CPPUNIT_ASSERT(s.find("5") != s.end());
+}
