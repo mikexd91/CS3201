@@ -2,6 +2,7 @@ import os
 
 # SUCH THAT CLAUSES
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Uses-ss1.txt SystemTests/Results/uses-ss1.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Uses-ss2.txt SystemTests/Results/uses-ss2.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Modifies-ss1.txt SystemTests/Results/modifies-ss1.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Parent-ss1.txt SystemTests/Results/parent-ss1.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/ParentStar-ss1.txt SystemTests/Results/parentstar-ss1.xml")
