@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "CFG.h"
+#include "CFGbip.h"
 #include <stack>
 #include "WhileGNode.h"
 #include "DummyGNode.h"
@@ -12,12 +13,11 @@
 #include "IfGNode.h"
 
 
-class CFGIterator {
-
+class CFGBipIterator {
 public:
 
-	~CFGIterator();
-	CFGIterator(GNode* start);
+	~CFGBipIterator();
+	CFGBipIterator(GNode* start);
 	GNode* getNextNode();
 	bool isInWhileLoop();
 	bool isInIfContainer();
@@ -28,8 +28,8 @@ public:
 	void skipThenStmt(IfGNode* node);
 	void skipElseStmt(IfGNode* node);
 	bool isStart();
+	bool isEnd();
 
-	
 private:
 	struct GNodeContainer {
 		GNode* node;
@@ -40,9 +40,10 @@ private:
 			count(c),
 			toContinue(true){}
 	};
-
 	GNode* startNode;
 	GNode* nextNode;
 	stack<GNodeContainer> nodeStack;
 	int numIter;
+	stack<int> parentCallStmts;
+	bool end;
 };

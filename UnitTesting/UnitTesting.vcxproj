@@ -15,6 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AffectsBipClauseTest.cpp" />
     <ClCompile Include="AffectsClauseTest.cpp" />
     <ClCompile Include="AffectsStarClauseTest.cpp" />
     <ClCompile Include="AllUnitTest.cpp" />
@@ -58,6 +59,7 @@
     <ClCompile Include="WithClauseTest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AffectsBipClauseTest.h" />
     <ClInclude Include="AffectsClauseTest.h" />
     <ClInclude Include="AffectsStarClauseTest.h" />
     <ClInclude Include="AssgNodeTest.h" />

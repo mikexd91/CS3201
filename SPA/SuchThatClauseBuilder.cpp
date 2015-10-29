@@ -14,6 +14,7 @@
 #include "NextStarClause.h"
 #include "AffectsClause.h"
 #include "AffectsStarClause.h"
+#include "AffectsBipClause.h"
 
 SuchThatClauseBuilder::SuchThatClauseBuilder(ClauseType clauseType) {
 	this->clauseType = clauseType;
@@ -104,7 +105,8 @@ SuchThatClause* SuchThatClauseBuilder::build() {
 
 	} else if (this->clauseType == AFFECTSSTAR_){
 		clause = new AffectsStarClause();
-		
+	} else if (this->clauseType == AFFECTSBIP_){
+		clause = new AffectsBipClause();	
 	} else {
 		// fail
 		return nullptr;
