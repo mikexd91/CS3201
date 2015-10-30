@@ -426,10 +426,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( AffectsBipClauseTest );
 void AffectsBipClauseTest::testFixedFixedSameProc() { 
 	Result res = Result();
 	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSBIP_);
-	affectsBuilder->setArg(1, "1");
+	affectsBuilder->setArg(1, "2");
 	affectsBuilder->setArgFixed(1, true);
 	affectsBuilder->setArgType(1, ARG_PROGLINE);
-	affectsBuilder->setArg(2, "4");
+	affectsBuilder->setArg(2, "15");
 	affectsBuilder->setArgFixed(2, true);
 	affectsBuilder->setArgType(2, ARG_PROGLINE);
 	AffectsBipClause* m1 = (AffectsBipClause*) affectsBuilder->build();

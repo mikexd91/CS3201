@@ -16,6 +16,8 @@ CFGBipIterator::CFGBipIterator(GNode* start) {
 	nodeStack = stack<GNodeContainer>();
 	numIter=-1;
 	parentCallStmts = stack<int>();
+	//if the proc is called by another statement
+	stmtsCalledAfter = stack<GNode*>();
 	end = false;
 }
 
@@ -154,6 +156,7 @@ GNode* CFGBipIterator::getNextNode() {
 			EndGNode* endNode;
 			endNode = static_cast<EndGNode*>(nextNode);
 			if (!parentCallStmts.empty()) {
+				//this proc is executed from a call by another procedure
 				//find stmt to return to, and set nextNode to that
 				int parentCallStmt = parentCallStmts.top();
 				parentCallStmts.pop();
@@ -176,7 +179,20 @@ GNode* CFGBipIterator::getNextNode() {
 					nextNode = endNode->getChildren().at(pos);
 				}
 			} else {
-				end = true;
+				//this proc is not executed from a call by another procedure
+				if (!endNode->getChildren().empty()){
+					//endNode has children, evaluate them
+					BOOST_FOREACH(GNode* child, endNode->getChildren()) {
+						stmtsCalledAfter.push(child);
+					}
+				}
+				if (stmtsCalledAfter.empty()) {
+					end = true;
+				} else {
+					nextNode = stmtsCalledAfter.top();
+					stmtsCalledAfter.pop();
+				}
+
 			}
 			return endNode;
 			break;

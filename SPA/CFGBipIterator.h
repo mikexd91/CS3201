@@ -44,5 +44,6 @@ private:
 	stack<GNodeContainer> nodeStack;
 	int numIter;
 	stack<int> parentCallStmts;
+	stack<GNode*> stmtsCalledAfter;
 	bool end;
 };
