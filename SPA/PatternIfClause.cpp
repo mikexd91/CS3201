@@ -19,6 +19,7 @@ PatternIfClause::PatternIfClause(const string& syn, const string& var, const str
 	// parser must set vartype and varfixed.
 	this->_thenList = thenList;
 	this->_elseList = elseList;
+	this->clauseType = PATTERNIF_;
 }
 
 PatternIfClause::~PatternIfClause(void) {
