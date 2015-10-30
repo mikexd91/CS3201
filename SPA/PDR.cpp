@@ -315,6 +315,10 @@ void PDR::processProcedureStmt(ParsedData data) {
     for(int i = 0; i < currNestingLevel - data.getNestingLevel(); i++) {
         nodeStack.pop();
     }
+
+	while(!stmtParentNumStack.empty()) {
+		stmtParentNumStack.pop();
+	}
     
     ProcNode* previousProcNode = retrievePreviousProc();
     Procedure* currentProcedure = checkAndAddToProcTable(data.getProcName());
