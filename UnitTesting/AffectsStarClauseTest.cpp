@@ -59,9 +59,8 @@ void AffectsStarClauseTest::setUp() {
 	//build statement table and cfg
 	//no follows before/after set since they are not needed
 	StmtTable* stable = StmtTable::getInstance();
+	ProcTable* ptable = ProcTable::getInstance();
 	CFG* cfg = CFG::getInstance();
-
-	//procedure
 
 	//Build CFG
 
@@ -134,17 +133,27 @@ void AffectsStarClauseTest::setUp() {
 	cfg->addProcedure(proc1);
 	cfg->addProcedure(proc2);
 
-
+	
+	//procedure
 	Procedure* procedure1 = new Procedure();
 	procedure1->setProcName("test");
 	Procedure* procedure2 = new Procedure();
 	procedure1->setProcName("hey");
+
 	unordered_set<Procedure*> proc1CalledBy = unordered_set<Procedure*>();
 	proc1CalledBy.insert(procedure2);
 	procedure1->setCalledBy(proc1CalledBy);
+	int proc1ContainingStmtsArr[] = {1, 2, 3, 4, 5};
+	procedure1->setContainStmts(Procedure::ContainsStmtSet(proc1ContainingStmtsArr, proc1ContainingStmtsArr+ sizeof(proc1ContainingStmtsArr)/sizeof(*proc1ContainingStmtsArr)));
+
 	unordered_set<Procedure*> proc2Calls = unordered_set<Procedure*>();
 	proc2Calls.insert(procedure1);
 	procedure2->setCalls(proc2Calls);
+	int proc2ContainingStmtsArr[] = {6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+	procedure2->setContainStmts(Procedure::ContainsStmtSet(proc2ContainingStmtsArr, proc2ContainingStmtsArr+ sizeof(proc2ContainingStmtsArr)/sizeof(*proc2ContainingStmtsArr)));
+	
+	ptable->addProc(procedure1);
+	ptable->addProc(procedure2);
 
 	//Set statement table
 	Statement* stmt1 = new Statement();
@@ -794,4 +803,75 @@ void AffectsStarClauseTest::testGenericSynPass() {
 	CPPUNIT_ASSERT(s.find("18") != s.end());
 	CPPUNIT_ASSERT(s.find("19") != s.end());
 	CPPUNIT_ASSERT(s.find("20") != s.end());
+}
+
+void AffectsStarClauseTest::testGenericFixedPass() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSSTAR_);
+	affectsBuilder->setArg(1, "_");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_GENERIC);
+	affectsBuilder->setArg(2, "11");
+	affectsBuilder->setArgFixed(2, true);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsStarClause* m1 = (AffectsStarClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
+}
+
+void AffectsStarClauseTest::testGenericFixedFail() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSSTAR_);
+	affectsBuilder->setArg(1, "_");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_GENERIC);
+	affectsBuilder->setArg(2, "1");
+	affectsBuilder->setArgFixed(2, true);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsStarClause* m1 = (AffectsStarClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(!result);
+	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
+}
+
+void AffectsStarClauseTest::testSynFixedPass() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSSTAR_);
+	affectsBuilder->setArg(1, "s");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_STATEMENT);
+	affectsBuilder->setArg(2, "11");
+	affectsBuilder->setArgFixed(2, true);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsStarClause* m1 = (AffectsStarClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	CPPUNIT_ASSERT(m1->evaluate(&res));
+	CPPUNIT_ASSERT(res.isSynPresent("s"));
+	CPPUNIT_ASSERT(res.getResultTableSize() == 1);
+	unordered_set<string> s = res.getSyn("s");
+	CPPUNIT_ASSERT(s.size() == 1);
+	CPPUNIT_ASSERT(s.find("6") != s.end());
+}
+
+void AffectsStarClauseTest::testSynFixedFail() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSSTAR_);
+	affectsBuilder->setArg(1, "s");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_STATEMENT);
+	affectsBuilder->setArg(2, "1");
+	affectsBuilder->setArgFixed(2, true);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsStarClause* m1 = (AffectsStarClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(!result);
+	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
 }
