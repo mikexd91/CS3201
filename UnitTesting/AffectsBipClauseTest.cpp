@@ -81,7 +81,6 @@ AffectsBipClauseTest::setUp() {
 	assg4->setChild(while3);
 	EndGNode* end1 = new EndGNode();
 	end1->setParent(while3);
-	end1->setProcNode(proc1);
 	while3->setAfterLoopChild(end1);
 
 	ProcGNode* proc2 = new ProcGNode("hey");
@@ -128,7 +127,6 @@ AffectsBipClauseTest::setUp() {
 	dummy1->setFirstChild(assg14);
 	EndGNode* end2 = new EndGNode();
 	end2->setParent(assg14);
-	end2->setProcNode(proc2);
 	assg14->setFirstChild(end2);
 
 	ProcGNode* proc3 = new ProcGNode("again");
@@ -138,7 +136,6 @@ AffectsBipClauseTest::setUp() {
 	AssgGNode* assg17 = new AssgGNode(17);
 	EndGNode* end3 = new EndGNode();
 	end3->setParent(assg17);
-	end3->setProcNode(proc3);
 	assg17->setFirstChild(end3);
 
 	cfg->addProcedure(proc1);
@@ -154,11 +151,17 @@ AffectsBipClauseTest::setUp() {
 	proc1->setSecondParent(call16);
 	end1->setSecondChild(assg17);
 	assg17->setFirstParent(end1);
+	proc1->setEndNode(end2);
+	end1->setProcNode(proc1);
+	end2->setProcNode(proc2);
+	proc2->setEndNode(end2);
+	proc3->setEndNode(end3);
+	end3->setProcNode(proc3);
 
 	Procedure* procedure1 = new Procedure();
 	procedure1->setProcName("test");
 	Procedure* procedure2 = new Procedure();
-	procedure1->setProcName("hey");
+	procedure2->setProcName("hey");
 	Procedure* procedure3 = new Procedure();
 	procedure3->setProcName("again");
 

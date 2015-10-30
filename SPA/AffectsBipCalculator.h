@@ -58,6 +58,8 @@ private:
 	bool result; //it can terminate prematurely and fail
 	//should not terminate prematurely if we are in while loop
 	bool inWhileLoop;
+
+	//BIP stuff
 	stack<int> parentCallStmts;
 	stack<GNode*> stmtsAfterEnd;
 

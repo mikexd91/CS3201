@@ -23,6 +23,8 @@
     <ClCompile Include="AffectsBipClause.cpp" />
     <ClCompile Include="AffectsCalculator.cpp" />
     <ClCompile Include="AffectsClause.cpp" />
+    <ClCompile Include="AffectsStarBipCalculator.cpp" />
+    <ClCompile Include="AffectsStarBipClause.cpp" />
     <ClCompile Include="AffectsStarCalculator.cpp" />
     <ClCompile Include="AffectsStarClause.cpp" />
     <ClCompile Include="AssgGNode.cpp" />
@@ -102,6 +104,8 @@
     <ClInclude Include="AffectsBipClause.h" />
     <ClInclude Include="AffectsCalculator.h" />
     <ClInclude Include="AffectsClause.h" />
+    <ClInclude Include="AffectsStarBipCalculator.h" />
+    <ClInclude Include="AffectsStarBipClause.h" />
     <ClInclude Include="AffectsStarCalculator.h" />
     <ClInclude Include="AffectsStarClause.h" />
     <ClInclude Include="AssgGNode.h" />
