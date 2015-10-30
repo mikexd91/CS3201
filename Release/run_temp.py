@@ -1,6 +1,8 @@
 import os
 
-os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/SingleProc-ss1.txt SystemTests/Results/singleproc-ss1.xml")
+# SYSTEM SOURCE 1
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/SingleProc-ss1.txt SystemTests/Results/singleproc-ss1.xml")
+
 # SUCH THAT CLAUSES
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Uses-ss1.txt SystemTests/Results/uses-ss1.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Uses-ss2.txt SystemTests/Results/uses-ss2.xml")
@@ -22,3 +24,4 @@ os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Single
 
 # WITH CLAUSE
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/With-ss1.txt SystemTests/Results/with-ss1.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/With-ss2.txt SystemTests/Results/with-ss2.xml")
