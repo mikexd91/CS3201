@@ -22,11 +22,11 @@ private:
 	void populateFollowStar();
 	void recurseParentStar(StmtNode*, vector<int>&);
 	void populateFollowInStmtLst(StmtLstNode*, queue<StmtLstNode*>&);
-	void populateModUsesProc();
-	void populateModUsesCalls();
 	bool isCyclicCall(unordered_set<Procedure*>, unordered_set<Procedure*>, Procedure*);
 
+	void populateModUsesCalls();
+	void populateCallsParents(Statement*);
+	void populateCallsVarTable(Statement*);
+
 	void breakBonds(Statement*);
-	unordered_set<string> recurseModifies(Procedure*);
-	unordered_set<string> recurseUses(Procedure*);
 };
