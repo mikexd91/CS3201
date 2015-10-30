@@ -36,7 +36,7 @@ Select a pattern a(v, _)
 8 - PATTERN-assign: left-defined only, synonym (with clause constraint)
 assign a; variable v;
 Select a pattern a(v, _) with v.varName = "b"
-2, 20, 23
+2, 15, 20, 23
 5000
 9 - PATTERN-assign: left-defined only, synonym (no results)
 assign a; variable v;
@@ -46,7 +46,7 @@ none
 10 - PATTERN-while: left-defined only, synonym
 while w; variable v;
 Select w pattern w(v, _)
-4. 8. 11. 14. 21. 27. 36
+4, 8, 11, 14, 21, 27, 36
 5000
 11 - PATTERN-while: left-defined only, synonym (with clause constraint)
 while w; variable v;

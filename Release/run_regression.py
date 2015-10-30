@@ -17,6 +17,7 @@ os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Affect
 
 # PATTERN CLAUSE
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Pattern-ss1.txt SystemTests/Results/pattern-ss1.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Pattern-ss2.txt SystemTests/Results/pattern-ss2.xml")
 
 # WITH CLAUSE
 os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/With-ss1.txt SystemTests/Results/with-ss1.xml")

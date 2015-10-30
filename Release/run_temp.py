@@ -2,7 +2,7 @@ import os
 
 # SUCH THAT CLAUSES
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Uses-ss1.txt SystemTests/Results/uses-ss1.xml")
-os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Uses-ss2.txt SystemTests/Results/uses-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Uses-ss2.txt SystemTests/Results/uses-ss2.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Modifies-ss1.txt SystemTests/Results/modifies-ss1.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Parent-ss1.txt SystemTests/Results/parent-ss1.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/ParentStar-ss1.txt SystemTests/Results/parentstar-ss1.xml")
@@ -17,6 +17,7 @@ os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Uses-s
 
 # PATTERN CLAUSE
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Pattern-ss1.txt SystemTests/Results/pattern-ss1.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Pattern-ss2.txt SystemTests/Results/pattern-ss2.xml")
 
 # WITH CLAUSE
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/With-ss1.txt SystemTests/Results/with-ss1.xml")
