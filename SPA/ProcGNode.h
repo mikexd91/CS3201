@@ -11,8 +11,13 @@ public:
 
 	// getters
 	GNode* getChild();
+	GNode* getEndNode();
 
 	// setters
 	void setChild(GNode*);
+	void setEndNode(GNode*);
 
+private:
+
+	GNode* endNode;
 };

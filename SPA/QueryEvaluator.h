@@ -34,7 +34,7 @@ private:
 
 	string boolToString(bool);
 	void getRemainingSynValuesFromTable(Result &obj);
-	Result* evaluateClauses(Result* obj, vector<Clause*> clauseList);
+	void evaluateClauses(Result* obj, vector<Clause*> clauseList);
 	unordered_set<string> stringVectorToSet(vector<string> &varVector);
 	unordered_set<string> intVectorToSet(vector<int> &vec);
 	void insertSetValues(string syn, unordered_set<string> values, Result &obj);

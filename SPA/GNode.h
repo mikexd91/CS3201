@@ -44,6 +44,8 @@ public:
 	void setSecondChild(GNode*);
 	void setFirstParent(GNode*);
 	void setSecondParent(GNode*);
+	void setChildren(vector<GNode*>);
+	void setParents(vector<GNode*>);
 
 	// checks
 	bool isNodeType(GType);

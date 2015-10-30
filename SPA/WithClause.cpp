@@ -134,8 +134,7 @@ bool WithClause::evaluate(Result* res){
 
 	if (leftEntityRefType == rightEntityRefType){
 		if (leftEntityRefType == IDENT_ || leftEntityRefType == INTEGER_){
-			bool a = (leftEntity == rightEntity);
-			return a;
+			return (leftEntity == rightEntity);
 		} else if (leftEntityRefType == SYNONYM_){
 			return evalSynSyn(leftEntityRef, rightEntityRef, res);
 			return false;

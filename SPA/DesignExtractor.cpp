@@ -22,31 +22,34 @@ void DesignExtractor::checkCyclicCalls(){
 	ProcTable* procTable = ProcTable::getInstance();
 	unordered_set<Procedure*> procs = procTable->getAllProcs();
 	//for each procedure, check whether there is a cyclic call
+	unordered_set<Procedure*> visitedProcs = unordered_set<Procedure*>();
+	unordered_set<Procedure*> recurseProcs = unordered_set<Procedure*>();
 	BOOST_FOREACH(Procedure* proc, procs) {
-		unordered_set<Procedure*> visitedProcs = unordered_set<Procedure*>();
-		queue<Procedure*> nextProcs = queue<Procedure*>();
-		nextProcs.push(proc);
-		//while there are still procedures to be evaluated
-		while (!nextProcs.empty()) {
-			//get proc to be evaluated
-			Procedure* currentProc = nextProcs.front();
-			nextProcs.pop();
-			//mark the proc as visited
-			visitedProcs.insert(currentProc);
-			//get all other procedures that are called
-			Procedure::CallsSet calledProcs = currentProc->getCalls();
-			BOOST_FOREACH(Procedure* calledProc, calledProcs) {
-				//called procedure has already been visited -> there's a cycle!
-				if (visitedProcs.find(calledProc) != visitedProcs.end()) {
-					throw InvalidCodeException("Circular calls detected!");
-				} else {
-					//add it to queue
-					//to check if the called procedure will result in a cycle in the next round
-					nextProcs.push(calledProc);
-				}
-			}
+		if (isCyclicCall(visitedProcs, recurseProcs, proc)) {
+			throw InvalidCodeException("Cyclic calls detected!");
 		}
 	}
+}
+
+bool DesignExtractor::isCyclicCall(unordered_set<Procedure*> visitedProcs, unordered_set<Procedure*> recurseProcs, Procedure* currentProc) {
+	if(visitedProcs.find(currentProc) == visitedProcs.end()) {
+		// Mark the current node as visited and part of recursion stack
+		visitedProcs.insert(currentProc);
+		recurseProcs.insert(currentProc);
+
+		// Recur for all the vertices adjacent to this vertex
+		Procedure::CallsSet calledProcs = currentProc->getCalls();
+		BOOST_FOREACH(Procedure* calledProc, calledProcs) {
+			if ( visitedProcs.find(calledProc) == visitedProcs.end() && isCyclicCall(visitedProcs, recurseProcs, calledProc)) {
+				return true;
+			} else if (recurseProcs.find(calledProc) != recurseProcs.end()) {
+				return true;
+			}
+		}
+ 
+	}
+	recurseProcs.erase(currentProc);  // remove the vertex from recursion stack
+	return false;
 }
 
 
@@ -243,4 +246,49 @@ unordered_set<string> DesignExtractor::recurseUses(Procedure* proc) {
 	}
 
 	return uses;
+}
+
+void DesignExtractor::constructBip() {
+	StmtTable* stmtTable = stmtTable->getInstance();
+
+	unordered_set<Statement*> callStmts = stmtTable->getCallStmts();
+	BOOST_FOREACH(auto c, callStmts) {
+		breakBonds(c);
+	}
+}
+
+void DesignExtractor::breakBonds(Statement* callStmt) {
+	CFGbip* cfg = CFGbip::getInstance();
+
+	GNode* callNode = callStmt->getGBipNodeRef();
+	GNode* originalChild = callNode->getChildren().at(0);
+
+	ProcGNode* calledProc = cfg->getProcedure(callStmt->getCalls());
+	EndGNode* calledEnd = (EndGNode*) calledProc->getEndNode();
+
+	callNode->setFirstChild(calledProc);
+
+	switch(originalChild->getNodeType()) {
+		case ASSIGN_: case CALL_: case IF_: case END_:
+			originalChild->setFirstParent(calledEnd);
+			break;
+		case WHILE_: case DUMMY_:
+			if(originalChild->getParents().at(0) == callNode) {
+				originalChild->setSecondParent(calledEnd);
+			} else {
+				originalChild->setFirstParent(calledEnd);
+			}
+			break;
+		default:
+			break;
+	}
+
+	vector<GNode*> calledProcParents = calledProc->getParents();
+	vector<GNode*> calledEndChildren = calledEnd->getChildren();
+
+	calledProcParents.push_back(callNode);
+	calledEndChildren.push_back(originalChild);
+
+	calledProc->setParents(calledProcParents);
+	calledEnd->setChildren(calledEndChildren);
 }

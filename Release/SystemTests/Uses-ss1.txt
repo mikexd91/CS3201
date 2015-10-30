@@ -194,8 +194,8 @@ Select w such that Uses(w, _) pattern w("battle3", _)
 18
 5000
 40 - USES-while: pattern (does not match select)
-stmt s; while w;
-Select s such that Uses(s, w) pattern w("battle4", _)
+while w1, w2;
+Select w1 such that Uses(w1, _) pattern w2("battle4", _)
 none
 5000
 41 - USES-if: pattern (match select)
@@ -206,5 +206,185 @@ Select i such that Uses(i, _) pattern i("wartortle", _, _)
 42 - USES-if: pattern (does not match select)
 assign a; if i;
 Select a such that Uses(a, _) pattern i("battle2", _, _)
+none
+5000
+43 - USES: 2 clauses (similar) - fixed-fixed, fixed-fixed
+
+Select BOOLEAN such that Uses(12, "charmeleon") and Uses(17, "battle2")
+true
+5000
+44 - USES: 2 clauses (similar) - syn-syn, syn-syn
+stmt s; variable v1, v2;
+Select <s,v1> such that Uses(s, v1) and Uses(s, v2)
+5 firstStageEvolution, 5 charmander, 5 bulbasaur, 5 squirtle, 6 charmander, 7 bulbasaur, 8 squirtle, 9 charmander, 10 squirtle, 11 bulbasaur, 12 charmeleon, 12 wartortle, 13 ivysaur, 13 charmeleon, 14 squirtle, 14 ivysaur, 15 battle1, 15 wartortle, 15 ivysaur, 15 battle2, 15 battle3, 15 charmeleon, 15 squirtle, 16 wartortle, 16 ivysaur, 17 battle2, 17 battle3, 17 charmeleon, 17 wartortle, 17 squirtle, 18 battle3, 18 charmeleon, 18 wartortle, 19 charmeleon, 19 wartortle, 20 wartortle, 20 squirtle, 21 squirtle, 22 wartortle
+5000
+45 - USES: 2 clauses (similar) - fixed-syn, fixed-syn
+variable v;
+Select v such that Uses(12, v) and Uses(15, v)
+charmeleon, wartortle
+5000
+46 - USES: 2 clauses (similar) - syn-fixed, syn-fixed
+stmt s; assign a;
+Select s such that Uses(s, "ivysaur") and Uses(a, "battle2")
+none
+5000
+47 - USES: 2 clauses (similar) - fixed-generic, fixed-generic
+
+Select BOOLEAN such that Uses(23, _) and Uses(_, "battle3")
+false
+5000
+48 - USES: 2 clauses (similar) - generic-fixed, generic-fixed
+stmt s;
+Select s such that Uses(_, "battle2") and Uses(_, "battle3")
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23
+5000
+49 - USES: 2 clauses (similar) - syn-generic, syn-generic
+if i; while w;
+Select <i,w> such that Uses(i, _) and Uses(w, _)
+20 5, 20 15, 20 17, 20 18
+5000
+50 - USES: 2 clauses (similar) - generic-syn, generic-syn
+variable v1, v2;
+Select v1 such that Uses(_, v1) and Uses(_, v2)
+charmander, squirtle, bulbasaur, firstStageEvolution, charmeleon, wartortle, ivysaur, battle1, battle2, battle3
+5000
+51 - USES: 2 clauses (mixed) - fixed-fixed, fixed-syn
+variable v;
+Select v such that Uses(17, "battle2") and Uses("18", v)
+battle3, charmeleon, wartortle
+5000
+52 - USES: 2 clauses (mixed) - syn-syn, syn-fixed
+stmt s; variable v;
+Select s such that Uses(s, v) and Uses(s, "lastPokemon")
+none
+5000
+53 - USES: 2 clauses (mixed) - generic-generic, fixed-generic
+stmt s;
+Select s such that Uses(_, _) and Uses(23 , _)
+none
+5000
+54 - USES: 2 clauses (mixed) - fixed-syn, generic-fixed
+variable v;
+Select v such that Uses(15, v) and Uses(_, "lastPokemon")
+none
+5000
+55 - USES: 2 clauses (mixed) - syn-fixed, syn-generic
+stmt s;
+Select s such that Uses(s, "squirtle") and Uses(s, _)
+5, 8, 10, 14, 15, 17, 20, 21
+5000
+56 - USES: 2 clauses (mixed) - fixed-generic, generic-syn
+variable v;
+Select v such that Uses(23, _) and Uses(_, v)
+none
+5000
+57 - USES: 2 clauses (mixed) - generic-fixed, syn-generic
+stmt s;
+Select s such that Uses(_, "wartortle") and Uses(s, _)
+5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+5000
+58 - USES: 2 clauses (mixed) - syn-generic, generic-syn
+stmt s; variable v;
+Select v such that Uses(s, _) and Uses(_, v)
+firstStageEvolution, charmander, bulbasaur, squirtle, charmeleon, wartortle, ivysaur, battle1, battle2, battle3
+5000
+59 - USES: 2 clauses (mixed) - generic-fixed, generic-syn
+variable v;
+Select BOOLEAN such that Uses(_, "secondStageEvolution") and Uses(_, v)
+false
+5000
+60 - USES: stmt# - select clause (has results)
+assign a;
+Select a.stmt# such that Uses(a, "ivysaur")
+13, 14, 16
+5000
+61 - USES: stmt# - select clause (no results)
+assign a;
+Select a.stmt# such that Uses(a, "lastPokemon")
+none
+5000
+62 - USES: stmt# - with clause (has results)
+assign a;
+Select a such that Uses(a, "charmeleon") with a.stmt# = 12
+12
+5000
+63 - USES: stmt# - with clause (no results)
+assign a;
+Select a such that Uses(a, "charmeleon") with a.stmt# = 12 and s.stmt# = 11
+none
+5000
+64 - USES: procName - select clause (has results)
+procedure p;
+Select p.procName such that Uses(p, "battle1")
+pokemon
+5000
+65 - USES: procName - select clause (no results)
+procedure p;
+Select p.procName such that Uses(p, "a")
+none
+5000
+66 - USES: procName - with clause (has results)
+procedure p;
+Select BOOLEAN such that Uses(p, "battle1") with p.procName = "pokemon"
+true
+5000
+67 - USES: procName - with clause (no results)
+procedure p;
+Select BOOLEAN such that Uses(p, "battle1") with p.procName = "digimon"
+false
+5000
+68 - USES: varName - select clause (has results)
+variable v;
+Select v.varName such that Uses(21, v)
+squirtle
+5000
+69 - USES: varName - select clause (no results)
+variable v;
+Select v.varName such that Uses(23, v)
+none
+5000
+70 - USES: varName - with clause (has results)
+variable v;
+Select BOOLEAN such that Uses(19, v) with v.varName = "wartortle"
+true
+5000
+71 - USES: varName - with clause (no results)
+variable v;
+Select BOOLEAN such that Uses(19, v) with v.varName = "charmander"
+false
+5000
+72 - USES: const - with clause (has results)
+variable v; constant c;
+Select c such that Uses(17, v) with c.value = 3
+3
+5000
+73 - USES: const - with clause (no results)
+variable v; constant c;
+Select BOOLEAN such that Uses(17, v) with c.value = 6
+false
+5000
+74 - USES: prog_line
+prog_line n;
+Select n such that Uses(n, "wartortle")
+12, 15, 16, 17, 18, 19, 20, 22
+5000
+75 - USES: stmt overflow
+variable v;
+Select v such that Uses(45, v)
+none
+5000
+76 - USES: stmt underflow
+variable v;
+Select v such that Uses(-1, v)
+none
+5000
+77 - USES: stmt underflow
+variable v;
+Select v such that Uses(0, v)
+none
+5000
+78 - USES: non-existent variable
+assign a;
+Select a such that Uses(a, "helloworld")
 none
 5000

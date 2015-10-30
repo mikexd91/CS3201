@@ -459,7 +459,11 @@ void QueryParser::parseClause(Query* query, queue<string>* line){
 				}
 			} else {
 				newClause->setArg(1, firstVar);
-				newClause->setArgType(1, stringconst::ARG_VARIABLE);
+				if (clauseType == "Calls") {
+					newClause->setArgType(1, stringconst::ARG_PROCEDURE);
+				} else {
+					newClause->setArgType(1, stringconst::ARG_VARIABLE);
+				}
 			}
 		} else {
 			newClause->setArgFixed(1, true);
@@ -507,7 +511,11 @@ void QueryParser::parseClause(Query* query, queue<string>* line){
 				}
 			} else {
 				newClause->setArg(2, secondVar);
-				newClause->setArgType(2, stringconst::ARG_VARIABLE);
+				if (clauseType == "Calls") {
+					newClause->setArgType(2, stringconst::ARG_PROCEDURE);
+				} else {
+					newClause->setArgType(2, stringconst::ARG_VARIABLE);
+				}
 			}
 		} else {
 			newClause->setArgFixed(2, true);
