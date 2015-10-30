@@ -12,6 +12,12 @@ class AffectsBipClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testFixedFixedCallFail );
 	CPPUNIT_TEST( testFixedSynPass );
 	CPPUNIT_TEST( testFixedSynPassWithoutCall );
+	CPPUNIT_TEST( testSynSynPass );
+	CPPUNIT_TEST( testGenericGenericPass );
+	CPPUNIT_TEST( testGenericSynPass );
+	CPPUNIT_TEST( testSynGenericPass );
+	CPPUNIT_TEST( testFixedGenericPass );
+	CPPUNIT_TEST( testFixedSynPassInWhile );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -24,5 +30,11 @@ public:
 	void testFixedFixedCallFail();
 	void testFixedSynPass();
 	void testFixedSynPassWithoutCall();
+	void testSynSynPass();
+	void testGenericGenericPass();
+	void testGenericSynPass();
+	void testSynGenericPass();
+	void testFixedGenericPass();
+	void testFixedSynPassInWhile();
 };
     

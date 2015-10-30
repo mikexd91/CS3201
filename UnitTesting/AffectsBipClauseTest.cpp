@@ -13,6 +13,7 @@
 #include "../SPA/SuchThatClauseBuilder.h"
 #include "../SPA/Utils.h"
 #include "../SPA/AffectsBipClause.h"
+#include <boost/foreach.hpp>
 
 #include <iostream>
 #include <string>
@@ -133,7 +134,7 @@ AffectsBipClauseTest::setUp() {
 	ProcGNode* proc3 = new ProcGNode("again");
 	CallGNode* call16 = new CallGNode(16);
 	call16->setParent(proc3);
-	proc2->setChild(call16);
+	proc3->setChild(call16);
 	AssgGNode* assg17 = new AssgGNode(17);
 	EndGNode* end3 = new EndGNode();
 	end3->setParent(assg17);
@@ -142,6 +143,7 @@ AffectsBipClauseTest::setUp() {
 
 	cfg->addProcedure(proc1);
 	cfg->addProcedure(proc2);
+	cfg->addProcedure(proc3);
 
 	//build bip links
 	call8->setChild(proc1);
@@ -413,10 +415,9 @@ AffectsBipClauseTest::setUp() {
 
 }
 
-void 
-AffectsBipClauseTest::tearDown() {
+void AffectsBipClauseTest::tearDown() {
 	StmtTable::getInstance()->clearTable();
-	CFG::getInstance()->reset();
+	CFGbip::getInstance()->reset();
 }
 
 // Registers the fixture into the 'registry'
@@ -530,6 +531,170 @@ void AffectsBipClauseTest::testFixedSynPassWithoutCall() {
 	Result res = Result();
 	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSBIP_);
 	affectsBuilder->setArg(1, "1");
+	affectsBuilder->setArgFixed(1, true);
+	affectsBuilder->setArgType(1, ARG_PROGLINE);
+	affectsBuilder->setArg(2, "s");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsBipClause* m1 = (AffectsBipClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	CPPUNIT_ASSERT(m1->evaluate(&res));
+	CPPUNIT_ASSERT(res.isSynPresent("s"));
+	CPPUNIT_ASSERT(res.getResultTableSize() == 2);
+	unordered_set<string> s = res.getSyn("s");
+	CPPUNIT_ASSERT(s.size() == 2);
+	CPPUNIT_ASSERT(s.find("4") != s.end());
+	CPPUNIT_ASSERT(s.find("5") != s.end());
+}
+
+void AffectsBipClauseTest::testSynSynPass() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSBIP_);
+	affectsBuilder->setArg(1, "s1");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_STATEMENT);
+	affectsBuilder->setArg(2, "s2");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsBipClause* m1 = (AffectsBipClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	CPPUNIT_ASSERT(m1->evaluate(&res));
+	CPPUNIT_ASSERT(res.isSynPresent("s1"));
+	CPPUNIT_ASSERT(res.isSynPresent("s2"));
+	vector<string> syns;
+	syns.push_back("s1");
+	syns.push_back("s2");
+	unordered_set<vector<string>> pairResults = res.getMultiSyn(syns);
+	CPPUNIT_ASSERT(pairResults.size() == 12);
+	string pair0String[] = {"1", "4"};
+	vector<string> pair0(pair0String, pair0String+2);
+	string pair1String[] = {"1", "5"};
+	vector<string> pair1(pair1String, pair1String+2);
+	string pair2String[] = {"5", "4"};
+	vector<string> pair2(pair2String, pair2String+2);
+	string pair3String[] = {"6", "1"};
+	vector<string> pair3(pair3String, pair3String+2);
+	string pair4String[] = {"4", "10"};
+	vector<string> pair4(pair4String, pair4String+2);
+	string pair5String[] = {"6", "11"};
+	vector<string> pair5(pair5String, pair5String+2);
+	string pair6String[] = {"11", "13"};
+	vector<string> pair6(pair6String, pair6String+2);
+	string pair7String[] = {"6", "14"};
+	vector<string> pair7(pair7String, pair7String+2);
+	string pair8String[] = {"10", "14"};
+	vector<string> pair8(pair8String, pair8String+2);
+	string pair9String[] = {"2", "15"};
+	vector<string> pair9(pair9String, pair9String+2);
+	string pair10String[] = {"2", "17"};
+	vector<string> pair10(pair10String, pair10String+2);
+	string pair11String[] = {"5", "5"};
+	vector<string> pair11(pair11String, pair11String+2);
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair0) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair1) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair2) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair3) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair4) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair5) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair6) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair7) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair8) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair9) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair10) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair11) != pairResults.end());
+}
+
+void AffectsBipClauseTest::testGenericGenericPass() {
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSBIP_);
+	affectsBuilder->setArg(1, "_");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_GENERIC);
+	affectsBuilder->setArg(2, "_");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_GENERIC);
+	AffectsBipClause* m1 = (AffectsBipClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
+}
+
+void AffectsBipClauseTest::testGenericSynPass() {
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSBIP_);
+	affectsBuilder->setArg(1, "_");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_GENERIC);
+	affectsBuilder->setArg(2, "s2");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsBipClause* m1 = (AffectsBipClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+	unordered_set<string> s = res.getSyn("s2");
+	CPPUNIT_ASSERT(s.size() == 9);
+	CPPUNIT_ASSERT(s.find("1") != s.end());
+	CPPUNIT_ASSERT(s.find("4") != s.end());
+	CPPUNIT_ASSERT(s.find("5") != s.end());
+	CPPUNIT_ASSERT(s.find("10") != s.end());
+	CPPUNIT_ASSERT(s.find("11") != s.end());
+	CPPUNIT_ASSERT(s.find("13") != s.end());
+	CPPUNIT_ASSERT(s.find("14") != s.end());
+	CPPUNIT_ASSERT(s.find("15") != s.end());
+	CPPUNIT_ASSERT(s.find("17") != s.end());
+}
+
+void AffectsBipClauseTest::testSynGenericPass() {
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSBIP_);
+	affectsBuilder->setArg(1, "s1");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_STATEMENT);
+	affectsBuilder->setArg(2, "_");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_GENERIC);
+	AffectsBipClause* m1 = (AffectsBipClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+	unordered_set<string> s = res.getSyn("s1");
+	CPPUNIT_ASSERT(s.size() == 7);
+	CPPUNIT_ASSERT(s.find("1") != s.end());
+	CPPUNIT_ASSERT(s.find("2") != s.end());
+	CPPUNIT_ASSERT(s.find("4") != s.end());
+	CPPUNIT_ASSERT(s.find("5") != s.end());
+	CPPUNIT_ASSERT(s.find("6") != s.end());
+	CPPUNIT_ASSERT(s.find("10") != s.end());
+	CPPUNIT_ASSERT(s.find("11") != s.end());
+}
+
+void AffectsBipClauseTest::testFixedGenericPass() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder->setArg(1, "10");
+	affectsBuilder->setArgFixed(1, true);
+	affectsBuilder->setArgType(1, ARG_PROGLINE);
+	affectsBuilder->setArg(2, "_");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_GENERIC);
+	AffectsBipClause* m1 = (AffectsBipClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+}
+
+void AffectsBipClauseTest::testFixedSynPassInWhile() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSBIP_);
+	affectsBuilder->setArg(1, "5");
 	affectsBuilder->setArgFixed(1, true);
 	affectsBuilder->setArgType(1, ARG_PROGLINE);
 	affectsBuilder->setArg(2, "s");

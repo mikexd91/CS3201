@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AffectsBipCalculator.cpp" />
     <ClCompile Include="AffectsBipClause.cpp" />
     <ClCompile Include="AffectsCalculator.cpp" />
     <ClCompile Include="AffectsClause.cpp" />
@@ -97,6 +98,7 @@
     <ClCompile Include="WithClauseRef.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AffectsBipCalculator.h" />
     <ClInclude Include="AffectsBipClause.h" />
     <ClInclude Include="AffectsCalculator.h" />
     <ClInclude Include="AffectsClause.h" />

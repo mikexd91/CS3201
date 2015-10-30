@@ -1,5 +1,5 @@
 #include "AffectsBipClause.h"
-#include "AffectsCalculator.h"
+#include "AffectsBipCalculator.h"
 #include "AssgGNode.h"
 #include "DummyGNode.h"
 #include "IfGNode.h"
@@ -95,7 +95,7 @@ bool AffectsBipClause::evaluateS1FixedS2Fixed(string firstArg, string secondArg)
 
 //e.g. Parent(_,_)
 bool AffectsBipClause::evaluateS1GenericS2Generic() {
-	AffectsCalculator calc = AffectsCalculator();
+	AffectsBipCalculator calc = AffectsBipCalculator();
 	return calc.computeS1GenericS2Generic();
 }
 
@@ -151,13 +151,13 @@ unordered_set<string> AffectsBipClause::getAllS2WithS1Fixed(string s1) {
 //e.g. Parent(_, s2)
 //get all children
 unordered_set<string> AffectsBipClause::getAllS2() {
-	AffectsCalculator calc = AffectsCalculator();
+	AffectsBipCalculator calc = AffectsBipCalculator();
 	return calc.computeAllS2();
 }
 
 //e.g. Parent(2,_)
 bool AffectsBipClause::evaluateS1FixedS2Generic(string s1){
-	AffectsCalculator calc = AffectsCalculator();
+	AffectsBipCalculator calc = AffectsBipCalculator();
 	return calc.computeS1FixedS2Generic(s1);
 }
 
@@ -264,13 +264,13 @@ unordered_set<string> AffectsBipClause::getAllS1WithS2Fixed(string s2) {
 //e.g. Parent(s1,_)
 //get all parents
 unordered_set<string> AffectsBipClause::getAllS1() {
-	AffectsCalculator calc = AffectsCalculator();
+	AffectsBipCalculator calc = AffectsBipCalculator();
 	return calc.computeAllS1();
 }
 
 //Parent(s1, s2)
 unordered_set<vector<string>> AffectsBipClause::getAllS1AndS2() {
-	AffectsCalculator calc = AffectsCalculator();
+	AffectsBipCalculator calc = AffectsBipCalculator();
 	unordered_set<vector<string>> results = calc.computeAllS1AndS2();
 	if (firstArg == secondArg) {
 		unordered_set<vector<string>> filteredResult = unordered_set<vector<string>>();

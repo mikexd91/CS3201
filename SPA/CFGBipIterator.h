@@ -4,7 +4,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "CFG.h"
 #include "CFGbip.h"
 #include <stack>
 #include "WhileGNode.h"
