@@ -2921,7 +2921,7 @@ Select s such that Affects*(s, 12)
 585 - AFFECTS*-prog_line: syn-fixed (prog_line)
 prog_line n;
 Select n such that Affects*(n, 19)
-2, 8, 10, 11, 16, 19, 21, 22
+2, 3, 7, 8, 10, 11, 16, 19, 21, 22
 5000
 586 - AFFECTS*-boolean: syn-fixed (non-assign stmt)
 while w;
@@ -3086,7 +3086,7 @@ Select a such that Affects*(16, 19) and Affects*(19, a)
 618 - AFFECTS*: 2 clauses (mixed) - syn-syn, syn-fixed
 assign a1, a2;
 Select a1 such that Affects*(a1, a2) and Affects*(a1, 13)
-1, 6, 9, 11
+1, 3, 6, 7, 9, 11
 5000
 619 - AFFECTS*: 2 clauses (mixed) - generic-generic, fixed-generic
 
