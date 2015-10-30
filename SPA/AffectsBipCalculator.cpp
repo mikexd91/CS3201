@@ -12,8 +12,11 @@ AffectsBipCalculator::AffectsBipCalculator() {
 	multiSynResults = unordered_set<vector<string>>();
 	globalState = State();
 	isStart = false;
+	isEnd = false;
 	result = false;
 	parentCallStmts = stack<int>();
+	//for Affects(fixed, _)
+	stmtsAfterEnd = stack<GNode*>();
 }
 
 AffectsBipCalculator::~AffectsBipCalculator() {
@@ -27,11 +30,12 @@ unordered_set<vector<string>> AffectsBipCalculator::computeAllS1AndS2() {
 	//between each proc, reinitialise state
 	BOOST_FOREACH(ProcGNode* procNode, procNodes) {
 		GNode* currentNode = procNode->getChild();
-		while(!(currentNode->getNodeType() == END_ && parentCallStmts.empty())) {
+		while(!isEnd) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
 		//reset state
 		globalState = State();
+		isEnd = false;
 	}
 	return multiSynResults;
 }
@@ -44,11 +48,12 @@ unordered_set<string> AffectsBipCalculator::computeAllS1() {
 	//between each proc, reinitialise state
 	BOOST_FOREACH(ProcGNode* procNode, procNodes) {
 		GNode* currentNode = procNode->getChild();
-		while(!(currentNode->getNodeType() == END_ && parentCallStmts.empty())) {
+		while(!isEnd) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
 		//reset state
 		globalState = State();
+		isEnd = false;
 	}
 	return singleSynResults;
 }
@@ -63,7 +68,7 @@ bool AffectsBipCalculator::computeS1GenericS2Generic() {
 		//between each proc, reinitialise state
 		BOOST_FOREACH(ProcGNode* procNode, procNodes) {
 			GNode* currentNode = procNode->getChild();
-			while(!(currentNode->getNodeType() == END_ && parentCallStmts.empty())) {
+			while(!isEnd) {
 				currentNode = evaluateNode(currentNode, globalState);
 			}
 			//reset state
@@ -97,7 +102,7 @@ bool AffectsBipCalculator::computeS1FixedS2Generic(string s1) {
 	globalState[modifyingVar].insert(s1Num);
 	try {
 		GNode* currentNode = stmt1->getGNodeRef();
-		while(!(currentNode->getNodeType() == END_ && parentCallStmts.empty())) {
+		while(!isEnd) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
 	} catch (AffectsBipTermination e) {
@@ -114,11 +119,12 @@ unordered_set<string> AffectsBipCalculator::computeAllS2() {
 	//between each proc, reinitialise state
 	BOOST_FOREACH(ProcGNode* procNode, procNodes) {
 		GNode* currentNode = procNode->getChild();
-		while(!(currentNode->getNodeType() == END_ && parentCallStmts.empty())) {
+		while(!isEnd) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
 		//reset state
 		globalState = State();
+		isEnd = false;
 	}
 	return singleSynResults;
 }
@@ -145,8 +151,25 @@ GNode* AffectsBipCalculator::evaluateNode(GNode* node, State& state) {
 		return callNode->getChild();
 	} else if (node->getNodeType() == END_) {
 		if (parentCallStmts.empty()) {
-			cout << "This should not happen." << endl;
-			return node;
+			if (type == FIXED_GENERIC) {
+				//iterate through children
+				if (!node->getChildren().empty()) {
+					BOOST_FOREACH(GNode* child, node->getChildren()) {
+						stmtsAfterEnd.push(child);
+					}
+				}
+				if (stmtsAfterEnd.empty()) {
+					isEnd = true;
+					return node;
+				} else {
+					GNode* nextNode = stmtsAfterEnd.top();
+					stmtsAfterEnd.pop();
+					return nextNode;
+				}
+			} else {
+				isEnd = true;
+				return node;
+			}
 		} else {
 			EndGNode* endNode = static_cast<EndGNode*>(node);
 			//find stmt to return to, and set nextNode to that

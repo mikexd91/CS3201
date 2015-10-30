@@ -17,7 +17,7 @@ CFGBipIterator::CFGBipIterator(GNode* start) {
 	numIter=-1;
 	parentCallStmts = stack<int>();
 	//if the proc is called by another statement
-	stmtsCalledAfter = stack<GNode*>();
+	stmtsAfterEnd = stack<GNode*>();
 	end = false;
 }
 
@@ -183,14 +183,14 @@ GNode* CFGBipIterator::getNextNode() {
 				if (!endNode->getChildren().empty()){
 					//endNode has children, evaluate them
 					BOOST_FOREACH(GNode* child, endNode->getChildren()) {
-						stmtsCalledAfter.push(child);
+						stmtsAfterEnd.push(child);
 					}
 				}
-				if (stmtsCalledAfter.empty()) {
+				if (stmtsAfterEnd.empty()) {
 					end = true;
 				} else {
-					nextNode = stmtsCalledAfter.top();
-					stmtsCalledAfter.pop();
+					nextNode = stmtsAfterEnd.top();
+					stmtsAfterEnd.pop();
 				}
 
 			}

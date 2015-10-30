@@ -51,6 +51,7 @@ private:
 	State globalState;
 	AffectsResultType type;
 	bool isStart;
+	bool isEnd;
 
 	//for Affects(1,_), we need to store 1
 	int s1Num;
@@ -58,6 +59,7 @@ private:
 	//should not terminate prematurely if we are in while loop
 	bool inWhileLoop;
 	stack<int> parentCallStmts;
+	stack<GNode*> stmtsAfterEnd;
 
 	void updateStateForCall(CallGNode*, State&);
 	void updateStateForWhile(WhileGNode*, State&);

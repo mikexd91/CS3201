@@ -677,8 +677,24 @@ void AffectsBipClauseTest::testSynGenericPass() {
 
 void AffectsBipClauseTest::testFixedGenericPass() { 
 	Result res = Result();
-	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSBIP_);
 	affectsBuilder->setArg(1, "10");
+	affectsBuilder->setArgFixed(1, true);
+	affectsBuilder->setArgType(1, ARG_PROGLINE);
+	affectsBuilder->setArg(2, "_");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_GENERIC);
+	AffectsBipClause* m1 = (AffectsBipClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+}
+
+void AffectsBipClauseTest::testFixedGenericPassAcrossProc() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSBIP_);
+	affectsBuilder->setArg(1, "2");
 	affectsBuilder->setArgFixed(1, true);
 	affectsBuilder->setArgType(1, ARG_PROGLINE);
 	affectsBuilder->setArg(2, "_");

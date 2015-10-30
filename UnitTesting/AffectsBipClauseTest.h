@@ -17,6 +17,7 @@ class AffectsBipClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testGenericSynPass );
 	CPPUNIT_TEST( testSynGenericPass );
 	CPPUNIT_TEST( testFixedGenericPass );
+	CPPUNIT_TEST( testFixedGenericPassAcrossProc );
 	CPPUNIT_TEST( testFixedSynPassInWhile );
 	CPPUNIT_TEST_SUITE_END();
 
@@ -35,6 +36,7 @@ public:
 	void testGenericSynPass();
 	void testSynGenericPass();
 	void testFixedGenericPass();
+	void testFixedGenericPassAcrossProc();
 	void testFixedSynPassInWhile();
 };
     
