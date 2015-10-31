@@ -432,7 +432,36 @@ vector<string> SynGraph::getSynFromPatternClause(PatternClause* pc) {
 }
 
 vector<string> SynGraph::getSynFromWithClause(WithClause* wc) {
-	return vector<string>();
+	vector<string> synList;
+	WithClauseRef leftSide = wc->getLeftRef();
+	WithClauseRef rightSide = wc->getRightRef();
+
+	bool isLeftSyn = (leftSide.getRefType() == ATTRREF_ || SYNONYM_);
+	bool isRightSyn = (rightSide.getRefType() == ATTRREF_ || SYNONYM_);
+	bool isLeftFixed = (leftSide.getRefType() == IDENT_ || INTEGER_);
+	bool isRightFixed =(rightSide.getRefType() == IDENT_ || INTEGER_);
+	
+	// get multi synonym
+	if (isLeftSyn && isRightSyn) {
+		string syn1 = leftSide.getEntity();
+		string syn2 = rightSide.getEntity();
+		string synArr [] = { syn1,syn2 };
+		synList.insert (synList.begin(), synArr, synArr+2);
+		return synList;
+	} 
+
+	// get single synonym
+	if (isLeftSyn) {
+		string syn1 = leftSide.getEntity();
+		synList.push_back(syn1);
+		return synList;
+	}
+	if (isRightSyn) {
+		string syn2 = rightSide.getEntity();
+		synList.push_back(syn2);
+		return synList;
+	}
+	return synList;
 }
 
 // Creates and set fixed arg SynNodes and 

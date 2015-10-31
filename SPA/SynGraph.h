@@ -17,11 +17,12 @@
 #include "CallsClause.h"
 #include "CallsStarClause.h"
 #include "WithClause.h"
+#include "WithClauseRef.h"
 #include "AffectsClause.h"
 #include "NextClause.h"
 #include "NextStarClause.h"
 #include "SuchThatClause.h"
-#include "WithClause.h"
+#include "WithClauseBuilder.h"
 
 #include "boost/foreach.hpp"
 #include "boost/unordered_map.hpp"
