@@ -4,6 +4,7 @@
 SynEdge::SynEdge(int edge, int clause) {
 	edgeWeight = edge;
 	clauseIndex = clause;
+	visited = false;
 }
 
 int SynEdge::getWeight() {
@@ -24,4 +25,12 @@ void SynEdge::setClauseIndex(int index) {
 
 void SynEdge::addEdgeWeight(int weight) {
 	edgeWeight += weight;
+}
+
+void SynEdge::setVisited() {
+	visited = true;
+}
+
+bool SynEdge::isVisited() {
+	return visited;
 }

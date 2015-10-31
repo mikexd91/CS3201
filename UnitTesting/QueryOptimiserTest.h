@@ -7,17 +7,23 @@ using namespace std;
 
 class QueryOptimiserTest: public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( QueryOptimiserTest );
-	CPPUNIT_TEST( testSortQueryDifferentBuilder );
-	CPPUNIT_TEST( testSortQuerySuchThatBuilder );
-	CPPUNIT_TEST( testSoryQueryPatternBuilder );
+	CPPUNIT_TEST ( testMutiSingleSyn1Component );
+	CPPUNIT_TEST ( testMultiComponent );
+	CPPUNIT_TEST ( testTrickyCase );
+	
+	//CPPUNIT_TEST( testSortingPatternAndSuchThatClauses );
+	//CPPUNIT_TEST( testSortingWhileAndSuchThatClauses );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
 	void setUp();
 	void tearDown();
 
-	void testSortQueryDifferentBuilder();
-	void testSortQuerySuchThatBuilder();
-	void testSoryQueryPatternBuilder();
+	void testMutiSingleSyn1Component();
+	void testMultiComponent();
+	void testTrickyCase();
+	
+	//void testSortingPatternAndSuchThatClauses();
+	//void testSortingWhileAndSuchThatClauses();
 };
 

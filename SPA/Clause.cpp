@@ -54,7 +54,7 @@ int Clause::getWeight() {
 	} else if (clauseType == AFFECTSSTAR_) {
 		return 46;
 	} else {
-		cout << "ClauseType not defined!";
+		//cout << "Clause.h, ClauseType not defined!";
 		return 999;
 	}
 }

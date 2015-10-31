@@ -16,10 +16,16 @@
 #include "../SPA/AffectsClause.h"
 #include "../SPA/SuchThatClauseBuilder.h"
 #include "../SPA/PatternClauseBuilder.h"
+#include "../SPA/WithClause.h"
+#include "../SPA/WithClauseBuilder.h"
+#include "../SPA/WithClauseRef.h"
 #include "../SPA/Clause.h"
 #include "../SPA/Utils.h"
+#include "../SPA/SynGraph.h"
+#include <boost\foreach.hpp>
 
 using namespace stringconst;
+using namespace std;
 
 void QueryOptimiserTest::setUp() {
 
@@ -32,290 +38,303 @@ void QueryOptimiserTest::tearDown() {
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( QueryOptimiserTest );
 
-void QueryOptimiserTest::testSortQueryDifferentBuilder() {
+void QueryOptimiserTest::testMutiSingleSyn1Component() {
 	QueryOptimiser *qo = new QueryOptimiser();
-	
-	//Query:
-	//Select BOOLEAN s.t. affects(1,4) and follows(7,_) and 
-	//parent*(9,2) and calls*(p,q) and pattern if("x", "_", "_")
-	//and pattern w("x", "_");
 
-	StringPair *p = new StringPair();
-	p->setFirst("BOOLEAN");
-	p->setSecond(ARG_BOOLEAN);
+	StringPair *s1 = new StringPair();
+	s1->setFirst("a1");
+	s1->setSecond(ARG_ASSIGN);
+
 	Query *q = new Query();
-	q->addSelectSynonym(*p);
+	q->addSelectSynonym(*s1);
 
-	//affects(1,4)
+	SuchThatClauseBuilder* usesBuilder1 = new SuchThatClauseBuilder(USES_);
+	usesBuilder1->setArg(1, "a1");
+	usesBuilder1->setArgFixed(1, false);
+	usesBuilder1->setArgType(1, ARG_ASSIGN);
+	usesBuilder1->setArg(2, "z");
+	usesBuilder1->setArgFixed(2, true);
+	usesBuilder1->setArgType(2, ARG_VARIABLE);
+	UsesClause* c1 = (UsesClause*) usesBuilder1->build();
+	CPPUNIT_ASSERT(c1->isValid());
+
+	q->addClause((Clause*) c1);
+
 	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
-	affectsBuilder->setArg(1, "1");
-	affectsBuilder->setArgFixed(1, true);
-	affectsBuilder->setArgType(1, ARG_PROGLINE);
-	affectsBuilder->setArg(2, "4");
-	affectsBuilder->setArgFixed(2, true);
-	affectsBuilder->setArgType(2, ARG_PROGLINE);
-	AffectsClause* m1 = (AffectsClause*) affectsBuilder->build();
-	CPPUNIT_ASSERT(m1->isValid());
-	q->addClause((Clause*) m1);
+	affectsBuilder->setArg(1, "a1");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_ASSIGN);
+	affectsBuilder->setArg(2, "_");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_GENERIC);
+	AffectsClause* c2 = (AffectsClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(c2->isValid());
 
-	// Follows(7, _)
+	q->addClause((Clause*) c2);
+
+	SuchThatClauseBuilder* nextStarBuilder = new SuchThatClauseBuilder(NEXTSTAR_);
+	nextStarBuilder->setArg(1, "a1");
+	nextStarBuilder->setArg(2, "_");
+	nextStarBuilder->setArgType(1, ARG_ASSIGN);
+	nextStarBuilder->setArgType(2, ARG_GENERIC);
+	nextStarBuilder->setArgFixed(1, false);
+	nextStarBuilder->setArgFixed(2, false);
+	NextStarClause* c3 = (NextStarClause*) nextStarBuilder->build();
+	CPPUNIT_ASSERT(c3->isValid());
+
+	q->addClause((Clause*) c3);
+
+	SuchThatClauseBuilder* modifiesBuilder2 = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder2->setArg(1, "a1");
+	modifiesBuilder2->setArgFixed(1, false);
+	modifiesBuilder2->setArgType(1, ARG_ASSIGN);
+	modifiesBuilder2->setArg(2, "_");
+	modifiesBuilder2->setArgFixed(2, false);
+	modifiesBuilder2->setArgType(2, ARG_GENERIC);
+	ModifiesClause* c4 = (ModifiesClause*) modifiesBuilder2->build();
+	CPPUNIT_ASSERT(c4->isValid());
+
+	q->addClause((Clause*) c4);
+
 	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
-	followsBuilder->setArg(1, "7");
-	followsBuilder->setArgFixed(1, true);
-	followsBuilder->setArgType(1, ARG_WHILE);
-	followsBuilder->setArg(2, "_");
+	followsBuilder->setArg(1, "_");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_GENERIC);
+	followsBuilder->setArg(2, "a1");
 	followsBuilder->setArgFixed(2, false);
-	followsBuilder->setArgType(2, ARG_GENERIC);
-	FollowsClause* m2 = (FollowsClause*) followsBuilder->build();
-	CPPUNIT_ASSERT(m2->isValid());
-	q->addClause((Clause*) m2);
+	followsBuilder->setArgType(2, ARG_ASSIGN);
+	FollowsClause* c5 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c5->isValid());
 
-	// Parent*(9,2)
-	SuchThatClauseBuilder* parentStarBuilder = new SuchThatClauseBuilder(PARENTSTAR_);
-	parentStarBuilder->setArg(1, "9");
-	parentStarBuilder->setArgFixed(1, true);
-	parentStarBuilder->setArgType(1, ARG_WHILE);
-	parentStarBuilder->setArg(2, "2");
-	parentStarBuilder->setArgFixed(2, true);
-	parentStarBuilder->setArgType(2, ARG_ASSIGN);
-	ParentStarClause* m3 = (ParentStarClause*) parentStarBuilder->build();
-	CPPUNIT_ASSERT(m3->isValid());
-	q->addClause((Clause*) m3);
+	q->addClause((Clause*) c5);
 
-	// Calls*(p,q)
-	SuchThatClauseBuilder* callsStarBuilder = new SuchThatClauseBuilder(CALLSSTAR_);
-	callsStarBuilder->setArg(1, "p");
-	callsStarBuilder->setArgFixed(1, false);
-	callsStarBuilder->setArgType(1, ARG_PROCEDURE);
-	callsStarBuilder->setArg(2, "q");
-	callsStarBuilder->setArgFixed(2, true);
-	callsStarBuilder->setArgType(2, ARG_PROCEDURE);
-	CallsStarClause* m4 = (CallsStarClause*) callsStarBuilder->build();
-	CPPUNIT_ASSERT(m4->isValid());
-	q->addClause((Clause*) m4);
-
-	// pattern if("x", "_", "_")
-	PatternClauseBuilder* ifBuilder = new PatternClauseBuilder(PATTERNIF_);
-	string syn1 = "if";
-	ifBuilder->setSynonym(syn1);
-	ifBuilder->setVar("x");
-	ifBuilder->setVarType(ARG_VARIABLE);
-	ifBuilder->setVarFixed(true);
-	ifBuilder->setExpr(1, "_");
-	ifBuilder->setExpr(2, "_");
-	PatternIfClause* m5 = (PatternIfClause*) ifBuilder->build();
-	q->addClause((Clause*) m5);
-	
-	// pattern w("x", "_");
-	PatternClauseBuilder* whileBuilder = new PatternClauseBuilder(PATTERNWHILE_);
-	whileBuilder->setSynonym("w");
-	whileBuilder->setVar("x");
-	whileBuilder->setVarType(stringconst::ARG_VARIABLE);
-	whileBuilder->setVarFixed(true);
-	whileBuilder->setExpr(1, "_");
-	PatternWhileClause* m6 = (PatternWhileClause*) whileBuilder->build();
-	q->addClause((Clause*) m6);
-	
-	qo->sortQuery(q);
-
-	Clause* c0 = q->getClauseList().at(0);
-	ClauseType type0 = c0->getClauseType();
-	int weight0 = c0->getWeight();
-	CPPUNIT_ASSERT(type0 == FOLLOWS_);
-	CPPUNIT_ASSERT(weight0 == 2);
-
-	Clause* c1 = q->getClauseList().at(1);
-	ClauseType type1 = c1->getClauseType();
-	int weight1 = c1->getWeight();
-	CPPUNIT_ASSERT(type1 == CALLSSTAR_);
-	CPPUNIT_ASSERT(weight1 == 4);
-
-	Clause* c2 = q->getClauseList().at(2);
-	ClauseType type2 = c2->getClauseType();
-	int weight2 = c2->getWeight();
-	CPPUNIT_ASSERT(type2 == PARENTSTAR_);
-	CPPUNIT_ASSERT(weight2 == 6);
-
-	Clause* c3 = q->getClauseList().at(3);
-	ClauseType type3 = c3->getClauseType();
-	int weight3 = c3->getWeight();
-	CPPUNIT_ASSERT(type3 == PATTERNIF_);
-	CPPUNIT_ASSERT(weight3 == 8);
-
-	Clause* c4 = q->getClauseList().at(4);
-	ClauseType type4 = c4->getClauseType();
-	int weight4 = c4->getWeight();
-	CPPUNIT_ASSERT(type4 == PATTERNWHILE_);
-	CPPUNIT_ASSERT(weight4 == 9);
-
-	Clause* c5 = q->getClauseList().at(5);
-	ClauseType type5 = c5->getClauseType();
-	int weight5 = c5->getWeight();
-	CPPUNIT_ASSERT(type5 == AFFECTS_);
-	CPPUNIT_ASSERT(weight5 == 14);
+	vector<int> compSize = qo->optimizeQuery(q);
+	CPPUNIT_ASSERT(compSize.size() == 1);
 }
 
-void QueryOptimiserTest::testSortQuerySuchThatBuilder() {
+void QueryOptimiserTest::testMultiComponent() {
 	QueryOptimiser *qo = new QueryOptimiser();
 
-	//Query
-	//Select BOOLEAN s.t. Affects(4,4) and Affects(5,9) and Modifies("hello", v)
-	//and Follows(a, 1) and Next(s, 5) and Modifies("hello", v)
-	//and Uses(s, "i") and Uses(5, "w")
+	StringPair *s1 = new StringPair();
+	s1->setFirst("z");
+	s1->setSecond(ARG_VARIABLE);
+	StringPair *s2 = new StringPair();
+	s2->setFirst("z2");
+	s2->setSecond(ARG_VARIABLE);
 
-	StringPair *p = new StringPair();
-	p->setFirst("BOOLEAN");
-	p->setSecond(ARG_BOOLEAN);
 	Query *q = new Query();
-	q->addSelectSynonym(*p);
+	q->addSelectSynonym(*s1);
+	q->addSelectSynonym(*s2);
 
-	// Affects(4,4)
-	SuchThatClauseBuilder* affectsBuilder1 = new SuchThatClauseBuilder(AFFECTS_);
-	affectsBuilder1->setArg(1, "4");
-	affectsBuilder1->setArgFixed(1, true);
-	affectsBuilder1->setArgType(1, ARG_PROGLINE);
-	affectsBuilder1->setArg(2, "4");
-	affectsBuilder1->setArgFixed(2, true);
-	affectsBuilder1->setArgType(2, ARG_PROGLINE);
-	AffectsClause* m1 = (AffectsClause*) affectsBuilder1->build();
-	CPPUNIT_ASSERT(m1->isValid());
-	q->addClause((Clause*) m1);
+	SuchThatClauseBuilder* callsBuilder = new SuchThatClauseBuilder(CALLS_);
+	callsBuilder->setArg(1, "_");
+	callsBuilder->setArgFixed(1, false);
+	callsBuilder->setArgType(1, ARG_GENERIC);
+	callsBuilder->setArg(2, "childProc1");
+	callsBuilder->setArgFixed(2, true);
+	callsBuilder->setArgType(2, ARG_PROCEDURE);
+	CallsClause* c1 = (CallsClause*) callsBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
 
-	// Affects(5,9)
-	SuchThatClauseBuilder* affectsBuilder2 = new SuchThatClauseBuilder(AFFECTS_);
-	affectsBuilder2->setArg(1, "5");
-	affectsBuilder2->setArgFixed(1, true);
-	affectsBuilder2->setArgType(1, ARG_PROGLINE);
-	affectsBuilder2->setArg(2, "9");
-	affectsBuilder2->setArgFixed(2, true);
-	affectsBuilder2->setArgType(2, ARG_PROGLINE);
-	AffectsClause* m2 = (AffectsClause*) affectsBuilder2->build();
-	CPPUNIT_ASSERT(m2->isValid());
-	q->addClause((Clause*) m2);
+	q->addClause((Clause*) c1);
 
-	// Modifies("hello", v);
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	followsStarBuilder->setArg(1, "a1");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_ASSIGN);
+	followsStarBuilder->setArg(2, "w1");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_WHILE);	
+	FollowsStarClause* c2 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c2->isValid());
+
+	q->addClause((Clause*) c2);
+
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	followsBuilder->setArg(1, "_");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_GENERIC);
+	followsBuilder->setArg(2, "a2");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_ASSIGN);
+	FollowsClause* c3 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c3->isValid());
+
+	q->addClause((Clause*) c3);
+
+	SuchThatClauseBuilder* nextBuilder = new SuchThatClauseBuilder(NEXT_);
+	nextBuilder->setArg(1, "a2");
+	nextBuilder->setArg(2, "_");
+	nextBuilder->setArgType(1, ARG_ASSIGN);
+	nextBuilder->setArgType(2, ARG_GENERIC);
+	nextBuilder->setArgFixed(1, false);
+	nextBuilder->setArgFixed(2, false);
+	NextClause* c4 = (NextClause*) nextBuilder->build();
+	CPPUNIT_ASSERT(c4->isValid());
+
+	q->addClause((Clause*) c4);
+
+	SuchThatClauseBuilder* nextStarBuilder = new SuchThatClauseBuilder(NEXTSTAR_);
+	nextStarBuilder->setArg(1, "a1");
+	nextStarBuilder->setArg(2, "s");
+	nextStarBuilder->setArgType(1, ARG_ASSIGN);
+	nextStarBuilder->setArgType(2, ARG_STATEMENT);
+	nextStarBuilder->setArgFixed(1, false);
+	nextStarBuilder->setArgFixed(2, false);
+	NextStarClause* c5 = (NextStarClause*) nextStarBuilder->build();
+	CPPUNIT_ASSERT(c5->isValid());
+
+	q->addClause((Clause*) c5);
+
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder->setArg(1, "_");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_GENERIC);
+	affectsBuilder->setArg(2, "a2");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_ASSIGN);
+	AffectsClause* c6 = (AffectsClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(c6->isValid());
+
+	q->addClause((Clause*) c6);
+
 	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
-	modifiesBuilder->setArg(1, "hello");
-	modifiesBuilder->setArgFixed(1, true);
-	modifiesBuilder->setArgType(1, ARG_PROCEDURE);
+	modifiesBuilder->setArg(1, "s");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_STATEMENT);
 	modifiesBuilder->setArg(2, "v");
 	modifiesBuilder->setArgFixed(2, false);
 	modifiesBuilder->setArgType(2, ARG_VARIABLE);
-	ModifiesClause* m3 = (ModifiesClause*) modifiesBuilder->build();
-	CPPUNIT_ASSERT(m3->isValid());
-	q->addClause((Clause*) m3);
+	ModifiesClause* c7 = (ModifiesClause*) modifiesBuilder->build();
+	CPPUNIT_ASSERT(c7->isValid());
 
-	// Follows(a, 1);
-	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
-	followsBuilder->setArg(1, "a");
-	followsBuilder->setArgFixed(1, false);
-	followsBuilder->setArgType(1, ARG_STATEMENT);
-	followsBuilder->setArg(2, "1");
-	followsBuilder->setArgFixed(2, true);
-	followsBuilder->setArgType(2, ARG_STATEMENT);
-	FollowsClause* m4 = (FollowsClause*) followsBuilder->build();
-	CPPUNIT_ASSERT(m4->isValid());
-	q->addClause((Clause*) m4);
+	q->addClause((Clause*) c7);
 
-	// Next(s, 5)
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXT_);
-	builder->setArg(1, "s");
-	builder->setArg(2, "5");
-	builder->setArgFixed(1, false);
-	builder->setArgFixed(2, true);
-	builder->setArgType(1, ARG_STATEMENT);
-	builder->setArgType(2, ARG_STATEMENT);
-	NextClause* m5 = (NextClause*) builder->build();
-	CPPUNIT_ASSERT(m5->isValid());
-	q->addClause((Clause*) m5);
-
-	// Modifies("hello", v);
-	SuchThatClauseBuilder* modifiesBuilder2 = new SuchThatClauseBuilder(MODIFIES_);
-	modifiesBuilder2->setArg(1, "hello");
-	modifiesBuilder2->setArgFixed(1, true);
-	modifiesBuilder2->setArgType(1, ARG_PROCEDURE);
-	modifiesBuilder2->setArg(2, "v");
-	modifiesBuilder2->setArgFixed(2, false);
-	modifiesBuilder2->setArgType(2, ARG_VARIABLE);
-	ModifiesClause* m6 = (ModifiesClause*) modifiesBuilder2->build();
-	CPPUNIT_ASSERT(m6->isValid());
-	q->addClause((Clause*) m6);
-
-	// Uses(s, "i");
 	SuchThatClauseBuilder* usesBuilder = new SuchThatClauseBuilder(USES_);
-	usesBuilder->setArg(1, "s");
+	usesBuilder->setArg(1, "w1");
 	usesBuilder->setArgFixed(1, false);
-	usesBuilder->setArgType(1, ARG_STATEMENT);
-	usesBuilder->setArg(2, "i");
-	usesBuilder->setArgFixed(2, true);
+	usesBuilder->setArgType(1, ARG_WHILE);
+	usesBuilder->setArg(2, "v");
+	usesBuilder->setArgFixed(2, false);
 	usesBuilder->setArgType(2, ARG_VARIABLE);
-	UsesClause* m7 = (UsesClause*) usesBuilder->build();
-	CPPUNIT_ASSERT(m7->isValid());
-	q->addClause((Clause*) m7);
+	UsesClause* c8 = (UsesClause*) usesBuilder->build();
+	CPPUNIT_ASSERT(c8->isValid());
 
-	// Uses(5, "w");
-	SuchThatClauseBuilder* usesBuilder2 = new SuchThatClauseBuilder(USES_);
-	usesBuilder2->setArg(1, "5");
-	usesBuilder2->setArgFixed(1, true);
-	usesBuilder2->setArgType(1, ARG_STATEMENT);
-	usesBuilder2->setArg(2, "w");
-	usesBuilder2->setArgFixed(2, true);
-	usesBuilder2->setArgType(2, ARG_VARIABLE);
-	UsesClause* m8 = (UsesClause*) usesBuilder2->build();
-	CPPUNIT_ASSERT(m8->isValid());
-	q->addClause((Clause*) m8);
+	q->addClause((Clause*) c8);
 
-	qo->sortQuery(q);
-
-	Clause* c0 = q->getClauseList().at(0);
-	ClauseType type0 = c0->getClauseType();
-	int weight0 = c0->getWeight();
-	CPPUNIT_ASSERT(type0 == FOLLOWS_);
-	CPPUNIT_ASSERT(weight0 == 2);
-
-	Clause* c1 = q->getClauseList().at(1);
-	ClauseType type1 = c1->getClauseType();
-	int weight1 = c1->getWeight();
-	CPPUNIT_ASSERT(type1 == USES_);
-	CPPUNIT_ASSERT(weight1 == 10);
-
-	Clause* c2 = q->getClauseList().at(2);
-	ClauseType type2 = c2->getClauseType();
-	int weight2 = c2->getWeight();
-	CPPUNIT_ASSERT(type2 == USES_);
-	CPPUNIT_ASSERT(weight2 == 10);
-
-	Clause* c3 = q->getClauseList().at(3);
-	ClauseType type3 = c3->getClauseType();
-	int weight3 = c3->getWeight();
-	CPPUNIT_ASSERT(type3 == MODIFIES_);
-	CPPUNIT_ASSERT(weight3 == 11);
-
-	Clause* c4 = q->getClauseList().at(4);
-	ClauseType type4 = c4->getClauseType();
-	int weight4 = c4->getWeight();
-	CPPUNIT_ASSERT(type4 == MODIFIES_);
-	CPPUNIT_ASSERT(weight4 == 11);
-
-	Clause* c5 = q->getClauseList().at(5);
-	ClauseType type5 = c5->getClauseType();
-	int weight5 = c5->getWeight();
-	CPPUNIT_ASSERT(type5 == NEXT_);
-	CPPUNIT_ASSERT(weight5 == 12);
-
-	Clause* c6 = q->getClauseList().at(6);
-	ClauseType type6 = c6->getClauseType();
-	int weight6 = c6->getWeight();
-	CPPUNIT_ASSERT(type6 == AFFECTS_);
-	CPPUNIT_ASSERT(weight6 == 14);
-
-	Clause* c7 = q->getClauseList().at(7);
-	ClauseType type7 = c7->getClauseType();
-	int weight7 = c7->getWeight();
-	CPPUNIT_ASSERT(type7 == AFFECTS_);
-	CPPUNIT_ASSERT(weight7 == 14);
+	vector<int> compSize = qo->optimizeQuery(q);
+	CPPUNIT_ASSERT(compSize.size() == 3);
+	CPPUNIT_ASSERT(compSize.at(0) == 1);
+	CPPUNIT_ASSERT(compSize.at(1) == 3);
+	CPPUNIT_ASSERT(compSize.at(2) == 4);
 }
 
-void QueryOptimiserTest::testSoryQueryPatternBuilder() {
+void QueryOptimiserTest::testTrickyCase() {
+	QueryOptimiser *qo = new QueryOptimiser();
+	
+	StringPair *s1 = new StringPair();
+	s1->setFirst("a1");
+	s1->setSecond(ARG_ASSIGN);
+	StringPair *s2 = new StringPair();
+	s2->setFirst("w1");
+	s2->setSecond(ARG_WHILE);
 
+	Query *q = new Query();
+	q->addSelectSynonym(*s1);
+	q->addSelectSynonym(*s2);
+
+	SuchThatClauseBuilder* nextBuilder = new SuchThatClauseBuilder(NEXT_);
+	nextBuilder->setArg(1, "w1");
+	nextBuilder->setArg(2, "s");
+	nextBuilder->setArgType(1, ARG_WHILE);
+	nextBuilder->setArgType(2, ARG_STATEMENT);
+	nextBuilder->setArgFixed(1, false);
+	nextBuilder->setArgFixed(2, false);
+	NextClause* c1 = (NextClause*) nextBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+
+	q->addClause((Clause*) c1);
+
+	SuchThatClauseBuilder* affectsBuilder1 = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder1->setArg(1, "a1");
+	affectsBuilder1->setArgFixed(1, false);
+	affectsBuilder1->setArgType(1, ARG_ASSIGN);
+	affectsBuilder1->setArg(2, "s1");
+	affectsBuilder1->setArgFixed(2, false);
+	affectsBuilder1->setArgType(2, ARG_STATEMENT);
+	AffectsClause* c2 = (AffectsClause*) affectsBuilder1->build();
+	CPPUNIT_ASSERT(c2->isValid());
+
+	q->addClause((Clause*) c2);
+
+	SuchThatClauseBuilder* followsStarBuilder = new SuchThatClauseBuilder(FOLLOWSSTAR_);
+	followsStarBuilder->setArg(1, "a1");
+	followsStarBuilder->setArgFixed(1, false);
+	followsStarBuilder->setArgType(1, ARG_ASSIGN);
+	followsStarBuilder->setArg(2, "_");
+	followsStarBuilder->setArgFixed(2, false);
+	followsStarBuilder->setArgType(2, ARG_GENERIC);	
+	FollowsStarClause* c3 = (FollowsStarClause*) followsStarBuilder->build();
+	CPPUNIT_ASSERT(c3->isValid());
+
+	q->addClause((Clause*) c3);
+
+	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
+	followsBuilder->setArg(1, "_");
+	followsBuilder->setArgFixed(1, false);
+	followsBuilder->setArgType(1, ARG_GENERIC);
+	followsBuilder->setArg(2, "a1");
+	followsBuilder->setArgFixed(2, false);
+	followsBuilder->setArgType(2, ARG_ASSIGN);
+	FollowsClause* c4 = (FollowsClause*) followsBuilder->build();
+	CPPUNIT_ASSERT(c4->isValid());
+
+	q->addClause((Clause*) c4);
+
+	SuchThatClauseBuilder* parentStarBuilder = new SuchThatClauseBuilder(PARENTSTAR_);
+	parentStarBuilder->setArg(1, "w1");
+	parentStarBuilder->setArgFixed(1, false);
+	parentStarBuilder->setArgType(1, ARG_WHILE);
+	parentStarBuilder->setArg(2, "w3");
+	parentStarBuilder->setArgFixed(2, false);
+	parentStarBuilder->setArgType(2, ARG_WHILE);
+	ParentStarClause* c5 = (ParentStarClause*) parentStarBuilder->build();
+	CPPUNIT_ASSERT(c5->isValid());
+
+	q->addClause((Clause*) c5);
+
+	SuchThatClauseBuilder* affectsBuilder2 = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder2->setArg(1, "a1");
+	affectsBuilder2->setArgFixed(1, false);
+	affectsBuilder2->setArgType(1, ARG_ASSIGN);
+	affectsBuilder2->setArg(2, "a2");
+	affectsBuilder2->setArgFixed(2, false);
+	affectsBuilder2->setArgType(2, ARG_ASSIGN);
+	AffectsClause* c6 = (AffectsClause*) affectsBuilder2->build();
+	CPPUNIT_ASSERT(c6->isValid());
+
+	q->addClause((Clause*) c6);
+
+	SuchThatClauseBuilder* nextStarBuilder = new SuchThatClauseBuilder(NEXTSTAR_);
+	nextStarBuilder->setArg(1, "a2");
+	nextStarBuilder->setArg(2, "w1");
+	nextStarBuilder->setArgType(1, ARG_ASSIGN);
+	nextStarBuilder->setArgType(2, ARG_WHILE);
+	nextStarBuilder->setArgFixed(1, false);
+	nextStarBuilder->setArgFixed(2, false);
+	NextStarClause* c7 = (NextStarClause*) nextStarBuilder->build();
+	CPPUNIT_ASSERT(c7->isValid());
+
+	q->addClause((Clause*) c7);
+
+	vector<int> compSize = qo->optimizeQuery(q);
+	CPPUNIT_ASSERT(compSize.size() == 1);
+
+	/*
+	BOOST_FOREACH(auto i, q->getClauseList()) {
+		cout << "clause type: ";
+		cout << i->getClauseType();
+		cout << endl;
+	}
+	*/
 }

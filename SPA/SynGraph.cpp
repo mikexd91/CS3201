@@ -5,8 +5,8 @@ using namespace stringconst;
 SynGraph::SynGraph(void) {
 	synTable = SynTable();
 	graphTable = GraphTable();
-	compClauseMap = ComponentMap();
 	compWeightList = ComponentWeight();
+	componentSyn = ComponentSyns();
 
 	componentIndex = 0;
 }
@@ -15,33 +15,313 @@ SynGraph::~SynGraph(void) {
 
 }
 
-Query* SynGraph::reorderQuery(Query* q) {
-	originalClauseList = q->getClauseList();
-	populateGraphTable(q);
-	setComponents();
+vector<int> SynGraph::reorderQuery(Query* q) {
+	vector<int> queryCompSize;
+	// Case of no clauses
+	if (q->getClauseList().size() == 0) {
+		queryCompSize.push_back(0);
+		return queryCompSize;
 
-	// get component index, starting from smallest weighted component
-	// set q with this component's clauseList
-	// do the same for the other components
-	buildQuery(q);
-	// after testing, add in empty clauses for results optimisation
-	return q;
-}
+	} else if (q->getClauseList().size() == 1) {
+		// Case of 1 clause
+		queryCompSize.push_back(1);
+		return queryCompSize;
 
-void SynGraph::buildQuery(Query* q) {
-	// order component in ascending weight order
-	std::sort(compWeightList.begin(), compWeightList.end(), componentCmp());
-	int clauseIndex = 0;
-	vector<Clause*> modifiedClause = vector<Clause*>();
-	vector<Clause*>::iterator iter = modifiedClause.begin();
-	BOOST_FOREACH(auto i, compWeightList) {
-		int componentNum = i.first;
-		vector<Clause*> clauselist = compClauseMap[componentNum];
-		modifiedClause.insert(iter + clauselist.size(), clauselist.begin(), clauselist.end());
-		iter += clauselist.size();
+	} else {
+		// Case of more than 1 clause
+		originalClauseList = q->getClauseList();
+		populateGraphTable(q);
+		setComponents();
+		arrangeComponentClauses(q, queryCompSize);
+		return queryCompSize;
 	}
-	q->setClauseList(modifiedClause);
 }
+
+// ------------------------------arrangeComponentClauses and private functions ----------------------------//
+
+void SynGraph::arrangeComponentClauses(Query* q, vector<int>& queryCompSize) {
+	vector<Clause*> componentClauseList;
+	BOOST_FOREACH(auto i, compWeightList) {
+		int compIndex = i.first;
+		unordered_set<string> compSyn = componentSyn[compIndex];
+		if (compSyn.size() == 0) {
+			// Case of a fixed clause in a component
+			// fixed clause synonym is the compIndex (an integer)
+			EdgeList edgelist = graphTable[boost::lexical_cast<std::string>(compIndex)];
+			SynEdge* edge = edgelist.at(0).first;
+			Clause* c = formClause(edge);
+			componentClauseList.push_back(c);
+			queryCompSize.push_back(1);
+
+		} else if (compSyn.size() == 1) {
+			// Case of a single synonym clause(s) 
+			// in a component
+			string syn1 = *(compSyn.begin());
+			vector<Clause*> listOfClauses = getSingleSynClause(syn1);
+			componentClauseList.insert(componentClauseList.end(), listOfClauses.begin(), listOfClauses.end());
+			queryCompSize.push_back(listOfClauses.size());
+		
+		} else {
+			// Case of more than 1 synonym
+			// in a component
+			pair<SynNode*, SynEdge*> link = getStartingSyn(compIndex);
+			structureClausesByPrimAlgorithm(componentClauseList, queryCompSize, link);
+
+			/*
+			BOOST_FOREACH(auto i, componentClauseList) {
+				cout << "(clause type)arrangeComponentClauses: ";
+				cout << i->getClauseType();
+				cout << " | ";
+				cout << endl;
+			}
+	
+			BOOST_FOREACH(auto i, queryCompSize) {
+				cout << "component size: ";
+				cout << i;
+				cout << " | ";
+				cout << endl;
+			}
+			*/
+		}
+	}
+	q->setClauseList(componentClauseList);
+}
+
+vector<Clause*> SynGraph::getSingleSynClause(string syn) {
+	vector<Clause*> listOfClauses = vector<Clause*>();
+	SynNode* node1 = synTable[syn];
+	EdgeList edgelist = graphTable[syn];
+	BOOST_FOREACH(auto i, edgelist) {
+		SynNode* node2 = i.second;
+		SynEdge* edge = i.first;
+		if (node1->isSame(*node2)) {
+			Clause* c = formClause(edge);
+			listOfClauses.push_back(c);
+		}
+	}
+	std::sort(listOfClauses.begin(), listOfClauses.end(), clauseCmp());
+	return listOfClauses;
+}
+
+// CLAUSES WE DONT WANT: NEXT*, AFFECTS AND AFFECTS*
+// This synonym will be the starting synonym used for prim's algo
+pair<SynNode*, SynEdge*> SynGraph::getStartingSyn(int compIndex) {
+	unordered_set<string> compSynSet = componentSyn[compIndex];
+	// desiredSingleSyn set does not have next*, affects and affects* syn
+	unordered_set<string> desiredSingleSyn = getDesiredSingleSyn(compSynSet);
+
+	pair<SynNode*, SynEdge*> syn;
+	if (desiredSingleSyn.size() > 0) {
+		syn = getStartingSynonymForSingleSyn(desiredSingleSyn);
+
+	} else {
+		syn = getStartingSynonymForMultiSyn(compSynSet);
+
+	}
+	return syn;
+}
+
+unordered_set<string> SynGraph::getDesiredSingleSyn(unordered_set<string> synSet) {
+	unordered_set<string> desiredSingleSynSet;
+	BOOST_FOREACH(auto i, synSet) {
+		string syn = i;
+		EdgeList edgelist = graphTable[syn];
+		BOOST_FOREACH(auto j, edgelist) {
+			bool isSingleSynArgClause = (synTable[syn])->isSame(*(j.second));
+			bool isUndesiredClause = undesiredClauseCheck(j.first);
+			if (isSingleSynArgClause && !isUndesiredClause) {
+				desiredSingleSynSet.insert(syn);
+			}
+		}
+	}
+	return desiredSingleSynSet;
+}
+
+// REFACTOR THIS FUNCTION!!!
+pair<SynNode*, SynEdge*> SynGraph::getStartingSynonymForSingleSyn(unordered_set<string> synSet) {
+	int count = 0;
+	BOOST_FOREACH(auto i, synSet) {
+		string syn = i;
+		EdgeList edgelist = graphTable[syn];
+		BOOST_FOREACH(auto j, edgelist) {
+			// Check if this node has any neighbour
+			// that is not Affects, Affects* or next*
+			bool isUndesiredClause = undesiredClauseCheck(j.first);
+			if (!isUndesiredClause) {
+				// check if this is a single syn arg clause
+				bool isSingleSynArgClause = (synTable[syn])->isSame(*(j.second));
+				if (isSingleSynArgClause) {
+					if (count > 0) {
+						// Case of having a neighbour that is not Affects, Affects* or next*
+						pair<SynNode*, SynEdge*> link = make_pair(synTable[syn], j.first);
+						return link;
+					
+					} else {
+						count++;
+					}
+				} else {
+					// Case of having a neighbour that is not Affects, Affects* or next*
+					pair<SynNode*, SynEdge*> link = getSingleSynEdge(syn);
+					return link;
+				}
+			}
+		}
+		// reset count to 0 for the next syn
+		count = 0;
+	}
+	// Case of all neighbours are undesired clauses,
+	// return any single syn arg clause
+	BOOST_FOREACH(auto i, synSet) {
+		string syn2 = i;
+		EdgeList edgelist = graphTable[syn2];
+		BOOST_FOREACH(auto j, edgelist) {
+			bool isSingleSynArgClause = (synTable[syn2])->isSame(*(j.second));
+			if (isSingleSynArgClause) {
+				pair<SynNode*, SynEdge*> link = make_pair(synTable[syn2], j.first);
+				return link;
+			}
+		}
+	}
+}
+
+pair<SynNode*, SynEdge*> SynGraph::getSingleSynEdge(string syn) {
+	pair<SynNode*, SynEdge*> link = pair<SynNode*, SynEdge*>();
+	SynNode* node1 = synTable[syn];
+	EdgeList edgelist = graphTable[syn];
+	BOOST_FOREACH(auto i, edgelist) {
+		SynEdge* edge = i.first;
+		SynNode* node2 = i.second;
+		if (node1->isSame(*node2)) {
+			link = make_pair(node1, edge);
+		}
+	}
+	return link;
+}
+
+bool SynGraph::undesiredClauseCheck(SynEdge* edge) {
+	int clauseIndex = edge->getClauseIndex();
+	Clause* c = originalClauseList.at(clauseIndex);
+	ClauseType cType = c->getClauseType();
+
+	if (cType == AFFECTS_ || cType == AFFECTSSTAR_ || cType == NEXTSTAR_) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+// REFACTOR THIS FUNCTION!!!
+pair<SynNode*, SynEdge*> SynGraph::getStartingSynonymForMultiSyn(unordered_set<string> synSet) {
+	int count = 0;
+	BOOST_FOREACH(auto i, synSet) {
+		string syn = i;
+		EdgeList edgelist = graphTable[syn];
+		BOOST_FOREACH(auto j, edgelist) {
+			SynEdge* edge = j.first;
+			bool isUndesiredClause = undesiredClauseCheck(j.first);
+			if (!isUndesiredClause) {
+				if (count > 0) {
+					pair<SynNode*, SynEdge*> link = make_pair(synTable[syn], j.first);
+					return link;
+
+				} else {
+					count++;
+				}
+			}
+		}
+		// reset count to 0 for the next syn
+		count = 0;
+	}
+
+	// Case of all neighbours are undesired clauses,
+	// return any multi syn arg clause
+	string syn2 = *(synSet.begin());
+	EdgeList edgelist2 = graphTable[syn2];
+	pair<SynNode*, SynEdge*> link = make_pair(edgelist2.at(0).second, edgelist2.at(0).first);
+	return link;
+}
+
+void SynGraph::structureClausesByPrimAlgorithm(vector<Clause*>& componentClauseList, 
+	vector<int>& queryCompSize, pair<SynNode*, SynEdge*> link) {
+
+	int clauseCount = 0;
+	Clause* c1 = formClause(link.second);
+	link.second->setVisited();
+	componentClauseList.push_back(c1);
+	clauseCount++;
+
+	PriorityQ pQueue;
+	string currentSyn = (link.first)->getSynonym();
+	EdgeList edgelist1 = graphTable[currentSyn];
+	BOOST_FOREACH(auto i, edgelist1) {
+		SynEdge* edge1 = i.first;
+		bool isEdgeVisited = (i.first)->isVisited();
+		if (!isEdgeVisited) {
+			pQueue.push(i);
+		} else {
+			SynNode* node2 = i.second;
+			bool isSingleSynClause = (link.first)->isSame(*node2);
+			// When starting with a multi syn clause
+			if (!isSingleSynClause) {
+				string syn2 = node2->getSynonym();
+				EdgeList edgelist2 = graphTable[syn2];
+				BOOST_FOREACH(auto j, edgelist2) {
+					bool isEdgeVisited = (j.first)->isVisited();
+					if (!isEdgeVisited) {
+						pQueue.push(j);
+					}
+				}
+			}
+		}
+	}
+
+	while (pQueue.size() > 0) {
+		pair<SynEdge*, SynNode*> clauseLink = pQueue.top();
+		pQueue.pop();
+		bool isEdgeVisited = (clauseLink.first)->isVisited();
+		
+		if (!isEdgeVisited) {
+			Clause* c2 = formClause(clauseLink.first);
+			(clauseLink.first)->setVisited();
+			componentClauseList.push_back(c2);
+			clauseCount++;
+
+			string syn2 = (clauseLink.second)->getSynonym();
+			EdgeList edgelist2 = graphTable[syn2];
+			BOOST_FOREACH(auto i, edgelist2) {
+				bool isEdgeVisited = (i.first)->isVisited();
+				if (!isEdgeVisited) {
+					pQueue.push(i);
+				}
+			}
+		}
+	}
+	queryCompSize.push_back(clauseCount);
+	
+	/*
+	BOOST_FOREACH(auto i, componentClauseList) {
+		cout << "(clause type)prim algo: ";
+		cout << i->getClauseType();
+		cout << " | ";
+		cout << endl;
+	}
+	
+	BOOST_FOREACH(auto i, queryCompSize) {
+		cout << "component size: ";
+		cout << i;
+		cout << " | ";
+		cout << endl;
+	}
+	*/
+}
+
+Clause* SynGraph::formClause(SynEdge* edge) {
+	int clauseIndex = edge->getClauseIndex();
+	Clause* c = originalClauseList.at(clauseIndex);
+	return c;
+}
+
+// --------------------------------populateGraphTable and private functions --------------------------//
 
 // Populates synTable and graphTable
 void SynGraph::populateGraphTable(Query* q) {
@@ -61,10 +341,10 @@ void SynGraph::createSelectSynNodes(Query* q) {
 			// no set component yet
 
 			string syn = i.getFirst();
-			SynNode synNode = SynNode();
-			synNode.setSynonym(syn);
-			synNode.setWeight(5);
-			synNode.setComponentNum(-1);
+			SynNode* synNode = new SynNode();
+			synNode->setSynonym(syn);
+			synNode->setWeight(1);
+			synNode->setComponentNum(-1);
 
 			// Set tables
 			synTable.insert(make_pair(syn, synNode));
@@ -162,13 +442,13 @@ void SynGraph::createFixedArgNode(Clause* c, int cIndex, int fixedCount) {
 	// Fixed arg have a weight of 0
 	// and they are a component by themselves
 	string syn = boost::lexical_cast<string>(fixedCount);
-	SynNode synNode = SynNode();
-	synNode.setSynonym(syn);
-	synNode.setWeight(0);
-	synNode.setComponentNum(componentIndex);
+	SynNode* synNode = new SynNode();
+	synNode->setSynonym(syn);
+	synNode->setWeight(0);
+	synNode->setComponentNum(componentIndex);
 
 	// Create SynEdge and link to itself
-	SynEdge edge = SynEdge(c->getWeight(), cIndex);
+	SynEdge* edge = new SynEdge(c->getWeight(), cIndex);
 	EdgeList edgeList = EdgeList();
 	edgeList.push_back(make_pair(edge, synNode));
 
@@ -178,8 +458,7 @@ void SynGraph::createFixedArgNode(Clause* c, int cIndex, int fixedCount) {
 
 	// Add to componentMap and componentWeight
 	storeFixedArgClauseCompWeight(componentIndex, syn);
-	vector<Clause*> clauseList = edgeToClause(syn);
-	compClauseMap[componentIndex] = clauseList;
+	
 	componentIndex++;
 }
 
@@ -188,20 +467,20 @@ void SynGraph::createFixedArgNode(Clause* c, int cIndex, int fixedCount) {
 // the component number
 void SynGraph::storeFixedArgClauseCompWeight(int index, string syn) {
 	int weight = 0;
-	SynNode node = synTable[syn];
-	weight += node.getWeight();
+	SynNode* node = synTable[syn];
+	weight += node->getWeight();
 
 	EdgeList edgelist = graphTable[syn];
-	SynEdge edge = edgelist.at(0).first;
-	weight += edge.getWeight();
+	SynEdge* edge = edgelist.at(0).first;
+	weight += edge->getWeight();
 
 	compWeightList.push_back(make_pair(index, weight));
 }
 
 vector<Clause*> SynGraph::edgeToClause(string syn) {
 	EdgeList edgelist = graphTable[syn];
-	SynEdge edge = edgelist.at(0).first;
-	Clause* c = originalClauseList.at(edge.getClauseIndex());
+	SynEdge* edge = edgelist.at(0).first;
+	Clause* c = originalClauseList.at(edge->getClauseIndex());
 	vector<Clause*> clauselist = vector<Clause*>();
 	clauselist.push_back(c);
 	return clauselist;
@@ -211,20 +490,21 @@ void SynGraph::linkSingleUnfixedArgNode(Clause* c, int cIndex, string syn) {
 	bool isSynExist = (synTable.find(syn) != synTable.end());
 	if (isSynExist) {
 		// If synonym already exist, add another edge to it
-		SynNode node = synTable[syn];
+		SynNode* node = synTable[syn];
 		EdgeList edgeList = graphTable[syn];
-		SynEdge edge = SynEdge(c->getWeight(), cIndex);
-		edgeList.push_back(make_pair(edge, node));
+		SynEdge* edge = new SynEdge(c->getWeight(), cIndex);
+		graphTable[syn].push_back(make_pair(edge, node));
+		//edgeList.push_back(make_pair(edge, node));
 
 	} else {
 		// if synonym does not exist
-		SynNode synNode = SynNode();
-		synNode.setSynonym(syn);
-		synNode.setWeight(1);
-		synNode.setComponentNum(-1);
+		SynNode* synNode = new SynNode();
+		synNode->setSynonym(syn);
+		synNode->setWeight(1);
+		synNode->setComponentNum(-1);
 
 		// Create SynEdge
-		SynEdge edge1 = SynEdge(c->getWeight(), cIndex);
+		SynEdge* edge1 = new SynEdge(c->getWeight(), cIndex);
 		EdgeList edgeList1 = EdgeList();
 		edgeList1.push_back(make_pair(edge1, synNode));
 
@@ -247,76 +527,68 @@ void SynGraph::createUnfixedArgNode(Clause* c, int cIndex,
 		
 		if (isSyn1Exist && isSyn2Exist) {
 			// If both synonyms exist, add edge to both SynNode
-			SynNode node1 = synTable[syn1];
-			SynNode node2 = synTable[syn2];
-			EdgeList edgeList1 = graphTable[syn1];
-			EdgeList edgeList2 = graphTable[syn2];
-			SynEdge edge = SynEdge(c->getWeight(), cIndex);
-			edgeList1.push_back(make_pair(edge, node2));
-			edgeList2.push_back(make_pair(edge, node1));
+			SynNode* node1 = synTable[syn1];
+			SynNode* node2 = synTable[syn2];
+
+			SynEdge* edge = new SynEdge(c->getWeight(), cIndex);
+			graphTable[syn1].push_back(make_pair(edge, node2));
+			graphTable[syn2].push_back(make_pair(edge, node1));
 		
 		} else if (isSyn1Exist && !isSyn2Exist) {
 			// If only syn1 exist
 			// create SynNode for syn2 and add edge to both SynNode
-			SynNode node1 = synTable[syn1];
-			EdgeList edgeList1 = graphTable[syn1];
-			SynEdge edge = SynEdge(c->getWeight(), cIndex);
+			updateExistNodeAndCreateNewNode(syn1, syn2, c, cIndex);
 			
-			SynNode node2 = SynNode();
-			node2.setSynonym(syn2);
-			node2.setWeight(1);
-			node2.setComponentNum(-1);
-
-			EdgeList edgeList2 = EdgeList();
-			edgeList2.push_back(make_pair(edge, node1));
-			edgeList1.push_back(make_pair(edge, node2));
-
 		} else if (!isSyn1Exist && isSyn2Exist) {
 			// If only syn2 exist
 			// create SynNode for syn1 and add edge to both SynNode
-			SynNode node2 = synTable[syn2];
-			EdgeList edgeList2 = graphTable[syn2];
-			SynEdge edge = SynEdge(c->getWeight(), cIndex);
-
-			SynNode node1 = SynNode();
-			node1.setSynonym(syn1);
-			node1.setWeight(1);
-			node1.setComponentNum(-1);
-
-			EdgeList edgeList1 = EdgeList();
-			edgeList1.push_back(make_pair(edge, node2));
-			edgeList2.push_back(make_pair(edge, node1));
-
+			updateExistNodeAndCreateNewNode(syn2, syn1, c, cIndex);
+			
 		} else {
 			// Both syn1 and syn2 does not exist yet
 			// create SynNode for both synonyms and add edge to both SynNode
-			SynNode node1 = SynNode();
-			node1.setSynonym(syn1);
-			node1.setWeight(1);
-			node1.setComponentNum(-1);
+			SynNode* node1 = new SynNode();
+			node1->setSynonym(syn1);
+			node1->setWeight(1);
+			node1->setComponentNum(-1);
+			synTable[syn1] = node1;
 
-			SynNode node2 = SynNode();
-			node2.setSynonym(syn2);
-			node2.setWeight(1);
-			node2.setComponentNum(-1);
+			SynNode* node2 = new SynNode();
+			node2->setSynonym(syn2);
+			node2->setWeight(1);
+			node2->setComponentNum(-1);
+			synTable[syn2] = node2;
 
-			SynEdge edge = SynEdge(c->getWeight(), cIndex);
+			SynEdge* edge = new SynEdge(c->getWeight(), cIndex);
 			EdgeList edgeList1 = EdgeList();
 			EdgeList edgeList2 = EdgeList();
 			edgeList1.push_back(make_pair(edge, node2));
 			edgeList2.push_back(make_pair(edge, node1));
+			graphTable[syn1] = edgeList1;
+			graphTable[syn2] = edgeList2;
 		}
 	}
 }
 
+void SynGraph::updateExistNodeAndCreateNewNode(string existingSyn, 
+	string nwSyn, Clause* c, int cIndex) {
 
+	SynNode* existingNode = synTable[existingSyn];
+	SynEdge* edge = new SynEdge(c->getWeight(), cIndex);
 
+	SynNode* nwNode = new SynNode();
+	nwNode->setSynonym(nwSyn);
+	nwNode->setWeight(1);
+	nwNode->setComponentNum(-1);
+	synTable[nwSyn] = nwNode;
 
+	EdgeList nwEdgelist = EdgeList();
+	nwEdgelist.push_back(make_pair(edge, existingNode));
+	graphTable[nwSyn] = nwEdgelist;
+	graphTable[existingSyn].push_back(make_pair(edge, nwNode));
+}
 
-
-
-
-
+// -------------------------------------setComponents() and private functions -----------------------------------------//
 
 // Set the component number of synNodes that do not have a component
 // number yet. SynNodes that can be reached from another synNode are
@@ -324,78 +596,53 @@ void SynGraph::createUnfixedArgNode(Clause* c, int cIndex,
 void SynGraph::setComponents() {
 	BOOST_FOREACH(auto i, synTable) {
 		string syn = i.first;
-		SynNode node1 = i.second;
-		bool componentNotSet = (node1.getComponentNum() == -1);
+		SynNode* node1 = i.second;
+		bool componentNotSet = (node1->getComponentNum() == -1);
 		if (componentNotSet) {
-			// get clauses and their weight from traversing the graph
-			// set the clauses with their respective weight
-			// sort clauselist (component's clauses) by ascending weight order
-			// map componentIndex to clauselist
-			ClauseWeight clauseWeightMatchList = setComponentNumByDFS(node1, syn, componentIndex);
-			vector<Clause*> clauseList = setClauseWeight(clauseWeightMatchList);
-			std::sort(clauseList.begin(), clauseList.end(), clauseCmp());
-			compClauseMap[componentIndex] = clauseList;
+			setComponentNumByDFS(node1, syn, componentIndex);
 			componentIndex++;
 		}
 	}
-}
-
-vector<Clause*> SynGraph::setClauseWeight(ClauseWeight clauseSet) {
-	vector<Clause*> clauseList = vector<Clause*>();
-	BOOST_FOREACH(auto i, clauseSet) {
-		Clause* c = originalClauseList.at(i.first);
-		c->setWeight(i.second);
-		clauseList.push_back(c);
-	}
-	return clauseList;
+	std::sort(compWeightList.begin(), compWeightList.end(), componentCmp());
 }
 
 // This function sets the componentIndex of the SynNode as it traverse the graph.
-// It also sets the component's weight at the end of traversal
-SynGraph::ClauseWeight SynGraph::setComponentNumByDFS(SynNode node1, string syn, int index) {
-	ClauseWeight clauseSet = ClauseWeight();
+// It also sets the component's weight at the end of traversal and fills
+// up componentSyn map
+void SynGraph::setComponentNumByDFS(SynNode* node1, string syn, int index) {
+	//ClauseWeight clauseSet = ClauseWeight();
 	int componentWeight = 0;
-	queue<SynNode> q;
+	queue<SynNode*> q;
 	q.push(node1);
-	componentWeight += node1.getWeight();
+	componentWeight += node1->getWeight();
 
 	while (q.size() > 0) {
-		SynNode node = q.front();
+		SynNode* node = q.front();
 		q.pop();
-		if (node.getComponentNum() == -1) {
-			node.setComponentNum(index);
-			string nodeName = node.getSynonym();
+		if (node->getComponentNum() == -1) {
+			node->setComponentNum(index);
+			string nodeName = node->getSynonym();
 			EdgeList edgelist = graphTable[nodeName];
 			
 			// In the case of select synonym, it might not
 			// have any edge in it's edgelist yet
 			BOOST_FOREACH(auto i, edgelist) {
-				SynEdge edge = i.first;
-				SynNode neighbour = i.second;
-				componentWeight += edge.getWeight();
+				SynEdge* edge = i.first;
+				SynNode* neighbour = i.second;
+				componentWeight += edge->getWeight();
+				componentSyn[index].insert(nodeName);
 
 				//  check if it is another synonym
-				if (!neighbour.isSame(node)) {
-					// neighbour is another synonym,
-					// this clause has 2 synonyms
-					q.push(neighbour);
-					
-					// Add clause and clause weight to clauseSet
-					int clauseWeight = edge.getWeight() + 
-									node.getWeight() + 
-									neighbour.getWeight();
-					clauseSet.insert(make_pair(edge.getClauseIndex(), clauseWeight));
-
-				} else {
-					// neighbour is me, this clause only has 1 synonym
-					int clauseWeight = edge.getWeight() + node.getWeight();
-					clauseSet.insert(make_pair(edge.getClauseIndex(), clauseWeight));
-				}
+				if (!neighbour->isSame(*node)) {
+					q.push(neighbour);					
+				} 
 			}
 		}
 	}
-	compWeightList.push_back(make_pair(index, componentWeight));
-	return clauseSet;
+
+	// Select synonyms are not a component
+	if (graphTable[syn].size() > 0) {
+		compWeightList.push_back(make_pair(index, componentWeight));
+	}
 }
 
-// Helper function for setComponent() END //

@@ -10,8 +10,15 @@ QueryOptimiser::~QueryOptimiser(void)
 {
 }
 
-void QueryOptimiser::sortQuery(Query* q) {
+vector<int> QueryOptimiser::optimizeQuery(Query* q) {
 	vector<Clause*> clauseList = q->getClauseList();
-	std::sort(clauseList.begin(), clauseList.end(), cmp());
-	q->setClauseList(clauseList);
+	BOOST_FOREACH(auto i, clauseList) {
+		if (!i->isValid()) {
+			return vector<int>();
+		}
+	}
+
+	SynGraph *graph = new SynGraph();
+	vector<int> queryCompList = graph->reorderQuery(q);
+	return queryCompList;
 }
