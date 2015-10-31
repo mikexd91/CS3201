@@ -1321,6 +1321,35 @@ void QueryEvaluatorTest::testNoResult(){
 	CPPUNIT_ASSERT(TEST_PRINT.size() == 0);
 }
 
+void QueryEvaluatorTest::testBoolNoResult(){
+	Query* TEST_Q = new Query();
+	StringPair SELECT_1 = StringPair();
+	SELECT_1.setFirst("BOOLEAN");
+	SELECT_1.setSecond(stringconst::ARG_BOOLEAN);
+	TEST_Q->addSelectSynonym(SELECT_1);
+
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, ATTRREF_);
+	withBuilder->setEntity(1, "s");
+	withBuilder->setAttrType(1, STMTNUM_);
+	withBuilder->setEntityType(1, stringconst::ARG_IF);
+	withBuilder->setRefType(2, INTEGER_);
+	withBuilder->setEntity(2, "2");
+	withBuilder->setAttrType(2, NULLATTR_);
+	withBuilder->setEntityType(2, stringconst::ENTITY_TYPE_INTEGER);
+	WithClause* TEST_WC = withBuilder->build();
+	TEST_Q->addClause(TEST_WC);
+
+	vector<int>* optimisedDV = new vector<int>();
+	int size = TEST_Q->getClauseList().size();
+	optimisedDV->push_back(size);
+	QueryEvaluator* qe = new QueryEvaluator();
+	Result* TEST_R = qe->evalOptimisedQuery(TEST_Q, optimisedDV);
+	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
+	CPPUNIT_ASSERT(TEST_R->getResultTableSize() == 0);
+	CPPUNIT_ASSERT(TEST_PRINT.find("false") != TEST_PRINT.end());
+}
+
 void QueryEvaluatorTest::testBoolNoClause(){
 	Query* TEST_Q = new Query();
 	StringPair SELECT_1 = StringPair();
