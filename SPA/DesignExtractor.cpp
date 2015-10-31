@@ -228,6 +228,8 @@ void DesignExtractor::populateCallsParents(Statement* callStmt) {
 		parentStmt->setUses(parentUses);
 		parentStmt->setModifies(parentMods);
 
+		populateParentCallsVarTable(parent, uses, modifies);
+
 		if(parentStmt->getParent() != -1) {
 			parent = parentStmt->getParent();
 		} else {
@@ -248,8 +250,21 @@ void DesignExtractor::populateCallsVarTable(Statement* callStmt) {
 	}
 
 	BOOST_FOREACH(auto m, mods) {
-		Variable* modVar = varTable->getVariable();
+		Variable* modVar = varTable->getVariable(m);
 		modVar->addModifyingStmt(stmtNum);
+	}
+}
+
+void DesignExtractor::populateParentCallsVarTable(int stmtNum, unordered_set<string> uses, unordered_set<string> mods) {
+	VarTable* varTable = VarTable::getInstance();
+	BOOST_FOREACH(auto u, uses) {
+		Variable* var = varTable->getVariable(u);
+		var->addUsingStmt(stmtNum);
+	}
+
+	BOOST_FOREACH(auto m, mods) {
+		Variable* var = varTable->getVariable(m);
+		var->addModifyingStmt(stmtNum);
 	}
 }
 
