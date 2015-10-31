@@ -92,6 +92,9 @@ unordered_set<string> QueryEvaluator::printValues(Result* finalRes, vector<Strin
 			autotesterPrintouts = printTupleSynValues(*finalRes, selList);
 		}
 	}
+	if (selList.at(0).getFirst() == "BOOLEAN" && autotesterPrintouts.empty()){
+		autotesterPrintouts.insert("false");
+	}
 	return autotesterPrintouts;
 }
 
@@ -324,7 +327,6 @@ Result* QueryEvaluator::evalOptimisedQuery(Query* query, vector<int>* componentI
 		Result* currentRes = new Result();
 		BOOST_FOREACH(int end, *componentIndices){
 			this->validResults = evalNumClauses(query, start, end, currentRes);
-			cout << boolToString(validResults)<< endl;
 			if (!validResults){
 				break;
 			}
