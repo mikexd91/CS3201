@@ -61,7 +61,7 @@ procedure proc3 {
 				}
 			}
 			else {
-				keyboard = parts - money - gpu;
+				keyboard = parts - (money - gpu);
 			}
 		}
 		else {

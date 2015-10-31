@@ -248,7 +248,7 @@ void DesignExtractor::populateCallsVarTable(Statement* callStmt) {
 	}
 
 	BOOST_FOREACH(auto m, mods) {
-		Variable* modVar = varTable->getVariable();
+		Variable* modVar = varTable->getVariable(m);
 		modVar->addModifyingStmt(stmtNum);
 	}
 }
