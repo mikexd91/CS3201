@@ -16,6 +16,7 @@ using namespace std;
 using namespace boost;
 
 WithClause::WithClause(ClauseType) {
+	this->clauseType = WITH_;
 }
 
 WithClause::~WithClause(void)

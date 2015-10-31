@@ -18,6 +18,7 @@ PatternWhileClause::PatternWhileClause(const string& syn, const string& var, con
 	this->var = var;
 	// parser must set vartype and varfixed.
 	this->_stmtList = stmtList;
+	this->clauseType = PATTERNWHILE_;
 }
 
 PatternWhileClause::~PatternWhileClause(void) {

@@ -19,8 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AffectsBipCalculator.cpp" />
+    <ClCompile Include="AffectsBipClause.cpp" />
     <ClCompile Include="AffectsCalculator.cpp" />
     <ClCompile Include="AffectsClause.cpp" />
+    <ClCompile Include="AffectsStarBipCalculator.cpp" />
+    <ClCompile Include="AffectsStarBipClause.cpp" />
     <ClCompile Include="AffectsStarCalculator.cpp" />
     <ClCompile Include="AffectsStarClause.cpp" />
     <ClCompile Include="AssgGNode.cpp" />
@@ -32,6 +36,7 @@
     <ClCompile Include="CallsStarClause.cpp" />
     <ClCompile Include="CFG.cpp" />
     <ClCompile Include="CFGbip.cpp" />
+    <ClCompile Include="CFGBipIterator.cpp" />
     <ClCompile Include="CFGBuilder.cpp" />
     <ClCompile Include="CFGIterator.cpp" />
     <ClCompile Include="Clause.cpp" />
@@ -95,8 +100,12 @@
     <ClCompile Include="WithClauseRef.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AffectsBipCalculator.h" />
+    <ClInclude Include="AffectsBipClause.h" />
     <ClInclude Include="AffectsCalculator.h" />
     <ClInclude Include="AffectsClause.h" />
+    <ClInclude Include="AffectsStarBipCalculator.h" />
+    <ClInclude Include="AffectsStarBipClause.h" />
     <ClInclude Include="AffectsStarCalculator.h" />
     <ClInclude Include="AffectsStarClause.h" />
     <ClInclude Include="AssgGNode.h" />
@@ -108,6 +117,7 @@
     <ClInclude Include="CallsStarClause.h" />
     <ClInclude Include="CFG.h" />
     <ClInclude Include="CFGbip.h" />
+    <ClInclude Include="CFGBipIterator.h" />
     <ClInclude Include="CFGBuilder.h" />
     <ClInclude Include="CFGIterator.h" />
     <ClInclude Include="Clause.h" />
