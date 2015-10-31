@@ -380,7 +380,7 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string>* line){
 					unexpectedEndCheck(line);
 					string attr = Utils::getWordAndPop(*line);
 					if (attr == stringconst::ATTR_COND_PROCNAME){
-						if (type != stringconst::ARG_PROCEDURE){
+						if (type != stringconst::ARG_PROCEDURE && type != stringconst::ARG_CALL){
 							cout << type << " & " << attr << "mismatch";
 							throw InvalidAttributeException();
 						} else {
@@ -810,7 +810,7 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 			unexpectedEndCheck(line);
 			leftEntityCond = Utils::getWordAndPop(*line);
 			if (leftEntityCond == stringconst::ATTR_COND_PROCNAME){
-				if (leftDeclarationType != stringconst::ARG_PROCEDURE){
+				if (leftDeclarationType != stringconst::ARG_PROCEDURE && leftDeclarationType != stringconst::ARG_CALL){
 					cout << leftDeclarationType << " & " << leftEntityCond << "mismatch";
 					throw InvalidAttributeException();
 				}
@@ -899,7 +899,7 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 				unexpectedEndCheck(line);
 				rightEntityCond = Utils::getWordAndPop(*line);
 				if (rightEntityCond == stringconst::ATTR_COND_PROCNAME){
-					if (rightDeclarationType != stringconst::ARG_PROCEDURE){
+					if (rightDeclarationType != stringconst::ARG_PROCEDURE && rightDeclarationType != stringconst::ARG_CALL){
 						cout << rightDeclarationType << " & " << rightEntityCond << "mismatch";
 						throw InvalidAttributeException();
 					}

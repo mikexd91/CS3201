@@ -24,7 +24,7 @@ WithClause::~WithClause(void)
 
 bool WithClause::isValid(void){
 	WithClauseRef leftSideRef = this->getLeftRef();
-	WithClauseRef rightSideRef = this->getLeftRef();
+	WithClauseRef rightSideRef = this->getRightRef();
 	if (leftSideRef.getRefType() == SYNONYM_){
 		if (leftSideRef.getEntityType() != stringconst::ARG_PROGLINE ){
 			return false;
@@ -59,7 +59,7 @@ bool WithClause::isValid(void){
 		}
 	} else if (rightSideRef.getRefType() == ATTRREF_){
 		if (rightSideRef.getAttrType() == PROCNAME_){
-			if (rightSideRef.getEntityType() != stringconst::ARG_PROCEDURE){
+			if (rightSideRef.getEntityType() != stringconst::ARG_PROCEDURE && rightSideRef.getEntityType() != stringconst::ARG_CALL){
 				return false;
 			} 
 		} else if (rightSideRef.getAttrType() == VARNAME_){
