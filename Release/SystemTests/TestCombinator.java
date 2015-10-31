@@ -43,8 +43,13 @@ class TestCombinator {
 		while((line = reader.readLine()) != null) {
 			// header of each test case
 			if(count%5 == 0) {
-				String numRemoved = line.substring(line.indexOf(' '));
-				output.add(Integer.toString(count/5+1).concat(numRemoved));
+				try {
+					String numRemoved = line.substring(line.indexOf(' '));
+					output.add(Integer.toString(count/5+1).concat(numRemoved));
+				} catch(Exception e) {
+					System.err.println("Error processing line " + (count+1));
+					e.printStackTrace();
+				}
 			} else {
 				output.add(line);
 			}
@@ -62,9 +67,12 @@ class TestCombinator {
 		FileOutputStream foutstream = new FileOutputStream(fileName);
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(foutstream));
 
-		for(String line : output) {
-			writer.write(line);
-			writer.newLine();
+		for(int i=0; i<output.size(); i++) {
+			writer.write(output.get(i));
+
+			if(i != output.size()-1) {
+				writer.newLine();
+			}
 		}
 
 		writer.close();
