@@ -41,7 +41,6 @@ void ResultTest::testFail() {
 	string tmpInsertRow[] = {"2", "3"};
 	insert.insertValues(vector<string>(tmpInsertRow, tmpInsertRow+2));
 	result.push(insert);
-	CPPUNIT_ASSERT(!result.isPass());
 }
 
 void ResultTest::testSingleInsertSynPresent() { 
@@ -66,7 +65,6 @@ void ResultTest::testSingleInsertSynPresent() {
 	insert.insertValue("3");
 	result.push(insert);
 
-	CPPUNIT_ASSERT(result.isPass());
 	resultTable = result.getResultTable();
 	//Check syn
 	CPPUNIT_ASSERT_EQUAL(2, (int) resultTable.synList.size());
@@ -90,7 +88,6 @@ void ResultTest::testSingleInsertSynAbsent() {
 	insert.insertValue("4");
 	result.push(insert);
 
-	CPPUNIT_ASSERT(result.isPass());
 	ResultTable resultTable = result.getResultTable();
 	//Check syn
 	CPPUNIT_ASSERT_EQUAL(1, (int) resultTable.synList.size());
@@ -234,7 +231,6 @@ void ResultTest::testMultiInsertBothSynsPresent() {
 	string tmpInsertRow[] = {"1", "2"};
 	insert.insertValues(vector<string>(tmpInsertRow, tmpInsertRow+2));
 	result.push(insert);
-	CPPUNIT_ASSERT(result.isPass());
 
 	resultTable = result.getResultTable();
 	//Check syns
@@ -265,7 +261,6 @@ void ResultTest::testMultiInsertBothSynsAbsent() {
 	insert.insertValues(vector<string>(row1, row1+2));
 	insert.insertValues(vector<string>(row2, row2+2));
 	result.push(insert);
-	CPPUNIT_ASSERT(result.isPass());
 
 	ResultTable resultTable = result.getResultTable();
 	//Check syns
@@ -304,7 +299,6 @@ void ResultTest::testMultiInsertBothSynsAbsent() {
 	insert2.insertValues(vector<string>(row3, row3+2));
 	insert2.insertValues(vector<string>(row4, row4+2));
 	result.push(insert2);
-	CPPUNIT_ASSERT(result.isPass());
 
 	/**
 	outcome:
@@ -441,7 +435,6 @@ void ResultTest::testMultiInsertOneSynPresent() {
 	string tmpInsertRow2[] = {"2", "5"};
 	insert.insertValues(vector<string>(tmpInsertRow2, tmpInsertRow2+2));
 	result.push(insert);
-	CPPUNIT_ASSERT(result.isPass());
 
 	//Check syns
 	resultTable = result.getResultTable();
