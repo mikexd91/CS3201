@@ -336,7 +336,7 @@ Result* QueryEvaluator::evalOptimisedQuery(Query* query, vector<int>* componentI
 					extractTupleSynonymResults(currentRes, finalResult, tuple);
 				} else {
 					BOOST_FOREACH(string s, tuple){
-						//case where only one in the tuple is found, need to check
+
 						if (currentRes->isSynPresent(s)){
 							extractSingleSynonymResults(currentRes, finalResult, synonym);
 						}
@@ -344,14 +344,14 @@ Result* QueryEvaluator::evalOptimisedQuery(Query* query, vector<int>* componentI
 				}
 			} else {
 				if (selectBoolean){
-					singleNotFound = true;
+					singleNotFound = false;
 					SingleSynInsert insert = SingleSynInsert();
 					insert.setSyn(synonym);
 					insert.insertValue("true");
 					finalResult->push(insert);
 				}
 				if (currentRes->isSynPresent(synonym)){
-					singleNotFound = true;
+					singleNotFound = false;
 					extractSingleSynonymResults(currentRes, finalResult, synonym);
 				}
 			}
@@ -363,11 +363,20 @@ Result* QueryEvaluator::evalOptimisedQuery(Query* query, vector<int>* componentI
 	} else if (selectTuple && tupleNotFound){
 		evalNoClause(query, finalResult);
 	}
-	//if (productFlag){
-	//	//do cartesian product
-	//}
 	if (!validResults){
 		finalResult = new Result();
+	}
+	BOOST_FOREACH(StringPair sp, selList){
+		if (sp.getSecond() == stringconst::ARG_CALL && sp.getAttribute() == stringconst::ATTR_COND_PROCNAME){
+			SingleSynInsert convert = SingleSynInsert();
+			convert.setSyn(sp.getFirst());
+			unordered_set<string> cnum = finalResult->getSyn(sp.getFirst());
+			BOOST_FOREACH(string num, cnum){
+				string cname = stmtTable->getStmtObj(stoi(num))->getCalls();
+				convert.insertValue(cname);
+			}
+			finalResult->push(convert);
+		}
 	}
 	return finalResult;
 }
@@ -408,7 +417,7 @@ bool QueryEvaluator::evalNoClause(Query* query, Result* output){
 			if (sp.getAttribute() == stringconst::ATTR_COND_PROCNAME){
 				unordered_set<Statement*> allC = stable->getCallStmts();
 				BOOST_FOREACH(Statement* s, allC){
-					insert.insertValue(s->getProc()->getProcName());
+					insert.insertValue(s->getCalls());
 				}
 			} else {
 				unordered_set<Statement*> allC = stable->getCallStmts();
