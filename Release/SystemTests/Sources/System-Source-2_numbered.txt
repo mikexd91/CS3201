@@ -61,7 +61,7 @@
 					}
 				}
 				else {
-38					keyboard = parts - money - gpu;
+38					keyboard = parts - (money - gpu);
 				}
 			}
 			else {
