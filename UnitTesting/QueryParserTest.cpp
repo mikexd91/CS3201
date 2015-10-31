@@ -296,12 +296,29 @@ void QueryParserTest::testParser(){
 }
 
 void QueryParserTest::debugTests(){
-	string INPUT = "stmt s, s1; Select s such that Follows*(s1, s) and Modifies(s, \"full\")";
+	ProcTable* ptable = ProcTable::getInstance();
+	ptable->clearTable();
+	Procedure* testProcP1 = new Procedure("p1");
+	ptable->addProc(testProcP1);
+	Procedure* testProcP2 = new Procedure("p2");
+	ptable->addProc(testProcP2);
+
+	VarTable* vtable = VarTable::getInstance();
+	vtable->reset();
+	Variable* testVarX = new Variable("x");
+	vtable->addVariable(testVarX);
+	Variable* testVarY = new Variable("y");
+	vtable->addVariable(testVarY);
+
+	string INPUT = "variable x; Select x such that Uses(\"p1\", \"x\")";
 	Query* QUERY = new Query();
 	parser = QueryParser::getInstance();
 	QUERY = parser->parseQuery(INPUT);
 	vector<Clause*> VC = QUERY->getClauseList();
-	CPPUNIT_ASSERT(VC.size() == 2);
-	CPPUNIT_ASSERT(VC.at(0)->getClauseType() == FOLLOWSSTAR_);
-	CPPUNIT_ASSERT(VC.at(1)->getClauseType() == MODIFIES_);
+	CPPUNIT_ASSERT(VC.size() == 1);
+	CPPUNIT_ASSERT(VC.at(0)->getClauseType() == USES_);
+	//CPPUNIT_ASSERT(VC.at(1)->getClauseType() == MODIFIES_);
+
+	ptable->clearTable();
+	vtable->reset();
 }

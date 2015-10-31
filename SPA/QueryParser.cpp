@@ -4,6 +4,8 @@
 #include "Utils.h"
 #include "PQLExceptions.h"
 #include "boost/algorithm/string.hpp"
+#include "VarTable.h"
+#include "ProcTable.h"
 #include "Clause.h"
 #include "FollowsClause.h"
 #include "FollowsStarClause.h"
@@ -419,6 +421,8 @@ void QueryParser::parseClause(Query* query, queue<string>* line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	bool expectFirstFixedSynonym = false;
 	bool expectSecondFixedSynonym = false;
+	VarTable* vtable = VarTable::getInstance();
+	ProcTable* ptable = ProcTable::getInstance();
 
 	string clauseType = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
@@ -459,10 +463,13 @@ void QueryParser::parseClause(Query* query, queue<string>* line){
 				}
 			} else {
 				newClause->setArg(1, firstVar);
-				if (clauseType == "Calls") {
+				if (vtable->contains(firstVar)){
+					newClause->setArgType(1, stringconst::ARG_VARIABLE);
+				} else if (ptable->contains(firstVar)){
 					newClause->setArgType(1, stringconst::ARG_PROCEDURE);
 				} else {
-					newClause->setArgType(1, stringconst::ARG_VARIABLE);
+					cout << "no such variable or procedure name" << endl;
+					throw InvalidArgumentException();
 				}
 			}
 		} else {
@@ -511,10 +518,13 @@ void QueryParser::parseClause(Query* query, queue<string>* line){
 				}
 			} else {
 				newClause->setArg(2, secondVar);
-				if (clauseType == "Calls") {
+				if (vtable->contains(secondVar)){
+					newClause->setArgType(2, stringconst::ARG_VARIABLE);
+				} else if (ptable->contains(secondVar)){
 					newClause->setArgType(2, stringconst::ARG_PROCEDURE);
 				} else {
-					newClause->setArgType(2, stringconst::ARG_VARIABLE);
+					cout << "no such variable or procedure name" << endl;
+					throw InvalidArgumentException();
 				}
 			}
 		} else {
