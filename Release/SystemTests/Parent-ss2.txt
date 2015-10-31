@@ -1,47 +1,47 @@
-1 - PARENT-boolean: fixed-fixed (regular stmt)
+1 - PARENT-boolean: fixed-fixed (while stmt)
 
-Select BOOLEAN such that Parent(5, 6)
+Select BOOLEAN such that Parent(27, 28)
 true
 5000
-2 - PARENT-stmt: fixed-fixed (while stmt)
+2 - PARENT-stmt: fixed-fixed (nested under while stmt)
 stmt s;
-Select s such that Parent(15, 17)
-1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23
+Select s such that Parent(27, 30)
+none
 5000
 3 - PARENT-boolean: fixed-fixed (if stmt, if block)
 
-Select BOOLEAN such that Parent(20, 21)
+Select BOOLEAN such that Parent(34, 35)
 true
 5000
-4 - PARENT-boolean: fixed-fixed (fi stmt, else block)
+4 - PARENT-boolean: fixed-fixed (if stmt, else block)
 
-Select BOOLEAN such that Parent(20, 22)
+Select BOOLEAN such that Parent(34, 39)
 true
 5000
-5 - PARENT-stmt: fixed-fixed (false)
+5 - PARENT-stmt: fixed-fixed (nested under if stmt)
 stmt s;
-Select s such that Parent(14, 15)
+Select s such that Parent(33, 39)
 none
 5000
 6 - PARENT-stmt: syn-syn (tuple)
 stmt s1, s2;
 Select <s1,s2> such that Parent(s1, s2)
-5 6, 5 7, 5 8, 15 16, 15 17, 15 23, 17 18, 17 20, 18 19, 20 21, 20 22
+4 5, 4 6, 4 14, 6 7, 6 8, 6 10, 6 11, 6 13, 8 9, 11 12, 14 15, 14 16, 14 17, 14 18, 14 19, 19 20, 19 21, 19 23, 21 22, 27 28, 28 29, 28 30, 33 34, 33 40, 34 35, 34 39, 35 36, 35 38, 36 37
 5000
 7 - PARENT-assign: syn-syn
 stmt s; assign a;
 Select a such that Parent(s, a)
-6, 7, 8, 16, 19, 21, 22, 23
+5, 7, 9, 10, 12, 15, 16, 17, 18, 20, 22, 23, 30, 37, 38, 39, 40
 5000
 8 - PARENT-while: syn-syn
 while w1, w2;
 Select w1 such that Parent(w1, w2)
-15, 17
+4
 5000
 9 - PARENT-if: syn-syn
 stmt s; if i;
 Select i such that Parent(i, s)
-20
+6, 19, 28, 33, 34, 35
 5000
 10 - PARENT-boolean: generic-generic
 
@@ -50,37 +50,37 @@ true
 5000
 11 - PARENT-assign: fixed-syn (while stmt)
 assign a;
-Select a such that Parent(17, a)
-none
+Select a such that Parent(14, a)
+15, 16, 17, 18
 5000
 12 - PARENT-stmt: fixed-syn (if stmt)
 stmt s;
-Select s such that Parent(20, s)
-21, 22
+Select s such that Parent(35, s)
+36, 38
 5000
 13 - PARENT-stmt: syn-fixed
 stmt s;
 Select s such that Parent(s, 19)
-18
+14
 5000
 14 - PARENT-while: syn-fixed
 while w;
-Select w such that Parent(w, 21)
-none
+Select w such that Parent(w, 37)
+36
 5000
 15 - PARENT-if: syn-fixed
 if i;
-Select i such that Parent(i, 22)
-20
+Select i such that Parent(i, 35)
+34
 5000
 16 - PARENT-boolean: fixed-generic
 
-Select BOOLEAN such that Parent(14, _)
-false
+Select BOOLEAN such that Parent(28, _)
+true
 5000
 17 - PARENT-boolean: generic-fixed
 
-Select BOOLEAN such that Parent(_, 23)
+Select BOOLEAN such that Parent(_, 28)
 true
 5000
 18 - PARENT-assign: syn-generic
@@ -91,56 +91,56 @@ none
 19 - PARENT-while: syn-generic
 while w;
 Select w such that Parent(w, _)
-5, 15, 17, 18
+4, 8, 11, 14, 21, 27, 36
 5000
 20 - PARENT-if: syn-generic
 if i;
 Select i such that Parent(i, _)
-20
+6, 19, 28, 33, 34, 35
 5000
 21 - PARENT-stmt: generic-syn
 stmt s;
 Select s such that Parent(_, s)
-6, 7, 8, 16, 17, 18, 19, 20, 21, 22, 23
+5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 28, 29, 30, 34, 35, 36, 37, 38, 39, 40
 5000
 22 - PARENT-assign: generic-syn
 assign a;
 Select a such that Parent(_, a)
-6, 7, 8, 16, 19, 21, 22, 23
+5, 7, 9, 10, 12, 15, 16, 17, 18, 20, 22, 23, 30, 37, 38, 39, 40
 5000
 23 - PARENT-while: generic-syn
 while w;
 Select w such that Parent(_, w)
-17, 18
+8, 11, 14, 21, 36
 5000
 24 - PARENT-if: generic-syn
 if i;
 Select i such that Parent(_, i)
-20
+6, 19, 28, 34, 35
 5000
 25 - PARENT-while: pattern-left defined
 while w;
-Select w such that Parent(15, w) pattern w("battle2", _)
-17
+Select w such that Parent(w, _) pattern w("how", _)
+27
 5000
 26 - PARENT-while: pattern-left defined synonym
 while w; variable v;
-Select w such that Parent(15, w) pattern w(v, _)
-17
+Select w such that Parent(35, w) pattern w(v, _)
+36
 5000
 27 - PARENT-if: pattern-left defined
 if i;
-Select i such that Parent(i, 22) pattern i("squirtle", _, _)
+Select i such that Parent(i, 34) pattern i("keyboard", _, _)
 none
 5000
 28 - PARENT-if: pattern-left defined synonym
 if i; variable v;
-Select i such that Parent(i, 21) pattern i(v, _, _)
-20
+Select v such that Parent(i, 21) pattern i(v, _, _)
+a
 5000
 29 - PARENT: 2 clauses (similar) - fixed-fixed, fixed-fixed
 
-Select BOOLEAN such that Parent(15, 17) and Parent(17, 18)
+Select BOOLEAN such that Parent(28, 29) and Parent(35, 36)
 true
 5000
 30 - PARENT: 2 clauses (similar) - syn-syn, syn-syn
@@ -150,103 +150,103 @@ none
 5000
 31 - PARENT: 2 clauses (similar) - fixed-syn, fixed-syn
 stmt s;
-Select s such that Parent(15, s) and Parent(17, s)
+Select s such that Parent(33, s) and Parent(34, s)
 none
 5000
 32 - PARENT: 2 clauses (similar) - syn-fixed, syn-fixed
 while w;
-Select w such that Parent(15, w) and Parent(w, 18)
-17
+Select w such that Parent(14, w) and Parent(i, 29)
+none
 5000
 33 - PARENT: 2 clauses (similar) - fixed-generic, fixed-generic
 
-Select BOOLEAN such that Parent(5, _) and Parent(20, _)
+Select BOOLEAN such that Parent(14, _) and Parent(28, _)
 true
 5000
 34 - PARENT: 2 clauses (similar) - generic-fixed, generic-fixed
-stmt s
-Select s such that Parent(_, 12) and Parent(_, 22)
-none
+stmt s;
+Select s such that Parent(_, 30) and Parent(_, 34)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40
 5000
 35 - PARENT: 2 clauses (similar) - syn-generic, syn-generic
 while w; if i;
 Select <i,w> such that Parent(w, _) and Parent(i, _)
-20 5, 20 15, 20 17, 20 18
+6 4, 6 8, 6 11, 6 14, 6 21, 6 27, 6 36, 19 4, 19 8, 19 11, 19 14, 19 21, 19 27, 19 36, 28 4, 28 8, 28 11, 28 14, 28 21, 28 27, 28 36, 33 4, 33 8, 33 11, 33 14, 33 21, 33 27, 33 36, 34 4, 34 8, 34 11, 34 14, 34 21, 34 27, 34 36, 35 4, 35 8, 35 11, 35 14, 35 21, 35 27, 35 36
 5000
 36 - PARENT: 2 clauses (similar) - generic-syn, generic-syn
 stmt s; if i;
 Select i such that Parent(_, s) and Parent(_, i)
-20
+6, 19, 28, 34, 35
 5000
 37 - PARENT: 2 clauses (mixed) - fixed-fixed, fixed-syn
 stmt s;
-Select s such that Parent(15, 23) and Parent(20, s)
-21, 22
+Select s such that Parent(34, 35) and Parent(28, s)
+29, 30
 5000
 38 - PARENT: 2 clauses (mixed) - syn-syn, syn-fixed
 stmt s1, s2;
-Select <s1,s2> such that Parent(s1, s2) and Parent(s1, 18)
-17 18, 17 20
+Select <s1,s2> such that Parent(s1, s2) and Parent(s1, 30)
+28 29, 28 30
 5000
 39 - PARENT: 2 clauses (mixed) - generic-generic, fixed-generic
 while w;
-Select w such that Parent(_, _) and Parent(20, _)
-5, 15, 17, 18
+Select w such that Parent(_, _) and Parent(33, _)
+4, 8, 11, 14, 21, 27, 36
 5000
 40 - PARENT: 2 clauses (mixed) - fixed-syn, generic-fixed
 assign a;
-Select a such that Parent(5, a) and Parent(_, 23)
-6, 7, 8
+Select a such that Parent(19, a) and Parent(_, 28)
+20, 23
 5000
 41 - PARENT: 2 clauses (mixed) - syn-fixed, syn-generic
 if i; assign a;
-Select  such that Parent(i, 22) and Parent(a, _)
+Select i such that Parent(i, 22) and Parent(a, _)
 none
 5000
 42 - PARENT: 2 clauses (mixed) - fixed-generic, generic-syn
 
-Select BOOLEAN such that Parent(18, _) and Parent(_, 18)
+Select BOOLEAN such that Parent(28, _) and Parent(_, 28)
 true
 5000
 43 - PARENT: 2 clauses (mixed) - generic-fixed, syn-generic
 stmt s;
-Select s such that Parent(_, 16) and Parent(s, _)
-5, 15, 17, 18, 20
+Select s such that Parent(_, 38) and Parent(s, _)
+4, 6, 8, 11, 14, 19, 21, 27, 28, 33, 34, 35, 36
 5000
 44 - PARENT: 2 clauses (mixed) - syn-generic, generic-syn
-while w;
-Select w such that Parent(w, _) and Parent(_, w)
-17, 18
+if i;
+Select i such that Parent(i, _) and Parent(_, i)
+6, 19, 28, 34, 35
 5000
 45 - PARENT: 2 clauses (mixed) - generic-fixed, generic-syn
 assign a;
-Select a such that Parent(_, 21) and Parent(_, a)
-6, 7, 8, 16, 19, 21, 22, 23
+Select a such that Parent(_, 23) and Parent(_, a)
+5, 7, 9, 10, 12, 15, 16, 17, 18, 20, 22, 23, 30, 37, 38, 39, 40
 5000
 46 - PARENT: stmt# - select clause (has results)
 assign a;
-Select a.stmt# such that Parent(15, a)
-16, 23
+Select a.stmt# such that Parent(28, a)
+30
 5000
 47 - PARENT: stmt# - select clause (no results)
 assign a;
-Select a.stmt# such that Parent(16, a)
+Select a.stmt# such that Parent(27, a)
 none
 5000
 48 - PARENT: stmt# - with clause (has results)
 while w;
-Select w such that Parent(w, _) with w.stmt# = 15
-15
+Select w such that Parent(w, _) with w.stmt# = 27
+27
 5000
 49 - PARENT: stmt# - with clause (no results)
 while w;
-Select w such that Parent(w, _) with w.stmt# = 15 and w.stmt# = 17
+Select w such that Parent(w, _) with w.stmt# = 4 and w.stmt# = 8
 none
 5000
 50 - PARENT: prog_line
 prog_line n;
 Select n such that Parent(n, _)
-5, 15, 17, 18, 20
+4, 6, 8, 11, 14, 19, 21, 27, 28, 33, 34, 35, 36
 5000
 51 - PARENT: stmt overflow
 stmt s;

@@ -85,7 +85,7 @@ none
 5000
 18 - PATTERN-assign: right-defined only, sub
 assign a;
-Select a pattern a(_, _"a* (d+e)"_)
+Select a pattern a(_, _"(d+e)"_)
 20
 5000
 19 - PATTERN-assign: right-defined only, sub (no result)
@@ -95,7 +95,7 @@ none
 5000
 20 - PATTERN-assign: both-defined, fixed-fixed
 assign a;
-Select a pattern a("how", "_how_")
+Select a pattern a("how", _"how"_)
 30
 5000
 21 - PATTERN-assign: both-defined, fixed-fixed (no result)
