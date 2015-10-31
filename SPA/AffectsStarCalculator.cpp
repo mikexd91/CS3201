@@ -179,9 +179,24 @@ void AffectsStarCalculator::updateStateForWhile(WhileGNode* whileNode, State& st
 	if (type == FIXED_FIXED) {
 		Statement* whileStmt = stmtTable->getStmtObj(whileNode->getStmtNum());
 		Statement::ChildrenStarSet children = whileStmt->getChildrenStar();
+		//if child was encountered in while loop, let's see whether we should terminate early, or loop until the end
 		if (children.find(s2Num) != children.end()) {
-			result = globalResult.find(s2Num) != globalResult.end();
-			throw AffectsStarTermination();
+			Statement::ParentStarSet parentStar = whileStmt->getParentStar();
+			bool isInWhile = false;
+			//check if while statement is within any other while statement
+			BOOST_FOREACH(int parent, parentStar) {
+				if (stmtTable->getStmtObj(parent)->getType() == WHILE_STMT_) {
+					isInWhile = true;
+					break;
+				}
+			}
+			//if the current while loop is not within another while loop,
+			//it cannot be repeated again, we can just terminate and not continue evaluation
+			//since we can never reach the statement again
+			if (!isInWhile) {
+				result = globalResult.find(s2Num) != globalResult.end();
+				throw AffectsStarTermination();
+			}
 		}
 	}
 
