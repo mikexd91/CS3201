@@ -210,16 +210,8 @@ void AffectsStarBipCalculator::updateStateForWhile(WhileGNode* whileNode, State&
 		 previousResult = globalResult;
 		 state1 = recurseWhile(whileNode, state1);
 	} while (!areResultsEqual(previousResult, globalResult));
-	//check if stmt we want is in results
-	if (type == FIXED_FIXED) {
-		Statement* whileStmt = stmtTable->getStmtObj(whileNode->getStmtNum());
-		Statement::ChildrenStarSet children = whileStmt->getChildrenStar();
-		if (children.find(s2Num) != children.end()) {
-			result = globalResult.find(s2Num) != globalResult.end();
-			throw AffectsStarBipTermination();
-		}
-	}
-
+	//we will not check if the stmt was within while container
+	//cos it might be within a call stmt, it'll be hard to check
 	state = mergeStates(state, state1);
 }
 
