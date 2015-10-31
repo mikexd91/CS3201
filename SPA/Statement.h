@@ -49,6 +49,8 @@ public:
 	typedef unordered_set<int> FollowsStarAfterSet;
 	typedef unordered_set<int> PreviousSet;
 	typedef unordered_set<int> NextSet;
+	typedef unordered_set<int> PreviousBipSet;
+	typedef unordered_set<int> NextBipSet;
 
 	// CONSTRUCTOR
 	Statement();
@@ -59,6 +61,7 @@ public:
 	int getStmtNum();													// get stmt num
 	TNode* getTNodeRef();												// get reference to stmt TNode
 	GNode* getGNodeRef();												// get reference to stmt GNode
+	GNode* getGBipNodeRef();											// get reference to stmt GBipNode
 	const UsesSet& getUses();											// get set of variables stmt uses
 	const ModifiesSet& getModifies();									// get set of variables stmt modifies
 	int getFollowsAfter();												// get stmt that follows after this stmt
@@ -70,6 +73,8 @@ public:
 	int getParent();													// get parent of this stmt
 	const NextSet& getNext();											// get stmt that is next of this stmt
 	const PreviousSet& getPrev();										// get stmt whose next is this stmt
+	const NextBipSet& getNextBip();										// get set of stmts that is nextbip of this stmt
+	const PreviousBipSet& getPrevBip();									// get set of stmts whose nextbip is this stmt
 	const FollowsStarBeforeSet& Statement::getFollowsStarBefore();		// get set of follows star stmt before this stmt
 	const FollowsStarAfterSet& Statement::getFollowsStarAfter();		// get set of follows star stmt after this stmt
 	Procedure* getProc();
@@ -79,6 +84,7 @@ public:
 	void setStmtNum(int num);
 	void setTNodeRef(TNode *ref);
 	void setGNodeRef(GNode *ref);
+	void setGBipNodeRef(GNode *ref);
 	void setUses(const UsesSet &usesSet);
 	void setModifies(const ModifiesSet &modifiesSet);
 	void setFollowsAfter(int followsAfter);
@@ -88,6 +94,8 @@ public:
 	void setParent(int parent);
 	void setNext(const NextSet &next);
 	void setPrev(const PreviousSet &prev);
+	void setNextBip(const NextBipSet &nextBip);
+	void setPrevBip(const PreviousBipSet &prevBip);
 	void setParentStar(const ParentStarSet&);
 	void setChildrenStar(const ChildrenStarSet&);
 	void setFollowsStarBefore(const FollowsStarBeforeSet&);
@@ -100,6 +108,7 @@ private:
 	int			stmtNum;		// stmt number
 	TNode		*TNodeRef;		// TNode reference
 	GNode		*GNodeRef;		// GNode reference
+	GNode		*GBipNodeRef;
 
 	// PRIVATE RELATIONS ATTRIBUTES
 	UsesSet			uses;
@@ -111,6 +120,8 @@ private:
 	int				parent;
 	NextSet			next;
 	PreviousSet		prev;
+	NextBipSet		nextBip;
+	PreviousBipSet	prevBip;
 	ChildrenStarSet childrenStar;
 	ParentStarSet   parentStar;
 	FollowsStarBeforeSet followsStarBefore;

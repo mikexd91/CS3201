@@ -37,11 +37,6 @@ bool AffectsStarClause::evaluateS1GenericS2Generic() {
 	return calc.computeS1GenericS2Generic();
 }
 
-//e.g. Parent(_,2)
-bool AffectsStarClause::evaluateS1GenericS2Fixed(string s2) {
-	return false;
-}
-
 //e.g. Parent(2,_)
 //Assuming that Affects(1,_) == Affects*(1,_)
 bool AffectsStarClause::evaluateS1FixedS2Generic(string s1){
@@ -63,12 +58,6 @@ unordered_set<string> AffectsStarClause::getAllS2() {
 	return calc.computeAllS2();
 }
 
-//e.g. Parent(s1,2)
-//get parent of string
-unordered_set<string> AffectsStarClause::getAllS1WithS2Fixed(string s2) {
-	return unordered_set<string>();
-}
-
 //e.g. Parent(s1,_)
 //Assuming that Affects(s1,_) == Affects*(s1,_)
 unordered_set<string> AffectsStarClause::getAllS1() {
@@ -85,3 +74,84 @@ unordered_set<vector<string>> AffectsStarClause::getAllS1AndS2() {
 
 
 
+// nick
+//e.g. Parent(_,2)
+bool AffectsStarClause::evaluateS1GenericS2Fixed(string s2) {
+	// get the statement object and make sure it is an assign stmt
+	int stmtNum = lexical_cast<int>(s2);
+	Statement* stmt = stmtTable->getStmtObj(stmtNum);
+	if (stmt->getType() != ASSIGN_STMT_) {
+		//cout << "not assg" << endl;
+		return false;
+	}
+
+	// get the uses set
+	unordered_set<string> usesSet = stmt->getUses();
+	if (usesSet.size() <= 0) {
+		//if the assignment doesnt use anything, then nothing affects it
+		//cout << "not using" << endl;
+		return false;
+	}
+
+	//cout << "using " << usesSet.size() << endl;
+	//BOOST_FOREACH(auto u, usesSet) {
+	//	cout << u << endl;
+	//}
+
+	// get the containing procedure
+	Procedure* containingProc = stmt->getProc();
+	// get all the statements in the proc
+	unordered_set<int> procStmts = containingProc->getContainStmts();
+	// check every pair for affects*(pg, s2)
+	BOOST_FOREACH(auto pg, procStmts) {
+		string pgstr = lexical_cast<string>(pg);
+		//cout << "checking " << pgstr << " " << s2 << endl;
+		if (evaluateS1FixedS2Fixed(pgstr, s2)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+// nick
+//e.g. Parent(s1,2)
+//get parent of string
+unordered_set<string> AffectsStarClause::getAllS1WithS2Fixed(string s2) {
+	// prepare result obj
+	unordered_set<string> result;
+	
+	// get the statement object and make sure it is an assign stmt
+	int stmtNum = lexical_cast<int>(s2);
+	Statement* stmt = stmtTable->getStmtObj(stmtNum);
+	if (stmt->getType() != ASSIGN_STMT_) {
+		//cout << "not assg" << endl;
+		return result;
+	}
+
+	// get the uses set
+	unordered_set<string> usesSet = stmt->getUses();
+	if (usesSet.size() <= 0) {
+		//if the assignment doesnt use anything, then nothing affects it
+		//cout << "not using" << endl;
+		return result;
+	}
+
+	//cout << "using " << usesSet.size() << endl;
+
+	// get the containing procedure
+	Procedure* containingProc = stmt->getProc();
+	// get all the statements in the proc
+	unordered_set<int> procStmts = containingProc->getContainStmts();
+	// check every pair for affects(pg, s2)
+	BOOST_FOREACH(auto pg, procStmts) {
+		string pgstr = lexical_cast<string>(pg);
+		//cout << "checking " << pgstr << " " << s2 << endl;
+		if (evaluateS1FixedS2Fixed(pgstr, s2)) {
+			// add it to the result
+			result.insert(pgstr);
+		}
+	}
+
+	// return whatever we have placed inside the result set.
+	return result;
+}

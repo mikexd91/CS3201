@@ -95,6 +95,14 @@ void GNode::setSecondParent(GNode* parent) {
 	}
 }
 
+void GNode::setChildren(vector<GNode*> children) {
+	this->children = children;
+}
+
+void GNode::setParents(vector<GNode*> parents) {
+	this->parents = parents;
+}
+
 bool GNode::isNodeType(GType type) {
 	if(this->nodeType == type) {
 		return true;
