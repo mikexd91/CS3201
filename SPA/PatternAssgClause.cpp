@@ -23,6 +23,7 @@ PatternAssgClause::PatternAssgClause(const string& syn, const string& var, const
 	this->var = var;
 	// parser must set vartype and varfixed.
 	this->_expr = expr;
+	this->clauseType = PATTERNASSG_;
 }
 
 PatternAssgClause::~PatternAssgClause(void) {

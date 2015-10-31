@@ -27,6 +27,7 @@ private:
 	void populateModUsesCalls();
 	void populateCallsParents(Statement*);
 	void populateCallsVarTable(Statement*);
+	void populateParentCallsVarTable(int, unordered_set<string>, unordered_set<string>);
 
 	void breakBonds(Statement*);
 };
