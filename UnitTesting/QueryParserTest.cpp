@@ -310,14 +310,18 @@ void QueryParserTest::debugTests(){
 	Variable* testVarY = new Variable("y");
 	vtable->addVariable(testVarY);
 
-	string INPUT = "variable x; Select x such that Uses(\"p1\", \"x\")";
+	string INPUT = "call c; Select c with c.procName = \"asd\"";
 	Query* QUERY = new Query();
 	parser = QueryParser::getInstance();
 	QUERY = parser->parseQuery(INPUT);
 	vector<Clause*> VC = QUERY->getClauseList();
 	CPPUNIT_ASSERT(VC.size() == 1);
-	CPPUNIT_ASSERT(VC.at(0)->getClauseType() == USES_);
-	//CPPUNIT_ASSERT(VC.at(1)->getClauseType() == MODIFIES_);
+	//CPPUNIT_ASSERT(VC.at(0)->getClauseType() == WITH_);
+	WithClause* WC = (WithClause*)VC.at(0);
+	WithClauseRef WCL = WC->getLeftRef();
+	WithClauseRef WCR = WC->getRightRef();
+	CPPUNIT_ASSERT(WCL.getEntity() == "c");
+	CPPUNIT_ASSERT(WCR.getEntity() == "asd");
 
 	ptable->clearTable();
 	vtable->reset();

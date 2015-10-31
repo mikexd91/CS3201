@@ -60,6 +60,12 @@ class QueryEvaluatorTest: public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testVarNoClause );
 	CPPUNIT_TEST( testBoolOneClause );
 	CPPUNIT_TEST( testBoolMoreClauses );
+	CPPUNIT_TEST( testSynNotInClause );
+	CPPUNIT_TEST( testSynInOneClause );
+	CPPUNIT_TEST( testSynInMoreClauses );
+	CPPUNIT_TEST( testSynInSomeClauses );
+	CPPUNIT_TEST( testTupleNoClause );
+	CPPUNIT_TEST( testOptEval );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -111,6 +117,15 @@ public:
 
 	void testBoolOneClause();
 	void testBoolMoreClauses();
+
+	void testSynNotInClause();
+	void testSynInOneClause();
+	void testSynInMoreClauses();
+	void testSynInSomeClauses();
+
+	void testTupleNoClause();
+
+	void testOptEval();
 };
 
 //sample source

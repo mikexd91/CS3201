@@ -300,6 +300,8 @@ Result* QueryEvaluator::evalOptimisedQuery(Query* query, vector<int>* componentI
 	bool selectTuple = (selList.size() > 1);
 	bool productFlag = false;
 	bool selectBoolean = false;
+	bool singleNotFound = true;
+	bool tupleNotFound = true;
 
 	string synonym;
 	vector<string> tuple;
@@ -325,9 +327,11 @@ Result* QueryEvaluator::evalOptimisedQuery(Query* query, vector<int>* componentI
 			}
 			if (selectTuple){
 				if (isTuplePresent(currentRes, tuple)){
+					tupleNotFound = false;
 					extractTupleSynonymResults(currentRes, finalResult, tuple);
 				} else {
 					BOOST_FOREACH(string s, tuple){
+						//case where only one in the tuple is found, need to check
 						if (currentRes->isSynPresent(s)){
 							extractSingleSynonymResults(currentRes, finalResult, synonym);
 						}
@@ -335,17 +339,24 @@ Result* QueryEvaluator::evalOptimisedQuery(Query* query, vector<int>* componentI
 				}
 			} else {
 				if (selectBoolean){
+					singleNotFound = true;
 					SingleSynInsert insert = SingleSynInsert();
 					insert.setSyn(synonym);
 					insert.insertValue("true");
 					finalResult->push(insert);
 				}
 				if (currentRes->isSynPresent(synonym)){
+					singleNotFound = true;
 					extractSingleSynonymResults(currentRes, finalResult, synonym);
 				}
 			}
 			start = end;
 		}
+	}
+	if (!selectTuple && singleNotFound){
+		evalNoClause(query, finalResult);
+	} else if (selectTuple && tupleNotFound){
+		evalNoClause(query, finalResult);
 	}
 	//if (productFlag){
 	//	//do cartesian product
@@ -385,9 +396,16 @@ bool QueryEvaluator::evalNoClause(Query* query, Result* output){
 				insert.insertValue(to_string((long long)s->getStmtNum()));
 			}
 		} else if (synonymType == stringconst::ARG_CALL){
-			unordered_set<Statement*> allC = stable->getCallStmts();
-			BOOST_FOREACH(Statement* s, allC){
-				insert.insertValue(to_string((long long)s->getStmtNum()));
+			if (sp.getAttribute() == stringconst::ATTR_COND_PROCNAME){
+				unordered_set<Statement*> allC = stable->getCallStmts();
+				BOOST_FOREACH(Statement* s, allC){
+					insert.insertValue(s->getProc()->getProcName());
+				}
+			} else {
+				unordered_set<Statement*> allC = stable->getCallStmts();
+				BOOST_FOREACH(Statement* s, allC){
+					insert.insertValue(to_string((long long)s->getStmtNum()));
+				}
 			}
 		} else if (synonymType == stringconst::ARG_IF){
 			unordered_set<Statement*> allI = stable->getIfStmts();
@@ -462,5 +480,7 @@ bool QueryEvaluator::isTuplePresent(Result* res, vector<string> tuple){
 	}
 	return true;
 }
+
+//todo: convert calls into procname is attribute is present
 
 //cartesian product method -> apparently 2 syns will always exist as a tuple, not needed unless this is false

@@ -1543,3 +1543,222 @@ void QueryEvaluatorTest::testBoolMoreClauses(){
 	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
 	CPPUNIT_ASSERT(TEST_PRINT.find("true") != TEST_PRINT.end());
 }
+
+void QueryEvaluatorTest::testSynNotInClause(){
+	Query* TEST_Q = new Query();
+	StringPair SELECT_1 = StringPair();
+	SELECT_1.setFirst("a");
+	SELECT_1.setSecond(stringconst::ARG_ASSIGN);
+	TEST_Q->addSelectSynonym(SELECT_1);
+	
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "9");
+	parentBuilder->setArgFixed(1, true);
+	parentBuilder->setArgType(1, ARG_IF);
+	parentBuilder->setArg(2, "11");
+	parentBuilder->setArgFixed(2, true);
+	parentBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* TEST_PC = (ParentClause*) parentBuilder->build();
+	TEST_Q->addClause((Clause*)TEST_PC);
+
+	vector<int>* optimisedDV = new vector<int>();
+	int size = TEST_Q->getClauseList().size();
+	optimisedDV->push_back(size);
+	QueryEvaluator* qe = new QueryEvaluator();
+	Result* TEST_R = qe->evalOptimisedQuery(TEST_Q, optimisedDV);
+	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
+	CPPUNIT_ASSERT(TEST_PRINT.find("1") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("2") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("3") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("4") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("5") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("6") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("8") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("10") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("11") != TEST_PRINT.end());
+}
+
+void QueryEvaluatorTest::testSynInOneClause(){
+	Query* TEST_Q = new Query();
+	StringPair SELECT_1 = StringPair();
+	SELECT_1.setFirst("s");
+	SELECT_1.setSecond(stringconst::ARG_STATEMENT);
+	TEST_Q->addSelectSynonym(SELECT_1);
+	
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "s");
+	parentBuilder->setArgFixed(1, false);
+	parentBuilder->setArgType(1, ARG_STATEMENT);
+	parentBuilder->setArg(2, "11");
+	parentBuilder->setArgFixed(2, true);
+	parentBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* TEST_PC = (ParentClause*) parentBuilder->build();
+	TEST_Q->addClause((Clause*)TEST_PC);
+
+	vector<int>* optimisedDV = new vector<int>();
+	int size = TEST_Q->getClauseList().size();
+	optimisedDV->push_back(size);
+	QueryEvaluator* qe = new QueryEvaluator();
+	Result* TEST_R = qe->evalOptimisedQuery(TEST_Q, optimisedDV);
+	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
+	CPPUNIT_ASSERT(TEST_PRINT.find("9") != TEST_PRINT.end());
+}
+
+void QueryEvaluatorTest::testSynInMoreClauses(){
+	Query* TEST_Q = new Query();
+	StringPair SELECT_1 = StringPair();
+	SELECT_1.setFirst("s");
+	SELECT_1.setSecond(stringconst::ARG_STATEMENT);
+	TEST_Q->addSelectSynonym(SELECT_1);
+	
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "s");
+	parentBuilder->setArgFixed(1, false);
+	parentBuilder->setArgType(1, ARG_STATEMENT);
+	parentBuilder->setArg(2, "11");
+	parentBuilder->setArgFixed(2, true);
+	parentBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* TEST_PC = (ParentClause*) parentBuilder->build();
+	TEST_Q->addClause((Clause*)TEST_PC);
+
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, ATTRREF_);
+	withBuilder->setEntity(1, "s");
+	withBuilder->setAttrType(1, STMTNUM_);
+	withBuilder->setEntityType(1, stringconst::ARG_STATEMENT);
+	withBuilder->setRefType(2, ATTRREF_);
+	withBuilder->setEntity(2, "s1");
+	withBuilder->setAttrType(2, STMTNUM_);
+	withBuilder->setEntityType(2, stringconst::ARG_STATEMENT);
+	WithClause* TEST_WC = withBuilder->build();
+	TEST_Q->addClause(TEST_WC);
+
+	vector<int>* optimisedDV = new vector<int>();
+	int size = TEST_Q->getClauseList().size();
+	optimisedDV->push_back(size);
+	QueryEvaluator* qe = new QueryEvaluator();
+	Result* TEST_R = qe->evalOptimisedQuery(TEST_Q, optimisedDV);
+	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
+	CPPUNIT_ASSERT(TEST_PRINT.find("9") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("10") == TEST_PRINT.end());
+}
+
+void QueryEvaluatorTest::testSynInSomeClauses(){
+	Query* TEST_Q = new Query();
+	StringPair SELECT_1 = StringPair();
+	SELECT_1.setFirst("s");
+	SELECT_1.setSecond(stringconst::ARG_STATEMENT);
+	TEST_Q->addSelectSynonym(SELECT_1);
+	
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "s");
+	parentBuilder->setArgFixed(1, false);
+	parentBuilder->setArgType(1, ARG_STATEMENT);
+	parentBuilder->setArg(2, "11");
+	parentBuilder->setArgFixed(2, true);
+	parentBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* TEST_PC = (ParentClause*) parentBuilder->build();
+	TEST_Q->addClause((Clause*)TEST_PC);
+
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, ATTRREF_);
+	withBuilder->setEntity(1, "s2");
+	withBuilder->setAttrType(1, STMTNUM_);
+	withBuilder->setEntityType(1, stringconst::ARG_STATEMENT);
+	withBuilder->setRefType(2, ATTRREF_);
+	withBuilder->setEntity(2, "s1");
+	withBuilder->setAttrType(2, STMTNUM_);
+	withBuilder->setEntityType(2, stringconst::ARG_STATEMENT);
+	WithClause* TEST_WC = withBuilder->build();
+	TEST_Q->addClause(TEST_WC);
+
+	vector<int>* optimisedDV = new vector<int>();
+	int size = TEST_Q->getClauseList().size();
+	optimisedDV->push_back(size);
+	QueryEvaluator* qe = new QueryEvaluator();
+	Result* TEST_R = qe->evalOptimisedQuery(TEST_Q, optimisedDV);
+	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
+	CPPUNIT_ASSERT(TEST_PRINT.find("9") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("10") == TEST_PRINT.end());
+}
+
+void QueryEvaluatorTest::testTupleNoClause(){
+	Query* TEST_Q = new Query();
+	StringPair SELECT_1 = StringPair();
+	SELECT_1.setFirst("s");
+	SELECT_1.setSecond(stringconst::ARG_STATEMENT);
+	TEST_Q->addSelectSynonym(SELECT_1);
+
+	StringPair SELECT_2 = StringPair();
+	SELECT_2.setFirst("s1");
+	SELECT_2.setSecond(stringconst::ARG_STATEMENT);
+	TEST_Q->addSelectSynonym(SELECT_2);
+
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, ATTRREF_);
+	withBuilder->setEntity(1, "s");
+	withBuilder->setAttrType(1, STMTNUM_);
+	withBuilder->setEntityType(1, stringconst::ARG_STATEMENT);
+	withBuilder->setRefType(2, ATTRREF_);
+	withBuilder->setEntity(2, "s1");
+	withBuilder->setAttrType(2, STMTNUM_);
+	withBuilder->setEntityType(2, stringconst::ARG_STATEMENT);
+	WithClause* TEST_WC = withBuilder->build();
+	TEST_Q->addClause(TEST_WC);
+
+	vector<int>* optimisedDV = new vector<int>();
+	int size = TEST_Q->getClauseList().size();
+	optimisedDV->push_back(size);
+	QueryEvaluator* qe = new QueryEvaluator();
+	Result* TEST_R = qe->evalOptimisedQuery(TEST_Q, optimisedDV);
+	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
+	CPPUNIT_ASSERT(TEST_PRINT.find("10 10") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("9 9") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("8 8") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("7 7") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("6 6") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("5 5") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("4 4") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("3 3") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("2 2") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("1 1") != TEST_PRINT.end());
+}
+
+void QueryEvaluatorTest::testOptEval(){
+	Query* TEST_Q = new Query();
+	StringPair SELECT_1 = StringPair();
+	SELECT_1.setFirst("s");
+	SELECT_1.setSecond(stringconst::ARG_STATEMENT);
+	TEST_Q->addSelectSynonym(SELECT_1);
+	
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "s");
+	parentBuilder->setArgFixed(1, false);
+	parentBuilder->setArgType(1, ARG_STATEMENT);
+	parentBuilder->setArg(2, "11");
+	parentBuilder->setArgFixed(2, true);
+	parentBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* TEST_PC = (ParentClause*) parentBuilder->build();
+	TEST_Q->addClause((Clause*)TEST_PC);
+
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, ATTRREF_);
+	withBuilder->setEntity(1, "s2");
+	withBuilder->setAttrType(1, STMTNUM_);
+	withBuilder->setEntityType(1, stringconst::ARG_STATEMENT);
+	withBuilder->setRefType(2, ATTRREF_);
+	withBuilder->setEntity(2, "s1");
+	withBuilder->setAttrType(2, STMTNUM_);
+	withBuilder->setEntityType(2, stringconst::ARG_STATEMENT);
+	WithClause* TEST_WC = withBuilder->build();
+	TEST_Q->addClause(TEST_WC);
+
+	vector<int>* optimisedDV = new vector<int>();
+	optimisedDV->push_back(1);
+	optimisedDV->push_back(1);
+	QueryEvaluator* qe = new QueryEvaluator();
+	Result* TEST_R = qe->evalOptimisedQuery(TEST_Q, optimisedDV);
+	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
+	CPPUNIT_ASSERT(TEST_PRINT.find("9") != TEST_PRINT.end());
+	CPPUNIT_ASSERT(TEST_PRINT.find("10") == TEST_PRINT.end());
+}
