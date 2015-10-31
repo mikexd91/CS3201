@@ -49,6 +49,7 @@ class QueryEvaluatorTest: public CPPUNIT_NS::TestFixture {
 	//CPPUNIT_TEST( testUnderscoreUnderscorePass );
 	//CPPUNIT_TEST( testFixedFixedPass );
 	//CPPUNIT_TEST( testFixedFixedFail );
+	CPPUNIT_TEST( testNoResult );
 	CPPUNIT_TEST( testBoolNoClause );
 	CPPUNIT_TEST( testStmtNoClause );
 	CPPUNIT_TEST( testCallNoClause );
@@ -105,6 +106,8 @@ public:
 
 	//////////////////////////////////
 	//new tests
+	void testNoResult();
+
 	void testBoolNoClause();
 	void testStmtNoClause();
 	void testCallNoClause();

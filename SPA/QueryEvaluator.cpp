@@ -81,8 +81,10 @@ unordered_set<string> QueryEvaluator::getValuesToPrint(Result* obj, vector<Strin
 
 unordered_set<string> QueryEvaluator::printValues(Result* finalRes, vector<StringPair> selList){
 	unordered_set<string> autotesterPrintouts = unordered_set<string>();
-	if (!validResults){
+	if (!validResults && selList.at(0).getFirst() == "BOOLEAN"){
 		autotesterPrintouts.insert("false");
+	} else if (!validResults){
+		autotesterPrintouts.clear();
 	} else {
 		if (selList.size() == 1){
 			autotesterPrintouts = printSingleSynValues(*finalRes, selList.at(0).getFirst());
@@ -322,6 +324,7 @@ Result* QueryEvaluator::evalOptimisedQuery(Query* query, vector<int>* componentI
 		Result* currentRes = new Result();
 		BOOST_FOREACH(int end, *componentIndices){
 			this->validResults = evalNumClauses(query, start, end, currentRes);
+			cout << boolToString(validResults)<< endl;
 			if (!validResults){
 				break;
 			}
@@ -361,6 +364,9 @@ Result* QueryEvaluator::evalOptimisedQuery(Query* query, vector<int>* componentI
 	//if (productFlag){
 	//	//do cartesian product
 	//}
+	if (!validResults){
+		finalResult = new Result();
+	}
 	return finalResult;
 }
 
@@ -371,6 +377,7 @@ bool QueryEvaluator::evalNumClauses(Query* query, int start, int end, Result* ou
 		Clause* currentClause = clauseList.at(i);
 		bool a = currentClause->evaluate(output);
 		if (!a){
+			this->validResults = false;
 			return false;
 		}
 	}

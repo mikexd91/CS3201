@@ -40,7 +40,7 @@ unordered_set<string> PQLController::parse(string query) {
 		//cout << "Query Evaluated" << endl;
 		vector<StringPair> selectList = q->getSelectList();
 		//cout << resObj->getResultTableSize() << endl;
-		boost::unordered_set<string> valueSet = qe->getValuesToPrint(resObj, selectList);
+		boost::unordered_set<string> valueSet = qe->printValues(resObj, selectList);
 		//cout << "Result Set Size: " << valueSet.size() << endl;
 		//delete q;
 		//delete resObj;
