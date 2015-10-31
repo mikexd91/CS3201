@@ -58,6 +58,8 @@ class QueryEvaluatorTest: public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testProcNoClause );
 	CPPUNIT_TEST( testConstNoClause );
 	CPPUNIT_TEST( testVarNoClause );
+	CPPUNIT_TEST( testBoolOneClause );
+	CPPUNIT_TEST( testBoolMoreClauses );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -106,6 +108,9 @@ public:
 	void testProcNoClause();
 	void testConstNoClause();
 	void testVarNoClause();
+
+	void testBoolOneClause();
+	void testBoolMoreClauses();
 };
 
 //sample source

@@ -299,6 +299,7 @@ Result* QueryEvaluator::evalOptimisedQuery(Query* query, vector<int>* componentI
 	vector<StringPair> selList = query->getSelectList();
 	bool selectTuple = (selList.size() > 1);
 	bool productFlag = false;
+	bool selectBoolean = false;
 
 	string synonym;
 	vector<string> tuple;
@@ -308,6 +309,7 @@ Result* QueryEvaluator::evalOptimisedQuery(Query* query, vector<int>* componentI
 		}
 	} else {
 		synonym = selList.at(0).getFirst();
+		selectBoolean = (synonym == "BOOLEAN");
 	}
 
 	if (clauseList.empty()){
@@ -332,6 +334,12 @@ Result* QueryEvaluator::evalOptimisedQuery(Query* query, vector<int>* componentI
 					}
 				}
 			} else {
+				if (selectBoolean){
+					SingleSynInsert insert = SingleSynInsert();
+					insert.setSyn(synonym);
+					insert.insertValue("true");
+					finalResult->push(insert);
+				}
 				if (currentRes->isSynPresent(synonym)){
 					extractSingleSynonymResults(currentRes, finalResult, synonym);
 				}

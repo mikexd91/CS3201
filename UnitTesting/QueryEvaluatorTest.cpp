@@ -20,6 +20,9 @@
 #include "../SPA/CallNode.h"
 #include "../SPA/SuchThatClauseBuilder.h"
 #include "../SPA/Clause.h"
+#include "../SPA/WithClause.h"
+#include "../SPA/WithClauseRef.h"
+#include "../SPA/WithClauseBuilder.h"
 #include <boost\foreach.hpp>
 
 using namespace stringconst;
@@ -1295,9 +1298,11 @@ void QueryEvaluatorTest::testBoolNoClause(){
 	SELECT_1.setFirst("BOOLEAN");
 	SELECT_1.setSecond(stringconst::ARG_BOOLEAN);
 	TEST_Q->addSelectSynonym(SELECT_1);
-	
-	QueryEvaluator* qe = new QueryEvaluator();
 	vector<int>* optimisedDV = new vector<int>();
+	int size = TEST_Q->getClauseList().size();
+	optimisedDV->push_back(size);
+
+	QueryEvaluator* qe = new QueryEvaluator();
 	Result* TEST_R = qe->evalOptimisedQuery(TEST_Q, optimisedDV);
 	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
 	CPPUNIT_ASSERT(TEST_PRINT.find("false") != TEST_PRINT.end());
@@ -1309,9 +1314,11 @@ void QueryEvaluatorTest::testStmtNoClause(){
 	SELECT_1.setFirst("s");
 	SELECT_1.setSecond(stringconst::ARG_STATEMENT);
 	TEST_Q->addSelectSynonym(SELECT_1);
-	
-	QueryEvaluator* qe = new QueryEvaluator();
 	vector<int>* optimisedDV = new vector<int>();
+	int size = TEST_Q->getClauseList().size();
+	optimisedDV->push_back(size);
+
+	QueryEvaluator* qe = new QueryEvaluator();
 	Result* TEST_R = qe->evalOptimisedQuery(TEST_Q, optimisedDV);
 	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
 	CPPUNIT_ASSERT(TEST_PRINT.find("1") != TEST_PRINT.end());
@@ -1326,6 +1333,7 @@ void QueryEvaluatorTest::testStmtNoClause(){
 	CPPUNIT_ASSERT(TEST_PRINT.find("10") != TEST_PRINT.end());
 	CPPUNIT_ASSERT(TEST_PRINT.find("11") != TEST_PRINT.end());
 }
+
 void QueryEvaluatorTest::testCallNoClause(){string asd = "no meaningful tests in this source";}
 
 void QueryEvaluatorTest::testAssNoClause(){
@@ -1334,9 +1342,11 @@ void QueryEvaluatorTest::testAssNoClause(){
 	SELECT_1.setFirst("a");
 	SELECT_1.setSecond(stringconst::ARG_ASSIGN);
 	TEST_Q->addSelectSynonym(SELECT_1);
-	
-	QueryEvaluator* qe = new QueryEvaluator();
 	vector<int>* optimisedDV = new vector<int>();
+	int size = TEST_Q->getClauseList().size();
+	optimisedDV->push_back(size);
+
+	QueryEvaluator* qe = new QueryEvaluator();
 	Result* TEST_R = qe->evalOptimisedQuery(TEST_Q, optimisedDV);
 	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
 	CPPUNIT_ASSERT(TEST_PRINT.find("1") != TEST_PRINT.end());
@@ -1350,6 +1360,11 @@ void QueryEvaluatorTest::testAssNoClause(){
 	CPPUNIT_ASSERT(TEST_PRINT.find("9") == TEST_PRINT.end());
 	CPPUNIT_ASSERT(TEST_PRINT.find("10") != TEST_PRINT.end());
 	CPPUNIT_ASSERT(TEST_PRINT.find("11") != TEST_PRINT.end());
+
+	delete optimisedDV;
+	delete TEST_Q;
+	delete qe;
+	delete TEST_R;
 }
 
 void QueryEvaluatorTest::testIfNoClause(){
@@ -1358,9 +1373,11 @@ void QueryEvaluatorTest::testIfNoClause(){
 	SELECT_1.setFirst("i");
 	SELECT_1.setSecond(stringconst::ARG_IF);
 	TEST_Q->addSelectSynonym(SELECT_1);
-	
-	QueryEvaluator* qe = new QueryEvaluator();
 	vector<int>* optimisedDV = new vector<int>();
+	int size = TEST_Q->getClauseList().size();
+	optimisedDV->push_back(size);
+
+	QueryEvaluator* qe = new QueryEvaluator();
 	Result* TEST_R = qe->evalOptimisedQuery(TEST_Q, optimisedDV);
 	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
 	CPPUNIT_ASSERT(TEST_PRINT.find("1") == TEST_PRINT.end());
@@ -1382,9 +1399,11 @@ void QueryEvaluatorTest::testWhileNoClause(){
 	SELECT_1.setFirst("w");
 	SELECT_1.setSecond(stringconst::ARG_WHILE);
 	TEST_Q->addSelectSynonym(SELECT_1);
-	
-	QueryEvaluator* qe = new QueryEvaluator();
 	vector<int>* optimisedDV = new vector<int>();
+	int size = TEST_Q->getClauseList().size();
+	optimisedDV->push_back(size);
+
+	QueryEvaluator* qe = new QueryEvaluator();
 	Result* TEST_R = qe->evalOptimisedQuery(TEST_Q, optimisedDV);
 	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
 	CPPUNIT_ASSERT(TEST_PRINT.find("1") == TEST_PRINT.end());
@@ -1406,9 +1425,11 @@ void QueryEvaluatorTest::testProcNoClause(){
 	SELECT_1.setFirst("p");
 	SELECT_1.setSecond(stringconst::ARG_PROCEDURE);
 	TEST_Q->addSelectSynonym(SELECT_1);
-	
-	QueryEvaluator* qe = new QueryEvaluator();
 	vector<int>* optimisedDV = new vector<int>();
+	int size = TEST_Q->getClauseList().size();
+	optimisedDV->push_back(size);
+
+	QueryEvaluator* qe = new QueryEvaluator();
 	Result* TEST_R = qe->evalOptimisedQuery(TEST_Q, optimisedDV);
 	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
 	CPPUNIT_ASSERT(TEST_PRINT.find("zumba") != TEST_PRINT.end());
@@ -1420,9 +1441,11 @@ void QueryEvaluatorTest::testConstNoClause(){
 	SELECT_1.setFirst("c");
 	SELECT_1.setSecond(stringconst::ARG_CONSTANT);
 	TEST_Q->addSelectSynonym(SELECT_1);
-	
-	QueryEvaluator* qe = new QueryEvaluator();
 	vector<int>* optimisedDV = new vector<int>();
+	int size = TEST_Q->getClauseList().size();
+	optimisedDV->push_back(size);
+
+	QueryEvaluator* qe = new QueryEvaluator();
 	Result* TEST_R = qe->evalOptimisedQuery(TEST_Q, optimisedDV);
 	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
 	CPPUNIT_ASSERT(TEST_PRINT.find("1") != TEST_PRINT.end());
@@ -1439,9 +1462,11 @@ void QueryEvaluatorTest::testVarNoClause(){
 	SELECT_1.setFirst("v");
 	SELECT_1.setSecond(stringconst::ARG_VARIABLE);
 	TEST_Q->addSelectSynonym(SELECT_1);
-	
-	QueryEvaluator* qe = new QueryEvaluator();
 	vector<int>* optimisedDV = new vector<int>();
+	int size = TEST_Q->getClauseList().size();
+	optimisedDV->push_back(size);
+
+	QueryEvaluator* qe = new QueryEvaluator();
 	Result* TEST_R = qe->evalOptimisedQuery(TEST_Q, optimisedDV);
 	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
 	CPPUNIT_ASSERT(TEST_PRINT.find("i") != TEST_PRINT.end());
@@ -1451,4 +1476,70 @@ void QueryEvaluatorTest::testVarNoClause(){
 	CPPUNIT_ASSERT(TEST_PRINT.find("x") != TEST_PRINT.end());
 	CPPUNIT_ASSERT(TEST_PRINT.find("z") != TEST_PRINT.end());
 	CPPUNIT_ASSERT(TEST_PRINT.find("y") != TEST_PRINT.end());
+}
+
+void QueryEvaluatorTest::testBoolOneClause(){
+	Query* TEST_Q = new Query();
+	StringPair SELECT_1 = StringPair();
+	SELECT_1.setFirst("BOOLEAN");
+	SELECT_1.setSecond(stringconst::ARG_BOOLEAN);
+	TEST_Q->addSelectSynonym(SELECT_1);
+	
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, INTEGER_);
+	withBuilder->setEntity(1, "1");
+	withBuilder->setAttrType(1, NULLATTR_);
+	withBuilder->setEntityType(1, stringconst::ENTITY_TYPE_INTEGER);
+	withBuilder->setRefType(2, INTEGER_);
+	withBuilder->setEntity(2, "1");
+	withBuilder->setAttrType(2, NULLATTR_);
+	withBuilder->setEntityType(2, stringconst::ENTITY_TYPE_INTEGER);
+	WithClause* TEST_WC = withBuilder->build();
+	TEST_Q->addClause(TEST_WC);
+
+	vector<int>* optimisedDV = new vector<int>();
+	int size = TEST_Q->getClauseList().size();
+	optimisedDV->push_back(size);
+	QueryEvaluator* qe = new QueryEvaluator();
+	Result* TEST_R = qe->evalOptimisedQuery(TEST_Q, optimisedDV);
+	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
+	CPPUNIT_ASSERT(TEST_PRINT.find("true") != TEST_PRINT.end());
+}
+
+void QueryEvaluatorTest::testBoolMoreClauses(){
+	Query* TEST_Q = new Query();
+	StringPair SELECT_1 = StringPair();
+	SELECT_1.setFirst("BOOLEAN");
+	SELECT_1.setSecond(stringconst::ARG_BOOLEAN);
+	TEST_Q->addSelectSynonym(SELECT_1);
+	
+	WithClauseBuilder* withBuilder = new WithClauseBuilder(WITH_);
+	withBuilder->setRefType(1, INTEGER_);
+	withBuilder->setEntity(1, "1");
+	withBuilder->setAttrType(1, NULLATTR_);
+	withBuilder->setEntityType(1, stringconst::ENTITY_TYPE_INTEGER);
+	withBuilder->setRefType(2, INTEGER_);
+	withBuilder->setEntity(2, "1");
+	withBuilder->setAttrType(2, NULLATTR_);
+	withBuilder->setEntityType(2, stringconst::ENTITY_TYPE_INTEGER);
+	WithClause* TEST_WC = withBuilder->build();
+	TEST_Q->addClause(TEST_WC);
+
+	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
+	parentBuilder->setArg(1, "9");
+	parentBuilder->setArgFixed(1, true);
+	parentBuilder->setArgType(1, ARG_IF);
+	parentBuilder->setArg(2, "11");
+	parentBuilder->setArgFixed(2, true);
+	parentBuilder->setArgType(2, ARG_STATEMENT);
+	ParentClause* TEST_PC = (ParentClause*) parentBuilder->build();
+	TEST_Q->addClause((Clause*)TEST_PC);
+
+	vector<int>* optimisedDV = new vector<int>();
+	int size = TEST_Q->getClauseList().size();
+	optimisedDV->push_back(size);
+	QueryEvaluator* qe = new QueryEvaluator();
+	Result* TEST_R = qe->evalOptimisedQuery(TEST_Q, optimisedDV);
+	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
+	CPPUNIT_ASSERT(TEST_PRINT.find("true") != TEST_PRINT.end());
 }
