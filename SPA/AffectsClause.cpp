@@ -233,27 +233,40 @@ unordered_set<string> AffectsClause::getAllS1WithS2Fixed(string s2) {
 	// prepare result obj
 	unordered_set<string> result;
 	
-	// get the statement object and make sure it is an assign stmt
 	int stmtNum = lexical_cast<int>(s2);
+
+	// first stmt cannot be affected and any stmt num below 1 is wrong.
+	if (stmtNum <= 1) {
+		return result;
+	}
+	
+	// get the statement object and make sure it is an assign stmt
 	Statement* stmt = stmtTable->getStmtObj(stmtNum);
 	if (stmt->getType() != ASSIGN_STMT_) {
 		return result;
 	}
 
-	// get the uses set
+	// now look at the previous stmt
+	int prevStmtNum = stmtNum - 1;
+	Statement* prevStmt = stmtTable->getStmtObj(prevStmtNum);
+	
+	// get the uses set of the first stmt
 	unordered_set<string> usesSet = stmt->getUses();
 	if (usesSet.size() <= 0) {
 		//if the assignment doesnt use anything, then nothing affects it
 		return result;
 	}
+	
+	//cout << "start from the previous NODE instead" << endl;
 
-	// get the gnode of this stmt
+	// get the gnode of the prev stmt
 	GNode* gn = stmt->getGNodeRef();
+	GNode* pgn = gn->getParents().at(0);
 
 	BOOST_FOREACH(string var, usesSet) {
 		//cout << "using " << var << endl;
 		unordered_set<int> intResults;// = new unordered_set<int>();
-		modadd(var, gn, &intResults, new unordered_set<int>(), stmtNum);
+		modadd(var, pgn, &intResults, new unordered_set<int>());
 		//cout << "done with " << var << endl;
 		//cout << intResults.size() << endl;
 		BOOST_FOREACH(int r, intResults) {
@@ -263,6 +276,7 @@ unordered_set<string> AffectsClause::getAllS1WithS2Fixed(string s2) {
 		}
 		//cout << "dont" << endl;
 	}
+
 	//cout << "done" << endl;
 	//// get the containing procedure
 	//Procedure* containingProc = stmt->getProc();
@@ -489,7 +503,7 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 			return;
 
 		case CALL_ :
-			//cout << "call" << endl;
+			//cout << "call" << gn->getStartStmt() << endl;
 			print(*visitedSet);
 			if (visitedSet->count(gn->getStartStmt()) >= 1) {
 				return;
@@ -505,7 +519,7 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 			}
 
 		case IF_ :
-			//cout << "if" << endl;
+			//cout << "if" << gn->getStartStmt() << endl;
 			print(*visitedSet);
 			if (visitedSet->count(gn->getStartStmt()) >= 1) {
 				return;
@@ -580,7 +594,7 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 				}
 			}
 		}
-		////cout << gn->getParents().size() << endl;
+		//cout << gn->getParents().size() << endl;
 		modadd(var, gn->getParents().at(0), resultSet, visitedSet);
 	}
 }
