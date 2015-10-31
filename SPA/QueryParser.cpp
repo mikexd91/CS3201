@@ -468,8 +468,7 @@ void QueryParser::parseClause(Query* query, queue<string>* line){
 				} else if (ptable->contains(firstVar)){
 					newClause->setArgType(1, stringconst::ARG_PROCEDURE);
 				} else {
-					cout << "no such variable or procedure name" << endl;
-					throw InvalidArgumentException();
+					newClause->setArgType(1, stringconst::ARG_VARIABLE);
 				}
 			}
 		} else {
@@ -523,8 +522,7 @@ void QueryParser::parseClause(Query* query, queue<string>* line){
 				} else if (ptable->contains(secondVar)){
 					newClause->setArgType(2, stringconst::ARG_PROCEDURE);
 				} else {
-					cout << "no such variable or procedure name" << endl;
-					throw InvalidArgumentException();
+					newClause->setArgType(2, stringconst::ARG_VARIABLE);
 				}
 			}
 		} else {
