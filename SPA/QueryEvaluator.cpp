@@ -21,7 +21,7 @@ Result* QueryEvaluator::evaluateQuery(Query* query) {
 	Result *obj = new Result();
 	setClauseList(query->getClauseList());
 	setSelectList(query->getSelectList());
-	obj = evaluateClauses(obj, clauseList);
+	evaluateClauses(obj, clauseList);
 	return obj;
 }
 
@@ -38,16 +38,37 @@ unordered_set<string> QueryEvaluator::getValuesToPrint(Result* obj, vector<Strin
 	string syn, type;
 	int numOfSyn = selectList.size();
 	bool isQueryPassed = obj->isPass();
-
+	
 	if (numOfSyn == 1) {
 		syn = selectList.at(0).getFirst();
 		type = selectList.at(0).getSecond();
-		if (syn == "BOOLEAN" && type == stringconst::ARG_BOOLEAN) {
+		// Case of select boolean
+		bool isSelectBoolNoClause = (syn == "BOOLEAN") && 
+			(type == stringconst::ARG_BOOLEAN) && (clauseList.empty());
+		bool isSelectBoolWithClause = (syn == "BOOLEAN") && 
+			(type == stringconst::ARG_BOOLEAN) && (!clauseList.empty());
+		
+		if (isSelectBoolNoClause) {
+			obj->setFail();
+			resultSet.insert(boolToString(obj->isPass()));
+
+		} else if (isSelectBoolWithClause) {
 			resultSet.insert(boolToString(isQueryPassed));
+
 		} else if (isQueryPassed) {
+			// Case of select 1 synonym
 			resultSet = printSingleSynValues(*obj, syn);
 		}
+	/*
+		if (syn == "BOOLEAN" && type == stringconst::ARG_BOOLEAN) {
+			
+		} else if (isQueryPassed) {
+			// Case of select 1 synonym
+			resultSet = printSingleSynValues(*obj, syn);
+		}
+		*/
 	} else {
+		// Case of select tuple
 		if (isQueryPassed) {
 			resultSet = printTupleSynValues(*obj, selectList);
 		}
@@ -92,12 +113,12 @@ void QueryEvaluator::setSelectList(vector<StringPair> selectList) {
 	this->selectList = selectList;
 }
 
-Result* QueryEvaluator::evaluateClauses(Result* obj, vector<Clause*> clauseList) {
+void QueryEvaluator::evaluateClauses(Result* obj, vector<Clause*> clauseList) {
 	for (vector<Clause*>::iterator i = clauseList.begin(); i != clauseList.end(); ++i) {
 		Clause* c = *i;
 		if (c->evaluate(obj) == false) {
 			obj->setFail();
-			return obj;
+			return;
 		} 
 	}
 	string syn = selectList.at(0).getFirst();
@@ -105,7 +126,6 @@ Result* QueryEvaluator::evaluateClauses(Result* obj, vector<Clause*> clauseList)
 	if (syn != "BOOLEAN" && type != stringconst::ARG_BOOLEAN) {
 		getRemainingSynValuesFromTable(*obj);
 	}
-	return obj;
 }
 
 void QueryEvaluator::getRemainingSynValuesFromTable(Result &obj) {

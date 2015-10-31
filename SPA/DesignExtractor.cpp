@@ -1,6 +1,7 @@
 #include "DesignExtractor.h"
 #include "ProcTable.h"
 #include "StmtTable.h"
+#include "VarTable.h"
 #include "WhileNode.h"
 #include "IfNode.h"
 #include "boost/foreach.hpp"
@@ -12,7 +13,6 @@ DesignExtractor::DesignExtractor() {
 
 void DesignExtractor::executeSecondPass() {
 	checkCyclicCalls();
-	//populateModUsesProc();
 	populateModUsesCalls();
 	populateFollowStar();
 	populateParentStar();
@@ -22,31 +22,34 @@ void DesignExtractor::checkCyclicCalls(){
 	ProcTable* procTable = ProcTable::getInstance();
 	unordered_set<Procedure*> procs = procTable->getAllProcs();
 	//for each procedure, check whether there is a cyclic call
+	unordered_set<Procedure*> visitedProcs = unordered_set<Procedure*>();
+	unordered_set<Procedure*> recurseProcs = unordered_set<Procedure*>();
 	BOOST_FOREACH(Procedure* proc, procs) {
-		unordered_set<Procedure*> visitedProcs = unordered_set<Procedure*>();
-		queue<Procedure*> nextProcs = queue<Procedure*>();
-		nextProcs.push(proc);
-		//while there are still procedures to be evaluated
-		while (!nextProcs.empty()) {
-			//get proc to be evaluated
-			Procedure* currentProc = nextProcs.front();
-			nextProcs.pop();
-			//mark the proc as visited
-			visitedProcs.insert(currentProc);
-			//get all other procedures that are called
-			Procedure::CallsSet calledProcs = currentProc->getCalls();
-			BOOST_FOREACH(Procedure* calledProc, calledProcs) {
-				//called procedure has already been visited -> there's a cycle!
-				if (visitedProcs.find(calledProc) != visitedProcs.end()) {
-					throw InvalidCodeException("Circular calls detected!");
-				} else {
-					//add it to queue
-					//to check if the called procedure will result in a cycle in the next round
-					nextProcs.push(calledProc);
-				}
-			}
+		if (isCyclicCall(visitedProcs, recurseProcs, proc)) {
+			throw InvalidCodeException("Cyclic calls detected!");
 		}
 	}
+}
+
+bool DesignExtractor::isCyclicCall(unordered_set<Procedure*> visitedProcs, unordered_set<Procedure*> recurseProcs, Procedure* currentProc) {
+	if(visitedProcs.find(currentProc) == visitedProcs.end()) {
+		// Mark the current node as visited and part of recursion stack
+		visitedProcs.insert(currentProc);
+		recurseProcs.insert(currentProc);
+
+		// Recur for all the vertices adjacent to this vertex
+		Procedure::CallsSet calledProcs = currentProc->getCalls();
+		BOOST_FOREACH(Procedure* calledProc, calledProcs) {
+			if ( visitedProcs.find(calledProc) == visitedProcs.end() && isCyclicCall(visitedProcs, recurseProcs, calledProc)) {
+				return true;
+			} else if (recurseProcs.find(calledProc) != recurseProcs.end()) {
+				return true;
+			}
+		}
+ 
+	}
+	recurseProcs.erase(currentProc);  // remove the vertex from recursion stack
+	return false;
 }
 
 
@@ -185,18 +188,6 @@ void DesignExtractor::recurseParentStar(StmtNode* stmtNode, vector<int>& current
 	}	
 }
 
-void DesignExtractor::populateModUsesProc() {
-	ProcTable* procTable = ProcTable::getInstance();
-	unordered_set<Procedure*> procSet = procTable->getAllProcs();
-	
-	BOOST_FOREACH(auto p, procSet) {
-		unordered_set<string> modifies = recurseModifies(p);
-		unordered_set<string> uses = recurseUses(p);
-		p->setModifies(modifies);
-		p->setUses(uses);
-	}
-}
-
 void DesignExtractor::populateModUsesCalls() {
 	StmtTable* stmtTable = StmtTable::getInstance();
 	ProcTable* procTable = ProcTable::getInstance();
@@ -207,40 +198,117 @@ void DesignExtractor::populateModUsesCalls() {
 		stmt->setUses(procTable->getProcObj(procName)->getUses());
 		stmt->setModifies(procTable->getProcObj(procName)->getModifies());
 	}
+
+	BOOST_FOREACH(auto stmt, callsStmt) {
+		populateCallsParents(stmt);
+		populateCallsVarTable(stmt);
+	}
 }
 
-unordered_set<string> DesignExtractor::recurseModifies(Procedure* proc) {
-	unordered_set<Procedure*> calls = proc->getCalls();
+void DesignExtractor::populateCallsParents(Statement* callStmt) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	unordered_set<string> uses = callStmt->getUses();
+	unordered_set<string> modifies = callStmt->getModifies();
 
-	if(calls.empty()) {
-		return proc->getModifies();
+	bool flag = true;
+	int parent;
+	
+	if(callStmt->getParent() != -1) {
+		parent = callStmt->getParent();
+	} else {
+		flag = false;	
 	}
 
-	unordered_set<string> modifies;
-	BOOST_FOREACH(auto pCall, calls) {
-		modifies = proc->getModifies();
-		unordered_set<string> recurseSet = recurseModifies(pCall);
-		modifies.insert(recurseSet.begin(), recurseSet.end());
-		return modifies;
-	}
+	while(flag) {
+		Statement* parentStmt = stmtTable->getStmtObj(parent);
+		unordered_set<string> parentUses = parentStmt->getUses();
+		unordered_set<string> parentMods = parentStmt->getModifies();
+		parentUses.insert(uses.begin(), uses.end());
+		parentMods.insert(modifies.begin(), modifies.end());
+		parentStmt->setUses(parentUses);
+		parentStmt->setModifies(parentMods);
 
-	return modifies;
+		populateParentCallsVarTable(parent, uses, modifies);
+
+		if(parentStmt->getParent() != -1) {
+			parent = parentStmt->getParent();
+		} else {
+			flag = false;
+		}
+	}
 }
 
-unordered_set<string> DesignExtractor::recurseUses(Procedure* proc) {
-	unordered_set<Procedure*> calls = proc->getCalls();
-
-	if(calls.empty()) {
-		return proc->getUses();
+void DesignExtractor::populateCallsVarTable(Statement* callStmt) {
+	VarTable* varTable = VarTable::getInstance();
+	unordered_set<string> uses = callStmt->getUses();
+	unordered_set<string> mods = callStmt->getModifies();
+	int stmtNum = callStmt->getStmtNum();
+	
+	BOOST_FOREACH(auto u, uses) {
+		Variable* useVar = varTable->getVariable(u);
+		useVar->addUsingStmt(stmtNum);
 	}
 
-	unordered_set<string> uses;
-	BOOST_FOREACH(auto pCall, calls) {
-		uses = proc->getUses();
-		unordered_set<string> recurseSet = recurseUses(pCall);
-		uses.insert(recurseSet.begin(), recurseSet.end());
-		return uses;
+	BOOST_FOREACH(auto m, mods) {
+		Variable* modVar = varTable->getVariable(m);
+		modVar->addModifyingStmt(stmtNum);
+	}
+}
+
+void DesignExtractor::populateParentCallsVarTable(int stmtNum, unordered_set<string> uses, unordered_set<string> mods) {
+	VarTable* varTable = VarTable::getInstance();
+	BOOST_FOREACH(auto u, uses) {
+		Variable* var = varTable->getVariable(u);
+		var->addUsingStmt(stmtNum);
 	}
 
-	return uses;
+	BOOST_FOREACH(auto m, mods) {
+		Variable* var = varTable->getVariable(m);
+		var->addModifyingStmt(stmtNum);
+	}
+}
+
+void DesignExtractor::constructBip() {
+	StmtTable* stmtTable = stmtTable->getInstance();
+
+	unordered_set<Statement*> callStmts = stmtTable->getCallStmts();
+	BOOST_FOREACH(auto c, callStmts) {
+		breakBonds(c);
+	}
+}
+
+void DesignExtractor::breakBonds(Statement* callStmt) {
+	CFGbip* cfg = CFGbip::getInstance();
+
+	GNode* callNode = callStmt->getGBipNodeRef();
+	GNode* originalChild = callNode->getChildren().at(0);
+
+	ProcGNode* calledProc = cfg->getProcedure(callStmt->getCalls());
+	EndGNode* calledEnd = (EndGNode*) calledProc->getEndNode();
+
+	callNode->setFirstChild(calledProc);
+
+	switch(originalChild->getNodeType()) {
+		case ASSIGN_: case CALL_: case IF_: case END_:
+			originalChild->setFirstParent(calledEnd);
+			break;
+		case WHILE_: case DUMMY_:
+			if(originalChild->getParents().at(0) == callNode) {
+				originalChild->setSecondParent(calledEnd);
+			} else {
+				originalChild->setFirstParent(calledEnd);
+			}
+			break;
+		default:
+			break;
+	}
+
+	vector<GNode*> calledProcParents = calledProc->getParents();
+	vector<GNode*> calledEndChildren = calledEnd->getChildren();
+
+	calledProcParents.push_back(callNode);
+	calledEndChildren.push_back(originalChild);
+
+	calledProc->setParents(calledProcParents);
+	calledEnd->setChildren(calledEndChildren);
 }
