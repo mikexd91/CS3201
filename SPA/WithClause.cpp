@@ -117,7 +117,6 @@ void WithClause::setRightRef(WithClauseRef rightRef)
 bool WithClause::evaluate(Result* res){
 	
 	if(!isValid()){
-		cout << "failed valid";
 		return false;
 	}
 
@@ -565,9 +564,10 @@ bool WithClause::evalCallString(WithClauseRef callEnt, WithClauseRef strEnt, Res
 	if (result->isSynPresent(callEnt.getEntity())){
 		unordered_set<string> synValues = result->getSyn(callEnt.getEntity());
 		bool found = false;
+		StmtTable* stable = StmtTable::getInstance();
 		BOOST_FOREACH(string s, synValues){
-			if (s == strEnt.getEntity()){
-				found = true;
+			Statement* stmt = stable->getStmtObj(stoi(s));
+			if (stmt->getCalls() == strEnt.getEntity()){
 				insert.insertValue(s);
 			}
 		}
@@ -580,7 +580,7 @@ bool WithClause::evalCallString(WithClauseRef callEnt, WithClauseRef strEnt, Res
 		unordered_set<Statement*> allC = stable->getCallStmts();
 		bool found = false;
 		BOOST_FOREACH(Statement* s, allC){
-			if (s->getProc()->getProcName() == strEnt.getEntity()){
+			if (s->getCalls() == strEnt.getEntity()){
 				insert.insertValue(strEnt.getEntity());
 				found = true;
 			}
