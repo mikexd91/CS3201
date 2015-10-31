@@ -436,10 +436,14 @@ vector<string> SynGraph::getSynFromWithClause(WithClause* wc) {
 	WithClauseRef leftSide = wc->getLeftRef();
 	WithClauseRef rightSide = wc->getRightRef();
 
-	bool isLeftSyn = (leftSide.getRefType() == ATTRREF_ || SYNONYM_);
-	bool isRightSyn = (rightSide.getRefType() == ATTRREF_ || SYNONYM_);
-	bool isLeftFixed = (leftSide.getRefType() == IDENT_ || INTEGER_);
-	bool isRightFixed =(rightSide.getRefType() == IDENT_ || INTEGER_);
+	bool isLeftSyn = (leftSide.getRefType() == ATTRREF_ || 
+						leftSide.getRefType() == SYNONYM_);
+	bool isRightSyn = (rightSide.getRefType() == ATTRREF_ || 
+						rightSide.getRefType() == SYNONYM_);
+	bool isLeftFixed = (leftSide.getRefType() == IDENT_ || 
+						leftSide.getRefType() == INTEGER_);
+	bool isRightFixed =(rightSide.getRefType() == IDENT_ || 
+						leftSide.getRefType() == INTEGER_);
 	
 	// get multi synonym
 	if (isLeftSyn && isRightSyn) {

@@ -7,23 +7,25 @@ using namespace std;
 
 class QueryOptimiserTest: public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( QueryOptimiserTest );
-	CPPUNIT_TEST ( testMutiSingleSyn1Component );
-	CPPUNIT_TEST ( testMultiComponent );
+
+	CPPUNIT_TEST ( testGettingStartingSynonym );
+	CPPUNIT_TEST ( testWithCombination );
+	CPPUNIT_TEST ( testPatternAssignWhileIfCombination );
+	CPPUNIT_TEST ( testManySingleSyn );
+	CPPUNIT_TEST ( testManyComponent );
 	CPPUNIT_TEST ( testTrickyCase );
-	
-	//CPPUNIT_TEST( testSortingPatternAndSuchThatClauses );
-	//CPPUNIT_TEST( testSortingWhileAndSuchThatClauses );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
 	void setUp();
 	void tearDown();
 
-	void testMutiSingleSyn1Component();
-	void testMultiComponent();
+	void testGettingStartingSynonym();
+	void testWithCombination();
+	void testPatternAssignWhileIfCombination();
+	void testManySingleSyn();
+	void testManyComponent();
 	void testTrickyCase();
 	
-	//void testSortingPatternAndSuchThatClauses();
-	//void testSortingWhileAndSuchThatClauses();
 };
 

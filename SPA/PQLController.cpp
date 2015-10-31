@@ -1,6 +1,7 @@
 #include "PQLController.h"
 #include "QueryParser.h"
 #include "QueryEvaluator.h"
+#include "QueryOptimiser.h"
 #include "Result.h"
 #include <string>
 #include <iostream>
@@ -24,6 +25,9 @@ unordered_set<string> PQLController::parse(string query) {
 		QueryParser* parser = QueryParser::getInstance();
 		Query* q= parser->parseQuery(query);
 		//cout << "Query Parse Successful" << endl;
+		QueryOptimiser *qo = new QueryOptimiser();
+		vector<int> compSize = qo->optimizeQuery(q);
+
 		QueryEvaluator* qe = new QueryEvaluator();
 		Result* resObj = qe->evaluateQuery(q);
 		//cout << "Query Evaluated" << endl;
