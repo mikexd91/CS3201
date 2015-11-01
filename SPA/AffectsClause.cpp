@@ -256,25 +256,57 @@ unordered_set<string> AffectsClause::getAllS1WithS2Fixed(string s2) {
 		//if the assignment doesnt use anything, then nothing affects it
 		return result;
 	}
-	
-	//cout << "start from the previous NODE instead" << endl;
 
-	// get the gnode of the prev stmt
+	//sigh
+	// start from pervious node only if the previous stmt is not within the same assg node
+
+	// get the current gnode
 	GNode* gn = stmt->getGNodeRef();
-	GNode* pgn = gn->getParents().at(0);
+	// get the start stmt
+	int gnStartStmtNum = gn->getStartStmt();
+	
+	if (gnStartStmtNum <= prevStmtNum) {
+		// if start stmt is less than or equal to the prev stmt then it is in the same assg node, 
+		// so do modaddassg from this node and prev stmt num
 
-	BOOST_FOREACH(string var, usesSet) {
-		//cout << "using " << var << endl;
-		unordered_set<int> intResults;// = new unordered_set<int>();
-		modadd(var, pgn, &intResults, new unordered_set<int>());
-		//cout << "done with " << var << endl;
-		//cout << intResults.size() << endl;
-		BOOST_FOREACH(int r, intResults) {
-			//cout << r << endl;
-			string rs = to_string((long long) r);
-			result.insert(rs);
+		//cout << "start from this NODE at prev stmt num" << endl;
+
+		BOOST_FOREACH(string var, usesSet) {
+			//cout << "using " << var << endl;
+			unordered_set<int> intResults;// = new unordered_set<int>();
+			modadd(var, gn, &intResults, new unordered_set<int>(), prevStmtNum);
+			//cout << "done with " << var << endl;
+			//cout << intResults.size() << endl;
+			BOOST_FOREACH(int r, intResults) {
+				//cout << r << endl;
+				string rs = to_string((long long) r);
+				result.insert(rs);
+			}
+			//cout << "dont" << endl;
 		}
-		//cout << "dont" << endl;
+
+	} else {
+		// else the prev stmt is not in the same assg node, 
+		// so do modaddnonassg from previous node
+
+		//cout << "start from the previous NODE instead" << endl;
+
+		// get the gnode of the prev stmt
+		GNode* pgn = gn->getParents().at(0);
+
+		BOOST_FOREACH(string var, usesSet) {
+			//cout << "using " << var << endl;
+			unordered_set<int> intResults;// = new unordered_set<int>();
+			modadd(var, pgn, &intResults, new unordered_set<int>());
+			//cout << "done with " << var << endl;
+			//cout << intResults.size() << endl;
+			BOOST_FOREACH(int r, intResults) {
+				//cout << r << endl;
+				string rs = to_string((long long) r);
+				result.insert(rs);
+			}
+			//cout << "dont" << endl;
+		}
 	}
 
 	//cout << "done" << endl;
