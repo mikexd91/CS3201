@@ -3,6 +3,7 @@
 #include "InsertType.h"
 #include "boost/foreach.hpp"
 #include <boost/lexical_cast.hpp>
+#include <algorithm>
 #include <iostream>
 #include <string>
 
@@ -87,7 +88,7 @@ unordered_set<string> QueryEvaluator::printValues(Result* finalRes, vector<Strin
 		autotesterPrintouts.clear();
 	} else {
 		if (selList.size() == 1){
-			autotesterPrintouts = printSingleSynValues(*finalRes, selList.at(0).getFirst());
+			autotesterPrintouts = printSingleSynValues(*finalRes, selList.at(0));
 		} else if (selList.size() > 1){
 			autotesterPrintouts = printTupleSynValues(*finalRes, selList);
 		}
@@ -98,30 +99,74 @@ unordered_set<string> QueryEvaluator::printValues(Result* finalRes, vector<Strin
 	return autotesterPrintouts;
 }
 
-unordered_set<string> QueryEvaluator::printSingleSynValues(Result &obj, string syn) {
-	unordered_set<string> resultSet = obj.getSyn(syn);
+unordered_set<string> QueryEvaluator::printSingleSynValues(Result &result, StringPair syn) {
+	string synonym = syn.getFirst();
+	unordered_set<string> resultSet = unordered_set<string>();
+	if (syn.getSecond() == stringconst::ARG_CALL && syn.getAttribute() == stringconst::ATTR_COND_PROCNAME){
+		unordered_set<string> callNums = result.getSyn(synonym);
+		StmtTable* stable = StmtTable::getInstance();
+		BOOST_FOREACH(string n, callNums){
+			int num = stoi(n);
+			Statement* stmt = stable->getStmtObj(num);
+			string cname = stmt->getCalls();
+			resultSet.insert(cname);
+		}
+	} else {
+		resultSet = result.getSyn(synonym);
+	}
 	return resultSet;
 }
 
-unordered_set<string> QueryEvaluator::printTupleSynValues(Result &obj, vector<StringPair> selectList) {
-	vector<string> synList;
+unordered_set<string> QueryEvaluator::printTupleSynValues(Result &result, vector<StringPair> selectList) {
 	unordered_set<string> resultSet;
+	vector<size_t> callProcName = vector<size_t>();
+	for (size_t i=0; i<selectList.size(); i++){
+		StringPair sp = selectList.at(i);
+		if (sp.getSecond() == stringconst::ARG_CALL && sp.getAttribute() == stringconst::ATTR_COND_PROCNAME){
+			callProcName.push_back(i);
+		}
+	}
+
+	vector<string> synList;
 	for (auto iter = selectList.begin(); iter != selectList.end(); ++iter) {
 		synList.push_back(iter->getFirst());
 	}
-	unordered_set<vector<string>> resSet = obj.getMultiSyn(synList);
-	for (auto rowIter = resSet.begin(); rowIter != resSet.end(); ++rowIter) {
-		string tuple = "";
-		vector<string> tupleList = *rowIter;
-		for (auto valueIter = tupleList.begin(); valueIter != tupleList.end(); ++valueIter) {
-			if (valueIter != tupleList.end() - 1) {
-				tuple.append(*valueIter);
-				tuple.append(" ");
-			} else {
-				tuple.append(*valueIter);
+	if (callProcName.empty()){
+		unordered_set<vector<string>> resSet = result.getMultiSyn(synList);
+		for (auto rowIter = resSet.begin(); rowIter != resSet.end(); ++rowIter) {
+			string tuple = "";
+			vector<string> tupleList = *rowIter;
+			for (auto valueIter = tupleList.begin(); valueIter != tupleList.end(); ++valueIter) {
+				if (valueIter != tupleList.end() - 1) {
+					tuple.append(*valueIter);
+					tuple.append(" ");
+				} else {
+					tuple.append(*valueIter);
+				}
 			}
+			resultSet.insert(tuple);
 		}
-		resultSet.insert(tuple);
+	} else {
+		StmtTable* stable = StmtTable::getInstance();
+		string whitespace = " ";
+		unordered_set<vector<string>> resSet = result.getMultiSyn(synList);
+		BOOST_FOREACH(vector<string> tupleRes, resSet){
+			for (size_t index=0; index < tupleRes.size(); index++){
+				if (std::find(callProcName.begin(), callProcName.end(), index) != callProcName.end()){
+					//what a long .contains statement
+					string callNum = tupleRes.at(index);
+					string callName = stable->getStmtObj(stoi(callNum))->getCalls();
+					tupleRes.at(index) = callName;
+				}
+			}
+			string tuple = "";
+			tuple.append(tupleRes.at(0));
+			for (size_t index=1; index<tupleRes.size(); index++){
+				tuple.append(whitespace);
+				tuple.append(tupleRes.at(index));
+			}
+			resultSet.insert(tuple);
+		}
 	}
 	return resultSet;
 }
@@ -336,7 +381,6 @@ Result* QueryEvaluator::evalOptimisedQuery(Query* query, vector<int>* componentI
 					extractTupleSynonymResults(currentRes, finalResult, tuple);
 				} else {
 					BOOST_FOREACH(string s, tuple){
-
 						if (currentRes->isSynPresent(s)){
 							extractSingleSynonymResults(currentRes, finalResult, synonym);
 						}
@@ -365,18 +409,6 @@ Result* QueryEvaluator::evalOptimisedQuery(Query* query, vector<int>* componentI
 	}
 	if (!validResults){
 		finalResult = new Result();
-	}
-	BOOST_FOREACH(StringPair sp, selList){
-		if (sp.getSecond() == stringconst::ARG_CALL && sp.getAttribute() == stringconst::ATTR_COND_PROCNAME){
-			SingleSynInsert convert = SingleSynInsert();
-			convert.setSyn(sp.getFirst());
-			unordered_set<string> cnum = finalResult->getSyn(sp.getFirst());
-			BOOST_FOREACH(string num, cnum){
-				string cname = stmtTable->getStmtObj(stoi(num))->getCalls();
-				convert.insertValue(cname);
-			}
-			finalResult->push(convert);
-		}
 	}
 	return finalResult;
 }
@@ -414,16 +446,9 @@ bool QueryEvaluator::evalNoClause(Query* query, Result* output){
 				insert.insertValue(to_string((long long)s->getStmtNum()));
 			}
 		} else if (synonymType == stringconst::ARG_CALL){
-			if (sp.getAttribute() == stringconst::ATTR_COND_PROCNAME){
-				unordered_set<Statement*> allC = stable->getCallStmts();
-				BOOST_FOREACH(Statement* s, allC){
-					insert.insertValue(s->getCalls());
-				}
-			} else {
-				unordered_set<Statement*> allC = stable->getCallStmts();
-				BOOST_FOREACH(Statement* s, allC){
-					insert.insertValue(to_string((long long)s->getStmtNum()));
-				}
+			unordered_set<Statement*> allC = stable->getCallStmts();
+			BOOST_FOREACH(Statement* s, allC){
+				insert.insertValue(to_string((long long)s->getStmtNum()));
 			}
 		} else if (synonymType == stringconst::ARG_IF){
 			unordered_set<Statement*> allI = stable->getIfStmts();
