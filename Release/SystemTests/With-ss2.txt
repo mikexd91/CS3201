@@ -276,12 +276,12 @@ Select cl with cl.stmt# = c.value
 56 - WITH-stmt: value = stmt#
 stmt s; constant c;
 Select c with c.value = s.stmt#
-2, 5
+2, 3, 5
 5000
 57 - WITH-assign: value = stmt#
 assign a; constant c;
 Select c with c.value = a.stmt#
-2, 3, 5
+2, 5
 5000
 58 - WITH-while: value = stmt# (no result)
 while w; constant c;
