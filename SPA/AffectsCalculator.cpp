@@ -243,10 +243,22 @@ void AffectsCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 			}
 		}
 		Statement::ModifiesSet modifiedVariables = assgStmt->getModifies();
-		BOOST_FOREACH(string modifiedVar, modifiedVariables) {
-			unordered_set<int> modifyingStmts = unordered_set<int>();
-			modifyingStmts.insert(stmtNum);
-			state[modifiedVar] = modifyingStmts;
+		if (type == FIXED_GENERIC) {
+			BOOST_FOREACH(string modifiedVar, modifiedVariables) {
+				//if current statements modifies the var that we are looking out for
+				if (modifiedVar == *(stmtTable->getStmtObj(s1Num)->getModifies().begin()) && !inWhileLoop) {
+					state.erase(modifiedVar);
+					result = false;
+					throw AffectsTermination();
+				}
+			}
+		} else {
+			//see whether var modified overrides any others
+			BOOST_FOREACH(string modifiedVar, modifiedVariables) {
+				unordered_set<int> modifyingStmts = unordered_set<int>();
+				modifyingStmts.insert(stmtNum);
+				state[modifiedVar] = modifyingStmts;
+			}
 		}
 		if (!toProceed(state)) {
 			throw AffectsTermination();
