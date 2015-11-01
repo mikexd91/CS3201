@@ -24,12 +24,23 @@ unordered_set<string> PQLController::parse(string query) {
 		QueryParser* parser = QueryParser::getInstance();
 		Query* q= parser->parseQuery(query);
 		//cout << "Query Parse Successful" << endl;
+
+		/////////////////////////////////////////////////
+		//CREATE DUMMY VALUE TO SIMULATE OPTIMISATION  //
+		/////////////////////////////////////////////////
+		int numClauses = q->getClauseList().size();
+		vector<int>* optimisedDV = new vector<int>();
+		optimisedDV->push_back(numClauses);
+		/////////////////////////////////////////////////
+		//DELETE AFTER USE							   //
+		/////////////////////////////////////////////////
+
 		QueryEvaluator* qe = new QueryEvaluator();
-		Result* resObj = qe->evaluateQuery(q);
+		Result* resObj = qe->evalOptimisedQuery(q, optimisedDV);
 		//cout << "Query Evaluated" << endl;
 		vector<StringPair> selectList = q->getSelectList();
 		//cout << resObj->getResultTableSize() << endl;
-		boost::unordered_set<string> valueSet = qe->getValuesToPrint(resObj, selectList);
+		boost::unordered_set<string> valueSet = qe->printValues(resObj, selectList);
 		//cout << "Result Set Size: " << valueSet.size() << endl;
 		//delete q;
 		//delete resObj;

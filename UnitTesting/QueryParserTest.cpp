@@ -296,12 +296,33 @@ void QueryParserTest::testParser(){
 }
 
 void QueryParserTest::debugTests(){
-	string INPUT = "stmt s, s1; Select s such that Follows*(s1, s) and Modifies(s, \"full\")";
+	ProcTable* ptable = ProcTable::getInstance();
+	ptable->clearTable();
+	Procedure* testProcP1 = new Procedure("p1");
+	ptable->addProc(testProcP1);
+	Procedure* testProcP2 = new Procedure("p2");
+	ptable->addProc(testProcP2);
+
+	VarTable* vtable = VarTable::getInstance();
+	vtable->reset();
+	Variable* testVarX = new Variable("x");
+	vtable->addVariable(testVarX);
+	Variable* testVarY = new Variable("y");
+	vtable->addVariable(testVarY);
+
+	string INPUT = "call c; Select c with c.procName = \"asd\"";
 	Query* QUERY = new Query();
 	parser = QueryParser::getInstance();
 	QUERY = parser->parseQuery(INPUT);
 	vector<Clause*> VC = QUERY->getClauseList();
-	CPPUNIT_ASSERT(VC.size() == 2);
-	CPPUNIT_ASSERT(VC.at(0)->getClauseType() == FOLLOWSSTAR_);
-	CPPUNIT_ASSERT(VC.at(1)->getClauseType() == MODIFIES_);
+	CPPUNIT_ASSERT(VC.size() == 1);
+	//CPPUNIT_ASSERT(VC.at(0)->getClauseType() == WITH_);
+	WithClause* WC = (WithClause*)VC.at(0);
+	WithClauseRef WCL = WC->getLeftRef();
+	WithClauseRef WCR = WC->getRightRef();
+	CPPUNIT_ASSERT(WCL.getEntity() == "c");
+	CPPUNIT_ASSERT(WCR.getEntity() == "asd");
+
+	ptable->clearTable();
+	vtable->reset();
 }

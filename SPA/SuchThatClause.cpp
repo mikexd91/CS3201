@@ -152,24 +152,16 @@ bool SuchThatClause::evaluate(Result* res) {
 	if (this->isValid()) {
 		//Parent(1,2)
 		if (isFirstFixed && isSecondFixed) {
-			NoSynInsert insert = NoSynInsert();
-			insert.setPass(evaluateS1FixedS2Fixed(firstArgSyn, secondArgSyn));
-			return res->push(insert);
+			return evaluateS1FixedS2Fixed(firstArgSyn, secondArgSyn);
 		//Parent(_,_)
 		} else if (firstArgType == stringconst::ARG_GENERIC && secondArgType == stringconst::ARG_GENERIC) {
-			NoSynInsert insert = NoSynInsert();
-			insert.setPass(evaluateS1GenericS2Generic());
-			return res->push(insert);
+			return evaluateS1GenericS2Generic();
 		//Parent(_,2)
 		} else if (firstArgType == stringconst::ARG_GENERIC && isSecondFixed) {
-			NoSynInsert insert = NoSynInsert();
-			insert.setPass(evaluateS1GenericS2Fixed(secondArgSyn));
-			return res->push(insert);
+			return evaluateS1GenericS2Fixed(secondArgSyn);
 		//Parent(2,_)
 		} else if (isFirstFixed && secondArgType == stringconst::ARG_GENERIC) {
-			NoSynInsert insert = NoSynInsert();
-			insert.setPass(evaluateS1FixedS2Generic(firstArgSyn));
-			return res->push(insert);
+			return evaluateS1FixedS2Generic(firstArgSyn);
 		//Parent(2,a) or Parent (_,a)
 		} else if (!isSecondFixed && secondArgType != stringconst::ARG_GENERIC && (isFirstFixed || firstArgType == stringconst::ARG_GENERIC)) {
 			//find if second syn is in table
@@ -314,15 +306,11 @@ bool SuchThatClause::evaluate(Result* res) {
 			}
 			return res->push(insert);
 		} else {
-			NoSynInsert insert = NoSynInsert();
-			insert.setPass(false);
-			return res->push(insert);
+			return false;
 			//throw error, all cases should be covered
 			//or we should improve the conditions more to prevent such a situtation from happening
 		}
 	} else {
-		NoSynInsert insert = NoSynInsert();
-		insert.setPass(false);
-		return res->push(insert);
+		return false;
 	}
 }
