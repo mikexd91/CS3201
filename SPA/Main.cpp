@@ -29,11 +29,11 @@ int main() {
 	}
 
 	PQLController* pqlController = new PQLController();
-	string query = "procedure p1, p2, p3 Select p2 such that Calls(p1, p2) and Calls(p2, p3)";
+	string query = "stmt s; Select s such that Affects(s, 15)";
 	try {
 		unordered_set<string> resultSet = pqlController->parse(query);
 		BOOST_FOREACH(auto r, resultSet) {
-			string variable = r;
+			cout << r << endl;
 		}
 		delete pqlController;
 	} catch (std::exception e) {

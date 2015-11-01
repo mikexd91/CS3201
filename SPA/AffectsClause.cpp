@@ -530,13 +530,13 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 		case PROC_ :
 		case PROG_ :
 		case END_ :
-			print(*visitedSet);
+			//print(*visitedSet);
 			//cout << "end" << endl;
 			return;
 
 		case CALL_ :
 			//cout << "call" << gn->getStartStmt() << endl;
-			print(*visitedSet);
+			//print(*visitedSet);
 			if (visitedSet->count(gn->getStartStmt()) >= 1) {
 				return;
 			}
@@ -552,7 +552,7 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 
 		case IF_ :
 			//cout << "if" << gn->getStartStmt() << endl;
-			print(*visitedSet);
+			//print(*visitedSet);
 			if (visitedSet->count(gn->getStartStmt()) >= 1) {
 				return;
 			}
@@ -562,7 +562,7 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 
 		case WHILE_ :
 			//cout << "while" << gn->getStartStmt() << endl;
-			print(*visitedSet);
+			//print(*visitedSet);
 			if (visitedSet->count(gn->getStartStmt()) >= 1) {
 				return;
 			}
@@ -574,8 +574,10 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 		case DUMMY_ :
 			//cout << "dummy" << endl;
 			dgn = (DummyGNode*) gn;
-			dgn_id = dgn->getIfParentStmt() * 100000 + dgn->getElseParentStmt() * 100;
-			print(*visitedSet);
+			//dgn_id = dgn->getIfParentStmt() * 100000 + dgn->getElseParentStmt() * 100;
+			// use gdn.getparents().at(0).getstart() + 900000
+			dgn_id = dgn->getParents().at(0)->getStartStmt() + 900000;
+			//print(*visitedSet);
 			if (visitedSet->count(dgn_id) >= 1) {
 				return;
 			}
@@ -602,7 +604,7 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 		//cout << "end stmt = " << gn->getStartStmt() << endl;
 		for (int i = stmtNum; i >= gn->getStartStmt(); i--) {
 			//cout << i << endl;
-			print(*visitedSet);
+			//print(*visitedSet);
 			if (visitedSet->count(i) >= 1) {
 				// visited this stmt before
 				// above shud be visited before also
@@ -631,7 +633,7 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 	}
 }
 
-void AffectsClause::print(unordered_set<int> s) {
+void AffectsClause::priynt(unordered_set<int> s) {
 	if (s.size() > 0) {
 		//cout << "Visited: ";
 		BOOST_FOREACH(auto x, s) {
