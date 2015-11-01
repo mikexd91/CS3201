@@ -72,6 +72,5 @@ private:
 	int s2Num;
 	bool result;
 	bool isStart;
-	bool inWhile;
 };
 

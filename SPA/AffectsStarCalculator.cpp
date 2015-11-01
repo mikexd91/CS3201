@@ -11,7 +11,7 @@ AffectsStarCalculator::AffectsStarCalculator() {
 	globalState = State();
 	globalResult = AffectsStarResult();
 	isStart = true;
-	inWhile = false;
+	result = false;
 }
 
 AffectsStarCalculator::~AffectsStarCalculator() {
@@ -129,31 +129,35 @@ GNode* AffectsStarCalculator::evaluateNode(GNode* node, State& state) {
 		cout << endl;
 	}
 	*/
+	GNode* nextNode;
 	if (node->getNodeType() == ASSIGN_) {
 		AssgGNode* assgNode = static_cast<AssgGNode*>(node);
 		updateStateForAssign(assgNode, state);
-		return assgNode->getChild();
+		nextNode = assgNode->getChild();
 	} else {
 		if (node->getNodeType() == IF_) {
 			IfGNode* ifNode = static_cast<IfGNode*>(node);
 			updateStateForIf(ifNode, state);
-			return ifNode->getExit()->getChildren().at(0);
+			nextNode = ifNode->getExit()->getChildren().at(0);
 		} else if (node->getNodeType() == WHILE_) {
 			WhileGNode* whileNode = static_cast<WhileGNode*>(node);
-			inWhile = true;
 			updateStateForWhile(whileNode, state);
-			inWhile = false;
-			return whileNode->getAfterLoopChild();
+			nextNode = whileNode->getAfterLoopChild();
 		} else if (node->getNodeType() == CALL_) {
 			CallGNode* callNode = static_cast<CallGNode*>(node);
 			updateStateForCall(callNode, state);
-			return callNode->getChild();
+			nextNode = callNode->getChild();
 		} else {
 			//only dummy node
 			DummyGNode* dummyNode = static_cast<DummyGNode*>(node);
-			return dummyNode->getChildren().at(0);
+			nextNode = dummyNode->getChildren().at(0);
 		}
 	}
+	//exception can only be thrown for syn_syn
+	if (isEmpty(state) && type != SYN_SYN) {
+		throw EmptyStateTermination();
+	}
+	return nextNode;
 }
 
 void AffectsStarCalculator::updateStateForCall(CallGNode* callNode, State& state) {
@@ -172,8 +176,8 @@ void AffectsStarCalculator::updateStateForWhile(WhileGNode* whileNode, State& st
 	//iterate one more time to get those from backloop
 	AffectsStarResult previousResult;
 	do {
-		 previousResult = globalResult;
-		 state1 = recurseWhile(whileNode, state1);
+		previousResult = globalResult;
+		state1 = recurseWhile(whileNode, state1);
 	} while (!areResultsEqual(previousResult, globalResult));
 	//check if stmt we want is in results
 	if (type == FIXED_FIXED) {
@@ -199,7 +203,6 @@ void AffectsStarCalculator::updateStateForWhile(WhileGNode* whileNode, State& st
 			}
 		}
 	}
-
 	state = mergeStates(state, state1);
 }
 
@@ -214,22 +217,18 @@ AffectsStarCalculator::State AffectsStarCalculator::recurseWhile(WhileGNode* whi
 }
 
 void AffectsStarCalculator::updateStateForIf(IfGNode* ifNode, State& state) {
-	State thenState = State();
-	State elseState = State();
-	try {
-		thenState = recurseIf(ifNode->getThenChild(), state);
-	} catch(EmptyStateTermination) {}
-	try {
-		elseState = recurseIf(ifNode->getElseChild(), state);
-	} catch(EmptyStateTermination) {}
+	State thenState = recurseIf(ifNode->getThenChild(), state);
+	State elseState = recurseIf(ifNode->getElseChild(), state);
 	//merge both states tgt
 	state = mergeStates(thenState, elseState);
 }
 
 AffectsStarCalculator::State AffectsStarCalculator::recurseIf(GNode* node, State state) {
-	while(node->getNodeType() != DUMMY_) {
-		node = evaluateNode(node, state);
-	}
+	try {
+		while(node->getNodeType() != DUMMY_) {
+			node = evaluateNode(node, state);
+		}
+	} catch(EmptyStateTermination) {}
 	return state;
 }
 
@@ -270,13 +269,6 @@ void AffectsStarCalculator::updateStateForAssign(AssgGNode* node, State& state) 
 			//else -> used var has not been modified by stmt before
 		}
 
-		//we found the node, just terminate only if not in while loop
-		//otherwise can only eval after looping thru
-		if (type == FIXED_FIXED && !inWhile && stmtNum == s2Num) {
-			//failure as exception is not thrown earlier, throw exception
-			throw AffectsStarTermination();
-		}
-
 		Statement::ModifiesSet modifiedVariables = assgStmt->getModifies();
 		if (type == SYN_SYN) {
 			BOOST_FOREACH(string modifiedVar, modifiedVariables) {
@@ -306,7 +298,7 @@ void AffectsStarCalculator::updateStateForAssign(AssgGNode* node, State& state) 
 			//we should terminate looping through the container if there is no more values in the state table
 			//it is not possible for the source stmt to affect any more statements 
 			//when there is no more value in the state table
-			if (!inWhile && isEmpty(state)) {
+			if (isEmpty(state)) {
 				throw EmptyStateTermination();
 			}
 		}

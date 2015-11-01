@@ -67,7 +67,7 @@ bool AffectsCalculator::computeS1GenericS2Generic() {
 			//reset state
 			globalState = State();
 		}
-	} catch (AffectsTermination e) {
+	} catch (BasicAffectsTermination e) {
 		return true;
 	}
 	return false;
@@ -98,7 +98,7 @@ bool AffectsCalculator::computeS1FixedS2Generic(string s1) {
 		while(currentNode->getNodeType() != END_) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
-	} catch (AffectsTermination e) {
+	} catch (BasicAffectsTermination e) {
 		return result;
 	}
 	return false;
@@ -123,28 +123,32 @@ unordered_set<string> AffectsCalculator::computeAllS2() {
 
 //returns next node
 GNode* AffectsCalculator::evaluateNode(GNode* node, State& state) {
+	GNode* nextNode;
 	if (node->getNodeType() == ASSIGN_) {
 		AssgGNode* assgNode = static_cast<AssgGNode*>(node);
 		updateStateForAssign(assgNode, state);
-		return assgNode->getChild();
+		nextNode =  assgNode->getChild();
 	} else if (node->getNodeType() == IF_) {
 		IfGNode* ifNode = static_cast<IfGNode*>(node);
 		updateStateForIf(ifNode, state);
-		return ifNode->getExit()->getChildren().at(0);
+		nextNode = ifNode->getExit()->getChildren().at(0);
 	} else if (node->getNodeType() == WHILE_) {
 		WhileGNode* whileNode = static_cast<WhileGNode*>(node);
-		inWhileLoop = true;
 		updateStateForWhile(whileNode, state);
-		inWhileLoop = false;
-		return whileNode->getAfterLoopChild();
+		nextNode = whileNode->getAfterLoopChild();
 	} else if (node->getNodeType() == CALL_) {
 		CallGNode* callNode = static_cast<CallGNode*>(node);
 		updateStateForCall(callNode, state);
-		return callNode->getChild();
+		nextNode = callNode->getChild();
 	} else {
 		//dummy node
-		return node->getChildren().at(0);
+		nextNode = node->getChildren().at(0);
 	}
+	//only for fixed_generic. if stmt has been overwritten, do not proceed
+	if (!toProceed(state)) {
+		throw AffectsTermination();
+	}
+	return nextNode;
 }
 
 void AffectsCalculator::updateStateForCall(CallGNode* callNode, State& state) {
@@ -167,9 +171,11 @@ void AffectsCalculator::updateStateForWhile(WhileGNode* whileNode, State& state)
 
 AffectsCalculator::State AffectsCalculator::recurseWhile(WhileGNode* whileNode, State state) {
 	GNode* currentNode = whileNode->getBeforeLoopChild();
-	while(currentNode != whileNode && currentNode->getNodeType() != END_) {
-		currentNode = evaluateNode(currentNode, state);
-	}
+	try {
+		while(currentNode != whileNode && currentNode->getNodeType() != END_) {
+			currentNode = evaluateNode(currentNode, state);
+		}
+	} catch (AffectsTermination) {};
 	return state;
 }
 
@@ -181,9 +187,12 @@ void AffectsCalculator::updateStateForIf(IfGNode* ifNode, State& state) {
 }
 
 AffectsCalculator::State AffectsCalculator::recurseIf(GNode* node, State state) {
-	while(node->getNodeType() != DUMMY_) {
-		node = evaluateNode(node, state);
-	}
+	try {
+		while(node->getNodeType() != DUMMY_) {
+			node = evaluateNode(node, state);
+		}
+	//only thrown for fixed generic
+	} catch (AffectsTermination) {};
 	return state;
 }
 
@@ -210,7 +219,7 @@ void AffectsCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 				case GENERIC_GENERIC: 
 				case FIXED_GENERIC:
 					result = true;
-					throw AffectsTermination();
+					throw BasicAffectsTermination();
 					break;
 				case S1_ONLY: 
 					BOOST_FOREACH(int modifyingStmt, modifyingStmts) {
@@ -234,7 +243,9 @@ void AffectsCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 		Statement::ModifiesSet modifiedVariables = assgStmt->getModifies();
 		if (type == FIXED_GENERIC) {
 			BOOST_FOREACH(string modifiedVar, modifiedVariables) {
-				if (modifiedVar == *(stmtTable->getStmtObj(s1Num)->getModifies().begin()) && !inWhileLoop) {
+				//if current statements modifies the var that we are looking out for
+				if (modifiedVar == *(stmtTable->getStmtObj(s1Num)->getModifies().begin())) {
+					state.erase(modifiedVar);
 					result = false;
 					throw AffectsTermination();
 				}
@@ -246,6 +257,9 @@ void AffectsCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 				modifyingStmts.insert(stmtNum);
 				state[modifiedVar] = modifyingStmts;
 			}
+		}
+		if (!toProceed(state)) {
+			throw AffectsTermination();
 		}
 	}
 }
@@ -268,4 +282,19 @@ AffectsCalculator::State AffectsCalculator::mergeStates(State state1, State stat
 		}
 	}
 	return state1;
+}
+
+bool AffectsCalculator::toProceed(State state) {
+	if (type == FIXED_GENERIC) {
+		State::iterator it = state.find(*(stmtTable->getStmtObj(s1Num)->getModifies().begin()));
+		bool isModifiedVarPresent = it != state.end();
+		if (isModifiedVarPresent){
+			//return true if it is still not replaced
+			return it->second.find(s1Num) != it->second.end();
+		} else {
+			//erased
+			return false;
+		}
+	}
+	return true;
 }

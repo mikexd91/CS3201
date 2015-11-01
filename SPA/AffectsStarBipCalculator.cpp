@@ -12,7 +12,6 @@ AffectsStarBipCalculator::AffectsStarBipCalculator() {
 	globalState = State();
 	globalResult = AffectsStarBipResult();
 	isStart = true;
-	inWhile = false;
 	isEnd = false;
 }
 
@@ -123,47 +122,41 @@ unordered_set<vector<string>> AffectsStarBipCalculator::computeSynSyn(bool isSam
 
 //returns next node
 GNode* AffectsStarBipCalculator::evaluateNode(GNode* node, State& state) {
+	GNode* nextNode;
 	if (node->getNodeType() == ASSIGN_) {
 		AssgGNode* assgNode = static_cast<AssgGNode*>(node);
 		updateStateForAssign(assgNode, state);
-		return assgNode->getChild();
+		nextNode = assgNode->getChild();
 	} else {
 		if (node->getNodeType() == IF_) {
 			IfGNode* ifNode = static_cast<IfGNode*>(node);
 			updateStateForIf(ifNode, state);
-			return ifNode->getExit()->getChildren().at(0);
+			nextNode = ifNode->getExit()->getChildren().at(0);
 		} else if (node->getNodeType() == WHILE_) {
 			WhileGNode* whileNode = static_cast<WhileGNode*>(node);
-			inWhile = true;
 			updateStateForWhile(whileNode, state);
-			inWhile = false;
-			return whileNode->getAfterLoopChild();
+			nextNode = whileNode->getAfterLoopChild();
 		} else if (node->getNodeType() == CALL_) {
 			CallGNode* callNode = static_cast<CallGNode*>(node);
 			updateStateForCall(callNode, state);
-			return callNode->getChild();
+			nextNode = callNode->getChild();
 		} else if (node->getNodeType() == END_) {
 			if (parentCallStmts.empty()) {
 				if (type == FIXED_FIXED || type == FIXED_SYN) {
-					//iterate through children
+					//for fixed fixed/fixed syn, we do not start from the beginning
+					//we therefore need to consider the case where this procedure might be called from another procedure
+					//we iterate through children, if there are
+					//state between children of end node is not modified
+					//we retain the state before entering the different children
 					if (!node->getChildren().empty()) {
 						BOOST_FOREACH(GNode* child, node->getChildren()) {
-							stmtsAfterEnd.push(child);
+							updateStateBeyondEnd(child, state);
 						}
 					}
-					if (stmtsAfterEnd.empty()) {
-						isEnd = true;
-						return node;
-					} else {
-						GNode* nextNode = stmtsAfterEnd.top();
-						stmtsAfterEnd.pop();
-						return nextNode;
-					}
-				} else {
-					//SYN_SYN: no need to consider stmts after end
-					isEnd = true;
-					return node;
-				}
+				}	
+				//otherwise, we do not consider the possibility that it was called, since we will iterate through it later
+				isEnd = true;
+				nextNode = node;
 			} else {
 				//proc was called by another proc
 				EndGNode* endNode = static_cast<EndGNode*>(node);
@@ -181,19 +174,23 @@ GNode* AffectsStarBipCalculator::evaluateNode(GNode* node, State& state) {
 				size_t pos = find(callStmtNums.begin(), callStmtNums.end(), parentCallStmt) - callStmtNums.begin();
 				if (pos >= originalProcNode->getParents().size()) {
 					cout << "Call stmt is not present in parents, something is wrong" << endl;
-					return node;
+					nextNode = node;
 				} else if (pos >= endNode->getChildren().size()){
 					cout << "Call index is larger than children, something is wrong" << endl;
-					return node;
+					nextNode = node;
 				} else {
-					return endNode->getChildren().at(pos);
+					nextNode = endNode->getChildren().at(pos);
 				}
 			}
 		} else {
 			//proc or dummy node
-			return node->getChildren().at(0);
+			nextNode = node->getChildren().at(0);
 		}
 	}
+	if (isEmpty(state) && type != SYN_SYN) {
+		throw EmptyStateBipTermination();
+	}
+	return nextNode;
 }
 
 void AffectsStarBipCalculator::updateStateForCall(CallGNode* callNode, State& state) {
@@ -226,22 +223,18 @@ AffectsStarBipCalculator::State AffectsStarBipCalculator::recurseWhile(WhileGNod
 }
 
 void AffectsStarBipCalculator::updateStateForIf(IfGNode* ifNode, State& state) {
-	State thenState = State();
-	State elseState = State();
-	try {
-		thenState = recurseIf(ifNode->getThenChild(), state);
-	} catch(EmptyStateBipTermination) {}
-	try {
-		elseState = recurseIf(ifNode->getElseChild(), state);
-	} catch(EmptyStateBipTermination) {}
+	State thenState = recurseIf(ifNode->getThenChild(), state);
+	State elseState = recurseIf(ifNode->getElseChild(), state);
 	//merge both states tgt
 	state = mergeStates(thenState, elseState);
 }
 
 AffectsStarBipCalculator::State AffectsStarBipCalculator::recurseIf(GNode* node, State state) {
-	while(node->getNodeType() != DUMMY_) {
-		node = evaluateNode(node, state);
-	}
+	try {
+		while(node->getNodeType() != DUMMY_) {
+			node = evaluateNode(node, state);
+		}
+	} catch (EmptyStateBipTermination) {}
 	return state;
 }
 
@@ -282,13 +275,6 @@ void AffectsStarBipCalculator::updateStateForAssign(AssgGNode* node, State& stat
 			//else -> used var has not been modified by stmt before
 		}
 
-		//we found the node, just terminate only if not in while loop
-		//otherwise can only eval after looping thru
-		if (type == FIXED_FIXED && !inWhile && stmtNum == s2Num) {
-			//failure as exception is not thrown earlier, throw exception
-			throw AffectsStarBipTermination();
-		}
-
 		Statement::ModifiesSet modifiedVariables = assgStmt->getModifies();
 		if (type == SYN_SYN) {
 			BOOST_FOREACH(string modifiedVar, modifiedVariables) {
@@ -318,7 +304,7 @@ void AffectsStarBipCalculator::updateStateForAssign(AssgGNode* node, State& stat
 			//we should terminate looping through the container if there is no more values in the state table
 			//it is not possible for the source stmt to affect any more statements 
 			//when there is no more value in the state table
-			if (!inWhile && isEmpty(state)) {
+			if (isEmpty(state)) {
 				throw EmptyStateBipTermination();
 			}
 		}
@@ -377,4 +363,10 @@ bool AffectsStarBipCalculator::isEmpty(State state) {
 		}
 	}
 	return true;
+}
+
+void AffectsStarBipCalculator::updateStateBeyondEnd(GNode* node, State state) {
+	while (!node->isNodeType(END_)) {
+		node = evaluateNode(node, state);
+	}
 }
