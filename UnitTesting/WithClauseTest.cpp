@@ -871,6 +871,23 @@ void WithClauseTest::testSynEqualsInt(){
 	Result* r3 = new Result();
 	CPPUNIT_ASSERT(w3->evaluate(r3) == false);
 	CPPUNIT_ASSERT(r3->getResultTableSize() == 0);
+
+	//i.stmt# = 2 (false, 0 result)
+	WithClauseBuilder* withBuilder4 = new WithClauseBuilder(WITH_);
+	withBuilder4->setRefType(1, ATTRREF_);
+	withBuilder4->setEntity(1, "i");
+	withBuilder4->setAttrType(1, STMTNUM_);
+	withBuilder4->setEntityType(1, stringconst::ARG_IF);
+	withBuilder4->setRefType(2, INTEGER_);
+	withBuilder4->setEntity(2, "2");
+	withBuilder4->setAttrType(2, NULLATTR_);
+	withBuilder4->setEntityType(2, stringconst::ENTITY_TYPE_INTEGER);
+
+	WithClause* w4 = withBuilder4->build();
+	CPPUNIT_ASSERT(w4->isValid());
+	Result* r4 = new Result();
+	CPPUNIT_ASSERT(w4->evaluate(r4) == false);
+	CPPUNIT_ASSERT(r4->getResultTableSize() == 0);
 }
 
 void WithClauseTest::testConstEqualsInt(){

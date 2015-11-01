@@ -155,6 +155,8 @@ void AffectsStarClauseTest::setUp() {
 	ptable->addProc(procedure1);
 	ptable->addProc(procedure2);
 
+
+	//only parent and children star of container stmts are set
 	//Set statement table
 	Statement* stmt1 = new Statement();
 	stmt1->setStmtNum(1);
@@ -191,6 +193,9 @@ void AffectsStarClauseTest::setUp() {
 	string usesArray3[] = {"x"};
 	unordered_set<string> uses3(usesArray3, usesArray3 + 1);
 	stmt3->setUses(uses3);
+	int childrenStarArray3[] = {4, 5};
+	unordered_set<int> childrenStar3(childrenStarArray3, childrenStarArray3 + 2);
+	stmt3->setChildrenStar(childrenStar3);
 	stmt3->setGNodeRef(while3);
 	stmt3->setProcedure(procedure1);
 	stable->addStmt(stmt3);
@@ -203,6 +208,9 @@ void AffectsStarClauseTest::setUp() {
 	stmt4->setModifies(mods4);
 	string usesArray4[] = {"x"};
 	unordered_set<string> uses4(usesArray4, usesArray4 + 1);
+	int parentStarArray4[] = {3};
+	unordered_set<int> parentStar4(parentStarArray4, parentStarArray4 + 1);
+	stmt4->setParentStar(parentStar4);
 	stmt4->setUses(uses4);
 	stmt4->setGNodeRef(assg4);
 	stmt4->setProcedure(procedure1);
@@ -217,6 +225,7 @@ void AffectsStarClauseTest::setUp() {
 	string usesArray5[] = {"x"};
 	unordered_set<string> uses5(usesArray5, usesArray5 + 1);
 	stmt5->setUses(uses5);
+	stmt5->setParentStar(parentStar4);
 	stmt5->setGNodeRef(assg4);
 	stmt5->setProcedure(procedure1);
 	stable->addStmt(stmt5);
@@ -272,6 +281,9 @@ void AffectsStarClauseTest::setUp() {
 	string usesArray9[] = {"y", "i", "z", "b"};
 	unordered_set<string> uses9(usesArray9, usesArray9 + 4);
 	stmt9->setUses(uses9);
+	int childrenStarArray9[] = {10, 11, 12, 13};
+	unordered_set<int> childrenStar9(childrenStarArray9, childrenStarArray9 + 2);
+	stmt9->setChildrenStar(childrenStar9);
 	stmt9->setGNodeRef(if9);
 	stmt9->setProcedure(procedure2);
 	stable->addStmt(stmt9);
@@ -311,6 +323,12 @@ void AffectsStarClauseTest::setUp() {
 	string usesArray12[] = {"x", "b"};
 	unordered_set<string> uses12(usesArray12, usesArray12 + 2);
 	stmt12->setUses(uses12);
+	int parentStarArray12[] = {9};
+	unordered_set<int> parentStar12(parentStarArray12, parentStarArray12 + 1);
+	stmt12->setParentStar(parentStar12);
+	int childrenStarArray12[] = {13};
+	unordered_set<int> childrenStar12(childrenStarArray12, childrenStarArray12 + 1);
+	stmt12->setChildrenStar(childrenStar12);
 	stmt12->setGNodeRef(while12);
 	stmt12->setProcedure(procedure2);
 	stable->addStmt(stmt12);
