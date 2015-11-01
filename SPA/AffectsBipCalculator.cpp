@@ -155,24 +155,17 @@ GNode* AffectsBipCalculator::evaluateNode(GNode* node, State& state) {
 				//for fixed generic, we do not start from the beginning
 				//we therefore need to consider the case where this procedure might be called from another procedure
 				//we iterate through children, if there are
+				//state between children of end node is not modified
+				//we retain the state before entering the different children
 				if (!node->getChildren().empty()) {
 					BOOST_FOREACH(GNode* child, node->getChildren()) {
-						stmtsAfterEnd.push(child);
+						updateStateBeyondEnd(child, state);
 					}
 				}
-				if (stmtsAfterEnd.empty()) {
-					isEnd = true;
-					nextNode = node;
-				} else {
-					GNode* newNode = stmtsAfterEnd.top();
-					stmtsAfterEnd.pop();
-					nextNode = newNode;
-				}
-			} else {
-				//otherwise, we do not consider the possibility that it was called, since we will iterate through it later
-				isEnd = true;
-				nextNode =  node;
 			}
+			//otherwise, we do not consider the possibility that it was called, since we will iterate through it later
+			isEnd = true;
+			nextNode = node;
 		} else {
 			//current proc is called by another procedure
 			EndGNode* endNode = static_cast<EndGNode*>(node);
@@ -345,4 +338,10 @@ bool AffectsBipCalculator::toProceed(State state) {
 		}
 	}
 	return true;
+}
+
+void AffectsBipCalculator::updateStateBeyondEnd(GNode* node, State state) {
+	while (!node->isNodeType(END_)) {
+		node = evaluateNode(node, state);
+	}
 }

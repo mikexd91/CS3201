@@ -143,25 +143,20 @@ GNode* AffectsStarBipCalculator::evaluateNode(GNode* node, State& state) {
 		} else if (node->getNodeType() == END_) {
 			if (parentCallStmts.empty()) {
 				if (type == FIXED_FIXED || type == FIXED_SYN) {
-					//iterate through children
+					//for fixed fixed/fixed syn, we do not start from the beginning
+					//we therefore need to consider the case where this procedure might be called from another procedure
+					//we iterate through children, if there are
+					//state between children of end node is not modified
+					//we retain the state before entering the different children
 					if (!node->getChildren().empty()) {
 						BOOST_FOREACH(GNode* child, node->getChildren()) {
-							stmtsAfterEnd.push(child);
+							updateStateBeyondEnd(child, state);
 						}
 					}
-					if (stmtsAfterEnd.empty()) {
-						isEnd = true;
-						nextNode = node;
-					} else {
-						GNode* nextNode = stmtsAfterEnd.top();
-						stmtsAfterEnd.pop();
-						nextNode = nextNode;
-					}
-				} else {
-					//SYN_SYN: no need to consider stmts after end
-					isEnd = true;
-					nextNode = node;
-				}
+				}	
+				//otherwise, we do not consider the possibility that it was called, since we will iterate through it later
+				isEnd = true;
+				nextNode = node;
 			} else {
 				//proc was called by another proc
 				EndGNode* endNode = static_cast<EndGNode*>(node);
@@ -376,4 +371,10 @@ bool AffectsStarBipCalculator::isEmpty(State state) {
 		}
 	}
 	return true;
+}
+
+void AffectsStarBipCalculator::updateStateBeyondEnd(GNode* node, State state) {
+	while (!node->isNodeType(END_)) {
+		node = evaluateNode(node, state);
+	}
 }

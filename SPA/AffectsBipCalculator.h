@@ -77,5 +77,6 @@ private:
 	State mergeStates(State, State);
 	State recurseWhile(WhileGNode*, State);
 	bool toProceed(State state);
+	void updateStateBeyondEnd(GNode*, State);
 };
 
