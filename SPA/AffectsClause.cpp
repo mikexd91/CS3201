@@ -457,7 +457,7 @@ bool AffectsClause::modcheck(string var, GNode* gn, unordered_set<int>* visitedS
 		case DUMMY_ :
 			//cout << "dummy" << endl;
 			dgn = (DummyGNode*)gn;
-			dgn_id = dgn->getIfParentStmt() * 1000 + dgn->getElseParentStmt() * 100;
+			dgn_id = dgn->getEntrance()->getStartStmt() + 900000;
 			if (visitedSet->count(dgn_id) >= 1) {
 				return false;
 			}
@@ -576,7 +576,7 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 			dgn = (DummyGNode*) gn;
 			//dgn_id = dgn->getIfParentStmt() * 100000 + dgn->getElseParentStmt() * 100;
 			// use gdn.getparents().at(0).getstart() + 900000
-			dgn_id = dgn->getParents().at(0)->getStartStmt() + 900000;
+			dgn_id = dgn->getEntrance()->getStartStmt() + 900000;
 			//print(*visitedSet);
 			if (visitedSet->count(dgn_id) >= 1) {
 				return;
