@@ -62,8 +62,6 @@ private:
 	//for Affects(1,_), we need to store 1
 	int s1Num;
 	bool result; //it can terminate prematurely and fail
-	//should not terminate prematurely if we are in while loop
-	bool inWhileLoop;
 
 	void updateStateForCall(CallGNode*, State&);
 	void updateStateForWhile(WhileGNode*, State&);

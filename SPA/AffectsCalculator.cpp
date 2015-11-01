@@ -134,9 +134,7 @@ GNode* AffectsCalculator::evaluateNode(GNode* node, State& state) {
 		nextNode = ifNode->getExit()->getChildren().at(0);
 	} else if (node->getNodeType() == WHILE_) {
 		WhileGNode* whileNode = static_cast<WhileGNode*>(node);
-		inWhileLoop = true;
 		updateStateForWhile(whileNode, state);
-		inWhileLoop = false;
 		nextNode = whileNode->getAfterLoopChild();
 	} else if (node->getNodeType() == CALL_) {
 		CallGNode* callNode = static_cast<CallGNode*>(node);
@@ -246,7 +244,7 @@ void AffectsCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 		if (type == FIXED_GENERIC) {
 			BOOST_FOREACH(string modifiedVar, modifiedVariables) {
 				//if current statements modifies the var that we are looking out for
-				if (modifiedVar == *(stmtTable->getStmtObj(s1Num)->getModifies().begin()) && !inWhileLoop) {
+				if (modifiedVar == *(stmtTable->getStmtObj(s1Num)->getModifies().begin())) {
 					state.erase(modifiedVar);
 					result = false;
 					throw AffectsTermination();

@@ -142,9 +142,7 @@ GNode* AffectsBipCalculator::evaluateNode(GNode* node, State& state) {
 		nextNode = ifNode->getExit()->getChildren().at(0);
 	} else if (node->getNodeType() == WHILE_) {
 		WhileGNode* whileNode = static_cast<WhileGNode*>(node);
-		inWhileLoop = true;
 		updateStateForWhile(whileNode, state);
-		inWhileLoop = false;
 		nextNode = whileNode->getAfterLoopChild();
 	} else if (node->getNodeType() == CALL_) {
 		CallGNode* callNode = static_cast<CallGNode*>(node);
@@ -297,7 +295,7 @@ void AffectsBipCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 		if (type == FIXED_GENERIC) {
 			//if current statements modifies the var that we are looking out for
 			BOOST_FOREACH(string modifiedVar, modifiedVariables) {
-				if (modifiedVar == *(stmtTable->getStmtObj(s1Num)->getModifies().begin()) && !inWhileLoop) {
+				if (modifiedVar == *(stmtTable->getStmtObj(s1Num)->getModifies().begin())) {
 					state.erase(modifiedVar);
 					result = false;
 					throw AffectsBipTermination();
