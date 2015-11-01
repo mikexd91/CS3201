@@ -568,7 +568,10 @@ bool WithClause::evalCallString(WithClauseRef callEnt, WithClauseRef strEnt, Res
 		BOOST_FOREACH(string s, synValues){
 			Statement* stmt = stable->getStmtObj(stoi(s));
 			if (stmt->getCalls() == strEnt.getEntity()){
-				insert.insertValue(s);
+				found = true;
+				int stmtnum = stmt->getStmtNum();
+				string val = to_string((long long) stmtnum);
+				insert.insertValue(val);
 			}
 		}
 		if (found){
@@ -581,7 +584,7 @@ bool WithClause::evalCallString(WithClauseRef callEnt, WithClauseRef strEnt, Res
 		bool found = false;
 		BOOST_FOREACH(Statement* s, allC){
 			if (s->getCalls() == strEnt.getEntity()){
-				insert.insertValue(strEnt.getEntity());
+				insert.insertValue(to_string((long long)s->getStmtNum()));
 				found = true;
 			}
 		}

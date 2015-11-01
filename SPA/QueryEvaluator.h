@@ -39,7 +39,7 @@ private:
 	unordered_set<string> stringVectorToSet(vector<string> &varVector);
 	unordered_set<string> intVectorToSet(vector<int> &vec);
 	void insertSetValues(string syn, unordered_set<string> values, Result &obj);
-	unordered_set<string> printSingleSynValues(Result &obj, string syn);
+	unordered_set<string> printSingleSynValues(Result &obj, StringPair syn);
 	unordered_set<string> printTupleSynValues(Result &obj, vector<StringPair> selectList);
 
 	bool evalNumClauses(Query*, int, int, Result*);
