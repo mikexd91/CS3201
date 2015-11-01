@@ -582,7 +582,7 @@ void AffectsStarBipClauseTest::testFixedGenericPass() {
 void AffectsStarBipClauseTest::testFixedGenericAcrossProcPass() { 
 	Result res = Result();
 	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSSTARBIP_);
-	affectsBuilder->setArg(1, "7");
+	affectsBuilder->setArg(1, "2");
 	affectsBuilder->setArgFixed(1, true);
 	affectsBuilder->setArgType(1, ARG_PROGLINE);
 	affectsBuilder->setArg(2, "_");
