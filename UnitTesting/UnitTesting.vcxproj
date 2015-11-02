@@ -53,7 +53,6 @@
     <ClCompile Include="SingleSynInsertTest.cpp" />
     <ClCompile Include="StmtLstNodeTest.cpp" />
     <ClCompile Include="StmtTableTest.cpp" />
-    <ClCompile Include="SynGraphTest.cpp" />
     <ClCompile Include="TNodeTest.cpp" />
     <ClCompile Include="UsesClauseTest.cpp" />
     <ClCompile Include="VarNodeTest.cpp" />
@@ -99,7 +98,6 @@
     <ClInclude Include="SingleSynInsertTest.h" />
     <ClInclude Include="StmtLstNodeTest.h" />
     <ClInclude Include="StmtTableTest.h" />
-    <ClInclude Include="SynGraphTest.h" />
     <ClInclude Include="TNodeTest.h" />
     <ClInclude Include="UsesClauseTest.h" />
     <ClInclude Include="VarNodeTest.h" />

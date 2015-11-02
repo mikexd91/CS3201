@@ -77,7 +77,6 @@
     <ClCompile Include="ProgNode.cpp" />
     <ClCompile Include="Query.cpp" />
     <ClCompile Include="QueryEvaluator.cpp" />
-    <ClCompile Include="QueryOptimiser.cpp" />
     <ClCompile Include="QueryParser.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="SingleSynInsert.cpp" />
@@ -88,9 +87,6 @@
     <ClCompile Include="StringPair.cpp" />
     <ClCompile Include="SuchThatClause.cpp" />
     <ClCompile Include="SuchThatClauseBuilder.cpp" />
-    <ClCompile Include="SynEdge.cpp" />
-    <ClCompile Include="SynGraph.cpp" />
-    <ClCompile Include="SynNode.cpp" />
     <ClCompile Include="TNode.cpp" />
     <ClCompile Include="UsesClause.cpp" />
     <ClCompile Include="Utils.cpp" />
@@ -166,7 +162,6 @@
     <ClInclude Include="ProgNode.h" />
     <ClInclude Include="Query.h" />
     <ClInclude Include="QueryEvaluator.h" />
-    <ClInclude Include="QueryOptimiser.h" />
     <ClInclude Include="QueryParser.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="ResultTable.h" />
@@ -178,9 +173,6 @@
     <ClInclude Include="StringPair.h" />
     <ClInclude Include="SuchThatClause.h" />
     <ClInclude Include="SuchThatClauseBuilder.h" />
-    <ClInclude Include="SynEdge.h" />
-    <ClInclude Include="SynGraph.h" />
-    <ClInclude Include="SynNode.h" />
     <ClInclude Include="TNode.h" />
     <ClInclude Include="UsesClause.h" />
     <ClInclude Include="Utils.h" />
