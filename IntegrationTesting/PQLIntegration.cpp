@@ -983,7 +983,7 @@ void PQLIntegration::testSelectFollowsStarModifies() {
 		cout << a << endl;
 	}
 
-	// FAIL: wrong size of result.
+	// FAIL: wrong size of result. only 4
 	CPPUNIT_ASSERT(res.size() == 2);
 	CPPUNIT_ASSERT(res.count("4") == 1);
 	CPPUNIT_ASSERT(res.count("9") == 1);
