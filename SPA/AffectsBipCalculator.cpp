@@ -74,8 +74,8 @@ bool AffectsBipCalculator::computeS1GenericS2Generic() {
 			//reset state
 			globalState = State();
 		}
-	} catch (AffectsBipTermination e) {
-		return true;
+	} catch (BasicAffectsBipTermination e) {
+		return result;
 	}
 	return false;
 }
@@ -105,7 +105,7 @@ bool AffectsBipCalculator::computeS1FixedS2Generic(string s1) {
 		while(!isEnd) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
-	} catch (AffectsBipTermination e) {
+	} catch (BasicAffectsBipTermination e) {
 		return result;
 	}
 	return false;
@@ -131,46 +131,43 @@ unordered_set<string> AffectsBipCalculator::computeAllS2() {
 
 //returns next node
 GNode* AffectsBipCalculator::evaluateNode(GNode* node, State& state) {
+	GNode* nextNode;
 	if (node->getNodeType() == ASSIGN_) {
 		AssgGNode* assgNode = static_cast<AssgGNode*>(node);
 		updateStateForAssign(assgNode, state);
-		return assgNode->getChild();
+		nextNode = assgNode->getChild();
 	} else if (node->getNodeType() == IF_) {
 		IfGNode* ifNode = static_cast<IfGNode*>(node);
 		updateStateForIf(ifNode, state);
-		return ifNode->getExit()->getChildren().at(0);
+		nextNode = ifNode->getExit()->getChildren().at(0);
 	} else if (node->getNodeType() == WHILE_) {
 		WhileGNode* whileNode = static_cast<WhileGNode*>(node);
-		inWhileLoop = true;
 		updateStateForWhile(whileNode, state);
-		inWhileLoop = false;
-		return whileNode->getAfterLoopChild();
+		nextNode = whileNode->getAfterLoopChild();
 	} else if (node->getNodeType() == CALL_) {
 		CallGNode* callNode = static_cast<CallGNode*>(node);
 		updateStateForCall(callNode, state);
-		return callNode->getChild();
+		nextNode = callNode->getChild();
 	} else if (node->getNodeType() == END_) {
+		//proc is not called by another procedure
 		if (parentCallStmts.empty()) {
 			if (type == FIXED_GENERIC) {
-				//iterate through children
+				//for fixed generic, we do not start from the beginning
+				//we therefore need to consider the case where this procedure might be called from another procedure
+				//we iterate through children, if there are
+				//state between children of end node is not modified
+				//we retain the state before entering the different children
 				if (!node->getChildren().empty()) {
 					BOOST_FOREACH(GNode* child, node->getChildren()) {
-						stmtsAfterEnd.push(child);
+						updateStateBeyondEnd(child, state);
 					}
 				}
-				if (stmtsAfterEnd.empty()) {
-					isEnd = true;
-					return node;
-				} else {
-					GNode* nextNode = stmtsAfterEnd.top();
-					stmtsAfterEnd.pop();
-					return nextNode;
-				}
-			} else {
-				isEnd = true;
-				return node;
 			}
+			//otherwise, we do not consider the possibility that it was called, since we will iterate through it later
+			isEnd = true;
+			nextNode = node;
 		} else {
+			//current proc is called by another procedure
 			EndGNode* endNode = static_cast<EndGNode*>(node);
 			//find stmt to return to, and set nextNode to that
 			int parentCallStmt = parentCallStmts.top();
@@ -186,18 +183,22 @@ GNode* AffectsBipCalculator::evaluateNode(GNode* node, State& state) {
 			size_t pos = find(callStmtNums.begin(), callStmtNums.end(), parentCallStmt) - callStmtNums.begin();
 			if (pos >= originalProcNode->getParents().size()) {
 				cout << "Call stmt is not present in parents, something is wrong" << endl;
-				return node;
+				nextNode =  node;
 			} else if (pos >= endNode->getChildren().size()){
 				cout << "Call index is larger than children, something is wrong" << endl;
-				return node;
+				nextNode = node;
 			} else {
-				return endNode->getChildren().at(pos);
+				nextNode =  endNode->getChildren().at(pos);
 			}
 		}
 	} else {
 		//dummy node
-		return node->getChildren().at(0);
+		nextNode =  node->getChildren().at(0);
 	}
+	if (!toProceed(state)) {
+		throw AffectsBipTermination();
+	}
+	return nextNode;
 }
 
 void AffectsBipCalculator::updateStateForCall(CallGNode* callNode, State& state) {
@@ -215,9 +216,11 @@ void AffectsBipCalculator::updateStateForWhile(WhileGNode* whileNode, State& sta
 
 AffectsBipCalculator::State AffectsBipCalculator::recurseWhile(WhileGNode* whileNode, State state) {
 	GNode* currentNode = whileNode->getBeforeLoopChild();
-	while(currentNode != whileNode) {
-		currentNode = evaluateNode(currentNode, state);
-	}
+	try {
+		while(currentNode != whileNode) {
+			currentNode = evaluateNode(currentNode, state);
+		}
+	} catch (AffectsBipTermination) {};
 	return state;
 }
 
@@ -229,9 +232,11 @@ void AffectsBipCalculator::updateStateForIf(IfGNode* ifNode, State& state) {
 }
 
 AffectsBipCalculator::State AffectsBipCalculator::recurseIf(GNode* node, State state) {
-	while(node->getNodeType() != DUMMY_) {
-		node = evaluateNode(node, state);
-	}
+	try {
+		while(node->getNodeType() != DUMMY_) {
+			node = evaluateNode(node, state);
+		}
+	} catch (AffectsBipTermination) {};
 	return state;
 }
 
@@ -258,7 +263,7 @@ void AffectsBipCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 				case GENERIC_GENERIC: 
 				case FIXED_GENERIC:
 					result = true;
-					throw AffectsBipTermination();
+					throw BasicAffectsBipTermination();
 					break;
 				case S1_ONLY: 
 					BOOST_FOREACH(int modifyingStmt, modifyingStmts) {
@@ -281,8 +286,10 @@ void AffectsBipCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 		}
 		Statement::ModifiesSet modifiedVariables = assgStmt->getModifies();
 		if (type == FIXED_GENERIC) {
+			//if current statements modifies the var that we are looking out for
 			BOOST_FOREACH(string modifiedVar, modifiedVariables) {
-				if (modifiedVar == *(stmtTable->getStmtObj(s1Num)->getModifies().begin()) && !inWhileLoop) {
+				if (modifiedVar == *(stmtTable->getStmtObj(s1Num)->getModifies().begin())) {
+					state.erase(modifiedVar);
 					result = false;
 					throw AffectsBipTermination();
 				}
@@ -316,4 +323,25 @@ AffectsBipCalculator::State AffectsBipCalculator::mergeStates(State state1, Stat
 		}
 	}
 	return state1;
+}
+
+bool AffectsBipCalculator::toProceed(State state) {
+	if (type == FIXED_GENERIC) {
+		State::iterator it = state.find(*(stmtTable->getStmtObj(s1Num)->getModifies().begin()));
+		bool isModifiedVarPresent = it != state.end();
+		if (isModifiedVarPresent){
+			//return true if it is still not replaced
+			return it->second.find(s1Num) != it->second.end();
+		} else {
+			//erased
+			return false;
+		}
+	}
+	return true;
+}
+
+void AffectsBipCalculator::updateStateBeyondEnd(GNode* node, State state) {
+	while (!node->isNodeType(END_)) {
+		node = evaluateNode(node, state);
+	}
 }

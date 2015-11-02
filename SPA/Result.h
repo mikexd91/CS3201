@@ -19,8 +19,6 @@ public:
 	Result(void);
 	~Result(void);
 
-	void setFail();
-	bool isPass(); 
 	bool isSynPresent(string syn);
 	unordered_set<vector<string>> getMultiSyn(vector<string>); 
 	unordered_set<string> getSyn(string);
@@ -33,7 +31,5 @@ public:
 
 private:
 	ResultTable resultTable;
-	bool pass;
- 
 	int getSynPosition(string);
 };

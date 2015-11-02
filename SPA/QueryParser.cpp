@@ -4,6 +4,8 @@
 #include "Utils.h"
 #include "PQLExceptions.h"
 #include "boost/algorithm/string.hpp"
+#include "VarTable.h"
+#include "ProcTable.h"
 #include "Clause.h"
 #include "FollowsClause.h"
 #include "FollowsStarClause.h"
@@ -380,7 +382,7 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string>* line){
 					unexpectedEndCheck(line);
 					string attr = Utils::getWordAndPop(*line);
 					if (attr == stringconst::ATTR_COND_PROCNAME){
-						if (type != stringconst::ARG_PROCEDURE){
+						if (type != stringconst::ARG_PROCEDURE && type != stringconst::ARG_CALL){
 							cout << type << " & " << attr << "mismatch";
 							throw InvalidAttributeException();
 						} else {
@@ -419,6 +421,8 @@ void QueryParser::parseClause(Query* query, queue<string>* line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	bool expectFirstFixedSynonym = false;
 	bool expectSecondFixedSynonym = false;
+	VarTable* vtable = VarTable::getInstance();
+	ProcTable* ptable = ProcTable::getInstance();
 
 	string clauseType = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
@@ -459,7 +463,9 @@ void QueryParser::parseClause(Query* query, queue<string>* line){
 				}
 			} else {
 				newClause->setArg(1, firstVar);
-				if (clauseType == "Calls") {
+				if (vtable->contains(firstVar)){
+					newClause->setArgType(1, stringconst::ARG_VARIABLE);
+				} else if (ptable->contains(firstVar)){
 					newClause->setArgType(1, stringconst::ARG_PROCEDURE);
 				} else {
 					newClause->setArgType(1, stringconst::ARG_VARIABLE);
@@ -511,7 +517,9 @@ void QueryParser::parseClause(Query* query, queue<string>* line){
 				}
 			} else {
 				newClause->setArg(2, secondVar);
-				if (clauseType == "Calls") {
+				if (vtable->contains(secondVar)){
+					newClause->setArgType(2, stringconst::ARG_VARIABLE);
+				} else if (ptable->contains(secondVar)){
 					newClause->setArgType(2, stringconst::ARG_PROCEDURE);
 				} else {
 					newClause->setArgType(2, stringconst::ARG_VARIABLE);
@@ -810,7 +818,7 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 			unexpectedEndCheck(line);
 			leftEntityCond = Utils::getWordAndPop(*line);
 			if (leftEntityCond == stringconst::ATTR_COND_PROCNAME){
-				if (leftDeclarationType != stringconst::ARG_PROCEDURE){
+				if (leftDeclarationType != stringconst::ARG_PROCEDURE && leftDeclarationType != stringconst::ARG_CALL){
 					cout << leftDeclarationType << " & " << leftEntityCond << "mismatch";
 					throw InvalidAttributeException();
 				}
@@ -899,7 +907,7 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 				unexpectedEndCheck(line);
 				rightEntityCond = Utils::getWordAndPop(*line);
 				if (rightEntityCond == stringconst::ATTR_COND_PROCNAME){
-					if (rightDeclarationType != stringconst::ARG_PROCEDURE){
+					if (rightDeclarationType != stringconst::ARG_PROCEDURE && rightDeclarationType != stringconst::ARG_CALL){
 						cout << rightDeclarationType << " & " << rightEntityCond << "mismatch";
 						throw InvalidAttributeException();
 					}
@@ -939,7 +947,6 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 	}
 	WithClause* wClause = withBuilder->build();
 	query->addClause(wClause);
-
 }
 
 Query* QueryParser::parseQuery(string input){

@@ -220,7 +220,7 @@ Select w such that Affects(19, _) and Affects(22, _)
 5000
 45 - AFFECTS: 2 clauses (similar) - generic-fixed, generic-fixed
 if i;
-Selectt i such that Affects(_, 14) and Affects(_, 23)
+Select i such that Affects(_, 14) and Affects(_, 23)
 none
 5000
 46 - AFFECTS: 2 clauses (similar) - syn-generic, syn-generic
