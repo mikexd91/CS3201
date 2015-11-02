@@ -27,10 +27,10 @@ unordered_set<string> PQLController::parse(string query) {
 		//cout << "Query Parse Successful" << endl;
 
 		QueryOptimiser* qo = new QueryOptimiser();
-		vector<int>* optimisedDV = &(qo->optimizeQuery(q));
+		vector<int>* optimisedQ = qo->optimizeQuery(q);
 
 		QueryEvaluator* qe = new QueryEvaluator();
-		Result* resObj = qe->evalOptimisedQuery(q, optimisedDV);
+		Result* resObj = qe->evalOptimisedQuery(q, optimisedQ);
 		//cout << "Query Evaluated" << endl;
 		vector<StringPair> selectList = q->getSelectList();
 		//cout << resObj->getResultTableSize() << endl;

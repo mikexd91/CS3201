@@ -10,15 +10,16 @@ QueryOptimiser::~QueryOptimiser(void)
 {
 }
 
-vector<int> QueryOptimiser::optimizeQuery(Query* q) {
+vector<int>* QueryOptimiser::optimizeQuery(Query* q) {
+	vector<int>* queryCompList = new vector<int>();
 	vector<Clause*> clauseList = q->getClauseList();
 	BOOST_FOREACH(auto i, clauseList) {
 		if (!i->isValid()) {
-			return vector<int>();
+			return queryCompList;
 		}
 	}
 
 	SynGraph *graph = new SynGraph();
-	vector<int> queryCompList = graph->reorderQuery(q);
+	queryCompList = graph->reorderQuery(q);
 	return queryCompList;
 }

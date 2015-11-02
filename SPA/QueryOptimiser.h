@@ -11,6 +11,6 @@ private:
 public:
 	QueryOptimiser(void);
 	~QueryOptimiser(void);
-	vector<int> optimizeQuery(Query*);
+	vector<int>* optimizeQuery(Query*);
 };
 

@@ -162,11 +162,11 @@ void QueryOptimiserTest::testGettingStartingSynonym() {
 
 	q->addClause((Clause*) c9);
 
-	vector<int> compSize = qo->optimizeQuery(q);
+	vector<int>* compSize = qo->optimizeQuery(q);
 	
-	CPPUNIT_ASSERT(compSize.size() == 2);
-	CPPUNIT_ASSERT(compSize.at(0) == 1);
-	CPPUNIT_ASSERT(compSize.at(1) == 8);
+	CPPUNIT_ASSERT(compSize->size() == 2);
+	CPPUNIT_ASSERT(compSize->at(0) == 1);
+	CPPUNIT_ASSERT(compSize->at(1) == 8);
 
 	/*
 	BOOST_FOREACH(auto i, q->getClauseList()) {
@@ -302,9 +302,9 @@ void QueryOptimiserTest::testWithCombination() {
 
 	q->addClause((Clause*) w7);
 
-	vector<int> compSize = qo->optimizeQuery(q);
+	vector<int>* compSize = qo->optimizeQuery(q);
 	
-	CPPUNIT_ASSERT(compSize.size() == 6);
+	CPPUNIT_ASSERT(compSize->size() == 6);
 
 	/*
 	BOOST_FOREACH(auto i, compSize) {
@@ -424,8 +424,8 @@ void QueryOptimiserTest::testPatternAssignWhileIfCombination() {
 
 	q->addClause((Clause*) c8);
 
-	vector<int> compSize = qo->optimizeQuery(q);
-	CPPUNIT_ASSERT(compSize.size() == 1);
+	vector<int>* compSize = qo->optimizeQuery(q);
+	CPPUNIT_ASSERT(compSize->size() == 1);
 	/*
 	BOOST_FOREACH(auto i, q->getClauseList()) {
 		cout << "clause type: ";
@@ -505,8 +505,8 @@ void QueryOptimiserTest::testManySingleSyn() {
 
 	q->addClause((Clause*) c5);
 
-	vector<int> compSize = qo->optimizeQuery(q);
-	CPPUNIT_ASSERT(compSize.size() == 1);
+	vector<int>* compSize = qo->optimizeQuery(q);
+	CPPUNIT_ASSERT(compSize->size() == 1);
 }
 
 void QueryOptimiserTest::testManyComponent() {
@@ -619,11 +619,11 @@ void QueryOptimiserTest::testManyComponent() {
 
 	q->addClause((Clause*) c8);
 
-	vector<int> compSize = qo->optimizeQuery(q);
-	CPPUNIT_ASSERT(compSize.size() == 3);
-	CPPUNIT_ASSERT(compSize.at(0) == 1);
-	CPPUNIT_ASSERT(compSize.at(1) == 3);
-	CPPUNIT_ASSERT(compSize.at(2) == 4);
+	vector<int>* compSize = qo->optimizeQuery(q);
+	CPPUNIT_ASSERT(compSize->size() == 3);
+	CPPUNIT_ASSERT(compSize->at(0) == 1);
+	CPPUNIT_ASSERT(compSize->at(1) == 3);
+	CPPUNIT_ASSERT(compSize->at(2) == 4);
 }
 
 void QueryOptimiserTest::testTrickyCase() {
@@ -724,8 +724,8 @@ void QueryOptimiserTest::testTrickyCase() {
 
 	q->addClause((Clause*) c7);
 
-	vector<int> compSize = qo->optimizeQuery(q);
-	CPPUNIT_ASSERT(compSize.size() == 1);
+	vector<int>* compSize = qo->optimizeQuery(q);
+	CPPUNIT_ASSERT(compSize->size() == 1);
 
 	/*
 	BOOST_FOREACH(auto i, q->getClauseList()) {

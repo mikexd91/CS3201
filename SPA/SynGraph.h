@@ -80,7 +80,7 @@ public:
 	SynGraph(void);
 	~SynGraph(void);
 
-	vector<int> reorderQuery(Query*);
+	vector<int>* reorderQuery(Query*);
  
 private:
 	vector<Clause*> originalClauseList;

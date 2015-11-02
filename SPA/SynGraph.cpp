@@ -15,16 +15,16 @@ SynGraph::~SynGraph(void) {
 
 }
 
-vector<int> SynGraph::reorderQuery(Query* q) {
-	vector<int> queryCompSize;
+vector<int>* SynGraph::reorderQuery(Query* q) {
+	vector<int>* queryCompSize = new vector<int>();
 	// Case of no clauses
 	if (q->getClauseList().size() == 0) {
-		queryCompSize.push_back(0);
+		queryCompSize->push_back(0);
 		return queryCompSize;
 
 	} else if (q->getClauseList().size() == 1) {
 		// Case of 1 clause
-		queryCompSize.push_back(1);
+		queryCompSize->push_back(1);
 		return queryCompSize;
 
 	} else {
@@ -32,7 +32,7 @@ vector<int> SynGraph::reorderQuery(Query* q) {
 		originalClauseList = q->getClauseList();
 		populateGraphTable(q);
 		setComponents();
-		arrangeComponentClauses(q, queryCompSize);
+		arrangeComponentClauses(q, *queryCompSize);
 		return queryCompSize;
 	}
 }
@@ -527,7 +527,6 @@ void SynGraph::linkSingleUnfixedArgNode(Clause* c, int cIndex, string syn) {
 		EdgeList edgeList = graphTable[syn];
 		SynEdge* edge = new SynEdge(c->getWeight(), cIndex);
 		graphTable[syn].push_back(make_pair(edge, node));
-		//edgeList.push_back(make_pair(edge, node));
 
 	} else {
 		// if synonym does not exist
@@ -643,7 +642,6 @@ void SynGraph::setComponents() {
 // It also sets the component's weight at the end of traversal and fills
 // up componentSyn map
 void SynGraph::setComponentNumByDFS(SynNode* node1, string syn, int index) {
-	//ClauseWeight clauseSet = ClauseWeight();
 	int componentWeight = 0;
 	queue<SynNode*> q;
 	q.push(node1);

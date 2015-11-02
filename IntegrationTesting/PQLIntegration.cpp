@@ -983,7 +983,7 @@ void PQLIntegration::testSelectFollowsStarModifies() {
 		cout << a << endl;
 	}
 
-	// FAIL: wrong size of result.
+	// FAIL: wrong size of result. only 4
 	CPPUNIT_ASSERT(res.size() == 2);
 	CPPUNIT_ASSERT(res.count("4") == 1);
 	CPPUNIT_ASSERT(res.count("9") == 1);
@@ -1002,6 +1002,7 @@ void PQLIntegration::testSelectPProcNameWithPatternAssgCalls() {
 	//	cout << a << endl;
 	//}
 
+	cout << "hello";
 	CPPUNIT_ASSERT(res.size() == 5);
 	CPPUNIT_ASSERT(res.count("2 eaten YourMom") == 1);
 	CPPUNIT_ASSERT(res.count("3 drink YourMom") == 1);

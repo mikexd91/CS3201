@@ -48,12 +48,12 @@
     <ClCompile Include="ProcTableTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
     <ClCompile Include="QueryEvaluatorTest.cpp" />
+    <ClCompile Include="QueryOptimiserTest.cpp" />
     <ClCompile Include="QueryParserTest.cpp" />
     <ClCompile Include="ResultTest.cpp" />
     <ClCompile Include="SingleSynInsertTest.cpp" />
     <ClCompile Include="StmtLstNodeTest.cpp" />
     <ClCompile Include="StmtTableTest.cpp" />
-    <ClCompile Include="SynGraphTest.cpp" />
     <ClCompile Include="TNodeTest.cpp" />
     <ClCompile Include="UsesClauseTest.cpp" />
     <ClCompile Include="VarNodeTest.cpp" />
@@ -94,12 +94,12 @@
     <ClInclude Include="ProcTableTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
     <ClInclude Include="QueryEvaluatorTest.h" />
+    <ClInclude Include="QueryOptimiserTest.h" />
     <ClInclude Include="QueryParserTest.h" />
     <ClInclude Include="ResultTest.h" />
     <ClInclude Include="SingleSynInsertTest.h" />
     <ClInclude Include="StmtLstNodeTest.h" />
     <ClInclude Include="StmtTableTest.h" />
-    <ClInclude Include="SynGraphTest.h" />
     <ClInclude Include="TNodeTest.h" />
     <ClInclude Include="UsesClauseTest.h" />
     <ClInclude Include="VarNodeTest.h" />
