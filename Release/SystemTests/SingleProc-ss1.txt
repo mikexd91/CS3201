@@ -3646,7 +3646,7 @@ false
 730 - WITH: c.procName = c.procName
 call c;
 Select c.procName such that c.procName = c.procName
-proc1, proc2, proc3
+none
 5000
 731 - WITH: p.procName = p.procName
 procedure p;
