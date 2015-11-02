@@ -32,6 +32,10 @@ public:
 	~Clause(void);
 
 	ClauseType getClauseType(void);
+
+	void setWeight(int);
+	int getWeight();
+
 	
 	virtual bool evaluate(Result*)=0;
 
@@ -41,4 +45,5 @@ public:
 
 protected:
 	ClauseType clauseType;
+	int weight;
 };
