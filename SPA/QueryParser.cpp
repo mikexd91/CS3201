@@ -4,6 +4,8 @@
 #include "Utils.h"
 #include "PQLExceptions.h"
 #include "boost/algorithm/string.hpp"
+#include "VarTable.h"
+#include "ProcTable.h"
 #include "Clause.h"
 #include "FollowsClause.h"
 #include "FollowsStarClause.h"
@@ -380,25 +382,29 @@ void QueryParser::parseSelectSynonyms(Query* query, queue<string>* line){
 					unexpectedEndCheck(line);
 					string attr = Utils::getWordAndPop(*line);
 					if (attr == stringconst::ATTR_COND_PROCNAME){
-						if (type != stringconst::ARG_PROCEDURE){
+						if (type != stringconst::ARG_PROCEDURE && type != stringconst::ARG_CALL){
+							cout << type << " & " << attr << "mismatch";
 							throw InvalidAttributeException();
 						} else {
 							newPair->setAttribute(attr);
 						}
 					} else if (attr == stringconst::ATTR_COND_STMTNUM){
 						if (type != stringconst::ARG_STATEMENT && type != stringconst::ARG_ASSIGN && type != stringconst::ARG_CALL && type != stringconst::ARG_IF && type!= stringconst::ARG_WHILE){
+							cout << type << " & " << attr << "mismatch";
 							throw InvalidAttributeException();
 						} else {
 							newPair->setAttribute(attr);
 						}
 					} else if (attr == stringconst::ATTR_COND_VALUE){
 						if (type != stringconst::ARG_CONSTANT){
+							cout << type << " & " << attr << "mismatch";
 							throw InvalidAttributeException();
 						} else {
 							newPair->setAttribute(attr);
 						}
 					} else if (attr == stringconst::ATTR_COND_VARNAME){
 						if (type != stringconst::ARG_VARIABLE){
+							cout << type << " & " << attr << "mismatch";
 							throw InvalidAttributeException();
 						} else {
 							newPair->setAttribute(attr);
@@ -415,6 +421,8 @@ void QueryParser::parseClause(Query* query, queue<string>* line){
 	unordered_map<string, string> decList = query->getDeclarationList();
 	bool expectFirstFixedSynonym = false;
 	bool expectSecondFixedSynonym = false;
+	VarTable* vtable = VarTable::getInstance();
+	ProcTable* ptable = ProcTable::getInstance();
 
 	string clauseType = Utils::getWordAndPop(*line);
 	unexpectedEndCheck(line);
@@ -455,7 +463,13 @@ void QueryParser::parseClause(Query* query, queue<string>* line){
 				}
 			} else {
 				newClause->setArg(1, firstVar);
-				newClause->setArgType(1, stringconst::ARG_VARIABLE);
+				if (vtable->contains(firstVar)){
+					newClause->setArgType(1, stringconst::ARG_VARIABLE);
+				} else if (ptable->contains(firstVar)){
+					newClause->setArgType(1, stringconst::ARG_PROCEDURE);
+				} else {
+					newClause->setArgType(1, stringconst::ARG_VARIABLE);
+				}
 			}
 		} else {
 			newClause->setArgFixed(1, true);
@@ -503,7 +517,13 @@ void QueryParser::parseClause(Query* query, queue<string>* line){
 				}
 			} else {
 				newClause->setArg(2, secondVar);
-				newClause->setArgType(2, stringconst::ARG_VARIABLE);
+				if (vtable->contains(secondVar)){
+					newClause->setArgType(2, stringconst::ARG_VARIABLE);
+				} else if (ptable->contains(secondVar)){
+					newClause->setArgType(2, stringconst::ARG_PROCEDURE);
+				} else {
+					newClause->setArgType(2, stringconst::ARG_VARIABLE);
+				}
 			}
 		} else {
 			newClause->setArgFixed(2, true);
@@ -798,7 +818,8 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 			unexpectedEndCheck(line);
 			leftEntityCond = Utils::getWordAndPop(*line);
 			if (leftEntityCond == stringconst::ATTR_COND_PROCNAME){
-				if (leftDeclarationType != stringconst::ARG_PROCEDURE){
+				if (leftDeclarationType != stringconst::ARG_PROCEDURE && leftDeclarationType != stringconst::ARG_CALL){
+					cout << leftDeclarationType << " & " << leftEntityCond << "mismatch";
 					throw InvalidAttributeException();
 				}
 				withBuilder->setRefType(1, ATTRREF_);
@@ -808,14 +829,15 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 					&& leftDeclarationType != stringconst::ARG_ASSIGN
 					&& leftDeclarationType != stringconst::ARG_IF
 					&& leftDeclarationType != stringconst::ARG_WHILE
-					&& leftDeclarationType != stringconst::ARG_CALL
-					&& leftDeclarationType != stringconst::ARG_PROGLINE){
+					&& leftDeclarationType != stringconst::ARG_CALL){
+						cout << leftDeclarationType << " & " << leftEntityCond << "mismatch";
 						throw InvalidAttributeException();
 				}
 				withBuilder->setRefType(1, ATTRREF_);
 				withBuilder->setAttrType(1, STMTNUM_);
 			} else if (leftEntityCond == stringconst::ATTR_COND_VALUE){
 				if (leftDeclarationType != stringconst::ARG_CONSTANT){
+					cout << leftDeclarationType << " & " << leftEntityCond << "mismatch";
 					throw InvalidAttributeException();
 				}
 				withBuilder->setEntity(1, leftEntityValue);
@@ -823,6 +845,7 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 				withBuilder->setAttrType(1, CONSTVALUE_);
 			} else if (leftEntityCond == stringconst::ATTR_COND_VARNAME){
 				if (leftDeclarationType != stringconst::ARG_VARIABLE){
+					cout << leftDeclarationType << " & " << leftEntityCond << "mismatch";
 					throw InvalidAttributeException();
 				}
 				withBuilder->setRefType(1, ATTRREF_);
@@ -867,52 +890,63 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 		throw MissingDeclarationException();
 	} else {
 		string rightDeclarationType = decList.at(rightEntityValue);
-		nextToken = line->front();
-		withBuilder->setEntity(2, rightEntityValue);
-		withBuilder->setEntityType(2, rightDeclarationType);
-		if (nextToken == "="){
+		if (line->empty()){
+			withBuilder->setEntity(2, rightEntityValue);
+			withBuilder->setEntityType(2, rightDeclarationType);
 			withBuilder->setRefType(2, SYNONYM_);
 			withBuilder->setAttrType(2, NULLATTR_);
-		} else if (nextToken == "."){
-			Utils::getWordAndPop(*line);
-			unexpectedEndCheck(line);
-			rightEntityCond = Utils::getWordAndPop(*line);
-			if (rightEntityCond == stringconst::ATTR_COND_PROCNAME){
-				if (rightDeclarationType != stringconst::ARG_PROCEDURE){
-					throw InvalidAttributeException();
-				}
-				withBuilder->setRefType(2, ATTRREF_);
-				withBuilder->setAttrType(2, PROCNAME_);
-			} else if (rightEntityCond == stringconst::ATTR_COND_STMTNUM){
-				if (rightDeclarationType != stringconst::ARG_STATEMENT
-					|| rightDeclarationType != stringconst::ARG_IF
-					|| rightDeclarationType != stringconst::ARG_WHILE
-					|| rightDeclarationType != stringconst::ARG_PROGLINE){
+		} else {
+			nextToken = line->front();
+			withBuilder->setEntity(2, rightEntityValue);
+			withBuilder->setEntityType(2, rightDeclarationType);
+			if (nextToken == "="){
+				withBuilder->setRefType(2, SYNONYM_);
+				withBuilder->setAttrType(2, NULLATTR_);
+			} else if (nextToken == "."){
+				Utils::getWordAndPop(*line);
+				unexpectedEndCheck(line);
+				rightEntityCond = Utils::getWordAndPop(*line);
+				if (rightEntityCond == stringconst::ATTR_COND_PROCNAME){
+					if (rightDeclarationType != stringconst::ARG_PROCEDURE && rightDeclarationType != stringconst::ARG_CALL){
+						cout << rightDeclarationType << " & " << rightEntityCond << "mismatch";
 						throw InvalidAttributeException();
+					}
+					withBuilder->setRefType(2, ATTRREF_);
+					withBuilder->setAttrType(2, PROCNAME_);
+				} else if (rightEntityCond == stringconst::ATTR_COND_STMTNUM){
+					if (rightDeclarationType != stringconst::ARG_STATEMENT
+						&& rightDeclarationType != stringconst::ARG_IF
+						&& rightDeclarationType != stringconst::ARG_WHILE
+						&& rightDeclarationType != stringconst::ARG_CALL
+						&& rightDeclarationType != stringconst::ARG_ASSIGN){
+							cout << rightDeclarationType << " & " << rightEntityCond << "`";
+							throw InvalidAttributeException();
+					}
+					withBuilder->setRefType(2, ATTRREF_);
+					withBuilder->setAttrType(2, STMTNUM_);
+				} else if (rightEntityCond == stringconst::ATTR_COND_VALUE){
+					if (rightDeclarationType != stringconst::ARG_CONSTANT){
+						cout << rightDeclarationType << " & " << rightEntityCond << "mismatch";
+						throw InvalidAttributeException();
+					}
+					withBuilder->setRefType(2, ATTRREF_);
+					withBuilder->setAttrType(2, CONSTVALUE_);
+				} else if (rightEntityCond == stringconst::ATTR_COND_VARNAME){
+					if (rightDeclarationType != stringconst::ARG_VARIABLE){
+						cout << rightDeclarationType << " & " << rightEntityCond << "mismatch";
+						throw InvalidAttributeException();
+					}
+					withBuilder->setRefType(2, ATTRREF_);
+					withBuilder->setAttrType(2, VARNAME_);
+				} else {
+					cout << "unknown attr cond";
+					throw InvalidSyntaxException();
 				}
-				withBuilder->setRefType(2, ATTRREF_);
-				withBuilder->setAttrType(2, STMTNUM_);
-			} else if (rightEntityCond == stringconst::ATTR_COND_VALUE){
-				if (rightDeclarationType != stringconst::ARG_CONSTANT){
-					throw InvalidAttributeException();
-				}
-				withBuilder->setRefType(2, ATTRREF_);
-				withBuilder->setAttrType(2, CONSTVALUE_);
-			} else if (rightEntityCond == stringconst::ATTR_COND_VARNAME){
-				if (rightDeclarationType == stringconst::ARG_VARIABLE){
-					throw InvalidAttributeException();
-				}
-				withBuilder->setRefType(2, ATTRREF_);
-				withBuilder->setAttrType(2, VARNAME_);
-			} else {
-				cout << "unknown attr cond";
-				throw InvalidSyntaxException();
 			}
 		}
 	}
 	WithClause* wClause = withBuilder->build();
 	query->addClause(wClause);
-
 }
 
 Query* QueryParser::parseQuery(string input){

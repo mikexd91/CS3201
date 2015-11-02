@@ -12,17 +12,6 @@
 #include "IfGNode.h"
 
 
-struct GNodeContainer {
-	GNode* node;
-	int count;
-	bool toContinue;
-	GNodeContainer(GNode* n= NULL, int c=0):
-		node(n),
-        count(c),
-		toContinue(true){}
-};
-
-
 class CFGIterator {
 
 public:
@@ -42,6 +31,16 @@ public:
 
 	
 private:
+	struct GNodeContainer {
+		GNode* node;
+		int count;
+		bool toContinue;
+		GNodeContainer(GNode* n= NULL, int c=0):
+			node(n),
+			count(c),
+			toContinue(true){}
+	};
+
 	GNode* startNode;
 	GNode* nextNode;
 	stack<GNodeContainer> nodeStack;

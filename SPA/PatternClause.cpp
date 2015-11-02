@@ -189,14 +189,17 @@ bool PatternClause::evaluate(Result* res) {
 		if (isSynInTable && isVarInTable) {
 			//get all a and v value 
 			vector<string> synList;
-			synList[0] = (getSyn());
-			synList[1] = (getVar());
+			synList.push_back(getSyn());
+			synList.push_back(getVar());
 			unordered_set<vector<string>> pairs = res->getMultiSyn(synList);
+			//cout << "Pairs size " << pairs.size() << endl;
 			//check if true, if true insert into table 
 			BOOST_FOREACH(vector<string> pair, pairs) {
 				string synValue = pair[0];
 				string varValue = pair[1];
+				//cout << "Syn: " << synValue << ", Var: " << varValue << endl;
 				if (matchPattern(synValue, varValue)) {
+					//cout << "match" << endl;
 					vector<string> newRow = vector<string>();
 					newRow.push_back(synValue);
 					newRow.push_back(varValue);
@@ -260,8 +263,6 @@ bool PatternClause::evaluate(Result* res) {
 
 	} else {
 		// fail, no such combi
-		NoSynInsert insert = NoSynInsert();
-		insert.setPass(false);
-		return res->push(insert);
+		return false;
 	}
 }

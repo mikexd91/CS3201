@@ -28,6 +28,7 @@ ParserTest::tearDown() {
 	ProcTable::getInstance()->clearTable();
 	PDR::resetInstanceFlag();
 	CFGBuilder::resetInstanceFlag();
+	CFGbipBuilder::resetInstanceFlag();
 	StmtTable::getInstance()->clearTable();
 }
 

@@ -47,6 +47,8 @@ class FrontEndTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testCyclicCalls );
 	CPPUNIT_TEST( testMultiProc );
 
+	CPPUNIT_TEST( testBipList );
+
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -99,4 +101,6 @@ public:
 
 	void testCyclicCalls();
 	void testMultiProc();
+
+	void testBipList();
 };

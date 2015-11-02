@@ -18,6 +18,10 @@ GNode* DummyGNode::getEntrance() {
 	return this->entrance;
 }
 
+GNode* DummyGNode::getChild() {
+	return this->getChildren().at(0);
+}
+
 unordered_set<int> DummyGNode::getPrevStmts() {
 	return this->prevStmts;
 }

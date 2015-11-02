@@ -15,13 +15,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AffectsBipClauseTest.cpp" />
     <ClCompile Include="AffectsClauseTest.cpp" />
+    <ClCompile Include="AffectsStarBipClauseTest.cpp" />
+    <ClCompile Include="AffectsStarClauseTest.cpp" />
     <ClCompile Include="AllUnitTest.cpp" />
     <ClCompile Include="AssgNodeTest.cpp" />
     <ClCompile Include="ASTTest.cpp" />
     <ClCompile Include="CallNodeTest.cpp" />
     <ClCompile Include="CallsClauseTest.cpp" />
     <ClCompile Include="CallsStartClauseTest.cpp" />
+    <ClCompile Include="CFGbipBuilderTest.cpp" />
     <ClCompile Include="CFGBuilderTest.cpp" />
     <ClCompile Include="ConstNodeTest.cpp" />
     <ClCompile Include="ConstTableTest.cpp" />
@@ -57,12 +61,16 @@
     <ClCompile Include="WithClauseTest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AffectsBipClauseTest.h" />
     <ClInclude Include="AffectsClauseTest.h" />
+    <ClInclude Include="AffectsStarBipClauseTest.h" />
+    <ClInclude Include="AffectsStarClauseTest.h" />
     <ClInclude Include="AssgNodeTest.h" />
     <ClInclude Include="ASTTest.h" />
     <ClInclude Include="CallNodeTest.h" />
     <ClInclude Include="CallsClauseTest.h" />
     <ClInclude Include="CallsStartClauseTest.h" />
+    <ClInclude Include="CFGbipBuilderTest.h" />
     <ClInclude Include="CFGBuilderTest.h" />
     <ClInclude Include="ConstNodeTest.h" />
     <ClInclude Include="ConstTableTest.h" />

@@ -1,0 +1,325 @@
+1 - WITH: prog_line = constant
+prog_line n;
+Select n with n = 35
+35
+5000
+2 - WITH: prog_line = constant (underflow)
+prog_line n;
+Select n with n = 0
+none
+5000
+3 - WITH: prog_line = constant (overflow)
+prog_line n;
+Select n with n = 45
+none
+5000
+4 - WITH: constant = prog_line
+prog_line n;
+Select n with 40 = n
+40
+5000
+5 - WITH: constant = prog_line (underflow)
+prog_line n;
+Select n with 0 = n
+none
+5000
+6 - WITH: constant = prog_line (overflow)
+prog_line n;
+Select n with 45 = n
+none
+5000
+7 - WITH-stmt: stmt# = constant
+stmt s;
+Select s with s.stmt# = 23
+23
+5000
+8 - WITH-stmt: stmt# = constant (no result)
+stmt s;
+Select s with s.stmt# = 50
+none
+5000
+9 - WITH-assign: stmt# = constant
+assign a;
+Select a with a.stmt# = 31
+31
+5000
+10 - WITH-assign: stmt# = constant (no result)
+assign a;
+Select a with a.stmt# = 27
+none
+5000
+11 - WITH-while: stmt# = constant
+while w;
+Select w with w.stmt# = 27
+27
+5000
+12 - WITH-while: stmt# = constant (no result)
+while w;
+Select w with w.stmt# = 28
+none
+5000
+13 - WITH-if: stmt# = constant
+if i;
+Select i with i.stmt# = 28
+28
+5000
+14 - WITH-if: stmt# = constant (no result)
+if i;
+Select i with i.stmt# = 37
+none
+5000
+15 - WITH-call: stmt# = constant
+call c;
+Select c with c.stmt# = 29
+29
+5000
+16 - WITH-call: stmt# = constant (no result)
+call c;
+Select c with c.stmt# = 16
+none
+5000
+17 - WITH-stmt: constant = stmt#
+stmt s;
+Select s with 24 = s.stmt#
+24
+5000
+18 - WITH-stmt: constant = stmt# (no result)
+stmt s;
+Select s with 48 = s.stmt#
+none
+5000
+19 - WITH-assign: constant = stmt#
+assign a;
+Select a with 37 = a.stmt#
+37
+5000
+20 - WITH-assign: constant = stmt# (no result)
+assign a;
+Select a with 36 = a.stmt#
+none
+5000
+21 - WITH-while: constant = stmt#
+while w;
+Select w with 21 = w.stmt#
+21
+5000
+22 - WITH-while: constant = stmt# (no result)
+while w;
+Select w with 19 = w.stmt#
+none
+5000
+23 - WITH-if: constant = i.stmt#
+if i;
+Select i with 35 = i.stmt#
+35
+5000
+24 - WITH-if: constant = stmt# (no result)
+if i;
+Select i with 21 = i.stmt#
+none
+5000
+25 - WITH-call: constant = stmt#
+call c;
+Select c with 29 = c.stmt#
+29
+5000
+26 - WITH-call: constant = stmt# (no result)
+call c;
+Select c with 18 = c.stmt#
+none
+5000
+27 - WITH-stmt: stmt# = prog_line
+stmt s; prog_line n;
+Select s with s.stmt# = n
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40
+5000
+28 - WITH-assign: stmt# = prog_line
+assign a; prog_line n;
+Select a with a.stmt# = n
+1, 2, 5, 7, 9, 10, 12, 15, 16, 17, 18, 20, 22, 23, 24, 25, 26, 30, 31, 32, 37, 38, 39, 40
+5000
+29 - WITH-while: stmt# = prog_line
+while w; prog_line n;
+Select w with w.stmt# = n
+4, 8, 11, 14, 21, 27, 36
+5000
+30 - WITH-if: stmt# = prog_line
+if i; prog_line n;
+Select i with i.stmt# = n
+6, 19, 28, 33, 34, 35
+5000
+31 - WITH: value = constant
+constant c;
+Select c with c.value = 9001
+9001
+5000
+32 - WITH: value = constant (no result)
+constant c;
+Select c with c.value = 6
+none
+5000
+33 - WITH: constant = value
+constant c;
+Select c with 5 = c.value
+5
+5000
+34 - WITH: constant = value (no result)
+constant c;
+Select c with 7 = c.value
+none
+5000
+35 - WITH: prog_line = value
+prog_line n; constant c;
+Select n with n = c.value
+2, 3, 5
+5000
+36 - WITH: value = prog_line
+constant c; prog_line n;
+Select c with c.value = n
+2, 3, 5
+5000
+37 - WITH: procName = string
+procedure p;
+Select p with p.procName = "proc3"
+proc3
+5000
+38 - WITH: procName = string (no result)
+procedure p;
+Select p with p.procName = "proc4"
+none
+5000
+39 - WITH: string = procName
+procedure p;
+Select p with "proc1" = p.procName
+proc1
+5000
+40 - WITH: string = procName
+procedure p;
+Select p with "proc5" = p.procName
+none
+5000
+41 - WITH: varName = string
+variable v;
+Select v with v.varName = "what"
+what
+5000
+42 - WITH: varName = string (no result)
+variable v;
+Select v with v.varName = "when"
+none
+5000
+43 - WITH: string = varName
+variable v;
+Select v with "parts" = v.varName
+parts
+5000
+44 - WITH: string = varName (no result)
+variable v;
+Select v with "harddisk" = v.varName
+none
+5000
+45 - WITH: call.procName = string
+call c;
+Select c with c.procName = "proc3"
+13, 29
+5000
+46 - WITH: call.procName = string (no result)
+call c;
+Select c with c.procName = "proc1"
+none
+5000
+47 - WITH: string = call.procName
+call c;
+Select c with "proc2" = c.procName
+3
+5000
+48 - WITH: string = call.procName (no result)
+call c;
+Select c with "proc" = c.procName
+none
+5000
+49 - WITH: p.procName = c.procName
+procedure p; call c;
+Select p with p.procName = c.procName
+proc2, proc3
+5000
+50 - WITH: c.procName = p.procName
+call c; procedure p;
+Select c with c.procName = p.procName
+proc2, proc3
+5000
+51 - WITH-stmt: stmt# = value
+stmt s; constant c;
+Select s with s.stmt# = c.value
+2, 3, 5
+5000
+52 - WITH-assign: stmt# = value
+assign a; constant c;
+Select a with a.stmt# = c.value
+2, 5
+5000
+53 - WITH-while: stmt# = value (no result)
+while w; constant c;
+Select w with w.stmt# = c.value
+none
+5000
+54 - WITH-if: stmt# = value (no result)
+if i; constant c;
+Select i with i.stmt# = c.value
+none
+5000
+55 - WITH-call: stmt# = value (no result)
+call cl; constant c;
+Select cl with cl.stmt# = c.value
+3
+5000
+56 - WITH-stmt: value = stmt#
+stmt s; constant c;
+Select c with c.value = s.stmt#
+2, 3, 5
+5000
+57 - WITH-assign: value = stmt#
+assign a; constant c;
+Select c with c.value = a.stmt#
+2, 5
+5000
+58 - WITH-while: value = stmt# (no result)
+while w; constant c;
+Select c with c.value = w.stmt#
+none
+5000
+59 - WITH-if: value = stmt# (no result)
+if i; constant c;
+Select c with c.value = i.stmt#
+none
+5000
+60 - WITH-call: stmt# = value
+call cl; constant c;
+Select c with c.value = cl.stmt#
+3
+5000
+61 - WITH: constant = constant
+
+Select BOOLEAN with 1 = 1
+true
+5000
+62 - WITH: constant = constant (no result)
+
+Select BOOLEAN with 5 = 10
+false
+5000
+63 - WITH: string = string
+
+Select BOOLEAN with "hello" = "hello"
+true
+5000
+64 - WITH: string = string (no result)
+
+Select BOOLEAN with "harlo" = "hello"
+false
+5000
+65 - WITH: prog_line = prog_line
+prog_line n1; prog_line n2;
+Select BOOLEAN with n1 = n2
+true
+5000

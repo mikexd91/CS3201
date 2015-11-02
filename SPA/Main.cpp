@@ -16,7 +16,7 @@ int main() {
 
 	Parser parser = Parser();
 
-	ifstream in("source.txt");
+	ifstream in("source_multi.txt");
 	stringstream buffer;
     buffer << in.rdbuf();
     string programSource = buffer.str();
@@ -29,11 +29,11 @@ int main() {
 	}
 
 	PQLController* pqlController = new PQLController();
-	string query = "while w; Select w such that Parent(w, 4)";
+	string query = "stmt s; Select s such that Affects(s, 15)";
 	try {
 		unordered_set<string> resultSet = pqlController->parse(query);
 		BOOST_FOREACH(auto r, resultSet) {
-			string variable = r;
+			cout << r << endl;
 		}
 		delete pqlController;
 	} catch (std::exception e) {

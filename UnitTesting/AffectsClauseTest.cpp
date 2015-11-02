@@ -13,6 +13,7 @@
 #include "../SPA/SuchThatClauseBuilder.h"
 #include "../SPA/Utils.h"
 #include "../SPA/AffectsClause.h"
+#include "../SPA/AffectsStarClause.h"
 
 #include <iostream>
 #include <string>
@@ -46,6 +47,7 @@ AffectsClauseTest::setUp() {
 		}
 14		y=z;
 15		a = c;
+16		q = y;
 	}
 	*/
 
@@ -60,17 +62,18 @@ AffectsClauseTest::setUp() {
 
 	ProcGNode* proc1 = new ProcGNode("test");
 	AssgGNode* assg1 = new AssgGNode(1);
+	assg1->setFirstParent(proc1);
 	assg1->setEndStmt(2);
 	proc1->addChild(assg1);
 	WhileGNode* while3 = new WhileGNode(3);
-	while3->setStartStmt(4);
+	while3->setStartStmt(3);
 	while3->setEndStmt(5);
 	assg1->setChild(while3);
 	while3->setFirstParent(assg1);
 	AssgGNode* assg4 = new AssgGNode(4);
 	assg4->setEndStmt(5);
 	while3->setBeforeLoopChild(assg4);
-	while3->setFirstParent(assg1);
+	while3->setSecondParent(assg4);
 	assg4->setFirstParent(while3);
 	assg4->setChild(while3);
 	EndGNode* end1 = new EndGNode();
@@ -100,21 +103,24 @@ AffectsClauseTest::setUp() {
 	assg11->setChild(while12);
 	while12->setFirstParent(assg11);
 	AssgGNode* assg13 = new AssgGNode(13);
-	assg13->setEndStmt(14);
+	assg13->setEndStmt(13);
 	while12->setBeforeLoopChild(assg13);
-	while12->setStartStmt(11);
-	while12->setEndStmt(11);
+	while12->setStartStmt(12);
+	while12->setEndStmt(12);
 	assg13->setFirstParent(while12);
 	assg13->setChild(while12);
+	while12->setSecondParent(assg13);
 	DummyGNode* dummy1 = new DummyGNode();
 	if9->setExit(dummy1);
 	while12->setAfterLoopChild(dummy1);
 	assg10->setChild(dummy1);
-	dummy1->setElseParentStmt(10);
-	dummy1->setIfParentStmt(8);
+	dummy1->setIfParentStmt(10);
+	dummy1->setFirstParent(assg10);
+	dummy1->setElseParentStmt(12);
+	dummy1->setSecondParent(while12);
 	dummy1->setEntrance(if9);
 	AssgGNode* assg14 = new AssgGNode(14);
-	assg14->setEndStmt(15);
+	assg14->setEndStmt(16);
 	assg14->setFirstParent(dummy1);
 	dummy1->setFirstChild(assg14);
 	EndGNode* end2 = new EndGNode();
@@ -139,7 +145,7 @@ AffectsClauseTest::setUp() {
 	unordered_set<Procedure*> proc2Calls = unordered_set<Procedure*>();
 	proc2Calls.insert(procedure1);
 	procedure2->setCalls(proc2Calls);
-	int proc2ContainingStmtsArr[] = {6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+	int proc2ContainingStmtsArr[] = {6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
 	procedure2->setContainStmts(Procedure::ContainsStmtSet(proc2ContainingStmtsArr, proc2ContainingStmtsArr+ sizeof(proc2ContainingStmtsArr)/sizeof(*proc2ContainingStmtsArr)));
 
 	//Set statement table
@@ -177,6 +183,9 @@ AffectsClauseTest::setUp() {
 	stmt3->setModifies(mods3);
 	string usesArray3[] = {"x"};
 	unordered_set<string> uses3(usesArray3, usesArray3 + 1);
+	int childrenStar3Array[] = {4, 5};
+	unordered_set<int> childrenStar3(childrenStar3Array, childrenStar3Array + 2);
+	stmt3->setChildrenStar(childrenStar3);
 	stmt3->setUses(uses3);
 	stmt3->setGNodeRef(while3);
 	stmt3->setProcedure(procedure1);
@@ -298,6 +307,9 @@ AffectsClauseTest::setUp() {
 	string usesArray12[] = {"x", "b"};
 	unordered_set<string> uses12(usesArray12, usesArray12 + 2);
 	stmt12->setUses(uses12);
+	int childrenStar12Array[] = {13};
+	unordered_set<int> childrenStar12(childrenStar12Array, childrenStar12Array + 1);
+	stmt12->setChildrenStar(childrenStar12);
 	stmt12->setGNodeRef(while12);
 	stmt12->setProcedure(procedure2);
 	stable->addStmt(stmt12);
@@ -340,6 +352,19 @@ AffectsClauseTest::setUp() {
 	stmt15->setGNodeRef(assg14);
 	stmt15->setProcedure(procedure2);
 	stable->addStmt(stmt15);
+
+	Statement* stmt16 = new Statement();
+	stmt16->setStmtNum(16);
+	stmt16->setType(ASSIGN_STMT_);
+	string modifiesArray16[] = {"q"};
+	unordered_set<string> mods16(modifiesArray16, modifiesArray16 + 1);
+	stmt16->setModifies(mods16);
+	string usesArray16[] = {"y"};
+	unordered_set<string> uses16(usesArray16, usesArray16 + 1);
+	stmt16->setUses(uses16);
+	stmt16->setGNodeRef(assg14);
+	stmt16->setProcedure(procedure2);
+	stable->addStmt(stmt16);
 }
 
 void 
@@ -383,12 +408,13 @@ void AffectsClauseTest::testGenericSynPass() {
 	bool result = m1->evaluate(&res);
 	CPPUNIT_ASSERT(result);
 	unordered_set<string> s = res.getSyn("s2");
-	CPPUNIT_ASSERT(s.size() == 5);
+	CPPUNIT_ASSERT(s.size() == 6);
 	CPPUNIT_ASSERT(s.find("4") != s.end());
 	CPPUNIT_ASSERT(s.find("5") != s.end());
 	CPPUNIT_ASSERT(s.find("11") != s.end());
 	CPPUNIT_ASSERT(s.find("13") != s.end());
 	CPPUNIT_ASSERT(s.find("14") != s.end());
+	CPPUNIT_ASSERT(s.find("16") != s.end());
 }
 
 void AffectsClauseTest::testSynGenericPass() {
@@ -406,12 +432,13 @@ void AffectsClauseTest::testSynGenericPass() {
 	bool result = m1->evaluate(&res);
 	CPPUNIT_ASSERT(result);
 	unordered_set<string> s = res.getSyn("s1");
-	CPPUNIT_ASSERT(s.size() == 5);
+	CPPUNIT_ASSERT(s.size() == 6);
 	CPPUNIT_ASSERT(s.find("1") != s.end());
 	CPPUNIT_ASSERT(s.find("5") != s.end());
 	CPPUNIT_ASSERT(s.find("6") != s.end());
 	CPPUNIT_ASSERT(s.find("10") != s.end());
 	CPPUNIT_ASSERT(s.find("11") != s.end());
+	CPPUNIT_ASSERT(s.find("14") != s.end());
 }
 
 void AffectsClauseTest::testFixedFixedSameProc() { 
@@ -515,7 +542,7 @@ void AffectsClauseTest::testFixedFixedOutsideContainerPass() {
 void AffectsClauseTest::testFixedGenericPass() { 
 	Result res = Result();
 	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
-	affectsBuilder->setArg(1, "6");
+	affectsBuilder->setArg(1, "10");
 	affectsBuilder->setArgFixed(1, true);
 	affectsBuilder->setArgType(1, ARG_PROGLINE);
 	affectsBuilder->setArg(2, "_");
@@ -587,7 +614,6 @@ void AffectsClauseTest::testFixedSynPass() {
 }
 
 void AffectsClauseTest::testSynSynPass() { 
-	//need to wait for pointer from if to dummy node
 	Result res = Result();
 	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
 	affectsBuilder->setArg(1, "s1");
@@ -606,7 +632,7 @@ void AffectsClauseTest::testSynSynPass() {
 	syns.push_back("s1");
 	syns.push_back("s2");
 	unordered_set<vector<string>> pairResults = res.getMultiSyn(syns);
-	CPPUNIT_ASSERT(pairResults.size() == 8);
+	CPPUNIT_ASSERT(pairResults.size() == 9);
 	string pair0String[] = {"1", "4"};
 	vector<string> pair0(pair0String, pair0String+2);
 	string pair1String[] = {"5", "4"};
@@ -623,6 +649,8 @@ void AffectsClauseTest::testSynSynPass() {
 	vector<string> pair6(pair6String, pair6String+2);
 	string pair7String[] = {"1", "5"};
 	vector<string> pair7(pair7String, pair7String+2);
+	string pair8String[] = {"14", "16"};
+	vector<string> pair8(pair8String, pair8String+2);
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair0) != pairResults.end());
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair1) != pairResults.end());
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair2) != pairResults.end());
@@ -631,6 +659,32 @@ void AffectsClauseTest::testSynSynPass() {
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair5) != pairResults.end());
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair6) != pairResults.end());
 	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair7) != pairResults.end());
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair8) != pairResults.end());
+}
+
+void AffectsClauseTest::testSameSynSynPass() { 
+	//need to wait for pointer from if to dummy node
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder->setArg(1, "s");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_STATEMENT);
+	affectsBuilder->setArg(2, "s");
+	affectsBuilder->setArgFixed(2, false);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsClause* m1 = (AffectsClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	CPPUNIT_ASSERT(m1->evaluate(&res));
+	CPPUNIT_ASSERT(res.isSynPresent("s"));
+	vector<string> syns;
+	syns.push_back("s");
+	syns.push_back("s");
+	unordered_set<vector<string>> pairResults = res.getMultiSyn(syns);
+	CPPUNIT_ASSERT(pairResults.size() == 1);
+	string pairString[] = {"5", "5"};
+	vector<string> pair(pairString, pairString+2);
+	CPPUNIT_ASSERT(find(pairResults.begin(), pairResults.end(), pair) != pairResults.end());
 }
 
 // under nick
@@ -648,6 +702,21 @@ void AffectsClauseTest::testGenericFixedPass() {
 
 	bool result = m1->evaluate(&res);
 	CPPUNIT_ASSERT(result);
+
+	
+	Result res2 = Result();
+	SuchThatClauseBuilder* affectsBuilder2 = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder2->setArg(1, "_");
+	affectsBuilder2->setArgFixed(1, false);
+	affectsBuilder2->setArgType(1, ARG_GENERIC);
+	affectsBuilder2->setArg(2, "5");
+	affectsBuilder2->setArgFixed(2, true);
+	affectsBuilder2->setArgType(2, ARG_PROGLINE);
+	AffectsClause* m2 = (AffectsClause*) affectsBuilder2->build();
+	CPPUNIT_ASSERT(m2->isValid());
+
+	bool result2 = m2->evaluate(&res2);
+	CPPUNIT_ASSERT(result2);
 }
 
 // under nick
@@ -657,7 +726,7 @@ void AffectsClauseTest::testGenericFixedFail() {
 	affectsBuilder->setArg(1, "_");
 	affectsBuilder->setArgFixed(1, false);
 	affectsBuilder->setArgType(1, ARG_GENERIC);
-	affectsBuilder->setArg(2, "1");
+	affectsBuilder->setArg(2, "15");
 	affectsBuilder->setArgFixed(2, true);
 	affectsBuilder->setArgType(2, ARG_PROGLINE);
 	AffectsClause* m1 = (AffectsClause*) affectsBuilder->build();
@@ -669,6 +738,8 @@ void AffectsClauseTest::testGenericFixedFail() {
 
 // under nick
 void AffectsClauseTest::testSynFixedPass() { 
+	// after if dummy
+	// affects(s, 14) -> s = {6, 10}
 	Result res = Result();
 	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTS_);
 	affectsBuilder->setArg(1, "s");
@@ -687,6 +758,47 @@ void AffectsClauseTest::testSynFixedPass() {
 	CPPUNIT_ASSERT(s.size() == 2);
 	CPPUNIT_ASSERT(s.find("6") != s.end());
 	CPPUNIT_ASSERT(s.find("10") != s.end());
+
+	// within while loop
+	// affects(s, 5) -> s = {1, 5}
+	Result res2 = Result();
+	SuchThatClauseBuilder* affectsBuilder2 = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder2->setArg(1, "s");
+	affectsBuilder2->setArgFixed(1, false);
+	affectsBuilder2->setArgType(1, ARG_STATEMENT);
+	affectsBuilder2->setArg(2, "5");
+	affectsBuilder2->setArgFixed(2, true);
+	affectsBuilder2->setArgType(2, ARG_PROGLINE);
+	AffectsClause* m2 = (AffectsClause*) affectsBuilder2->build();
+	CPPUNIT_ASSERT(m2->isValid());
+
+	CPPUNIT_ASSERT(m2->evaluate(&res2));
+	CPPUNIT_ASSERT(res2.isSynPresent("s"));
+	CPPUNIT_ASSERT(res2.getResultTableSize() == 2);
+	unordered_set<string> s2 = res2.getSyn("s");
+	CPPUNIT_ASSERT(s2.size() == 2);
+	CPPUNIT_ASSERT(s2.find("5") != s2.end());
+	CPPUNIT_ASSERT(s2.find("1") != s2.end());
+
+	// same assg node
+	// affects(s, 16) -> s = {14}
+	Result res3 = Result();
+	SuchThatClauseBuilder* affectsBuilder3 = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder3->setArg(1, "s");
+	affectsBuilder3->setArgFixed(1, false);
+	affectsBuilder3->setArgType(1, ARG_STATEMENT);
+	affectsBuilder3->setArg(2, "16");
+	affectsBuilder3->setArgFixed(2, true);
+	affectsBuilder3->setArgType(2, ARG_PROGLINE);
+	AffectsClause* m3 = (AffectsClause*) affectsBuilder3->build();
+	CPPUNIT_ASSERT(m3->isValid());
+
+	CPPUNIT_ASSERT(m3->evaluate(&res3));
+	CPPUNIT_ASSERT(res3.isSynPresent("s"));
+	CPPUNIT_ASSERT(res3.getResultTableSize() == 1);
+	unordered_set<string> s3 = res3.getSyn("s");
+	CPPUNIT_ASSERT(s3.size() == 1);
+	CPPUNIT_ASSERT(s3.find("14") != s3.end());
 }
 
 void AffectsClauseTest::testSynFixedFail() { 
@@ -695,7 +807,7 @@ void AffectsClauseTest::testSynFixedFail() {
 	affectsBuilder->setArg(1, "s");
 	affectsBuilder->setArgFixed(1, false);
 	affectsBuilder->setArgType(1, ARG_STATEMENT);
-	affectsBuilder->setArg(2, "1");
+	affectsBuilder->setArg(2, "15");
 	affectsBuilder->setArgFixed(2, true);
 	affectsBuilder->setArgType(2, ARG_PROGLINE);
 	AffectsClause* m1 = (AffectsClause*) affectsBuilder->build();

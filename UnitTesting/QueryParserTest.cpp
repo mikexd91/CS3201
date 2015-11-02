@@ -186,8 +186,8 @@ void QueryParserTest::testParseParentStar(){
 }
 
 void QueryParserTest::testWith(){
-	string const DECLARATION = "constant c;";
-	string const USER_IN = "c.value = 1";
+	string const DECLARATION = "stmt s;";
+	string const USER_IN = "s.stmt# = 1";
 	vector<string> DEC_LIST = vector<string>();
 	parser->tokeniser(DECLARATION, ';', &DEC_LIST);
 	queue<string>* WITH_Q = new queue<string>();
@@ -296,8 +296,33 @@ void QueryParserTest::testParser(){
 }
 
 void QueryParserTest::debugTests(){
-	string INPUT = "assign a; Select a.stmt# such that Uses(a, \"ivysaur\")";
+	ProcTable* ptable = ProcTable::getInstance();
+	ptable->clearTable();
+	Procedure* testProcP1 = new Procedure("p1");
+	ptable->addProc(testProcP1);
+	Procedure* testProcP2 = new Procedure("p2");
+	ptable->addProc(testProcP2);
+
+	VarTable* vtable = VarTable::getInstance();
+	vtable->reset();
+	Variable* testVarX = new Variable("x");
+	vtable->addVariable(testVarX);
+	Variable* testVarY = new Variable("y");
+	vtable->addVariable(testVarY);
+
+	string INPUT = "call c; Select c with c.procName = \"asd\"";
 	Query* QUERY = new Query();
 	parser = QueryParser::getInstance();
 	QUERY = parser->parseQuery(INPUT);
+	vector<Clause*> VC = QUERY->getClauseList();
+	CPPUNIT_ASSERT(VC.size() == 1);
+	//CPPUNIT_ASSERT(VC.at(0)->getClauseType() == WITH_);
+	WithClause* WC = (WithClause*)VC.at(0);
+	WithClauseRef WCL = WC->getLeftRef();
+	WithClauseRef WCR = WC->getRightRef();
+	CPPUNIT_ASSERT(WCL.getEntity() == "c");
+	CPPUNIT_ASSERT(WCR.getEntity() == "asd");
+
+	ptable->clearTable();
+	vtable->reset();
 }

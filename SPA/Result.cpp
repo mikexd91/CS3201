@@ -8,8 +8,7 @@ Result::~Result() {
 }
 
 bool Result::push(InsertType& insert) {
-	pass = insert.execute(resultTable);
-	return pass;
+	return insert.execute(resultTable);
 }
 
 ResultTable Result::getResultTable() {
@@ -60,14 +59,6 @@ unordered_set<string> Result::getSyn(string syn) {
 		}
 	}
 	return res;
-}
-
-void Result::setFail() {
-	pass = false;
-}
-
-bool Result::isPass() {
-	return pass;
 }
 
 bool Result::isSynPresent(string syn) {

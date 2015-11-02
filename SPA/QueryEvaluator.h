@@ -18,6 +18,7 @@ private:
 	ProcTable* procTable;
 	vector<Clause*> clauseList;
 	vector<StringPair> selectList;
+	bool validResults;
 
 	void setClauseList(vector<Clause*> clauseList);
 	void setSelectList(vector<StringPair> selectList);
@@ -34,19 +35,27 @@ private:
 
 	string boolToString(bool);
 	void getRemainingSynValuesFromTable(Result &obj);
-	Result* evaluateClauses(Result* obj, vector<Clause*> clauseList);
+	void evaluateClauses(Result* obj, vector<Clause*> clauseList);
 	unordered_set<string> stringVectorToSet(vector<string> &varVector);
 	unordered_set<string> intVectorToSet(vector<int> &vec);
 	void insertSetValues(string syn, unordered_set<string> values, Result &obj);
-	unordered_set<string> printSingleSynValues(Result &obj, string syn);
+	unordered_set<string> printSingleSynValues(Result &obj, StringPair syn);
 	unordered_set<string> printTupleSynValues(Result &obj, vector<StringPair> selectList);
+
+	bool evalNumClauses(Query*, int, int, Result*);
+	bool evalNoClause(Query*, Result*);
+	void extractSingleSynonymResults(Result*, Result*, string);
+	void extractTupleSynonymResults(Result*, Result*, vector<string>);
+	bool isTuplePresent(Result*, vector<string>);
 
 public:
 	QueryEvaluator(void);
 	~QueryEvaluator(void);
 
+	Result* evalOptimisedQuery(Query*, vector<int>*);
 	// Evaluate all clauses in a query. Return values of the from table of the right type if there are no clauses.
 	Result* evaluateQuery(Query* query);
 	// Return values to be printed.
+	unordered_set<string> printValues(Result*, vector<StringPair>);
 	unordered_set<string> getValuesToPrint(Result* obj, vector<StringPair> selectList); 
 };

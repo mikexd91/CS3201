@@ -23,6 +23,7 @@ PatternAssgClause::PatternAssgClause(const string& syn, const string& var, const
 	this->var = var;
 	// parser must set vartype and varfixed.
 	this->_expr = expr;
+	this->clauseType = PATTERNASSG_;
 }
 
 PatternAssgClause::~PatternAssgClause(void) {
@@ -77,7 +78,7 @@ bool PatternAssgClause::matchVar(AssgNode* assgnode, string var) {
 
 bool PatternAssgClause::matchExpr(AssgNode* assg, string expr) {
 
-	cout << "THIS IS THE RPN " << expr << " : printed from PtnAssgClause" << endl;
+	//cout << "THIS IS THE RPN " << expr << " : printed from PtnAssgClause" << endl;
 
 	// match expr based on the assgnode
 	if (assg == NULL) {
