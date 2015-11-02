@@ -81,14 +81,6 @@ bool WithClause::isValid(void){
 			} 
 		}
 	}
-	 
-	if (leftSideRef.getRefType() == ATTRREF_ && rightSideRef.getAttrType() == ATTRREF_){
-		if (leftSideRef.getEntityType() != rightSideRef.getEntityType()){
-			return false;
-		} else if (leftSideRef.getAttrType() != rightSideRef.getAttrType()){
-			return false;
-		}
-	}
 
 	bool returnTypesMatch = (leftSideRef.getReturnType() == rightSideRef.getReturnType());
 	return returnTypesMatch;
@@ -1415,6 +1407,178 @@ bool WithClause::evalSynStmt(WithClauseRef leftEnt, WithClauseRef rightEnt, Resu
 					insert.insertValues(newRes);
 				}
 			}
+		}
+		if (found){
+			result->push(insert);
+		}
+		return found;
+	}
+	return false;
+}
+
+bool WithClause::evalCallPName(WithClauseRef callEnt, WithClauseRef procEnt, Result* result){
+	MultiSynInsert insert = MultiSynInsert();
+	string ce = callEnt.getEntity();
+	string pe = procEnt.getEntity();
+	vector<string> syns = vector<string>();
+	syns.push_back(ce);
+	syns.push_back(pe);
+	insert.setSyns(syns);
+	if (result->isSynPresent(ce)){
+		if (result->isSynPresent(pe)){
+			//both in result
+			unordered_set<vector<string>> resultSet = result->getMultiSyn(syns);
+			bool found = false;
+			StmtTable* stable = StmtTable::getInstance();
+			BOOST_FOREACH(vector<string> resultItem, resultSet){
+				string cNum = resultItem.at(0);
+				string pName = resultItem.at(1);
+				string cName = stable->getStmtObj(stoi(cNum))->getCalls();
+				if (cName == pName){
+					found = true;
+					vector<string> newRes = vector<string>();
+					newRes.push_back(cNum);
+					newRes.push_back(pName);
+					insert.insertValues(newRes);
+				}
+			}
+			if (found){
+				result->push(insert);
+			}
+			return found;
+		} else {
+			//only call in result
+			unordered_set<string> ceRes = result->getSyn(ce);
+			bool found = false;
+			StmtTable* stable = StmtTable::getInstance();
+			BOOST_FOREACH(string ceResult, ceRes){
+				vector<string> newRes = vector<string>();
+				string cName = stable->getStmtObj(stoi(ceResult))->getCalls();
+				newRes.push_back(ceResult);
+				newRes.push_back(cName);
+				found = true;
+				insert.insertValues(newRes);
+			}
+			if (found){
+				result->push(insert);
+			}
+			return found;
+		}
+	} else if (result->isSynPresent(pe)){
+		//only proc
+		StmtTable* stable = StmtTable::getInstance();
+		unordered_set<Statement*> allC = stable->getCallStmts();
+		unordered_set<string> peRes = result->getSyn(pe);
+		bool found;
+		BOOST_FOREACH(Statement* s, allC){
+			string cName = s->getCalls();
+			if (peRes.find(cName) != peRes.end()){
+				found = true;
+				vector<string> newRes = vector<string>();
+				newRes.push_back(to_string((long long) s->getStmtNum()));
+				newRes.push_back(cName);
+				insert.insertValues(newRes);
+			}
+		}
+		if (found){
+			result->push(insert);
+		}
+		return found;
+	} else {
+		//both absent
+		StmtTable* stable = StmtTable::getInstance();
+		ProcTable* ptable = ProcTable::getInstance();
+		unordered_set<Statement*> allC = stable->getCallStmts();
+		bool found = false;
+		BOOST_FOREACH(Statement* s, allC){
+			string currentCName = s->getCalls();
+			if (ptable->contains(currentCName)){
+				found = true;
+				vector<string> newRes = vector<string>();
+				newRes.push_back(to_string((long long) s->getStmtNum()));
+				newRes.push_back(currentCName);
+				insert.insertValues(newRes);
+			}
+		}
+		if (found){
+			result->push(insert);
+		}
+		return found;
+	}
+	return false;
+}
+
+bool WithClause::evalCallCall(WithClauseRef leftEnt, WithClauseRef rightEnt, Result* result){
+	MultiSynInsert insert = MultiSynInsert();
+	string le = leftEnt.getEntity();
+	string re = rightEnt.getEntity();
+	vector<string> syns = vector<string>();
+	syns.push_back(le);
+	syns.push_back(re);
+	insert.setSyns(syns);
+	if (result->isSynPresent(leftEnt.getEntity())){
+		if (result->isSynPresent(rightEnt.getEntity())){
+			//both in result
+			unordered_set<vector<string>> resultPairs = result->getMultiSyn(syns);
+			bool found;
+			BOOST_FOREACH(vector<string> pair, resultPairs){
+				if (pair.at(0) == pair.at(1)){
+					string p1 = pair.at(0);
+					string p2 = pair.at(1);
+					vector<string> newPair = vector<string>();
+					newPair.push_back(p1);
+					newPair.push_back(p2);
+					insert.insertValues(newPair);
+					found = true;
+				}
+				if (found){
+					result->push(insert);
+				}
+				return found;
+			}
+		} else {
+			//only left in result
+			unordered_set<string> leRes = result->getSyn(leftEnt.getEntity());
+			bool found;
+			BOOST_FOREACH(string leftEntRes, leRes){
+			vector<string> newRes = vector<string>();
+			newRes.push_back(leftEntRes);
+			newRes.push_back(leftEntRes);
+			insert.insertValues(newRes);
+				found = true;
+			}
+			if (found){
+				result->push(insert);
+			}
+			return found;
+		}
+	} else if (result->isSynPresent(rightEnt.getEntity())){
+		//only right syn
+		unordered_set<string> reRes = result->getSyn(rightEnt.getEntity());
+		bool found;
+		BOOST_FOREACH(string rightEntRes, reRes){
+			vector<string> newRes = vector<string>();
+			newRes.push_back(rightEntRes);
+			newRes.push_back(rightEntRes);
+			insert.insertValues(newRes);
+			found = true;
+		}
+		if (found){
+			result->push(insert);
+		}
+		return found;
+	} else {
+		//both absent
+		StmtTable* stable = StmtTable::getInstance();
+		unordered_set<Statement*> allC = stable->getCallStmts();
+		bool found = false;
+		BOOST_FOREACH(Statement* s, allC){
+			string currentC = to_string((long long)s->getStmtNum());
+			found = true;
+			vector<string> newRes = vector<string>();
+			newRes.push_back(currentC);
+			newRes.push_back(currentC);
+			insert.insertValues(newRes);
 		}
 		if (found){
 			result->push(insert);
