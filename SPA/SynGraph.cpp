@@ -20,12 +20,10 @@ vector<int>* SynGraph::reorderQuery(Query* q) {
 	// Case of no clauses
 	if (q->getClauseList().size() == 0) {
 		queryCompSize->push_back(0);
-		return queryCompSize;
 
 	} else if (q->getClauseList().size() == 1) {
 		// Case of 1 clause
 		queryCompSize->push_back(1);
-		return queryCompSize;
 
 	} else {
 		// Case of more than 1 clause
@@ -33,8 +31,9 @@ vector<int>* SynGraph::reorderQuery(Query* q) {
 		populateGraphTable(q);
 		setComponents();
 		arrangeComponentClauses(q, *queryCompSize);
-		return queryCompSize;
+
 	}
+	return queryCompSize;
 }
 
 // ------------------------------arrangeComponentClauses and private functions ----------------------------//
@@ -336,7 +335,7 @@ void SynGraph::createSelectSynNodes(Query* q) {
 	if (hasSelectSyn) {
 		BOOST_FOREACH(auto i, selectList) {
 			// Create and set SynNode
-			// Select synonyms have a weight of 5
+			// Select synonyms have a weight of 1
 			// and component number -1 to define 
 			// no set component yet
 
@@ -468,11 +467,10 @@ vector<string> SynGraph::getSynFromWithClause(WithClause* wc) {
 	return synList;
 }
 
-// Creates and set fixed arg SynNodes and 
-// add it to componentMap and componentWeight
 void SynGraph::createFixedArgNode(Clause* c, int cIndex, int fixedCount) {
 	// Create and set SynNode
-	// Fixed arg have a weight of 0
+	// Fixed arg synonyms have a weight of 0,
+	// however, their clauses (edges) have a weight,
 	// and they are a component by themselves
 	string syn = boost::lexical_cast<string>(fixedCount);
 	SynNode* synNode = new SynNode();
@@ -495,7 +493,7 @@ void SynGraph::createFixedArgNode(Clause* c, int cIndex, int fixedCount) {
 	componentIndex++;
 }
 
-// As a fixed clause is a component on it's own, this function
+// As a fixed clause is a component on its own, this function
 // stores the mapping of the weight of a fixed clause component to 
 // the component number
 void SynGraph::storeFixedArgClauseCompWeight(int index, string syn) {
@@ -509,7 +507,7 @@ void SynGraph::storeFixedArgClauseCompWeight(int index, string syn) {
 
 	compWeightList.push_back(make_pair(index, weight));
 }
-
+/*
 vector<Clause*> SynGraph::edgeToClause(string syn) {
 	EdgeList edgelist = graphTable[syn];
 	SynEdge* edge = edgelist.at(0).first;
@@ -518,7 +516,7 @@ vector<Clause*> SynGraph::edgeToClause(string syn) {
 	clauselist.push_back(c);
 	return clauselist;
 }
-
+*/
 void SynGraph::linkSingleUnfixedArgNode(Clause* c, int cIndex, string syn) {
 	bool isSynExist = (synTable.find(syn) != synTable.end());
 	if (isSynExist) {
