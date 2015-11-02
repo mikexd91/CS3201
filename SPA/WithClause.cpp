@@ -133,8 +133,17 @@ bool WithClause::evaluate(Result* res){
 		} else {
 			if (leftEntityAttr == rightEntityAttr){
 				if (leftEntityAttr == PROCNAME_){
-					return evalPNamePName(leftEntityRef, rightEntityRef, res);
-
+					if (leftEntityType == stringconst::ARG_PROCEDURE && rightEntityType == stringconst::ARG_PROCEDURE){
+						return evalPNamePName(leftEntityRef, rightEntityRef, res);
+					} else if (leftEntityType == stringconst::ARG_CALL && rightEntityType == stringconst::ARG_CALL){
+						return evalCallCall(leftEntityRef, rightEntityRef, res);
+					} else if(leftEntityType == stringconst::ARG_CALL && rightEntityType == stringconst::ARG_PROCEDURE){
+						return evalCallPName(leftEntityRef, rightEntityRef, res);
+					} else if (leftEntityType == stringconst::ARG_PROCEDURE && rightEntityType == stringconst::ARG_CALL){
+						return evalCallPName(rightEntityRef, leftEntityRef, res);
+					} else {
+						return false;
+					}
 				} else if (leftEntityAttr == VARNAME_){
 					return evalVNameVName(leftEntityRef, rightEntityRef, res);
 
