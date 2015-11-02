@@ -4,6 +4,7 @@
 #include <regex>
 #include "PDR.h"
 #include "CFGBuilder.h"
+#include "CFGbipBuilder.h"
 #include "boost/assign.hpp"
 
 using namespace std;
@@ -22,6 +23,7 @@ private:
 	int nestingLevel;
 	PDR* parsedDataReceiver;
 	CFGBuilder* cfgBuilder;
+	CFGbipBuilder* cfgBipBuilder;
 	int stmtCount;
 	//all procedures that were defined in the program
 	vector<string> existingProcedures;

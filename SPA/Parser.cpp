@@ -20,6 +20,7 @@ Parser::Parser() {
 	nestingLevel = 0;
 	parsedDataReceiver = PDR::getInstance();
 	cfgBuilder = CFGBuilder::getInstance();
+	cfgBipBuilder = CFGbipBuilder::getInstance();
 	stmtCount = 0;
 }
 
@@ -99,6 +100,7 @@ void Parser::procedure() {
 	procedure.setProcName(procName);
 	parsedDataReceiver->processParsedData(procedure);
 	cfgBuilder->processParsedData(procedure);
+	cfgBipBuilder->processParsedData(procedure);
 	existingProcedures.push_back(procName);
 	match("{");
 	stmtLst();
@@ -138,6 +140,7 @@ void Parser::assign() {
 	assignment.setAssignExpression(getExpression());
 	parsedDataReceiver->processParsedData(assignment);
 	cfgBuilder->processParsedData(assignment);
+	cfgBipBuilder->processParsedData(assignment);
 }
 
 /**
@@ -182,6 +185,7 @@ void Parser::call() {
 	callStmt.setProcName(procName);
 	parsedDataReceiver->processParsedData(callStmt);
 	cfgBuilder->processParsedData(callStmt);
+	cfgBipBuilder->processParsedData(callStmt);
 	calledProcedures.push_back(procName);
 	match(";");
 }
@@ -193,6 +197,7 @@ void Parser::parseWhile() {
 	whileStmt.setWhileVar(conditionVar);
 	parsedDataReceiver->processParsedData(whileStmt);
 	cfgBuilder->processParsedData(whileStmt);
+	cfgBipBuilder->processParsedData(whileStmt);
 	match("{");
 	stmtLst();
 	match("}");
@@ -211,6 +216,7 @@ void Parser::parseIf(){
 	ifStmt.setIfVar(conditionVar);
 	parsedDataReceiver->processParsedData(ifStmt);
 	cfgBuilder->processParsedData(ifStmt);
+	cfgBipBuilder->processParsedData(ifStmt);
 }
 
 void Parser::parseThen(){
@@ -225,6 +231,7 @@ void Parser::parseElse() {
 	ParsedData elseStmt = ParsedData(ParsedData::ELSE, nestingLevel);
 	parsedDataReceiver->processParsedData(elseStmt);
 	cfgBuilder->processParsedData(elseStmt);
+	cfgBipBuilder->processParsedData(elseStmt);
 	match ("{");
 	stmtLst();
 	match("}");
@@ -244,6 +251,7 @@ void Parser::endParse() {
 	ParsedData endData = ParsedData(ParsedData::END, nestingLevel);
 	parsedDataReceiver->processParsedData(endData);
 	cfgBuilder->processParsedData(endData);
+	cfgBipBuilder->processParsedData(endData);
 }
 
 void Parser::throwException(int lineNumber) {
