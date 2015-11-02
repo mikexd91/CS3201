@@ -1002,7 +1002,6 @@ void PQLIntegration::testSelectPProcNameWithPatternAssgCalls() {
 	//	cout << a << endl;
 	//}
 
-	cout << "hello";
 	CPPUNIT_ASSERT(res.size() == 5);
 	CPPUNIT_ASSERT(res.count("2 eaten YourMom") == 1);
 	CPPUNIT_ASSERT(res.count("3 drink YourMom") == 1);

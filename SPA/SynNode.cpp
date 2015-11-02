@@ -39,27 +39,3 @@ bool SynNode::isSame(SynNode node1) {
 	string syn2 = synonym;
 	return syn1 == syn2;
 }
-/*
-void SynNode::setEdge(int edgeWeight, SynNode* node) {
-	pair<int, SynNode*> edge (edgeWeight, node);
-	edgeList.push_back(edge);
-	if (node->getEdges().size() > 0) {
-		pair<int, SynNode*> othersEdge = node->getEdges().back();
-		if (!isSame(this, othersEdge.second)) {
-			setOtherEdge(edgeWeight, node);
-		}
-	} else {
-		setOtherEdge(edgeWeight, node);
-	}
-}
-
-void SynNode::setOtherEdge(int edgeWeight, SynNode* node) {
-	node->setEdge(edgeWeight, this);
-}
-
-bool SynNode::isSame(SynNode* node1, SynNode* node2) {
-	string syn1 = node1->getSynonym();
-	string syn2 = node2->getSynonym();
-	return syn1 == syn2;
-}
-*/
