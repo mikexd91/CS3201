@@ -11,9 +11,17 @@
 
 using boost::unordered_map;
 
+//directly thrown when there's a success!
+struct BasicAffectsTermination : public std::exception {
+  const char * what () const throw () {
+    return "Success!";
+  }
+};
+
+
 //thrown to break out of recursion so that we will return to the top level
 //used for Affects(_,_), where we want to terminate after finding a single pair
-struct AffectsTermination : public std::exception {
+struct AffectsTermination : BasicAffectsTermination {
   const char * what () const throw () {
     return "We found a pair, we can terminate Affects(_,_) , and this is a bad hack.";
   }
@@ -54,8 +62,6 @@ private:
 	//for Affects(1,_), we need to store 1
 	int s1Num;
 	bool result; //it can terminate prematurely and fail
-	//should not terminate prematurely if we are in while loop
-	bool inWhileLoop;
 
 	void updateStateForCall(CallGNode*, State&);
 	void updateStateForWhile(WhileGNode*, State&);
@@ -65,5 +71,6 @@ private:
 	GNode* evaluateNode(GNode* node, State&);
 	State mergeStates(State, State);
 	State recurseWhile(WhileGNode*, State);
+	bool toProceed(State state);
 };
 

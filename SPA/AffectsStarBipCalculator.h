@@ -67,6 +67,7 @@ private:
 	State recurseWhile(WhileGNode*, State);
 	bool areResultsEqual(AffectsStarBipResult, AffectsStarBipResult);
 	bool isEmpty(State);
+	void updateStateBeyondEnd(GNode*, State);
 
 	//BIP stuff
 	stack<int> parentCallStmts;
@@ -78,6 +79,5 @@ private:
 	int s2Num;
 	bool result;
 	bool isStart;
-	bool inWhile;
 };
 

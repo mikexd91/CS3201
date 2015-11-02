@@ -1,3 +1,4 @@
+#include "CallGNode.h"
 #include "DesignExtractor.h"
 #include "ProcTable.h"
 #include "StmtTable.h"
@@ -269,16 +270,166 @@ void DesignExtractor::populateParentCallsVarTable(int stmtNum, unordered_set<str
 }
 
 void DesignExtractor::constructBip() {
-	StmtTable* stmtTable = stmtTable->getInstance();
+	StmtTable* stmtTable = StmtTable::getInstance();
 
 	unordered_set<Statement*> callStmts = stmtTable->getCallStmts();
 	BOOST_FOREACH(auto c, callStmts) {
 		breakBonds(c);
 	}
+
+	setCallsBipList(callStmts);
+	setProcBipPrevList();
+
+	CFGbip* cfg = CFGbip::getInstance();
+	vector<ProcGNode*> allProcs = cfg->getAllProcedures();
+	BOOST_FOREACH(auto n, allProcs) {
+		populateEndProcs(n);
+	}
+	BOOST_FOREACH(auto n, allProcs) {
+		setEndProcChildrenList(n);
+	}
+}
+
+void DesignExtractor::setEndProcChildrenList(ProcGNode* procNode) {
+	EndGNode* endNode = (EndGNode*) procNode->getEndNode();
+	StmtTable* stmtTable = StmtTable::getInstance();
+
+	unordered_set<int> prevStmts = endNode->getPrevStmts();		//endNode's previous
+	vector<GNode*> children = endNode->getChildren();			//endNode's children
+
+	BOOST_FOREACH(auto child, children) {
+		switch(child->getNodeType()) {
+			case ASSIGN_: case WHILE_: case CALL_: case IF_: 
+				addOthersPrevBip(child, prevStmts);
+				break;
+			
+			case DUMMY_: 
+				addDummyPrevBip(child, prevStmts);
+				break;
+			
+			default:
+				break;
+		}
+	}
+}
+
+void DesignExtractor::addDummyPrevBip(GNode* child, unordered_set<int> prevStmts) {
+	DummyGNode* dum = (DummyGNode*) child;
+	bool flag = true;
+
+	while(flag) {
+		unordered_set<int> dumPrev = dum->getPrevStmts();
+		dumPrev.insert(prevStmts.begin(), prevStmts.end());
+		dum->setPrevStmts(dumPrev);
+
+		switch(dum->getChild()->getNodeType()) {
+			case DUMMY_:
+				dum = (DummyGNode*) dum->getChild();
+				break;
+			case ASSIGN_: case WHILE_: case IF_: case CALL_: {
+				flag = false;
+				GNode* othersChild = dum->getChild();
+				addOthersPrevBip(othersChild, dum->getPrevStmts());
+				break;
+			}
+			default:
+				flag = false;
+				break;
+		}
+	}
+}
+
+void DesignExtractor::addOthersPrevBip(GNode* child, unordered_set<int> prevStmts) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	Statement* stmt = stmtTable->getStmtObj(child->getStartStmt());
+
+	unordered_set<int> stmtPrevBip = stmt->getPrevBip();
+	stmtPrevBip.insert(prevStmts.begin(), prevStmts.end());
+	stmt->setPrevBip(stmtPrevBip);
+
+	BOOST_FOREACH(auto prev, prevStmts) {
+		Statement* individualPrev = stmtTable->getStmtObj(prev);
+		unordered_set<int> nextSet = individualPrev->getNextBip();
+		nextSet.insert(stmt->getStmtNum());
+		individualPrev->setNextBip(nextSet);
+	}
+}
+
+void DesignExtractor::populateEndProcs(ProcGNode* procNode) {
+	EndGNode* end = (EndGNode*) procNode->getEndNode();
+
+	bool flag = true;
+	stack<EndGNode*> stack;
+
+	while(flag) {
+		if(!end->getPrevStmts().empty()) {
+			break;
+		}
+
+		GNode* parent = end->getParent();
+		stack.push(end);
+		if(parent->getNodeType() == END_) {
+			end = (EndGNode*) parent;
+		} else if(parent->getNodeType() == DUMMY_) {
+			DummyGNode* dumParent = (DummyGNode*) parent;
+			while(!stack.empty()) {
+				EndGNode* top = stack.top();
+				unordered_set<int> prev = top->getPrevStmts();
+				prev.insert(dumParent->getPrevStmts().begin(), dumParent->getPrevStmts().end());
+				top->setPrevStmts(prev);
+				stack.pop();
+			}
+			
+			flag = false;
+		} else {
+			int prevStmtNum = parent->getEndStmt();
+			while(!stack.empty()) {
+				EndGNode* top = stack.top();
+				unordered_set<int> prev = top->getPrevStmts();
+				prev.insert(prevStmtNum);
+				top->setPrevStmts(prev);
+				stack.pop();
+			}
+			
+			flag = false;
+		}
+	}
+}
+
+void DesignExtractor::setCallsBipList(unordered_set<Statement*> callStmts) {
+	BOOST_FOREACH(auto c, callStmts) {
+		CallGNode* callNode = (CallGNode*) c->getGBipNodeRef();
+		ProcGNode* calledProc = (ProcGNode*) callNode->getChild();
+		GNode* callNextNode = calledProc->getChild();
+		
+		unordered_set<int> callNextSet;
+		callNextSet.insert(callNextNode->getStartStmt());
+		c->setNextBip(callNextSet);
+	}
+}
+
+void DesignExtractor::setProcBipPrevList() {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	CFGbip* cfg = CFGbip::getInstance();
+	vector<ProcGNode*> allProcs = cfg->getAllProcedures();
+
+	BOOST_FOREACH(auto p, allProcs) {
+		GNode* childNode = p->getChild();
+		Statement* stmt = stmtTable->getStmtObj(childNode->getStartStmt());
+
+		unordered_set<int> previousBip;
+		vector<GNode*> parents = p->getParents();
+		BOOST_FOREACH(auto call, parents) {
+			previousBip.insert(call->getStartStmt());
+		}
+
+		stmt->setPrevBip(previousBip);
+	}
 }
 
 void DesignExtractor::breakBonds(Statement* callStmt) {
 	CFGbip* cfg = CFGbip::getInstance();
+	StmtTable* stmtTable = StmtTable::getInstance();
 
 	GNode* callNode = callStmt->getGBipNodeRef();
 	GNode* originalChild = callNode->getChildren().at(0);
@@ -294,9 +445,9 @@ void DesignExtractor::breakBonds(Statement* callStmt) {
 			break;
 		case WHILE_: case DUMMY_:
 			if(originalChild->getParents().at(0) == callNode) {
-				originalChild->setSecondParent(calledEnd);
-			} else {
 				originalChild->setFirstParent(calledEnd);
+			} else {
+				originalChild->setSecondParent(calledEnd);
 			}
 			break;
 		default:
@@ -311,4 +462,65 @@ void DesignExtractor::breakBonds(Statement* callStmt) {
 
 	calledProc->setParents(calledProcParents);
 	calledEnd->setChildren(calledEndChildren);
+
+	unordered_set<int> callsNext;
+	callStmt->setNextBip(callsNext);
+
+	switch(originalChild->getNodeType()) {
+		case CALL_:  case ASSIGN_: case IF_:
+			removeOthersPrevBip(originalChild);
+			break;
+		case WHILE_:
+			removeWhilePrevBip(originalChild->getStartStmt(), callNode->getStartStmt());
+			break;
+		case DUMMY_:
+			removeDummyPrevBip(originalChild, callNode->getStartStmt());
+			break;
+		default:
+			break;
+	}
+}
+
+void DesignExtractor::removeOthersPrevBip(GNode* origChild) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	unordered_set<int> prev;
+	Statement* stmt = stmtTable->getStmtObj(origChild->getStartStmt());
+	stmt->setPrevBip(prev);
+}
+
+void DesignExtractor::removeDummyPrevBip(GNode* origChild, int stmtToErase) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	DummyGNode* dum = (DummyGNode*) origChild;
+
+	bool flag = true;
+
+	while(flag) {
+		unordered_set<int> prevStmts = dum->getPrevStmts();
+		prevStmts.erase(stmtToErase);
+		dum->setPrevStmts(prevStmts);
+
+		if(dum->getChild()->getNodeType() == ASSIGN_ || dum->getChild()->getNodeType() == CALL_ || dum->getChild()->getNodeType() == IF_ || dum->getChild()->getNodeType() == WHILE_) {
+			Statement* stmt = stmtTable->getStmtObj(dum->getChild()->getStartStmt());
+			unordered_set<int> stmtPrevBip = stmt->getPrevBip();
+			stmtPrevBip.erase(stmtToErase);
+			stmt->setPrevBip(stmtPrevBip);
+			flag = false;
+		}
+
+		if(dum->getChild()->getNodeType() == DUMMY_) {
+			dum = (DummyGNode*) dum->getChild();
+		}
+
+		if(dum->getChild()->getNodeType() == END_) {
+			flag = false;
+		}
+	}
+}
+
+void DesignExtractor::removeWhilePrevBip(int stmtNum, int stmtToErase) {
+	StmtTable* stmtTable = StmtTable::getInstance();
+	Statement* stmt = stmtTable->getStmtObj(stmtNum);
+	unordered_set<int> prevBip = stmt->getPrevBip();
+	prevBip.erase(stmtToErase);
+	stmt->setPrevBip(prevBip);
 }
