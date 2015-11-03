@@ -19,7 +19,8 @@ import os
 # os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Next-ss2.txt SystemTests/Results/next-ss2.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-ss1.txt SystemTests/Results/nextstar-ss1.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Affects-ss1.txt SystemTests/Results/affects-ss1.xml")
-os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Affects-ss2.txt SystemTests/Results/affects-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Affects-ss2.txt SystemTests/Results/affects-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/AffectsStar-ss2.txt SystemTests/Results/affectsstar-ss2.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/AffectsStar-ss1.txt SystemTests/Results/affectsstar-ss1.xml")
 
 # PATTERN CLAUSE
