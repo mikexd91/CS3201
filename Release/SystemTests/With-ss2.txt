@@ -246,7 +246,7 @@ proc2, proc3
 50 - WITH: c.procName = p.procName
 call c; procedure p;
 Select c with c.procName = p.procName
-proc2, proc3
+3, 13, 29
 5000
 51 - WITH-stmt: stmt# = value
 stmt s; constant c;
@@ -325,26 +325,26 @@ true
 5000
 66 - WITH: stmt# = stmt#
 stmt s;
-Select BOOLEAN such that s.stmt# = s.stmt#
+Select BOOLEAN with s.stmt# = s.stmt#
 true
 5000
 67 - WITH: stmt# = stmt# (no result)
 assign a; while w;
-Select BOOLEAN such that a.stmt# = w.stmt#
+Select BOOLEAN with a.stmt# = w.stmt#
 false
 5000
 68 - WITH: c.value = c.value
 constant c;
-Select BOOLEAN such that c.value = c.value
-false
+Select BOOLEAN with c.value = c.value
+true
 5000
 69 - WITH: c.procName = c.procName
 call c;
-Select c.procName such that c.procName = c.procName
-proc1, proc2, proc3
+Select c.procName with c.procName = c.procName
+proc2, proc3
 5000
 70 - WITH: p.procName = p.procName
 procedure p;
-Select BOOLEAN such that p.procName = p.procName
+Select BOOLEAN with p.procName = p.procName
 true
 5000

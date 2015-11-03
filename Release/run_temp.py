@@ -29,4 +29,4 @@ import os
 
 # WITH CLAUSE
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/With-ss1.txt SystemTests/Results/with-ss1.xml")
-os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/With-ss2.txt SystemTests/Results/with-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/With-ss2.txt SystemTests/Results/with-ss2.xml")
