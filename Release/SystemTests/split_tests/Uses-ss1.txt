@@ -250,7 +250,7 @@ charmander, squirtle, bulbasaur, firstStageEvolution, charmeleon, wartortle, ivy
 5000
 51 - USES: 2 clauses (mixed) - fixed-fixed, fixed-syn
 variable v;
-Select v such that Uses(17, "battle2") and Uses("18", v)
+Select v such that Uses(17, "battle2") and Uses(18, v)
 battle3, charmeleon, wartortle
 5000
 52 - USES: 2 clauses (mixed) - syn-syn, syn-fixed
