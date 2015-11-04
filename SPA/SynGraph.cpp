@@ -138,6 +138,7 @@ unordered_set<string> SynGraph::getDesiredSingleSyn(unordered_set<string> synSet
 
 // REFACTOR THIS FUNCTION!!!
 pair<SynNode*, SynEdge*> SynGraph::getStartingSynonymForSingleSyn(unordered_set<string> synSet) {
+	pair<SynNode*, SynEdge*> link;
 	int count = 0;
 	BOOST_FOREACH(auto i, synSet) {
 		string syn = i;
@@ -152,7 +153,7 @@ pair<SynNode*, SynEdge*> SynGraph::getStartingSynonymForSingleSyn(unordered_set<
 				if (isSingleSynArgClause) {
 					if (count > 0) {
 						// Case of having a neighbour that is not Affects, Affects* or next*
-						pair<SynNode*, SynEdge*> link = make_pair(synTable[syn], j.first);
+						link = make_pair(synTable[syn], j.first);
 						return link;
 					
 					} else {
@@ -160,7 +161,7 @@ pair<SynNode*, SynEdge*> SynGraph::getStartingSynonymForSingleSyn(unordered_set<
 					}
 				} else {
 					// Case of having a neighbour that is not Affects, Affects* or next*
-					pair<SynNode*, SynEdge*> link = getSingleSynEdge(syn);
+					link = getSingleSynEdge(syn);
 					return link;
 				}
 			}
@@ -176,11 +177,13 @@ pair<SynNode*, SynEdge*> SynGraph::getStartingSynonymForSingleSyn(unordered_set<
 		BOOST_FOREACH(auto j, edgelist) {
 			bool isSingleSynArgClause = (synTable[syn2])->isSame(*(j.second));
 			if (isSingleSynArgClause) {
-				pair<SynNode*, SynEdge*> link = make_pair(synTable[syn2], j.first);
+				link = make_pair(synTable[syn2], j.first);
 				return link;
 			}
 		}
 	}
+
+	return link;
 }
 
 pair<SynNode*, SynEdge*> SynGraph::getSingleSynEdge(string syn) {
