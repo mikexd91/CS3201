@@ -2,7 +2,6 @@
 #include "SuchThatClause.h"
 #include "CFGbip.h"
 #include "StmtTable.h"
-#include "CFGBipIterator.h"
 
 class AffectsBipClause 
 	: public SuchThatClause {
@@ -35,8 +34,6 @@ protected:
 private:
 	StmtTable* stmtTable;
 	ProcTable* procTable;
-	bool toContinue(CFGBipIterator&);
-	bool toContinueForFixed(CFGBipIterator&);
 	bool modcheck(string, GNode*, unordered_set<int>*);
 	bool modcheck(string, GNode*, unordered_set<int>*, int);
 	void modadd(string, GNode*, unordered_set<int>*, unordered_set<int>*);

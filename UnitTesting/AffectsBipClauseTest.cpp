@@ -522,6 +522,7 @@ void AffectsBipClauseTest::testFixedSynPass() {
 
 	CPPUNIT_ASSERT(m1->evaluate(&res));
 	CPPUNIT_ASSERT(res.isSynPresent("s"));
+	cout << res.getResultTableSize();
 	CPPUNIT_ASSERT(res.getResultTableSize() == 3);
 	unordered_set<string> s = res.getSyn("s");
 	CPPUNIT_ASSERT(s.size() == 3);
