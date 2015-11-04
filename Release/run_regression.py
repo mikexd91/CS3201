@@ -5,6 +5,7 @@ os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Single
 # SUCH THAT CLAUSES
 os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Uses-ss2.txt SystemTests/Results/uses-ss2.xml")
 os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Parent-ss2.txt SystemTests/Results/parent-ss2.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/ParentStar-ss2.txt SystemTests/Results/parentstar-ss2.xml")
 os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Follows-ss2.txt SystemTests/Results/follows-ss2.xml")
 os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/FollowsStar-ss2.txt SystemTests/Results/followsstar-ss2.xml")
 os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Calls-ss2.txt SystemTests/Results/calls-ss2.xml")
