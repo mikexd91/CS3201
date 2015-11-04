@@ -43,11 +43,12 @@ public:
 	bool computeS1GenericS2Generic(void);
 	//Affects(1,_)
 	bool computeS1FixedS2Generic(string);
-	bool computeS1FixedAndS2Fixed(string, string);
+	bool computeFixedFixed(string, string);
+	unordered_set<string> computeFixedSyn(string);
 
 private:
 	typedef unordered_map<string, unordered_set<int>> State;
-	enum AffectsResultType {S1_ONLY, S2_ONLY, S1_AND_S2, GENERIC_GENERIC, FIXED_GENERIC, FIXED_FIXED};
+	enum AffectsResultType {S1_ONLY, S2_ONLY, S1_AND_S2, GENERIC_GENERIC, FIXED_GENERIC, FIXED_FIXED, FIXED_SYN};
 
 	StmtTable* stmtTable;
 	ProcTable* procTable;

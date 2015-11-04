@@ -17,7 +17,7 @@ AffectsCalculator::AffectsCalculator() {
 AffectsCalculator::~AffectsCalculator() {
 }
 
-bool AffectsCalculator::computeS1FixedAndS2Fixed(string firstArg, string secondArg) {
+bool AffectsCalculator::computeFixedFixed(string firstArg, string secondArg) {
 	type = FIXED_FIXED;
 	isStart = true;
 	s1Num = boost::lexical_cast<int>(firstArg);
@@ -59,7 +59,36 @@ bool AffectsCalculator::computeS1FixedAndS2Fixed(string firstArg, string secondA
 	return false;
 }
 
-
+unordered_set<string> AffectsCalculator::computeFixedSyn(string s1) {
+	type = FIXED_SYN;
+	isStart = true;
+	s1Num = boost::lexical_cast<int>(s1);
+	Statement* stmt1 = stmtTable->getStmtObj(s1Num);
+	if (stmt1->getType() != ASSIGN_STMT_) {
+		return unordered_set<string>();
+	}
+	unordered_set<string> modifies1 = stmt1->getModifies();
+	string modifyingVar;
+	if (modifies1.size() != 1) {
+		//error
+		cout << "Assignment statements should only have 1 modify variable";
+		return unordered_set<string>();
+	} else {
+		modifyingVar = *modifies1.begin();
+	}
+	//add first statement into the state, so we know that which var is modified
+	globalState[modifyingVar] = unordered_set<int>();
+	globalState[modifyingVar].insert(s1Num);
+	try {
+		GNode* currentNode = stmt1->getGNodeRef();
+		while(currentNode->getNodeType() != END_) {
+			currentNode = evaluateNode(currentNode, globalState);
+		}
+	} catch (BasicAffectsTermination e) {
+		return singleSynResults;
+	}
+	return singleSynResults;
+}
 
 unordered_set<vector<string>> AffectsCalculator::computeAllS1AndS2() {
 	//used for insertion
@@ -276,6 +305,7 @@ void AffectsCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 							singleSynResults.insert(boost::lexical_cast<string>(modifyingStmt));
 						}
 					break;
+				case FIXED_SYN:
 				case S2_ONLY: 
 					singleSynResults.insert(boost::lexical_cast<string>(stmtNum));
 					break;
@@ -291,19 +321,13 @@ void AffectsCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 			}
 		}
 		Statement::ModifiesSet modifiedVariables = assgStmt->getModifies();
-		if (type == FIXED_GENERIC || type == FIXED_FIXED) {
+		if (type == FIXED_GENERIC || type == FIXED_FIXED || type == FIXED_SYN) {
 			BOOST_FOREACH(string modifiedVar, modifiedVariables) {
 				//if current statements modifies the var that we are looking out for
 				if (modifiedVar == *(stmtTable->getStmtObj(s1Num)->getModifies().begin())) {
-					if (stmtNum == s1Num) {
-						//we have iterated back to ourselves
-						unordered_set<int> modifyingStmts = unordered_set<int>();
-						modifyingStmts.insert(stmtNum);
-						state[modifiedVar] = modifyingStmts;
-					} else {
+					if (stmtNum != s1Num) {
 						//another statement overrode our assg stmt
 						state.erase(modifiedVar);
-						result = false;
 					}
 					throw AffectsTermination();
 				}
@@ -315,9 +339,6 @@ void AffectsCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 				modifyingStmts.insert(stmtNum);
 				state[modifiedVar] = modifyingStmts;
 			}
-		}
-		if (!toProceed(state)) {
-			throw AffectsTermination();
 		}
 	}
 }
@@ -343,7 +364,7 @@ AffectsCalculator::State AffectsCalculator::mergeStates(State state1, State stat
 }
 
 bool AffectsCalculator::toProceed(State state) {
-	if (type == FIXED_GENERIC || type == FIXED_FIXED) {
+	if (type == FIXED_GENERIC || type == FIXED_FIXED || type == FIXED_SYN) {
 		State::iterator it = state.find(*(stmtTable->getStmtObj(s1Num)->getModifies().begin()));
 		bool isModifiedVarPresent = it != state.end();
 		if (isModifiedVarPresent){
