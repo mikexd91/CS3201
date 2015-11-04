@@ -60,11 +60,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION( NextStarBipClauseTest );
 
 void NextStarBipClauseTest::testFixFix() {
 	Parser parser = Parser();
-	parser.parse("procedure proc1 { x = 2; call proc2; x = 3; } procedure proc2 { x = 2; y = 3; } procedure proc3 { y = 2; call proc2; y = 3; }");
+	parser.parse("procedure proc1 { x = 2; call proc2; x = 3; } procedure proc2 { while x { y = 3;} } procedure proc3 { y = 2; call proc2; y = 3; }");
 
 	Result* result = new Result();
 	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "6");
+	builder->setArg(1, "1");
 	builder->setArg(2, "8");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_STATEMENT);
@@ -74,5 +74,10 @@ void NextStarBipClauseTest::testFixFix() {
 
 	CPPUNIT_ASSERT(clause->isValid());
 	bool val = clause->evaluate(result);
-	cout << val;
+	cout << endl;
+	if(val) {
+		cout << "true";
+	} else {
+		cout << "false";
+	}
 }

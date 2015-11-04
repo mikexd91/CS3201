@@ -52,16 +52,15 @@ private:
 	unordered_set<vector<string>> resultsPair;
 
 	void dfsFind(Statement*, string, vector<string>, stack<int>);
+	void dfsFind(GNode*, string, vector<string>, stack<int>);
 
 	bool contains(vector<string>, string);
-	bool hasEndNode(vector<GNode*>);
 
 	int getNodePosition(vector<GNode*>, GNode*);
 	
-	GNode* traverseDummyToGetNonDummy(GNode*);
 	GNode* traverseDummyToGetAnything(GNode*);
-	GNode* getEndNodeChild(GNode*);
 
 	unordered_set<Statement*> getNeededStmts(string);
 	bool isNeededArgType(string, int);
+	int getChildNodeType(GNode*);
 };
