@@ -2,7 +2,7 @@ procedure hihi {
 	car = apple;
 	egg = fish;
 	if xmen then {
-		call test;
+		call test; 
 		bot = car;
 	} else {
 		bot = car;
@@ -11,24 +11,25 @@ procedure hihi {
 		xmen = blah + wee;
 	}
 	apple = bot + egg;
-	zip = car + b2;
+	zip = car + b2; 
 	while xmen {
-		fish = apple + zip + car;
+		fish = apple + zip + car; 
 		if xmen then {
 			apple = bot + xmen;
 			fish = dog + egg + zip;
 			while apple {
 				xmen = dog;
-				c3 = b2 + a1;
-				call hey;
-			}
+				c3 = b2 + fish;
+			} 
 		} else {
 			apple = dog;
 			xmen = new;
 		}
+		wee = apple; 
 	}
-	w = xmen + bot;
-	zip = c3;
+	call hey; 
+	w = xmen + bot; 
+	zip = apple; 
 }
 
 procedure test {
@@ -46,7 +47,8 @@ procedure test {
 		}
 	}
 	light = dark;
-	call hey;
+	call hey; 
+	happy = b2; 
 }
 
 procedure hey {
@@ -56,15 +58,16 @@ procedure hey {
 	if panda then {
 		if panda then {
 			snake = lion;
-		else {
+		} else {
 			snake = goat;
 		}
 	} else {
 		if panda then {
 			snake = rob;
-		else {
+		} else {
 			snake = hot;
 		}
 	}
-	lion = snake;
+	lion = snake;	
 }
+
