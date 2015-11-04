@@ -12,7 +12,9 @@ Parser parser;
 PDR* pdr;
 AST* ast;
 CFG* cfg;
+CFG* cfgBip;
 CFGBuilder* builder;
+CFGbipBuilder* bipBuilder;
 VarTable* varTable1;
 ProcTable* procTable;
 StmtTable* stmtTable1;
@@ -26,14 +28,15 @@ void FrontEndTest::setUp() {
 	varTable1 = VarTable::getInstance();
 	procTable = ProcTable::getInstance();
 	stmtTable1 = StmtTable::getInstance();
-
 }
 
 void FrontEndTest::tearDown() {
 	PDR::resetInstanceFlag();
 	AST::reset();
 	CFG::reset();
+	CFGbip::reset();
 	CFGBuilder::resetInstanceFlag();
+	CFGbipBuilder::resetInstanceFlag();
 	constTable->clearTable();
 	VarTable::reset();
 	procTable->clearTable();
@@ -1215,7 +1218,56 @@ void FrontEndTest::testMultiProc() {
 	CPPUNIT_ASSERT(call3->getModifies() == proc4ModifiesSet);
 }
 
-void FrontEndTest::testCFG() {
-	parser.parse(" procedure hihi { car = apple; egg = fish; if xmen then { call test; bot = car; } else { bot = car; dog = egg; egg = dog; xmen = blah + wee; } apple = bot + egg; zip = car + b2; while xmen { fish = apple + zip + car; if xmen then { apple = bot + xmen; fish = dog + egg + zip; while apple { xmen = dog; c3 = b2 + a1; call hey; } } else { apple = dog; xmen = new; } } w = xmen + bot; zip = c3; } procedure test { car = zip; dog = apple; while xmen { egg = apple; if xmen then { choc = dark; dark = hi; hi = wee; wee = choc; } else { dark = throw; } } light = dark; call hey; } procedure hey { a1 = c3; b2 = a1; c3 = b2; if panda then { if panda then { snake = lion; else { snake = goat; } } else { if panda then { snake = rob; else { snake = hot; } } lion = snake; }");
+void FrontEndTest::testBipList() {
+	parser.parse("procedure proc1 { x = 2; call proc2; } procedure proc2 { if x then { y = 2; } else { y = 3; } } procedure proc3 { call proc2; call proc1; y = 3; }");
 
+	unordered_set<int> prev1;
+	unordered_set<int> next1;
+	prev1.insert(7);
+	next1.insert(2);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(1)->getPrevBip() == prev1);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(1)->getNextBip() == next1);
+
+	unordered_set<int> prev2;
+	unordered_set<int> next2;
+	prev2.insert(1);
+	next2.insert(3);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(2)->getPrevBip() == prev2);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(2)->getNextBip() == next2);
+
+	int prev3Arr[] = {2, 6};
+	int next3Arr[] = {4, 5};
+	unordered_set<int> prev3(prev3Arr, prev3Arr + 2);
+	unordered_set<int> next3(next3Arr, next3Arr + 2);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(3)->getPrevBip() == prev3);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(3)->getNextBip() == next3);
+
+	int prev4Arr[] = {3};
+	int next4Arr[] = {7, 8};
+	unordered_set<int> prev4(prev4Arr, prev4Arr + 1);
+	unordered_set<int> next4(next4Arr, next4Arr + 2);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(4)->getPrevBip() == prev4);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(4)->getNextBip() == next4);
+
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(5)->getPrevBip() == prev4);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(5)->getNextBip() == next4);
+
+	unordered_set<int> prev6;
+	unordered_set<int> next6;
+	next6.insert(3);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(6)->getPrevBip() == prev6);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(6)->getNextBip() == next6);
+
+	int prev7Arr[] = {4, 5};
+	int next7Arr[] = {1};
+	unordered_set<int> prev7(prev7Arr, prev7Arr + 2);
+	unordered_set<int> next7(next7Arr, next7Arr + 1);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(7)->getPrevBip() == prev7);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(7)->getNextBip() == next7);
+
+	int prev8Arr[] = {4, 5};
+	unordered_set<int> prev8(prev8Arr, prev8Arr + 2);
+	unordered_set<int> next8;
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(8)->getPrevBip() == prev8);
+	CPPUNIT_ASSERT(stmtTable1->getStmtObj(8)->getNextBip() == next8);
 }

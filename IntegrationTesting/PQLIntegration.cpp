@@ -364,7 +364,7 @@ void PQLIntegration::setUp() {
 	stmt5->setModifies(Statement::ModifiesSet(stmt5ModsArr, stmt5ModsArr+ sizeof(stmt5ModsArr)/sizeof(*stmt5ModsArr)));
 	stmt5->setFollowsAfter(9);
 	//stmt5->setFollowsBefore(3);
-	int stmt5FollowsStarAfterArr[] = {4};
+	int stmt5FollowsStarAfterArr[] = {9};
 	stmt5->setFollowsStarAfter(Statement::FollowsStarAfterSet(stmt5FollowsStarAfterArr, stmt5FollowsStarAfterArr+ sizeof(stmt5FollowsStarAfterArr)/sizeof(*stmt5FollowsStarAfterArr)));
 	//int stmt5FollowsStarBeforeArr[] = {3};
 	//stmt5->setFollowsStarBefore(Statement::FollowsStarBeforeSet(stmt3FollowsStarBeforeArr, stmt3FollowsStarBeforeArr+ sizeof(stmt3FollowsStarBeforeArr)/sizeof(*stmt3FollowsStarBeforeArr)));
@@ -971,19 +971,18 @@ void PQLIntegration::testSelectCallsStarUses() {
 }
 
 void PQLIntegration::testSelectFollowsStarModifies() {
-	cout << "follows star and modifies" << endl;
+	//cout << "follows star and modifies" << endl; // 
 	string query = "stmt s, s1; Select s such that Follows*(s1, s) and Modifies(s, \"full\")";
 	// [4, 9] (size 2)
 
 	PQLController* pcc = new PQLController();
 	unordered_set<string> res = pcc->parse(query);
 
-	cout << "follows star and modifies result size " << res.size() << endl;
-	BOOST_FOREACH(auto a, res) {
-		cout << a << endl;
-	}
+	//cout << "follows star and modifies result size " << res.size() << endl;
+	//BOOST_FOREACH(auto a, res) {
+	//	cout << a << endl;
+	//}
 
-	// FAIL: wrong size of result.
 	CPPUNIT_ASSERT(res.size() == 2);
 	CPPUNIT_ASSERT(res.count("4") == 1);
 	CPPUNIT_ASSERT(res.count("9") == 1);

@@ -25,6 +25,7 @@
     <ClCompile Include="CallNodeTest.cpp" />
     <ClCompile Include="CallsClauseTest.cpp" />
     <ClCompile Include="CallsStartClauseTest.cpp" />
+    <ClCompile Include="CFGbipBuilderTest.cpp" />
     <ClCompile Include="CFGBuilderTest.cpp" />
     <ClCompile Include="ConstNodeTest.cpp" />
     <ClCompile Include="ConstTableTest.cpp" />
@@ -69,6 +70,7 @@
     <ClInclude Include="CallNodeTest.h" />
     <ClInclude Include="CallsClauseTest.h" />
     <ClInclude Include="CallsStartClauseTest.h" />
+    <ClInclude Include="CFGbipBuilderTest.h" />
     <ClInclude Include="CFGBuilderTest.h" />
     <ClInclude Include="ConstNodeTest.h" />
     <ClInclude Include="ConstTableTest.h" />

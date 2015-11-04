@@ -29,6 +29,7 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("OpNodeTest").makeT
 
 //CFG Components
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("CFGBuilderTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("CFGbipBuilderTest").makeTest());
 
 // PKB Tables
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("VarTableTest").makeTest());

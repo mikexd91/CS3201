@@ -36,6 +36,7 @@
     <ClCompile Include="CallsStarClause.cpp" />
     <ClCompile Include="CFG.cpp" />
     <ClCompile Include="CFGbip.cpp" />
+    <ClCompile Include="CFGbipBuilder.cpp" />
     <ClCompile Include="CFGBipIterator.cpp" />
     <ClCompile Include="CFGBuilder.cpp" />
     <ClCompile Include="CFGIterator.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="CallsStarClause.h" />
     <ClInclude Include="CFG.h" />
     <ClInclude Include="CFGbip.h" />
+    <ClInclude Include="CFGbipBuilder.h" />
     <ClInclude Include="CFGBipIterator.h" />
     <ClInclude Include="CFGBuilder.h" />
     <ClInclude Include="CFGIterator.h" />
