@@ -43,10 +43,11 @@ public:
 	bool computeS1GenericS2Generic(void);
 	//Affects(1,_)
 	bool computeS1FixedS2Generic(string);
+	bool computeS1FixedAndS2Fixed(string, string);
 
 private:
 	typedef unordered_map<string, unordered_set<int>> State;
-	enum AffectsResultType {S1_ONLY, S2_ONLY, S1_AND_S2, GENERIC_GENERIC, FIXED_GENERIC};
+	enum AffectsResultType {S1_ONLY, S2_ONLY, S1_AND_S2, GENERIC_GENERIC, FIXED_GENERIC, FIXED_FIXED};
 
 	StmtTable* stmtTable;
 	ProcTable* procTable;
@@ -59,8 +60,9 @@ private:
 	AffectsResultType type;
 	bool isStart;
 
-	//for Affects(1,_), we need to store 1
+	//for Affects(1,_), Affects(1,2), we need to store 1 and 2
 	int s1Num;
+	int s2Num;
 	bool result; //it can terminate prematurely and fail
 
 	void updateStateForCall(CallGNode*, State&);
