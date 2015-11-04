@@ -38,7 +38,18 @@ bool NextStarBipClause::isValid(void) {
 
 // NextBip*(4, 2)
 bool NextStarBipClause::evaluateS1FixedS2Fixed(string s1, string s2) {
-	return false;
+	Statement* stmt1 = stmtTable->getStmtObj(atoi(s1.c_str()));
+	match = false;
+	
+	unordered_set<int> next = stmt1->getNextBip();
+	BOOST_FOREACH(auto s, next) {
+		Statement* child = stmtTable->getStmtObj(s);
+		vector<string> visited;
+		stack<int> entrance;
+		dfsFind(child, s2, visited, entrance);
+	}
+
+	return match;
 }
 
 // NextBip*(_, _)
@@ -149,13 +160,10 @@ void NextStarBipClause::dfsFind(Statement* stmt, string str, vector<string> visi
 			}
 		} else if(bipNode->getNodeType() == WHILE_) {
 			if(bipNode->getChildren().at(1)->getNodeType() == END_) {
-				int firstChildStmtNum = bipNode->getChildren().at(0)->getStartStmt();
-				dfsFind(stmtTable->getStmtObj(firstChildStmtNum), str, visited, entrance);
-
-				EndGNode* endChild = (EndGNode*) bipNode->getChildren().at(1);
-
 				if(!entrance.empty()) {
-					GNode* exit = endChild;
+					int firstChildStmtNum = bipNode->getChildren().at(0)->getStartStmt();
+					dfsFind(stmtTable->getStmtObj(firstChildStmtNum), str, visited, entrance);
+					GNode* exit = bipNode->getChildren().at(1);
 					bool flag = true;
 
 					while(flag) {
@@ -167,23 +175,19 @@ void NextStarBipClause::dfsFind(Statement* stmt, string str, vector<string> visi
 							flag = false;
 							break;
 						}
-
 						if(exit->getNodeType() == END_ && entrance.empty()) {
 							exit = NULL;
 							flag = false;
 							break;
 						}
-
 						if(exit->getNodeType() == END_ && !entrance.empty()) {
 							continue;
 						}
-
 						if(exit->getNodeType() == DUMMY_ && entrance.empty()) {
 							exit = traverseDummyToGetNonDummy(exit);
 							flag = false;
 							break;
 						}
-
 						if(exit->getNodeType() == DUMMY_ && !entrance.empty()) {
 							exit = traverseDummyToGetAnything(exit);
 							if(exit->getNodeType() != END_) {
@@ -208,20 +212,162 @@ void NextStarBipClause::dfsFind(Statement* stmt, string str, vector<string> visi
 
 				if(ultimateChild->getNodeType() == END_) {
 					if(!entrance.empty()) {
-						GNode* exit;
+						GNode* exit = ultimateChild;
 						bool flag = true;
 
 						while(flag) {
 							int indexOfExit = entrance.top();
 							entrance.pop();
+							exit = exit->getChildren().at(indexOfExit);
+
+							if(exit->getNodeType() != END_ && exit->getNodeType() != DUMMY_) {
+								flag = false;
+								break;
+							}
+							if(exit->getNodeType() == END_ && entrance.empty()) {
+								exit = NULL;
+								flag = false;
+								break;
+							}
+							if(exit->getNodeType() == END_ && !entrance.empty()) {
+								continue;
+							}
+							if(exit->getNodeType() == DUMMY_ && entrance.empty()) {
+								exit = traverseDummyToGetNonDummy(exit);
+								flag = false;
+								break;
+							}
+							if(exit->getNodeType() == DUMMY_ && !entrance.empty()) {
+								exit = traverseDummyToGetAnything(exit);
+								if(exit->getNodeType() != END_) {
+									flag = false;
+									break;
+								}
+							}
+						}
+
+						if(exit != NULL) {
+							dfsFind(stmtTable->getStmtObj(exit->getStartStmt()), str, visited, entrance);
 						}
 					}
+				} else /* ultimate child != END_ */ {
+					dfsFind(stmtTable->getStmtObj(ultimateChild->getStartStmt()), str, visited, entrance);
 				}
 			}
 
-
+			if(bipNode->getChildren().at(1)->getNodeType() != DUMMY_ && bipNode->getChildren().at(1)->getNodeType() != END_) {
+				unordered_set<int> nextSet = stmt->getNextBip();
+				BOOST_FOREACH(auto next, nextSet) {
+					Statement* nextStmt = stmtTable->getStmtObj(next);
+					dfsFind(nextStmt, str, visited, entrance);
+				}
+			}
 		} else {
+			if(stmt->getStmtNum() == bipNode->getEndStmt()) {
+				if(bipNode->getChildren().at(0)->getNodeType() == END_) {
+					if(!entrance.empty()) {
+						GNode* exit = bipNode->getChildren().at(0);
+						bool flag = true;
 
+						while(flag) {
+							int indexOfExit = entrance.top();
+							entrance.pop();
+							exit = exit->getChildren().at(indexOfExit);
+
+							if(exit->getNodeType() != END_ && exit->getNodeType() != DUMMY_) {
+								flag = false;
+								break;
+							}
+							if(exit->getNodeType() == END_ && entrance.empty()) {
+								exit = NULL;
+								flag = false;
+								break;
+							}
+							if(exit->getNodeType() == END_ && !entrance.empty()) {
+								continue;
+							}
+							if(exit->getNodeType() == DUMMY_ && entrance.empty()) {
+								exit = traverseDummyToGetNonDummy(exit);
+								flag = false;
+								break;
+							}
+							if(exit->getNodeType() == DUMMY_ && !entrance.empty()) {
+								exit = traverseDummyToGetAnything(exit);
+								if(exit->getNodeType() != END_) {
+									flag = false;
+									break;
+								}
+							}
+						}
+
+						if(exit != NULL) {
+							dfsFind(stmtTable->getStmtObj(exit->getStartStmt()), str, visited, entrance);
+						}
+					}
+				}
+
+				if(bipNode->getChildren().at(0)->getNodeType() == DUMMY_) {
+					GNode* ultimateChild = traverseDummyToGetAnything(bipNode->getChildren().at(0));
+
+					if(ultimateChild->getNodeType() == END_) {
+						if(!entrance.empty()) {
+							GNode* exit = ultimateChild;
+							bool flag = true;
+
+							while(flag) {
+								int indexOfExit = entrance.top();
+								entrance.pop();
+								exit = exit->getChildren().at(indexOfExit);
+
+								if(exit->getNodeType() != END_ && exit->getNodeType() != DUMMY_) {
+									flag = false;
+									break;
+								}
+								if(exit->getNodeType() == END_ && entrance.empty()) {
+									exit = NULL;
+									flag = false;
+									break;
+								}
+								if(exit->getNodeType() == END_ && !entrance.empty()) {
+									continue;
+								}
+								if(exit->getNodeType() == DUMMY_ && entrance.empty()) {
+									exit = traverseDummyToGetNonDummy(exit);
+									flag = false;
+									break;
+								}
+								if(exit->getNodeType() == DUMMY_ && !entrance.empty()) {
+									exit = traverseDummyToGetAnything(exit);
+									if(exit->getNodeType() != END_) {
+										flag = false;
+										break;
+									}
+								}
+							}
+
+							if(exit != NULL) {
+								dfsFind(stmtTable->getStmtObj(exit->getStartStmt()), str, visited, entrance);
+							}
+						}
+					} else /* ultimate child != end and != dummy */ {
+						dfsFind(stmtTable->getStmtObj(ultimateChild->getStartStmt()), str, visited, entrance);
+					}
+				}
+
+				if(bipNode->getChildren().at(0)->getNodeType() != DUMMY_ && bipNode->getChildren().at(0)->getNodeType() != END_) {
+					unordered_set<int> nextSet = stmt->getNextBip();
+					BOOST_FOREACH(auto next, nextSet) {
+						Statement* nextStmt = stmtTable->getStmtObj(next);
+						dfsFind(nextStmt, str, visited, entrance);
+					}
+				}
+			} else {
+				unordered_set<int> nextSet = stmt->getNextBip();
+				BOOST_FOREACH(auto next, nextSet) {
+					Statement* nextStmt = stmtTable->getStmtObj(next);
+					dfsFind(nextStmt, str, visited, entrance);
+				}
+			}
 		}
 	}
 }
