@@ -8,6 +8,8 @@
 #pragma once
 
 #include "CFGbip.h"
+#include "DummyGNode.h"
+#include "EndGNode.h"
 #include "SuchThatClause.h"
 #include "StmtTable.h"
 
@@ -55,6 +57,10 @@ private:
 	bool hasEndNode(vector<GNode*>);
 
 	int getNodePosition(vector<GNode*>, GNode*);
+	
+	GNode* traverseDummyToGetNonDummy(GNode*);
+	GNode* traverseDummyToGetAnything(GNode*);
+	GNode* getEndNodeChild(GNode*);
 
 	unordered_set<Statement*> getNeededStmts(string);
 	bool isNeededArgType(string, int);
