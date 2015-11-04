@@ -53,4 +53,18 @@ procedure hey {
 	a1 = c3; 
 	b2 = a1;
 	c3 = b2;
+	if panda then {
+		if panda then {
+			snake = lion;
+		else {
+			snake = goat;
+		}
+	} else {
+		if panda then {
+			snake = rob;
+		else {
+			snake = hot;
+		}
+	}
+	lion = snake;
 }

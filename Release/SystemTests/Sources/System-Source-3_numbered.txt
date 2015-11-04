@@ -55,4 +55,20 @@
 39		a1 = c3; 
 40		b2 = a1;
 41		c3 = b2;
+42		if panda then {
+43			if panda then {
+44				snake = lion;
+			else {
+45				snake = goat;
+			}
+		} else {
+46			if panda then {
+47				snake = rob;
+ 			else {
+48				snake = hot;
+			}
+		}
+49		lion = snake;	//should be affected by 44, 45, 47 and 48 	
 	}
+
+	
