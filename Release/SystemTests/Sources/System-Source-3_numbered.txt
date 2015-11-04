@@ -1,0 +1,58 @@
+	procedure hihi {
+1		car = apple;
+2		egg = fish;
+3		if xmen then {
+4			call test; //test if link is ok
+5			bot = car;
+		} else {
+6			bot = car;
+7			dog = egg;
+8			egg = dog;
+9			xmen = blah + wee;
+		}
+10		apple = bot + egg;
+11		zip = car + b2; //1 should still affect 11, 39 should affect this stmt too (for bip)
+12		while xmen {
+13			fish = apple + zip + car; //19, 15 and 20 should affect 13
+14			if xmen then {
+15				apple = bot + xmen;
+16				fish = dog + egg + zip;
+17				while apple {
+18					xmen = dog;
+19					c3 = b2 + fish;
+				} 
+			} else {
+20				apple = dog;
+21				xmen = new;
+			}
+22			wee = apple; //10 should not affect this stmt
+		}
+23		call hey; //hey is called twice, once in test and now here, but stmt 40 should not affect*bip itself
+24		w = xmen + bot; //5 and 6 should affect this
+25		zip = apple; //10, 15 and 20 should affect this stmt
+	}
+
+	procedure test {
+26		car = zip;
+27		dog = apple;
+28		while xmen {
+29			egg = apple;
+30			if xmen then {
+31				choc = dark;
+32				dark = hi;
+33				hi = wee;
+34				wee = choc;
+			} else {
+35				dark = throw;
+			}
+		}
+36		light = dark;
+37		call hey; 
+38		happy = b2; //bip: 40 should affect 38
+	}
+
+	procedure hey {
+39		a1 = c3; 
+40		b2 = a1;
+41		c3 = b2;
+	}
