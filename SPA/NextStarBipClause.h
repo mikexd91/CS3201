@@ -66,4 +66,5 @@ private:
 	unordered_set<Statement*> getNeededStmts(string);
 	bool isNeededArgType(string, int);
 	int getChildNodeType(GNode*);
+	bool isNodeType(GNode*, GType);
 };

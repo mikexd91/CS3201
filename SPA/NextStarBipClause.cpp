@@ -100,9 +100,9 @@ unordered_set<string> NextStarBipClause::getAllS2WithS1Fixed(string s1) {
 	results.clear();
 	Statement* stmt = stmtTable->getStmtObj(atoi(s1.c_str()));
 
-	unordered_set<int> stmtNext = stmt->getNextBip();
+	unordered_set<int> nextStmts = stmt->getNextBip();
 
-	BOOST_FOREACH(auto s, stmtNext) {
+	BOOST_FOREACH(auto s, nextStmts) {
 		Statement* child = stmtTable->getStmtObj(s);
 		vector<string> visited;
 		stack<int> entrance;
@@ -137,6 +137,21 @@ unordered_set<string> NextStarBipClause::getAllS2() {
 // NextBip*(s, 3) || NextBip*(a, 3) || NextBip*(c, 3) || NextBip*(if, 3) || NextBip*(w, 3)
 unordered_set<string> NextStarBipClause::getAllS1WithS2Fixed(string s2) {
 	results.clear();
+	Statement* stmt = stmtTable->getStmtObj(atoi(s2.c_str()));
+	GNode* bipNode = stmt->getGBipNodeRef();
+	vector<GNode*> parents = bipNode->getParents();
+
+	switch(bipNode->getNodeType()) {
+		case ASSIGN_:
+			if(stmt->getStmtNum() != bipNode->getStartStmt()) {
+				
+			}
+			break;
+		default:
+			break;
+	}
+	
+
 	return results;
 }
 
@@ -871,4 +886,11 @@ int NextStarBipClause::getChildNodeType(GNode* ref) {
 			break;
 		}
 	}
+}
+
+bool NextStarBipClause::isNodeType(GNode* ref, GType type) {
+	if(ref->getNodeType() == type) {
+		return true;
+	}
+	return false;
 }
