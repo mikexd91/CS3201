@@ -121,3 +121,43 @@ void NextStarBipClauseTest::testSynFix() {
 	}
 	cout << endl;
 }
+
+void NextStarBipClauseTest::testFixSyn() {
+	Parser parser = Parser();
+	parser.parse("procedure proc1 {x = 2;call proc2;x = 2;}procedure proc2 {x = 2;if x then {y = 2;} else {y = 3;}x = 2;}procedure proc3 {y = 3;call proc1;y = 3;}");
+
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	builder->setArg(1, "s");
+	builder->setArg(2, "8");
+	builder->setArgType(1, ARG_STATEMENT);
+	builder->setArgType(2, ARG_STATEMENT);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, true);
+	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	bool val = clause->evaluate(result);
+	cout << endl;
+	cout << "Table size: " << result->getResultTableSize();
+	cout << endl;
+	if(val) {
+		cout << "true";
+	} else {
+		cout << "false";
+	}
+	cout << endl;
+
+	list<Row> ans = result->getResultTable().rows;
+	vector<int> ansSet;
+	BOOST_FOREACH(auto s, ans) {
+		ansSet.push_back(atoi(s.at(0).c_str()));
+	}
+	sort(ansSet.begin(), ansSet.end());
+
+	cout << "Set:";
+	BOOST_FOREACH(auto i, ansSet) {
+		cout << " " << i;
+	}
+	cout << endl;
+}

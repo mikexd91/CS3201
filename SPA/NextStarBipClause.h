@@ -57,6 +57,12 @@ private:
 	void dfsFindNext(Statement*, vector<string>, stack<int>, string);
 	void dfsFindNext(GNode*, vector<string>, stack<int>, string);
 
+	void dfsFindPrev(Statement*, vector<string>, stack<int>, string);
+	void dfsFindPrev(GNode*, vector<string>, stack<int>, string);
+
+	void dfsFindAll(Statement*, vector<string>, stack<int>, string);
+	void dfsFindAll(GNode*, vector<string>, stack<int>, string);
+
 	bool contains(vector<string>, string);
 
 	int getNodePosition(vector<GNode*>, GNode*);

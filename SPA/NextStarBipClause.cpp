@@ -141,16 +141,28 @@ unordered_set<string> NextStarBipClause::getAllS1WithS2Fixed(string s2) {
 	GNode* bipNode = stmt->getGBipNodeRef();
 	vector<GNode*> parents = bipNode->getParents();
 
-	switch(bipNode->getNodeType()) {
-		case ASSIGN_:
-			if(stmt->getStmtNum() != bipNode->getStartStmt()) {
-				
+	if(stmt->getStmtNum() != bipNode->getStartStmt()) {
+		unordered_set<int> prevSet = stmt->getPrevBip();
+		BOOST_FOREACH(auto prev, prevSet) {
+			Statement* prevStmt = stmtTable->getStmtObj(prev);
+			vector<string> visited;
+			stack<int> entrance;
+			dfsFindPrev(prevStmt, visited, entrance, firstArgType);
+		}
+	} else {
+		BOOST_FOREACH(auto par, parents) {
+			vector<string> visited;
+			stack<int> entrance;
+
+			if(isNodeType(par, END_)) {
+				int indexOfEntry = getNodePosition(par->getChildren(), bipNode);
+				entrance.push(indexOfEntry);
+				par = par->getParents().at(0);
 			}
-			break;
-		default:
-			break;
+
+			dfsFindPrev(par, visited, entrance, firstArgType);
+		}
 	}
-	
 
 	return results;
 }
@@ -776,6 +788,73 @@ void NextStarBipClause::dfsFindNext(GNode* node, vector<string> visited, stack<i
 		if(child->getNodeType() != END_ && child->getNodeType() != DUMMY_) { 
 			dfsFindNext(stmtTable->getStmtObj(child->getStartStmt()), visited, entrance, type);
 		}
+	}
+}
+
+void NextStarBipClause::dfsFindPrev(Statement* stmt, vector<string> visited, stack<int> entrance, string type) {
+	string currStmt = lexical_cast<string>(stmt->getStmtNum());
+	GNode* bipNode = stmt->getGBipNodeRef();
+	vector<GNode*> parents = bipNode->getParents();
+
+	if(!contains(visited, currStmt)) {
+		if(isNeededArgType(type, stmt->getStmtNum())) {
+			results.insert(currStmt);
+		}
+
+		visited.push_back(currStmt);
+
+		if(stmt->getStmtNum() != bipNode->getStartStmt()) {
+			unordered_set<int> prevSet = stmt->getPrevBip();
+			BOOST_FOREACH(auto prev, prevSet) {
+				Statement* prevStmt = stmtTable->getStmtObj(prev);
+				dfsFindPrev(prevStmt, visited, entrance, type);
+			}
+		} else {
+			BOOST_FOREACH(auto par, parents) {
+				if(isNodeType(par, END_)) {
+					int indexOfEntry = getNodePosition(par->getChildren(), bipNode);
+					entrance.push(indexOfEntry);
+					par = par->getParents().at(0);
+				}
+				dfsFindPrev(par, visited, entrance, type);
+			}
+		}
+	}
+}
+
+/*
+ * An endNode will never enter this method, hence, there is no
+ * need to check for an endNode
+ */
+void NextStarBipClause::dfsFindPrev(GNode* node, vector<string> visited, stack<int> entrance, string type) {
+	if(isNodeType(node, PROC_) && entrance.empty()) {
+		vector<GNode*> parents = node->getParents();
+		BOOST_FOREACH(auto par, parents) {
+			dfsFindPrev(par, visited, entrance, type);
+		}
+	}
+	if(isNodeType(node, PROC_) && !entrance.empty()) {
+		vector<GNode*> parents = node->getParents();
+		GNode* exit = parents.at(entrance.top());		// definitely a call node
+		entrance.pop();
+
+		Statement* callStmt = stmtTable->getStmtObj(exit->getStartStmt());
+		dfsFindPrev(callStmt, visited, entrance, type);
+	}
+	if(isNodeType(node, DUMMY_)) {
+		vector<GNode*> parents = node->getParents();
+		BOOST_FOREACH(auto par, parents) {
+			if(isNodeType(par, END_)) {
+				int indexOfEntry = getNodePosition(par->getChildren(), node);
+				entrance.push(indexOfEntry);
+				par = par->getParents().at(0);
+			}
+			dfsFindPrev(par, visited, entrance, type);
+		}
+	}
+	if(!isNodeType(node, DUMMY_) && !isNodeType(node, PROC_)) {
+		Statement* stmt = stmtTable->getStmtObj(node->getEndStmt());
+		dfsFindPrev(stmt, visited, entrance, type);
 	}
 }
 
