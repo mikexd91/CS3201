@@ -12,8 +12,8 @@
 class NextStarBipClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( NextStarBipClauseTest );
 
-	//CPPUNIT_TEST( testFixFix );
-	CPPUNIT_TEST( testSynFix );
+	CPPUNIT_TEST( testFixFix );
+	//CPPUNIT_TEST( testSynFix );
 	//CPPUNIT_TEST( testFixSyn );
 	//CPPUNIT_TEST( testSynSyn );
 

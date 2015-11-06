@@ -38,25 +38,36 @@ bool NextStarBipClause::isValid(void) {
 
 // NextBip*(4, 2)
 bool NextStarBipClause::evaluateS1FixedS2Fixed(string s1, string s2) {
-	Statement* stmt1 = stmtTable->getStmtObj(atoi(s1.c_str()));
 	match = false;
-	
-	unordered_set<int> next = stmt1->getNextBip();
-	BOOST_FOREACH(auto s, next) {
-		Statement* child = stmtTable->getStmtObj(s);
-		vector<string> visited;
-		stack<int> entrance;
+	Statement* stmt = stmtTable->getStmtObj(atoi(s1.c_str()));
+	GNode* bipNode = stmt->getGBipNodeRef();
+	vector<GNode*> children = bipNode->getChildren();
 
-		if(stmt1->getType() == CALL_STMT_) {
-			GNode* ref = stmt1->getGBipNodeRef();
-			ProcGNode* procChild = (ProcGNode*) ref->getChildren().at(0);
-			int indexOfEntry = getNodePosition(procChild->getParents(), ref);
-			entrance.push(indexOfEntry);
+	if(stmt->getStmtNum() != bipNode->getEndStmt()) {
+		unordered_set<int> nextSet = stmt->getNextBip();
+		BOOST_FOREACH(auto next, nextSet) {
+			Statement* nextStmt = stmtTable->getStmtObj(next);
+			vector<string> visited;
+			stack<int> entrance;
+			dfsFind(nextStmt, s2, visited, entrance);
 		}
-
-		dfsFind(child, s2, visited, entrance);
+	} else {
+		if(isNodeType(bipNode, CALL_)) {
+			ProcGNode* calledNode = (ProcGNode*) bipNode->getChildren().at(0);
+			int indexOfEntry = getNodePosition(calledNode->getParents(), bipNode);
+			vector<string> visited;
+			stack<int> entrance;
+			entrance.push(indexOfEntry);
+			dfsFind(calledNode, s2, visited, entrance);
+		} else {
+			BOOST_FOREACH(auto child, children) {
+				vector<string> visited;
+				stack<int> entrance;
+				dfsFind(child, s2, visited, entrance);
+			}
+		}
 	}
-
+		
 	return match;
 }
 
@@ -255,300 +266,52 @@ void NextStarBipClause::dfsFind(Statement* stmt, string str, vector<string> visi
 	if(!contains(visited, currStmt)) {
 		visited.push_back(currStmt);
 
-		if(bipNode->getNodeType() == CALL_) {
-			ProcGNode* procChild = (ProcGNode*) bipNode->getChildren().at(0);
-			int indexOfEntrance = getNodePosition(procChild->getParents(), bipNode);
-			entrance.push(indexOfEntrance);
+		if(stmt->getStmtNum() != bipNode->getEndStmt()) {
 			unordered_set<int> nextSet = stmt->getNextBip();
 			BOOST_FOREACH(auto next, nextSet) {
 				Statement* nextStmt = stmtTable->getStmtObj(next);
 				dfsFind(nextStmt, str, visited, entrance);
 			}
-		} else if(bipNode->getNodeType() == WHILE_) {
-			if(entrance.empty()) {
-				unordered_set<int> nextSet = stmt->getNextBip();
-				BOOST_FOREACH(auto next, nextSet) {
-					Statement* nextStmt = stmtTable->getStmtObj(next);
-					dfsFind(nextStmt, str, visited, entrance);
-				}
-			} else /* There is a flow that i need to follow back */ {
-				//end
-				if(getChildNodeType(bipNode) == 1) {
-					dfsFind(stmtTable->getStmtObj(bipNode->getChildren().at(0)->getStartStmt()), str, visited, entrance);
-					GNode* exit = bipNode->getChildren().at(1);
-					bool flag = true;
-
-					while(flag) {
-						int indexOfExit = entrance.top();
-						entrance.pop();
-						exit = exit->getChildren().at(indexOfExit);
-
-						if(exit->getNodeType() != END_ && exit->getNodeType() != DUMMY_) {
-							dfsFind(stmtTable->getStmtObj(exit->getStartStmt()), str, visited, entrance);
-							flag = false;
-							break;
-						}
-
-						// means i need to explore all children of this exit
-						if(exit->getNodeType() == END_ && entrance.empty()) {
-							dfsFind(exit, str, visited, entrance);
-							flag = false;
-							break;
-						}
-
-						if(exit->getNodeType() == END_ && !entrance.empty()) {
-							continue;
-						}
-
-						if(exit->getNodeType() == DUMMY_ && entrance.empty()) {
-							exit = traverseDummyToGetAnything(exit);
-							if(exit->getNodeType() == END_) {
-								dfsFind(exit, str, visited, entrance);
-							} else {
-								dfsFind(stmtTable->getStmtObj(exit->getStartStmt()), str, visited, entrance);
-							}
-							flag = false;
-							break;
-						}
-
-						if(exit->getNodeType() == DUMMY_ && !entrance.empty()) {
-							exit = traverseDummyToGetAnything(exit);
-							if(exit->getNodeType() == END_) {
-								continue;
-							} else {
-								dfsFind(stmtTable->getStmtObj(exit->getStartStmt()), str, visited, entrance);
-								flag = false;
-								break;
-							}
-						}
-					}
-				}
-
-				//dummy
-				if(getChildNodeType(bipNode) == 2) {
-					dfsFind(stmtTable->getStmtObj(bipNode->getChildren().at(0)->getStartStmt()), str, visited, entrance);
-					
-					GNode* last = traverseDummyToGetAnything(bipNode->getChildren().at(1));
-					
-					if(last->getNodeType() != END_) {
-						dfsFind(stmtTable->getStmtObj(last->getStartStmt()), str, visited, entrance);
-					}
-
-					if(last->getNodeType() == END_) {
-						bool flag = true;
-						GNode* exit = last;
-
-						while(flag) {
-							exit = exit->getChildren().at(entrance.top());
-							entrance.pop();
-
-							if(exit->getNodeType() != END_ && exit->getNodeType() != DUMMY_) {
-								dfsFind(stmtTable->getStmtObj(exit->getStartStmt()), str, visited, entrance);
-								flag = false;
-								break;
-							}
-
-							// means i need to explore all children of this exit
-							if(exit->getNodeType() == END_ && entrance.empty()) {
-								dfsFind(exit, str, visited, entrance);
-								flag = false;
-								break;
-							}
-
-							if(exit->getNodeType() == END_ && !entrance.empty()) {
-								continue;
-							}
-
-							if(exit->getNodeType() == DUMMY_ && entrance.empty()) {
-								exit = traverseDummyToGetAnything(exit);
-								if(exit->getNodeType() == END_) {
-									dfsFind(exit, str, visited, entrance);
-								} else {
-									dfsFind(stmtTable->getStmtObj(exit->getStartStmt()), str, visited, entrance);
-								}
-								flag = false;
-								break;
-							}
-
-							if(exit->getNodeType() == DUMMY_ && !entrance.empty()) {
-								exit = traverseDummyToGetAnything(exit);
-								if(exit->getNodeType() == END_) {
-									continue;
-								} else {
-									dfsFind(stmtTable->getStmtObj(exit->getStartStmt()), str, visited, entrance);
-									flag = false;
-									break;
-								}
-							}
-						}
-					}
-				}
-				
-				//others
-				if(getChildNodeType(bipNode) == 3) {
-					unordered_set<int> nextSet = stmt->getNextBip();
-					BOOST_FOREACH(auto next, nextSet) {
-						Statement* nextStmt = stmtTable->getStmtObj(next);
-						dfsFind(nextStmt, str, visited, entrance);
-					}
-				}
-			}
-		} else /*not while or call*/ {
-			if(stmt->getStmtNum() == bipNode->getEndStmt()) {
-				if(entrance.empty()) {
-					unordered_set<int> nextSet = stmt->getNextBip();
-					BOOST_FOREACH(auto next, nextSet) {
-						Statement* nextStmt = stmtTable->getStmtObj(next);
-						dfsFind(nextStmt, str, visited, entrance);
-					}
-				} else /* There is a flow that i need to follow back */ {
-					//end
-					if(getChildNodeType(bipNode) == 1) {
-						GNode* exit = bipNode->getChildren().at(0);
-						bool flag = true;
-
-						while(flag) {
-							exit = exit->getChildren().at(entrance.top());
-							entrance.pop();
-
-							if(exit->getNodeType() != END_ && exit->getNodeType() != DUMMY_) {
-								dfsFind(stmtTable->getStmtObj(exit->getStartStmt()), str, visited, entrance);
-								flag = false;
-								break;
-							}
-
-							if(exit->getNodeType() == END_ && entrance.empty()) {
-								dfsFind(exit, str, visited, entrance);
-								flag = false;
-								break;
-							}
-
-							if(exit->getNodeType() == END_ && !entrance.empty()) {
-								continue;
-							}
-
-							if(exit->getNodeType() == DUMMY_ && entrance.empty()) {
-								exit = traverseDummyToGetAnything(exit);
-								if(exit->getNodeType() == END_) {
-									dfsFind(exit, str, visited, entrance);
-								} else {
-									dfsFind(stmtTable->getStmtObj(exit->getStartStmt()), str, visited, entrance);
-								}
-								flag = false;
-								break;
-							}
-
-							if(exit->getNodeType() == DUMMY_ && !entrance.empty()) {
-								exit = traverseDummyToGetAnything(exit);
-								if(exit->getNodeType() == END_) {
-									continue;
-								} else {
-									dfsFind(stmtTable->getStmtObj(exit->getStartStmt()), str, visited, entrance);
-									flag = false;
-									break;
-								}
-							}
-						}
-					}
-
-					//dummy
-					if(getChildNodeType(bipNode) == 2) {
-						GNode* last = traverseDummyToGetAnything(bipNode->getChildren().at(0));
-						
-						if(last->getNodeType() != END_) {
-							dfsFind(stmtTable->getStmtObj(last->getStartStmt()), str, visited, entrance);
-						}
-
-						if(last->getNodeType() == END_) {
-							bool flag = true;
-							GNode* exit = last;
-
-							while(flag) {
-								exit = exit->getChildren().at(entrance.top());
-								entrance.pop();
-
-								if(exit->getNodeType() != END_ && exit->getNodeType() != DUMMY_) {
-									dfsFind(stmtTable->getStmtObj(exit->getStartStmt()), str, visited, entrance);
-									flag = false;
-									break;
-								}
-
-								// means i need to explore all children of this exit
-								if(exit->getNodeType() == END_ && entrance.empty()) {
-									dfsFind(exit, str, visited, entrance);
-									flag = false;
-									break;
-								}
-
-								if(exit->getNodeType() == END_ && !entrance.empty()) {
-									continue;
-								}
-
-								if(exit->getNodeType() == DUMMY_ && entrance.empty()) {
-									exit = traverseDummyToGetAnything(exit);
-									if(exit->getNodeType() == END_) {
-										dfsFind(exit, str, visited, entrance);
-									} else {
-										dfsFind(stmtTable->getStmtObj(exit->getStartStmt()), str, visited, entrance);
-									}
-									flag = false;
-									break;
-								}
-
-								if(exit->getNodeType() == DUMMY_ && !entrance.empty()) {
-									exit = traverseDummyToGetAnything(exit);
-									if(exit->getNodeType() == END_) {
-										continue;
-									} else {
-										dfsFind(stmtTable->getStmtObj(exit->getStartStmt()), str, visited, entrance);
-										flag = false;
-										break;
-									}
-								}
-							}
-						}
-					}
-				
-					//others
-					if(getChildNodeType(bipNode) == 3) {
-						unordered_set<int> nextSet = stmt->getNextBip();
-						BOOST_FOREACH(auto next, nextSet) {
-							Statement* nextStmt = stmtTable->getStmtObj(next);
-							dfsFind(nextStmt, str, visited, entrance);
-						}
-					}
-				}
-			} else {
-				unordered_set<int> nextSet = stmt->getNextBip();
-				BOOST_FOREACH(auto next, nextSet) {
-					Statement* nextStmt = stmtTable->getStmtObj(next);
-					dfsFind(nextStmt, str, visited, entrance);
-				}
+		} else {
+			vector<GNode*> children = bipNode->getChildren();
+			BOOST_FOREACH(auto child, children) {
+				dfsFind(child, str, visited, entrance);
 			}
 		}
 	}
 }
 
 void NextStarBipClause::dfsFind(GNode* node, string str, vector<string> visited, stack<int> entrance) {
-	vector<GNode*> children = node->getChildren();
-
-	BOOST_FOREACH(auto child, children) {
-		if(child->getNodeType() == END_) {
+	if(isNodeType(node, PROC_) || isNodeType(node, DUMMY_)) {
+		vector<GNode*> children = node->getChildren();
+		BOOST_FOREACH(auto child, children) {
 			dfsFind(child, str, visited, entrance);
 		}
+	}
+	if(isNodeType(node, CALL_)) {
+		ProcGNode* calledNode = (ProcGNode*) node->getChildren().at(0);
+		int indexOfEntry = getNodePosition(calledNode->getParents(), node);
+		entrance.push(indexOfEntry);
 
-		if(child->getNodeType() == DUMMY_) {
-			GNode* ultimateChild = traverseDummyToGetAnything(child);
-			if(ultimateChild->getNodeType() == END_) {
-				dfsFind(ultimateChild, str, visited, entrance);
-			} else {
-				dfsFind(stmtTable->getStmtObj(ultimateChild->getStartStmt()), str, visited, entrance);
-			}
+		Statement* callStmt = stmtTable->getStmtObj(node->getStartStmt());
+		dfsFind(callStmt, str, visited, entrance);
+	}
+	if(isNodeType(node, END_) && entrance.empty()) {
+		vector<GNode*> children = node->getChildren();
+		BOOST_FOREACH(auto child, children) {
+			dfsFind(child, str, visited, entrance);
 		}
+	}
+	if(isNodeType(node, END_) && !entrance.empty()) {
+		vector<GNode*> children = node->getChildren();
+		GNode* exit = children.at(entrance.top());
+		entrance.pop();
 
-		if(child->getNodeType() != END_ && child->getNodeType() != DUMMY_) {
-			dfsFind(stmtTable->getStmtObj(child->getStartStmt()), str, visited, entrance);
-		}
+		dfsFind(exit, str, visited, entrance);
+	}
+	if(!isNodeType(node, PROC_) && !isNodeType(node, END_) && !isNodeType(node, CALL_) && !isNodeType(node, DUMMY_)) {
+		Statement* stmt = stmtTable->getStmtObj(node->getStartStmt());
+		dfsFind(stmt, str, visited, entrance);
 	}
 }
 
