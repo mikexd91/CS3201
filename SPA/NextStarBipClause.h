@@ -10,6 +10,7 @@
 #include "CFGbip.h"
 #include "DummyGNode.h"
 #include "EndGNode.h"
+#include "ProcGNode.h"
 #include "SuchThatClause.h"
 #include "StmtTable.h"
 
@@ -60,12 +61,13 @@ private:
 	void dfsFindPrev(Statement*, vector<string>, stack<int>, string);
 	void dfsFindPrev(GNode*, vector<string>, stack<int>, string);
 
-	void dfsFindAll(Statement*, vector<string>, stack<int>, string);
-	void dfsFindAll(GNode*, vector<string>, stack<int>, string);
+	void dfsFindAll(Statement*, vector<string>, stack<int>, string, string, bool);
+	void dfsFindAll(GNode*, vector<string>, stack<int>, string, string, bool);
 
 	bool contains(vector<string>, string);
 
 	int getNodePosition(vector<GNode*>, GNode*);
+	int getVisitedPosition(vector<string>, string);
 	
 	GNode* traverseDummyToGetAnything(GNode*);
 

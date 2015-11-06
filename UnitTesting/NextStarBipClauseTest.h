@@ -14,7 +14,8 @@ class NextStarBipClauseTest : public CPPUNIT_NS::TestFixture {
 
 	//CPPUNIT_TEST( testFixFix );
 	//CPPUNIT_TEST( testSynFix );
-	CPPUNIT_TEST( testFixSyn );
+	//CPPUNIT_TEST( testFixSyn );
+	CPPUNIT_TEST( testSynSyn );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -25,4 +26,5 @@ public:
 	void testFixFix();
 	void testSynFix();
 	void testFixSyn();
+	void testSynSyn();
 };
