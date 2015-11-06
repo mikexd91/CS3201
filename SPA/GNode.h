@@ -5,8 +5,7 @@
 
 using namespace std;
 
-enum GType {
-	PROG_, 
+enum GType { 
 	PROC_, 
 	WHILE_, 
 	IF_,

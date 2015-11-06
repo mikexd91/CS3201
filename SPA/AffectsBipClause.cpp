@@ -351,7 +351,6 @@ bool AffectsBipClause::modcheck(string var, GNode* gn, unordered_set<int>* visit
 	DummyGNode* dgn;
 	switch (gn->getNodeType()) {
 		case PROC_ :
-		case PROG_ :
 		case END_ :
 			//cout << "end" << endl;
 			return false;
@@ -461,7 +460,6 @@ void AffectsBipClause::modadd(string var, GNode* gn, unordered_set<int>* resultS
 	DummyGNode* dgn;
 	switch (gn->getNodeType()) {
 		case PROC_ :
-		case PROG_ :
 		case END_ :
 			print(*visitedSet);
 			//cout << "end" << endl;

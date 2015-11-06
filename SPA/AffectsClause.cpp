@@ -418,7 +418,6 @@ bool AffectsClause::modcheck(string var, GNode* gn, unordered_set<int>* visitedS
 	DummyGNode* dgn;
 	switch (gn->getNodeType()) {
 		case PROC_ :
-		case PROG_ :
 		case END_ :
 			//cout << "end" << endl;
 			return false;
@@ -528,7 +527,6 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 	DummyGNode* dgn;
 	switch (gn->getNodeType()) {
 		case PROC_ :
-		case PROG_ :
 		case END_ :
 			//print(*visitedSet);
 			//cout << "end" << endl;
