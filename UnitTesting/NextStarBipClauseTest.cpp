@@ -169,7 +169,7 @@ void NextStarBipClauseTest::testFixSyn() {
 
 void NextStarBipClauseTest::testSynSyn() {
 	Parser parser = Parser();
-	parser.parse("procedure proc1 { x = 2; while x { if x then { x = 2; } else { x = 2; } } x = 3; }");
+	parser.parse("procedure proc1 { x = 2; while x { if x then { x = 2; x = 2; } else { x = 2; } } x = 3; }");
 
 	Result* result = new Result();
 	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
