@@ -3630,26 +3630,26 @@ true
 5000
 727 - WITH: stmt# = stmt#
 stmt s;
-Select BOOLEAN such that s.stmt# = s.stmt#
+Select BOOLEAN with s.stmt# = s.stmt#
 true
 5000
 728 - WITH: stmt# = stmt# (no result)
 assign a; while w;
-Select BOOLEAN such that a.stmt# = w.stmt#
+Select BOOLEAN with a.stmt# = w.stmt#
 false
 5000
 729 - WITH: c.value = c.value
 constant c;
-Select BOOLEAN such that c.value = c.value
-false
+Select BOOLEAN with c.value = c.value
+true
 5000
 730 - WITH: c.procName = c.procName
 call c;
-Select c.procName such that c.procName = c.procName
+Select c.procName with c.procName = c.procName
 none
 5000
 731 - WITH: p.procName = p.procName
 procedure p;
-Select BOOLEAN such that p.procName = p.procName
+Select BOOLEAN with p.procName = p.procName
 true
 5000

@@ -15,60 +15,62 @@
 12		while xmen {
 13			fish = apple + zip + car; //19, 15 and 20 should affect 13
 14			if xmen then {
-15				apple = bot + xmen;
-16				fish = dog + egg + zip;
-17				while apple {
-18					xmen = dog;
-19					c3 = b2 + fish;
-				} 
+15				tomato = tomato
+16				apple = bot + xmen;
+17				fish = dog + egg + zip;
+18				while apple {
+19					xmen = dog;
+20					c3 = b2 + fish;
+				}
 			} else {
-20				apple = dog;
-21				xmen = new;
+21				tomato = fish
+22				apple = dog;
+23				xmen = new;
 			}
-22			wee = apple; //10 should not affect this stmt
+24			wee = apple; //10 should not affect this stmt
 		}
-23		call hey; //hey is called twice, once in test and now here, but stmt 40 should not affect*bip itself
-24		w = xmen + bot; //5 and 6 should affect this
-25		zip = apple; //10, 15 and 20 should affect this stmt
+25		call hey; //hey is called twice, once in test and now here, but stmt 40 should not affect*bip itself
+26		w = xmen + bot; //5 and 6 should affect this
+27		zip = apple; //10, 15 and 20 should affect this stmt
 	}
 
 	procedure test {
-26		car = zip;
-27		dog = apple;
-28		while xmen {
-29			egg = apple;
-30			if xmen then {
-31				choc = dark;
-32				dark = hi;
-33				hi = wee;
-34				wee = choc;
+28		car = zip;
+29		dog = apple;
+30		while xmen {
+31			egg = apple;
+32			if xmen then {
+33				choc = dark;
+34				dark = hi;
+35				hi = wee;
+36				wee = choc;
 			} else {
-35				dark = throw;
+37				dark = throw;
 			}
 		}
-36		light = dark;
-37		call hey; 
-38		happy = b2; //bip: 40 should affect 38
+38		light = dark;
+39		call hey; 
+40		happy = b2; //bip: 40 should affect 38
 	}
 
 	procedure hey {
-39		a1 = c3; 
-40		b2 = a1;
-41		c3 = b2;
-42		if panda then {
-43			if panda then {
-44				snake = lion;
+41		a1 = c3; 
+42		b2 = a1;
+43		c3 = b2;
+44		if panda then {
+45			if panda then {
+46				snake = lion;
 			else {
-45				snake = goat;
+47				snake = goat;
 			}
 		} else {
-46			if panda then {
-47				snake = rob;
+48			if panda then {
+49				snake = rob;
  			else {
-48				snake = hot;
+50				snake = hot;
 			}
 		}
-49		lion = snake;	//should be affected by 44, 45, 47 and 48 	
+51		lion = snake;	//should be affected by 44, 45, 47 and 48 	
 	}
 
 	

@@ -15,6 +15,7 @@ procedure hihi {
 	while xmen {
 		fish = apple + zip + car; 
 		if xmen then {
+			tomato = tomato;
 			apple = bot + xmen;
 			fish = dog + egg + zip;
 			while apple {
@@ -22,6 +23,7 @@ procedure hihi {
 				c3 = b2 + fish;
 			} 
 		} else {
+			tomato = fish;
 			apple = dog;
 			xmen = new;
 		}
