@@ -67,6 +67,7 @@ void AffectsStarClauseTest::setUp() {
 	ProcGNode* proc1 = new ProcGNode("test");
 	AssgGNode* assg1 = new AssgGNode(1);
 	assg1->setEndStmt(2);
+	assg1->setFirstParent(proc1);
 	proc1->addChild(assg1);
 	WhileGNode* while3 = new WhileGNode(3);
 	assg1->setChild(while3);
