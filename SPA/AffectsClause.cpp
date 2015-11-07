@@ -63,26 +63,57 @@ bool AffectsClause::evaluateS1FixedS2Generic(string s1){
 // nick - going upwards recursively to check if theres 
 // something that mods the var used at the stmt
 bool AffectsClause::evaluateS1GenericS2Fixed(string s2) {
-	// get the statement object and make sure it is an assign stmt
+	
 	int stmtNum = lexical_cast<int>(s2);
+
+	// first stmt cannot be affected and any stmt num below 1 is wrong.
+	if (stmtNum <= 1) {
+		return false;
+	}
+	
+	// get the statement object and make sure it is an assign stmt
 	Statement* stmt = stmtTable->getStmtObj(stmtNum);
 	if (stmt->getType() != ASSIGN_STMT_) {
 		return false;
 	}
 
-	// get the uses set
+	// now look at the previous stmt
+	int prevStmtNum = stmtNum - 1;
+	Statement* prevStmt = stmtTable->getStmtObj(prevStmtNum);
+	
+	// get the uses set of the first stmt
 	unordered_set<string> usesSet = stmt->getUses();
 	if (usesSet.size() <= 0) {
 		//if the assignment doesnt use anything, then nothing affects it
 		return false;
 	}
 
-	// get the gnode of this stmt
-	GNode* gn = stmt->getGNodeRef();
+	//sigh
+	// start from pervious node only if the previous stmt is not within the same assg node
 
-	BOOST_FOREACH(string var, usesSet) {
-		if (modcheck(var, gn, new unordered_set<int>(), stmtNum)) {
-			return true;
+	// get the current gnode
+	GNode* gn = stmt->getGNodeRef();
+	// get the start stmt
+	int gnStartStmtNum = gn->getStartStmt();
+
+	if (gnStartStmtNum <= prevStmtNum) {
+		// if start stmt is less than or equal to the prev stmt then it is in the same assg node, 
+		// so do modcheckassg from this node and prev stmt num
+		BOOST_FOREACH(string var, usesSet) {
+			if (modcheck(var, gn, new unordered_set<int>(), prevStmtNum)) {
+				return true;
+			}
+		}
+	} else {
+		// else the prev stmt is not in the same assg node, 
+		// so do modcheck from previous node
+
+		// get the gnode of the prev stmt
+		GNode* pgn = gn->getParents().at(0);
+		BOOST_FOREACH(string var, usesSet) {
+			if (modcheck(var, pgn, new unordered_set<int>())) {
+				return true;
+			}
 		}
 	}
 
@@ -252,7 +283,6 @@ bool AffectsClause::modcheck(string var, GNode* gn, unordered_set<int>* visitedS
 	DummyGNode* dgn;
 	switch (gn->getNodeType()) {
 		case PROC_ :
-		case PROG_ :
 		case END_ :
 			//cout << "end" << endl;
 			return false;
@@ -362,7 +392,6 @@ void AffectsClause::modadd(string var, GNode* gn, unordered_set<int>* resultSet,
 	DummyGNode* dgn;
 	switch (gn->getNodeType()) {
 		case PROC_ :
-		case PROG_ :
 		case END_ :
 			//print(*visitedSet);
 			//cout << "end" << endl;
