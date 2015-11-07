@@ -71,8 +71,6 @@ private:
 
 	//BIP stuff
 	stack<int> parentCallStmts;
-	stack<GNode*> stmtsAfterEnd;
-	bool isEnd;
 
 	//For Affect*(1,2)
 	int s1Num;
