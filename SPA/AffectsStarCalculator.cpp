@@ -283,8 +283,9 @@ void AffectsStarCalculator::updateStateForAssign(AssgGNode* node, State& state) 
 			BOOST_FOREACH(string modifiedVar, modifiedVariables) {
 				bool isAffectedStmt = globalResult.find(stmtNum) != globalResult.end();
 				bool isReplaceExistingVal = state.find(modifiedVar) != state.end();
-				if (isAffectedStmt) {
+				if (isAffectedStmt || stmtNum == s1Num) {
 					//for each statement, add it in directly if it has been affected
+					//or if it iterates back to itself, reset the values
 					//insert or replace value
 					unordered_set<int> modifyingStmts = unordered_set<int>();
 					modifyingStmts.insert(stmtNum);

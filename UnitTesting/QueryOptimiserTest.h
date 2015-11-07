@@ -8,6 +8,7 @@ using namespace std;
 class QueryOptimiserTest: public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( QueryOptimiserTest );
 
+	CPPUNIT_TEST ( testInvalidQuery );
 	CPPUNIT_TEST ( testGettingStartingSynonym );
 	CPPUNIT_TEST ( testWithCombination );
 	CPPUNIT_TEST ( testPatternAssignWhileIfCombination );
@@ -20,6 +21,7 @@ public:
 	void setUp();
 	void tearDown();
 
+	void testInvalidQuery();
 	void testGettingStartingSynonym();
 	void testWithCombination();
 	void testPatternAssignWhileIfCombination();

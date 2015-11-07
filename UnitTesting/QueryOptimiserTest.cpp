@@ -40,6 +40,40 @@ void QueryOptimiserTest::tearDown() {
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( QueryOptimiserTest );
 
+void QueryOptimiserTest::testInvalidQuery() {
+	QueryOptimiser *qo = new QueryOptimiser();
+
+	StringPair *s1 = new StringPair();
+	s1->setFirst("a");
+	s1->setSecond(ARG_ASSIGN);
+
+	Query *q = new Query();
+	q->addSelectSynonym(*s1);
+
+	SuchThatClauseBuilder* parentStarBuilder = new SuchThatClauseBuilder(PARENTSTAR_);
+	parentStarBuilder->setArg(1, "a");
+	parentStarBuilder->setArgFixed(1, false);
+	parentStarBuilder->setArgType(1, ARG_ASSIGN);
+	parentStarBuilder->setArg(2, "_");
+	parentStarBuilder->setArgFixed(2, false);
+	parentStarBuilder->setArgType(2, ARG_GENERIC);
+	ParentStarClause* c1 = (ParentStarClause*) parentStarBuilder->build();
+	CPPUNIT_ASSERT(!c1->isValid());
+
+	q->addClause((Clause*) c1);
+
+	vector<int>* compSize = qo->optimizeQuery(q);
+	
+	CPPUNIT_ASSERT(compSize->size() == 0);
+	/*
+	BOOST_FOREACH(auto i, q->getClauseList()) {
+		cout << "clause type: ";
+		cout << i->getClauseType();
+		cout << endl;
+	}
+	*/
+}
+
 void QueryOptimiserTest::testGettingStartingSynonym() {
 	QueryOptimiser *qo = new QueryOptimiser();
 	

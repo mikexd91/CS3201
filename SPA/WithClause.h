@@ -55,5 +55,7 @@ private:
 	bool evalPNameVName(WithClauseRef, WithClauseRef, Result*);
 	bool evalSynValue(WithClauseRef, WithClauseRef, Result*);
 	bool evalSynStmt(WithClauseRef, WithClauseRef, Result*);
+	bool evalCallPName(WithClauseRef, WithClauseRef, Result*);
+	bool evalCallCall(WithClauseRef, WithClauseRef, Result*);
 };
 
