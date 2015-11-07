@@ -59,6 +59,8 @@ namespace stringconst{
 	string const TYPE_CALLS = "Calls";
 	string const TYPE_NEXT = "Next";
 	string const TYPE_AFFECTS = "Affects";
+	string const TYPE_NEXTBIP = "NextBip";
+	string const TYPE_AFFECTSBIP = "AffectsBip";
 	string const TYPE_PATTERN = "pattern";
 	string const TYPE_WITH = "with";
 

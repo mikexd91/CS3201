@@ -410,888 +410,6 @@ void QueryEvaluatorTest::tearDown() {
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( QueryEvaluatorTest );
 
-//void QueryEvaluatorTest::testEvaluateEmptySelectBoolean() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//
-//	StringPair *p = new StringPair();
-//	p->setFirst("BOOLEAN");
-//	p->setSecond(ARG_BOOLEAN);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
-//	vector<StringPair> selectList = q->getSelectList();
-//	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
-//	CPPUNIT_ASSERT(toPrint.size() == 1);
-//	unordered_set<string>::iterator iter = toPrint.begin();
-//	CPPUNIT_ASSERT(*iter == "false");
-//
-//}
-//
-//void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectAssignSyn() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//	
-//	StringPair *p = new StringPair();
-//	p->setFirst("a");
-//	p->setSecond(ARG_ASSIGN);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->isSynPresent("a") == true);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 9);
-//
-//	vector<StringPair> selectList = q->getSelectList();
-//	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
-//	CPPUNIT_ASSERT(toPrint.size() == 9);
-//
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectStmtSyn() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//	
-//	StringPair *p = new StringPair();
-//	p->setFirst("b");
-//	p->setSecond(ARG_STATEMENT);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->isSynPresent("b") == true);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 11);
-//	
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectWhileSyn() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//	
-//	StringPair *p = new StringPair();
-//	p->setFirst("c");
-//	p->setSecond(ARG_WHILE);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->isSynPresent("c") == true);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
-//	
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectIfSyn() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//	
-//	StringPair *p = new StringPair();
-//	p->setFirst("d");
-//	p->setSecond(ARG_IF);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->isSynPresent("d") == true);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
-//	
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectCallSyn() {
-//	
-//	QueryEvaluator *qe = new QueryEvaluator();
-//	
-//	StringPair *p = new StringPair();
-//	p->setFirst("e");
-//	p->setSecond(ARG_CALL);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->isSynPresent("e") == false);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
-//	
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//	
-//}
-//
-//void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectVarSyn() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//	
-//	StringPair *p = new StringPair();
-//	p->setFirst("g");
-//	p->setSecond(ARG_VARIABLE);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->isSynPresent("g") == true);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
-//	
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectProcSyn() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//	
-//	StringPair *p = new StringPair();
-//	p->setFirst("g");
-//	p->setSecond(ARG_PROCEDURE);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->isSynPresent("g") == true);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
-//	
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testEvalauteEmptyClauseListSelectConstSyn() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//	
-//	StringPair *p = new StringPair();
-//	p->setFirst("g");
-//	p->setSecond(ARG_CONSTANT);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->isSynPresent("g") == true);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 5);
-//	
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//
-//void QueryEvaluatorTest::testModifiesEvaluateFixedSynProcPass() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//
-//	StringPair *p = new StringPair();
-//	p->setFirst("v");
-//	p->setSecond(ARG_VARIABLE);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//
-//	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
-//	modifiesBuilder->setArg(1, "zumba");
-//	modifiesBuilder->setArgFixed(1, true);
-//	modifiesBuilder->setArgType(1, ARG_PROCEDURE);
-//	modifiesBuilder->setArg(2, "v");
-//	modifiesBuilder->setArgFixed(2, false);
-//	modifiesBuilder->setArgType(2, ARG_VARIABLE);
-//	ModifiesClause* m1 = (ModifiesClause*) modifiesBuilder->build();
-//	CPPUNIT_ASSERT(m1->isValid());
-//	/*
-//	ModifiesClause* mod = new ModifiesClause();
-//	mod->setFirstArg("zumba");
-//	mod->setFirstArgFixed(true);
-//	mod->setFirstArgType(ARG_PROCEDURE);
-//	mod->setSecondArg("v");
-//	mod->setSecondArgFixed(false);
-//	mod->setSecondArgType(ARG_VARIABLE);
-//	*/
-//	q->addClause((Clause*) m1);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->isSynPresent("v") == true);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
-//	
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testModifiesEvaluateSynFixedWhilePass() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//
-//	StringPair *p = new StringPair();
-//	p->setFirst("w");
-//	p->setSecond(ARG_WHILE);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//
-//	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
-//	modifiesBuilder->setArg(1, "w");
-//	modifiesBuilder->setArgFixed(1, false);
-//	modifiesBuilder->setArgType(1, ARG_WHILE);
-//	modifiesBuilder->setArg(2, "x");
-//	modifiesBuilder->setArgFixed(2, true);
-//	modifiesBuilder->setArgType(2, ARG_VARIABLE);
-//	ModifiesClause* m1 = (ModifiesClause*) modifiesBuilder->build();
-//	CPPUNIT_ASSERT(m1->isValid());
-//	/*
-//	ModifiesClause* mod = new ModifiesClause();
-//	mod->setFirstArg("w");
-//	mod->setFirstArgFixed(false);
-//	mod->setFirstArgType(ARG_WHILE);
-//	mod->setSecondArg("x");
-//	mod->setSecondArgFixed(true);
-//	mod->setSecondArgType(ARG_VARIABLE);
-//	*/
-//	q->addClause((Clause*) m1);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->isSynPresent("w") == true);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
-//	
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testModifiesEvaluateSynSynAssgPass() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//
-//	StringPair *p1 = new StringPair();
-//	p1->setFirst("a");
-//	p1->setSecond(ARG_ASSIGN);
-//	StringPair *p2 = new StringPair();
-//	p2->setFirst("v");
-//	p2->setSecond(ARG_VARIABLE);
-//
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p1);
-//	q->addSelectSynonym(*p2);
-//	
-//	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
-//	modifiesBuilder->setArg(1, "a");
-//	modifiesBuilder->setArgFixed(1, false);
-//	modifiesBuilder->setArgType(1, ARG_ASSIGN);
-//	modifiesBuilder->setArg(2, "v");
-//	modifiesBuilder->setArgFixed(2, false);
-//	modifiesBuilder->setArgType(2, ARG_VARIABLE);
-//	ModifiesClause* m1 = (ModifiesClause*) modifiesBuilder->build();
-//	CPPUNIT_ASSERT(m1->isValid());
-//	/*
-//	ModifiesClause* mod = new ModifiesClause();
-//	mod->setFirstArg("a");
-//	mod->setFirstArgFixed(false);
-//	mod->setFirstArgType(ARG_ASSIGN);
-//	mod->setSecondArg("v");
-//	mod->setSecondArgFixed(false);
-//	mod->setSecondArgType(ARG_VARIABLE);
-//	*/
-//	q->addClause((Clause*) m1);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->isSynPresent("a") == true);
-//	CPPUNIT_ASSERT(result->isSynPresent("v") == true);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 9);
-//
-//	vector<StringPair> selectList = q->getSelectList();
-//	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
-//	CPPUNIT_ASSERT(toPrint.size() == 9);
-//
-//	delete qe;
-//	delete p1;
-//	delete p2;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testFollowsEvaluateSynSynStmtPass() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//
-//	StringPair *p1 = new StringPair();
-//	p1->setFirst("s1");
-//	p1->setSecond(ARG_STATEMENT);
-//	StringPair *p2 = new StringPair();
-//	p2->setFirst("s2");
-//	p2->setSecond(ARG_STATEMENT);
-//
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p1);
-//	q->addSelectSynonym(*p2);
-//
-//	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
-//	followsBuilder->setArg(1, "s1");
-//	followsBuilder->setArgFixed(1, false);
-//	followsBuilder->setArgType(1, ARG_STATEMENT);
-//	followsBuilder->setArg(2, "s2");
-//	followsBuilder->setArgFixed(2, false);
-//	followsBuilder->setArgType(2, ARG_STATEMENT);
-//	FollowsClause* m1 = (FollowsClause*) followsBuilder->build();
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	q->addClause((Clause*) m1);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->isSynPresent("s1") == true);
-//	CPPUNIT_ASSERT(result->isSynPresent("s2") == true);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
-//
-//	vector<StringPair> selectList = q->getSelectList();
-//	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
-//	/*
-//	for (unordered_set<string>::iterator iter = toPrint.begin(); iter != toPrint.end(); ++iter) {
-//		cout << *iter << "|";
-//	}
-//	*/
-//	CPPUNIT_ASSERT(toPrint.size() == 7);
-//
-//	delete qe;
-//	delete p1;
-//	delete p2;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testHalfInClauseWithModifiesSynSynStmtPass() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//
-//	// Synonym in clause
-//	StringPair *p1 = new StringPair();
-//	p1->setFirst("s");
-//	p1->setSecond(ARG_STATEMENT);
-//	StringPair *p2 = new StringPair();
-//	p2->setFirst("v");
-//	p2->setSecond(ARG_VARIABLE);
-//
-//	//Synonym not in clause
-//	StringPair *n1 = new StringPair();
-//	n1->setFirst("s1");
-//	n1->setSecond(ARG_STATEMENT);
-//	StringPair *n2 = new StringPair();
-//	n2->setFirst("v1");
-//	n2->setSecond(ARG_VARIABLE);
-//
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p1);
-//	q->addSelectSynonym(*p2);
-//	q->addSelectSynonym(*n1);
-//	q->addSelectSynonym(*n2);
-//
-//	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
-//	modifiesBuilder->setArg(1, "s");
-//	modifiesBuilder->setArgFixed(1, false);
-//	modifiesBuilder->setArgType(1, ARG_STATEMENT);
-//	modifiesBuilder->setArg(2, "v");
-//	modifiesBuilder->setArgFixed(2, false);
-//	modifiesBuilder->setArgType(2, ARG_VARIABLE);
-//	ModifiesClause* m1 = (ModifiesClause*) modifiesBuilder->build();
-//	CPPUNIT_ASSERT(m1->isValid());
-//	/*
-//	ModifiesClause* mod = new ModifiesClause();
-//	mod->setFirstArg("s");
-//	mod->setFirstArgFixed(false);
-//	mod->setFirstArgType(ARG_STATEMENT);
-//	mod->setSecondArg("v");
-//	mod->setSecondArgFixed(false);
-//	mod->setSecondArgType(ARG_VARIABLE);
-//	*/
-//	q->addClause((Clause*) m1);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->isSynPresent("s") == true);
-//	CPPUNIT_ASSERT(result->isSynPresent("v") == true);
-//	CPPUNIT_ASSERT(result->isSynPresent("s1") == true);
-//	CPPUNIT_ASSERT(result->isSynPresent("v1") == true);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 924);
-//	
-//	delete qe;
-//	delete p1;
-//	delete p2;
-//	delete n1;
-//	delete n2;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testModifiesEvaluateSynGenericStmtPass() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//
-//	StringPair *p = new StringPair();
-//	p->setFirst("p");
-//	p->setSecond(ARG_PROCEDURE);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//	
-//	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
-//	modifiesBuilder->setArg(1, "s");
-//	modifiesBuilder->setArgFixed(1, false);
-//	modifiesBuilder->setArgType(1, ARG_STATEMENT);
-//	modifiesBuilder->setArg(2, "_");
-//	modifiesBuilder->setArgFixed(2, false);
-//	modifiesBuilder->setArgType(2, ARG_GENERIC);
-//	ModifiesClause* m1 = (ModifiesClause*) modifiesBuilder->build();
-//	CPPUNIT_ASSERT(m1->isValid());
-//	
-//	/*
-//	ModifiesClause* mod = new ModifiesClause();
-//	mod->setFirstArg("s");
-//	mod->setFirstArgFixed(false);
-//	mod->setFirstArgType(ARG_STATEMENT);
-//	mod->setSecondArg("_");
-//	mod->setSecondArgFixed(false);
-//	mod->setSecondArgType(ARG_GENERIC);
-//	*/
-//	q->addClause((Clause*) m1);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->isSynPresent("p") == true);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 11);
-//	vector<StringPair> selectList = q->getSelectList();
-//	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
-//	CPPUNIT_ASSERT(toPrint.size() == 1);
-//
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testFollowsEvaluateFixedFixedPass() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//
-//	StringPair *p = new StringPair();
-//	p->setFirst("BOOLEAN");
-//	p->setSecond(ARG_BOOLEAN);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//	
-//	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
-//	followsBuilder->setArg(1, "7");
-//	followsBuilder->setArgFixed(1, true);
-//	followsBuilder->setArgType(1, ARG_WHILE);
-//	followsBuilder->setArg(2, "_");
-//	followsBuilder->setArgFixed(2, false);
-//	followsBuilder->setArgType(2, ARG_GENERIC);
-//	FollowsClause* m1 = (FollowsClause*) followsBuilder->build();
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	q->addClause((Clause*) m1);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
-//	vector<StringPair> selectList = q->getSelectList();
-//	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
-//	CPPUNIT_ASSERT(toPrint.size() == 1);
-//	unordered_set<string>::iterator iter = toPrint.begin();
-//	CPPUNIT_ASSERT(*iter == "true");
-//
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testFollowsEvaluateFixedFixedFail() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//
-//	StringPair *p = new StringPair();
-//	p->setFirst("BOOLEAN");
-//	p->setSecond(ARG_BOOLEAN);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//	
-//	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
-//	followsBuilder->setArg(1, "9");
-//	followsBuilder->setArgFixed(1, true);
-//	followsBuilder->setArgType(1, ARG_STATEMENT);
-//	followsBuilder->setArg(2, "_");
-//	followsBuilder->setArgFixed(2, false);
-//	followsBuilder->setArgType(2, ARG_GENERIC);
-//	FollowsClause* m1 = (FollowsClause*) followsBuilder->build();
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	q->addClause((Clause*) m1);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
-//	vector<StringPair> selectList = q->getSelectList();
-//	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
-//	CPPUNIT_ASSERT(toPrint.size() == 1);
-//	unordered_set<string>::iterator iter = toPrint.begin();
-//	CPPUNIT_ASSERT(*iter == "false");
-//
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testUnderscoreFixedPass() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//
-//	StringPair *p = new StringPair();
-//	p->setFirst("BOOLEAN");
-//	p->setSecond(ARG_BOOLEAN);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//	
-//	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
-//	followsBuilder->setArg(1, "_");
-//	followsBuilder->setArgFixed(1, false);
-//	followsBuilder->setArgType(1, ARG_GENERIC);
-//	followsBuilder->setArg(2, "3");
-//	followsBuilder->setArgFixed(2, true);
-//	followsBuilder->setArgType(2, ARG_STATEMENT);
-//	FollowsClause* m1 = (FollowsClause*) followsBuilder->build();
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
-//	parentBuilder->setArg(1, "_");
-//	parentBuilder->setArgFixed(1, false);
-//	parentBuilder->setArgType(1, ARG_GENERIC);
-//	parentBuilder->setArg(2, "8");
-//	parentBuilder->setArgFixed(2, true);
-//	parentBuilder->setArgType(2, ARG_STATEMENT);
-//	ParentClause* m2 = (ParentClause*) parentBuilder->build();
-//	CPPUNIT_ASSERT(m2->isValid());
-//
-//	q->addClause((Clause*) m1);
-//	q->addClause((Clause*) m2);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
-//	vector<StringPair> selectList = q->getSelectList();
-//	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
-//	CPPUNIT_ASSERT(toPrint.size() == 1);
-//	unordered_set<string>::iterator iter = toPrint.begin();
-//	CPPUNIT_ASSERT(*iter == "true");
-//
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testUnderscoreFixedFail() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//
-//	StringPair *p = new StringPair();
-//	p->setFirst("BOOLEAN");
-//	p->setSecond(ARG_BOOLEAN);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//
-//	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
-//	followsBuilder->setArg(1, "_");
-//	followsBuilder->setArgFixed(1, false);
-//	followsBuilder->setArgType(1, ARG_GENERIC);
-//	followsBuilder->setArg(2, "3");
-//	followsBuilder->setArgFixed(2, true);
-//	followsBuilder->setArgType(2, ARG_STATEMENT);
-//	FollowsClause* m1 = (FollowsClause*) followsBuilder->build();
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
-//	parentBuilder->setArg(1, "_");
-//	parentBuilder->setArgFixed(1, false);
-//	parentBuilder->setArgType(1, ARG_GENERIC);
-//	parentBuilder->setArg(2, "12");
-//	parentBuilder->setArgFixed(2, true);
-//	parentBuilder->setArgType(2, ARG_STATEMENT);
-//	ParentClause* m2 = (ParentClause*) parentBuilder->build();
-//	CPPUNIT_ASSERT(m2->isValid());
-//
-//	q->addClause((Clause*) m1);
-//	q->addClause((Clause*) m2);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
-//	vector<StringPair> selectList = q->getSelectList();
-//	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
-//	CPPUNIT_ASSERT(toPrint.size() == 1);
-//	unordered_set<string>::iterator iter = toPrint.begin();
-//	CPPUNIT_ASSERT(*iter == "false");
-//
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testFixedUnderscorePass() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//
-//	StringPair *p = new StringPair();
-//	p->setFirst("BOOLEAN");
-//	p->setSecond(ARG_BOOLEAN);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//
-//	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
-//	followsBuilder->setArg(1, "7");
-//	followsBuilder->setArgFixed(1, true);
-//	followsBuilder->setArgType(1, ARG_STATEMENT);
-//	followsBuilder->setArg(2, "_");
-//	followsBuilder->setArgFixed(2, false);
-//	followsBuilder->setArgType(2, ARG_GENERIC);
-//	FollowsClause* m1 = (FollowsClause*) followsBuilder->build();
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
-//	parentBuilder->setArg(1, "9");
-//	parentBuilder->setArgFixed(1, true);
-//	parentBuilder->setArgType(1, ARG_STATEMENT);
-//	parentBuilder->setArg(2, "_");
-//	parentBuilder->setArgFixed(2, false);
-//	parentBuilder->setArgType(2, ARG_GENERIC);
-//	ParentClause* m2 = (ParentClause*) parentBuilder->build();
-//	CPPUNIT_ASSERT(m2->isValid());
-//
-//	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
-//	modifiesBuilder->setArg(1, "7");
-//	modifiesBuilder->setArgFixed(1, true);
-//	modifiesBuilder->setArgType(1, ARG_STATEMENT);
-//	modifiesBuilder->setArg(2, "_");
-//	modifiesBuilder->setArgFixed(2, false);
-//	modifiesBuilder->setArgType(2, ARG_GENERIC);
-//	ModifiesClause* m3 = (ModifiesClause*) modifiesBuilder->build();
-//	CPPUNIT_ASSERT(m3->isValid());
-//
-//	q->addClause((Clause*) m1);
-//	q->addClause((Clause*) m2);
-//	q->addClause((Clause*) m3);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
-//	vector<StringPair> selectList = q->getSelectList();
-//	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
-//	CPPUNIT_ASSERT(toPrint.size() == 1);
-//	unordered_set<string>::iterator iter = toPrint.begin();
-//	CPPUNIT_ASSERT(*iter == "true");
-//
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testFixedUnderscoreFail() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//
-//	StringPair *p = new StringPair();
-//	p->setFirst("BOOLEAN");
-//	p->setSecond(ARG_BOOLEAN);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//
-//	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
-//	followsBuilder->setArg(1, "7");
-//	followsBuilder->setArgFixed(1, true);
-//	followsBuilder->setArgType(1, ARG_ASSIGN);
-//	followsBuilder->setArg(2, "_");
-//	followsBuilder->setArgFixed(2, false);
-//	followsBuilder->setArgType(2, ARG_GENERIC);
-//	FollowsClause* m1 = (FollowsClause*) followsBuilder->build();
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
-//	parentBuilder->setArg(1, "10");
-//	parentBuilder->setArgFixed(1, true);
-//	parentBuilder->setArgType(1, ARG_STATEMENT);
-//	parentBuilder->setArg(2, "_");
-//	parentBuilder->setArgFixed(2, false);
-//	parentBuilder->setArgType(2, ARG_GENERIC);
-//	ParentClause* m2 = (ParentClause*) parentBuilder->build();
-//	CPPUNIT_ASSERT(m2->isValid());
-//
-//	q->addClause((Clause*) m1);
-//	q->addClause((Clause*) m2);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
-//	vector<StringPair> selectList = q->getSelectList();
-//	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
-//	CPPUNIT_ASSERT(toPrint.size() == 1);
-//	unordered_set<string>::iterator iter = toPrint.begin();
-//	CPPUNIT_ASSERT(*iter == "false");
-//
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testUnderscoreUnderscorePass() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//
-//	StringPair *p = new StringPair();
-//	p->setFirst("BOOLEAN");
-//	p->setSecond(ARG_BOOLEAN);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//
-//	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
-//	followsBuilder->setArg(1, "_");
-//	followsBuilder->setArgFixed(1, false);
-//	followsBuilder->setArgType(1, ARG_GENERIC);
-//	followsBuilder->setArg(2, "_");
-//	followsBuilder->setArgFixed(2, false);
-//	followsBuilder->setArgType(2, ARG_GENERIC);
-//	FollowsClause* m1 = (FollowsClause*) followsBuilder->build();
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
-//	parentBuilder->setArg(1, "_");
-//	parentBuilder->setArgFixed(1, false);
-//	parentBuilder->setArgType(1, ARG_GENERIC);
-//	parentBuilder->setArg(2, "_");
-//	parentBuilder->setArgFixed(2, false);
-//	parentBuilder->setArgType(2, ARG_GENERIC);
-//	ParentClause* m2 = (ParentClause*) parentBuilder->build();
-//	CPPUNIT_ASSERT(m2->isValid());
-//
-//	q->addClause((Clause*) m1);
-//	q->addClause((Clause*) m2);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
-//	vector<StringPair> selectList = q->getSelectList();
-//	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
-//	CPPUNIT_ASSERT(toPrint.size() == 1);
-//	unordered_set<string>::iterator iter = toPrint.begin();
-//	CPPUNIT_ASSERT(*iter == "true");
-//
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testFixedFixedPass() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//
-//	StringPair *p = new StringPair();
-//	p->setFirst("BOOLEAN");
-//	p->setSecond(ARG_BOOLEAN);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//
-//	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
-//	parentBuilder->setArg(1, "9");
-//	parentBuilder->setArgFixed(1, true);
-//	parentBuilder->setArgType(1, ARG_IF);
-//	parentBuilder->setArg(2, "11");
-//	parentBuilder->setArgFixed(2, true);
-//	parentBuilder->setArgType(2, ARG_STATEMENT);
-//	ParentClause* m1 = (ParentClause*) parentBuilder->build();
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
-//	modifiesBuilder->setArg(1, "7");
-//	modifiesBuilder->setArgFixed(1, true);
-//	modifiesBuilder->setArgType(1, ARG_WHILE);
-//	modifiesBuilder->setArg(2, "x");
-//	modifiesBuilder->setArgFixed(2, true);
-//	modifiesBuilder->setArgType(2, ARG_VARIABLE);
-//	ModifiesClause* m2 = (ModifiesClause*) modifiesBuilder->build();
-//	CPPUNIT_ASSERT(m2->isValid());
-//
-//	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
-//	followsBuilder->setArg(1, "6");
-//	followsBuilder->setArgFixed(1, true);
-//	followsBuilder->setArgType(1, ARG_ASSIGN);
-//	followsBuilder->setArg(2, "7");
-//	followsBuilder->setArgFixed(2, true);
-//	followsBuilder->setArgType(2, ARG_WHILE);
-//	FollowsClause* m3 = (FollowsClause*) followsBuilder->build();
-//	CPPUNIT_ASSERT(m3->isValid());
-//
-//	q->addClause((Clause*) m1);
-//	q->addClause((Clause*) m2);
-//	q->addClause((Clause*) m3);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
-//	vector<StringPair> selectList = q->getSelectList();
-//	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
-//	CPPUNIT_ASSERT(toPrint.size() == 1);
-//	unordered_set<string>::iterator iter = toPrint.begin();
-//	CPPUNIT_ASSERT(*iter == "true");
-//
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-//
-//void QueryEvaluatorTest::testFixedFixedFail() {
-//	QueryEvaluator *qe = new QueryEvaluator();
-//
-//	StringPair *p = new StringPair();
-//	p->setFirst("BOOLEAN");
-//	p->setSecond(ARG_BOOLEAN);
-//	Query *q = new Query();
-//	q->addSelectSynonym(*p);
-//
-//	SuchThatClauseBuilder* parentBuilder = new SuchThatClauseBuilder(PARENT_);
-//	parentBuilder->setArg(1, "9");
-//	parentBuilder->setArgFixed(1, true);
-//	parentBuilder->setArgType(1, ARG_IF);
-//	parentBuilder->setArg(2, "11");
-//	parentBuilder->setArgFixed(2, true);
-//	parentBuilder->setArgType(2, ARG_STATEMENT);
-//	ParentClause* m1 = (ParentClause*) parentBuilder->build();
-//	CPPUNIT_ASSERT(m1->isValid());
-//
-//	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
-//	modifiesBuilder->setArg(1, "7");
-//	modifiesBuilder->setArgFixed(1, true);
-//	modifiesBuilder->setArgType(1, ARG_WHILE);
-//	modifiesBuilder->setArg(2, "j");
-//	modifiesBuilder->setArgFixed(2, true);
-//	modifiesBuilder->setArgType(2, ARG_VARIABLE);
-//	ModifiesClause* m2 = (ModifiesClause*) modifiesBuilder->build();
-//	CPPUNIT_ASSERT(m2->isValid());
-//
-//	SuchThatClauseBuilder* followsBuilder = new SuchThatClauseBuilder(FOLLOWS_);
-//	followsBuilder->setArg(1, "6");
-//	followsBuilder->setArgFixed(1, true);
-//	followsBuilder->setArgType(1, ARG_ASSIGN);
-//	followsBuilder->setArg(2, "7");
-//	followsBuilder->setArgFixed(2, true);
-//	followsBuilder->setArgType(2, ARG_WHILE);
-//	FollowsClause* m3 = (FollowsClause*) followsBuilder->build();
-//	CPPUNIT_ASSERT(m3->isValid());
-//
-//	q->addClause((Clause*) m1);
-//	q->addClause((Clause*) m2);
-//	q->addClause((Clause*) m3);
-//
-//	Result* result = qe->evaluateQuery(q);
-//	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
-//	vector<StringPair> selectList = q->getSelectList();
-//	unordered_set<string> toPrint = qe->getValuesToPrint(result, selectList);
-//	CPPUNIT_ASSERT(toPrint.size() == 1);
-//	unordered_set<string>::iterator iter = toPrint.begin();
-//	CPPUNIT_ASSERT(*iter == "false");
-//
-//	delete qe;
-//	delete p;
-//	delete q;
-//	delete result;
-//}
-
 void QueryEvaluatorTest::testNoResult(){
 	Query* TEST_Q = new Query();
 	StringPair SELECT_1 = StringPair();
@@ -1819,4 +937,220 @@ void QueryEvaluatorTest::testOptEval(){
 	unordered_set<string> TEST_PRINT = qe->printValues(TEST_R, TEST_Q->getSelectList());
 	CPPUNIT_ASSERT(TEST_PRINT.find("9") != TEST_PRINT.end());
 	CPPUNIT_ASSERT(TEST_PRINT.find("10") == TEST_PRINT.end());
+}
+
+void QueryEvaluatorTest::testSingleResultCopy(){
+	QueryEvaluator* qe = new QueryEvaluator();
+
+	Result* R1 = new Result();
+	SingleSynInsert INSERT_1 = SingleSynInsert();
+	INSERT_1.setSyn("s");
+	INSERT_1.insertValue("1");
+	INSERT_1.insertValue("2");
+	INSERT_1.insertValue("3");
+	INSERT_1.insertValue("4");
+	R1->push(INSERT_1);
+
+	unordered_set<string> P1 = R1->getSyn("s");
+	//cout << endl << "start A" << endl;
+	//BOOST_FOREACH(string s, P1){
+	//	cout << s << endl;
+	//}
+	//cout << "end A" << endl;
+
+	Result* R2 = new Result();
+	qe->copyResult(R1, R2, "s");
+
+	unordered_set<string> P2 = R2->getSyn("s");
+	//cout << endl << "start B" << endl;
+	//BOOST_FOREACH(string s, P2){
+	//	cout << s << endl;
+	//}
+	//cout << "end B" << endl;
+
+	Result* R3 = new Result();
+	SingleSynInsert INSERT_3 = SingleSynInsert();
+	INSERT_3.setSyn("s");
+	INSERT_3.insertValue("2");
+	INSERT_3.insertValue("4");
+	R3->push(INSERT_3);
+
+	qe->copyResult(R3, R2, "s");
+	//P2 = R2->getSyn("s");
+	//cout << endl << "start C" << endl;
+	//BOOST_FOREACH(string s, P2){
+	//	cout << s << endl;
+	//}
+	//cout << "end C" << endl;
+}
+
+void QueryEvaluatorTest::testTupleResultCopy(){
+	QueryEvaluator* qe = new QueryEvaluator();
+
+	Result* R1 = new Result();
+	SingleSynInsert INSERT_1 = SingleSynInsert();
+	INSERT_1.setSyn("s");
+	INSERT_1.insertValue("1");
+	INSERT_1.insertValue("2");
+	INSERT_1.insertValue("3");
+	R1->push(INSERT_1);
+	SingleSynInsert INSERT_2 = SingleSynInsert();
+	INSERT_2.setSyn("a");
+	INSERT_2.insertValue("A");
+	INSERT_2.insertValue("B");
+	INSERT_2.insertValue("C");
+	R1->push(INSERT_2);
+
+	vector<StringPair> syns = vector<StringPair>();
+	StringPair syn1 = StringPair();
+	StringPair syn2 = StringPair();
+	syn1.setFirst("s");
+	syn2.setFirst("a");
+	syns.push_back(syn1);
+	syns.push_back(syn2);
+	unordered_set<string> P1 = qe->printValues(R1, syns);
+	//cout << endl << "start A" << endl;
+	//int i = 0;
+	//BOOST_FOREACH(string s, P1){
+	//	i++;
+	//	cout << i << ": " << s << endl;
+	//}
+	//cout << "end A" << endl;
+	//i = 0;
+
+	vector<string> synlist = vector<string>();
+	synlist.push_back("s");
+	synlist.push_back("a");
+	Result* R2 = new Result();
+	qe->mergeMultiResult(R1, R2, synlist);
+	unordered_set<string> P2 = qe->printValues(R2, syns);
+	//cout << endl << "start B" << endl;
+	//BOOST_FOREACH(string s, P2){
+	//	i++;
+	//	cout << i << ": " << s << endl;
+	//}
+	//cout << "end B" << endl;
+}
+
+void QueryEvaluatorTest::testSingleResultMerge(){
+	
+	QueryEvaluator* qe = new QueryEvaluator();
+
+	Result* R1 = new Result();
+	Result* R2 = new Result();
+	SingleSynInsert I1 = SingleSynInsert();
+	SingleSynInsert I2 = SingleSynInsert();
+	I1.setSyn("s");
+	I2.setSyn("s");
+
+	I1.insertValue("1");
+	I1.insertValue("2");
+	I1.insertValue("3");
+	I1.insertValue("4");
+	I1.insertValue("5");
+	I1.insertValue("6");
+
+	I2.insertValue("3");
+	I2.insertValue("4");
+	I2.insertValue("5");
+	I2.insertValue("6");
+	I2.insertValue("7");
+	I2.insertValue("8");
+
+	R1->push(I1);
+	R2->push(I2);
+
+	Result* RF = new Result();
+	qe->copyResult(R1, RF, "s");
+	qe->copyResult(R2, RF, "s");
+	
+	//int i=0;
+	//cout << endl << "START" << endl;
+	//BOOST_FOREACH(string s, RF->getSyn("s")){
+	//	i++;
+	//	cout << i << ": " << s << endl;
+	//}
+	//cout << "END" << endl;
+}
+
+void QueryEvaluatorTest::testTupleResultMerge(){
+
+	QueryEvaluator* qe = new QueryEvaluator();
+
+	Result* R1 = new Result();
+	Result* R2 = new Result();
+	Result* RF = new Result();
+	SingleSynInsert I11 = SingleSynInsert();
+	SingleSynInsert I12 = SingleSynInsert();
+	SingleSynInsert I21 = SingleSynInsert();
+	SingleSynInsert I22 = SingleSynInsert();
+	I11.setSyn("s");
+	I12.setSyn("a");
+	I21.setSyn("s");
+	I22.setSyn("a");
+
+	I11.insertValue("1");
+	I11.insertValue("2");
+	I11.insertValue("3");
+
+	I12.insertValue("A");
+	I12.insertValue("B");
+	I12.insertValue("C");
+
+	I21.insertValue("3");
+	I21.insertValue("4");
+	I21.insertValue("5");
+
+	I22.insertValue("A");
+	I22.insertValue("B");
+	I22.insertValue("C");
+
+	R1->push(I11);
+	R1->push(I12);
+
+	R2->push(I21);
+	R2->push(I22);
+	
+	vector<StringPair> syns = vector<StringPair>();
+	StringPair syn1 = StringPair();
+	StringPair syn2 = StringPair();
+	syn1.setFirst("s");
+	syn2.setFirst("a");
+	syns.push_back(syn1);
+	syns.push_back(syn2);
+
+	vector<string> synlist = vector<string>();
+	synlist.push_back("s");
+	synlist.push_back("a");
+
+	unordered_set<string> P1 = qe->printValues(R1, syns);
+	cout << endl << "start R1" << endl;
+	int i = 0;
+	BOOST_FOREACH(string s, P1){
+		i++;
+		cout << i << ": " << s << endl;
+	}
+	cout << "end R1" << endl;
+	i = 0;
+
+	unordered_set<string> P2 = qe->printValues(R2, syns);
+	cout << endl << "start R2" << endl;
+	BOOST_FOREACH(string s, P2){
+		i++;
+		cout << i << ": " << s << endl;
+	}
+	cout << "end R2" << endl;
+	i = 0;
+
+	qe->mergeMultiResult(R1, RF, synlist);
+	qe->mergeMultiResult(R2, RF, synlist);
+
+	unordered_set<string> PF = qe->printValues(RF, syns);
+	cout << endl << "start RF" << endl;
+	BOOST_FOREACH(string s, PF){
+		i++;
+		cout << i << ": " << s << endl;
+	}
+	cout << "end RF" << endl;
+	i = 0;
 }
