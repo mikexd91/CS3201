@@ -23,22 +23,8 @@ private:
 	void setClauseList(vector<Clause*> clauseList);
 	void setSelectList(vector<StringPair> selectList);
 
-	unordered_set<string> getTableValues(string type);
-	unordered_set<string> getAllAssign();
-	unordered_set<string> getAllStmt();
-	unordered_set<string> getAllWhile();
-	unordered_set<string> getAllIf();
-	unordered_set<string> getAllCall();
-	unordered_set<string> getAllVar();
-	unordered_set<string> getAllProc();
-	unordered_set<string> getAllConst();
-
 	string boolToString(bool);
-	void getRemainingSynValuesFromTable(Result &obj);
-	void evaluateClauses(Result* obj, vector<Clause*> clauseList);
-	unordered_set<string> stringVectorToSet(vector<string> &varVector);
-	unordered_set<string> intVectorToSet(vector<int> &vec);
-	void insertSetValues(string syn, unordered_set<string> values, Result &obj);
+
 	unordered_set<string> printSingleSynValues(Result &obj, StringPair syn);
 	unordered_set<string> printTupleSynValues(Result &obj, vector<StringPair> selectList);
 
