@@ -27,7 +27,10 @@ class QueryEvaluatorTest: public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST( testSynInSomeClauses );
 	CPPUNIT_TEST( testTupleNoClause );
 	CPPUNIT_TEST( testOptEval );
-	CPPUNIT_TEST( testResultMergerSingle );
+	CPPUNIT_TEST( testSingleResultCopy );
+	CPPUNIT_TEST( testTupleResultCopy );
+	CPPUNIT_TEST( testSingleResultMerge );
+	CPPUNIT_TEST( testTupleResultMerge );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -58,7 +61,10 @@ public:
 	void testTupleNoClause();
 
 	void testOptEval();
-	void testResultMergerSingle();
+	void testSingleResultCopy();		//change couts to asserts
+	void testTupleResultCopy();			//change couts to asserts
+	void testSingleResultMerge();		//change couts to asserts
+	void testTupleResultMerge();		//change couts to asserts
 };
 
 //sample source

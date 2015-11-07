@@ -39,9 +39,8 @@ public:
 	~QueryEvaluator(void);
 
 	Result* evalOptimisedQuery(Query*, vector<int>*);
-	// Evaluate all clauses in a query. Return values of the from table of the right type if there are no clauses.
-	Result* evaluateQuery(Query* query);
-	// Return values to be printed.
 	unordered_set<string> printValues(Result*, vector<StringPair>);
-	unordered_set<string> getValuesToPrint(Result* obj, vector<StringPair> selectList); 
+	unordered_set<string> getValuesToPrint(Result* obj, vector<StringPair> selectList);
+	void copyResult(Result*, Result*, string);
+	void mergeMultiResult(Result*, Result*, vector<string>);
 };

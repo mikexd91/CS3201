@@ -31,6 +31,7 @@ string QueryEvaluator::boolToString(bool b) {
 unordered_set<string> QueryEvaluator::printValues(Result* finalRes, vector<StringPair> selList){
 	unordered_set<string> autotesterPrintouts = unordered_set<string>();
 	if (!validResults && selList.at(0).getFirst() == "BOOLEAN"){
+		autotesterPrintouts.clear();
 		autotesterPrintouts.insert("false");
 	} else if (!validResults){
 		autotesterPrintouts.clear();
@@ -306,4 +307,12 @@ bool QueryEvaluator::isTuplePresent(Result* res, vector<string> tuple){
 		}
 	}
 	return true;
+}
+
+void QueryEvaluator::copyResult(Result* small, Result* big, string syn){
+	extractSingleSynonymResults(small, big, syn);
+}
+
+void QueryEvaluator::mergeMultiResult(Result* small, Result* big, vector<string> syns){
+	extractTupleSynonymResults(small, big, syns);
 }

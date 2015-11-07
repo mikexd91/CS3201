@@ -939,3 +939,218 @@ void QueryEvaluatorTest::testOptEval(){
 	CPPUNIT_ASSERT(TEST_PRINT.find("10") == TEST_PRINT.end());
 }
 
+void QueryEvaluatorTest::testSingleResultCopy(){
+	QueryEvaluator* qe = new QueryEvaluator();
+
+	Result* R1 = new Result();
+	SingleSynInsert INSERT_1 = SingleSynInsert();
+	INSERT_1.setSyn("s");
+	INSERT_1.insertValue("1");
+	INSERT_1.insertValue("2");
+	INSERT_1.insertValue("3");
+	INSERT_1.insertValue("4");
+	R1->push(INSERT_1);
+
+	unordered_set<string> P1 = R1->getSyn("s");
+	//cout << endl << "start A" << endl;
+	//BOOST_FOREACH(string s, P1){
+	//	cout << s << endl;
+	//}
+	//cout << "end A" << endl;
+
+	Result* R2 = new Result();
+	qe->copyResult(R1, R2, "s");
+
+	unordered_set<string> P2 = R2->getSyn("s");
+	//cout << endl << "start B" << endl;
+	//BOOST_FOREACH(string s, P2){
+	//	cout << s << endl;
+	//}
+	//cout << "end B" << endl;
+
+	Result* R3 = new Result();
+	SingleSynInsert INSERT_3 = SingleSynInsert();
+	INSERT_3.setSyn("s");
+	INSERT_3.insertValue("2");
+	INSERT_3.insertValue("4");
+	R3->push(INSERT_3);
+
+	qe->copyResult(R3, R2, "s");
+	//P2 = R2->getSyn("s");
+	//cout << endl << "start C" << endl;
+	//BOOST_FOREACH(string s, P2){
+	//	cout << s << endl;
+	//}
+	//cout << "end C" << endl;
+}
+
+void QueryEvaluatorTest::testTupleResultCopy(){
+	QueryEvaluator* qe = new QueryEvaluator();
+
+	Result* R1 = new Result();
+	SingleSynInsert INSERT_1 = SingleSynInsert();
+	INSERT_1.setSyn("s");
+	INSERT_1.insertValue("1");
+	INSERT_1.insertValue("2");
+	INSERT_1.insertValue("3");
+	R1->push(INSERT_1);
+	SingleSynInsert INSERT_2 = SingleSynInsert();
+	INSERT_2.setSyn("a");
+	INSERT_2.insertValue("A");
+	INSERT_2.insertValue("B");
+	INSERT_2.insertValue("C");
+	R1->push(INSERT_2);
+
+	vector<StringPair> syns = vector<StringPair>();
+	StringPair syn1 = StringPair();
+	StringPair syn2 = StringPair();
+	syn1.setFirst("s");
+	syn2.setFirst("a");
+	syns.push_back(syn1);
+	syns.push_back(syn2);
+	unordered_set<string> P1 = qe->printValues(R1, syns);
+	//cout << endl << "start A" << endl;
+	//int i = 0;
+	//BOOST_FOREACH(string s, P1){
+	//	i++;
+	//	cout << i << ": " << s << endl;
+	//}
+	//cout << "end A" << endl;
+	//i = 0;
+
+	vector<string> synlist = vector<string>();
+	synlist.push_back("s");
+	synlist.push_back("a");
+	Result* R2 = new Result();
+	qe->mergeMultiResult(R1, R2, synlist);
+	unordered_set<string> P2 = qe->printValues(R2, syns);
+	//cout << endl << "start B" << endl;
+	//BOOST_FOREACH(string s, P2){
+	//	i++;
+	//	cout << i << ": " << s << endl;
+	//}
+	//cout << "end B" << endl;
+}
+
+void QueryEvaluatorTest::testSingleResultMerge(){
+	
+	QueryEvaluator* qe = new QueryEvaluator();
+
+	Result* R1 = new Result();
+	Result* R2 = new Result();
+	SingleSynInsert I1 = SingleSynInsert();
+	SingleSynInsert I2 = SingleSynInsert();
+	I1.setSyn("s");
+	I2.setSyn("s");
+
+	I1.insertValue("1");
+	I1.insertValue("2");
+	I1.insertValue("3");
+	I1.insertValue("4");
+	I1.insertValue("5");
+	I1.insertValue("6");
+
+	I2.insertValue("3");
+	I2.insertValue("4");
+	I2.insertValue("5");
+	I2.insertValue("6");
+	I2.insertValue("7");
+	I2.insertValue("8");
+
+	R1->push(I1);
+	R2->push(I2);
+
+	Result* RF = new Result();
+	qe->copyResult(R1, RF, "s");
+	qe->copyResult(R2, RF, "s");
+	
+	int i=0;
+	cout << endl << "START" << endl;
+	BOOST_FOREACH(string s, RF->getSyn("s")){
+		i++;
+		cout << i << ": " << s << endl;
+	}
+	cout << "END" << endl;
+}
+
+void QueryEvaluatorTest::testTupleResultMerge(){
+
+	QueryEvaluator* qe = new QueryEvaluator();
+
+	Result* R1 = new Result();
+	Result* R2 = new Result();
+	Result* RF = new Result();
+	SingleSynInsert I11 = SingleSynInsert();
+	SingleSynInsert I12 = SingleSynInsert();
+	SingleSynInsert I21 = SingleSynInsert();
+	SingleSynInsert I22 = SingleSynInsert();
+	I11.setSyn("s");
+	I12.setSyn("a");
+	I21.setSyn("s");
+	I22.setSyn("a");
+
+	I11.insertValue("1");
+	I11.insertValue("2");
+	I11.insertValue("3");
+
+	I12.insertValue("A");
+	I12.insertValue("B");
+	I12.insertValue("C");
+
+	I21.insertValue("3");
+	I21.insertValue("4");
+	I21.insertValue("5");
+
+	I22.insertValue("A");
+	I22.insertValue("B");
+	I22.insertValue("C");
+
+	R1->push(I11);
+	R1->push(I12);
+
+	R2->push(I21);
+	R2->push(I22);
+	
+	vector<StringPair> syns = vector<StringPair>();
+	StringPair syn1 = StringPair();
+	StringPair syn2 = StringPair();
+	syn1.setFirst("s");
+	syn2.setFirst("a");
+	syns.push_back(syn1);
+	syns.push_back(syn2);
+
+	vector<string> synlist = vector<string>();
+	synlist.push_back("s");
+	synlist.push_back("a");
+
+	unordered_set<string> P1 = qe->printValues(R1, syns);
+	cout << endl << "start R1" << endl;
+	int i = 0;
+	BOOST_FOREACH(string s, P1){
+		i++;
+		cout << i << ": " << s << endl;
+	}
+	cout << "end R1" << endl;
+	i = 0;
+
+	unordered_set<string> P2 = qe->printValues(R2, syns);
+	cout << endl << "start R2" << endl;
+	BOOST_FOREACH(string s, P2){
+		i++;
+		cout << i << ": " << s << endl;
+	}
+	cout << "end R2" << endl;
+	i = 0;
+
+	qe->mergeMultiResult(R1, RF, synlist);
+	qe->mergeMultiResult(R2, RF, synlist);
+
+	unordered_set<string> PF = qe->printValues(RF, syns);
+	cout << endl << "start RF" << endl;
+	BOOST_FOREACH(string s, PF){
+		i++;
+		cout << i << ": " << s << endl;
+	}
+	cout << "end RF" << endl;
+	i = 0;
+}
