@@ -40,7 +40,184 @@ void QueryOptimiserTest::tearDown() {
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( QueryOptimiserTest );
 
+void QueryOptimiserTest::testRepeatedClause() {
+	QueryOptimiser *qo = new QueryOptimiser();
+
+	StringPair *s1 = new StringPair();
+	s1->setFirst("i");
+	s1->setSecond(ARG_IF);
+
+	Query *q = new Query();
+	q->addSelectSynonym(*s1);
+
+	SuchThatClauseBuilder* parentStarBuilder1 = new SuchThatClauseBuilder(PARENTSTAR_);
+	parentStarBuilder1->setArg(1, "i");
+	parentStarBuilder1->setArgFixed(1, false);
+	parentStarBuilder1->setArgType(1, ARG_IF);
+	parentStarBuilder1->setArg(2, "22");
+	parentStarBuilder1->setArgFixed(2, true);
+	parentStarBuilder1->setArgType(2, ARG_STATEMENT);
+	ParentStarClause* c1 = (ParentStarClause*) parentStarBuilder1->build();
+	CPPUNIT_ASSERT(c1->isValid());
+
+	q->addClause((Clause*) c1);
+
+	SuchThatClauseBuilder* parentStarBuilder2 = new SuchThatClauseBuilder(PARENTSTAR_);
+	parentStarBuilder2->setArg(1, "i");
+	parentStarBuilder2->setArgFixed(1, false);
+	parentStarBuilder2->setArgType(1, ARG_IF);
+	parentStarBuilder2->setArg(2, "22");
+	parentStarBuilder2->setArgFixed(2, true);
+	parentStarBuilder2->setArgType(2, ARG_STATEMENT);
+	ParentStarClause* c2 = (ParentStarClause*) parentStarBuilder2->build();
+	CPPUNIT_ASSERT(c2->isValid());
+
+	q->addClause((Clause*) c2);
+
+	SuchThatClauseBuilder* parentStarBuilder3 = new SuchThatClauseBuilder(PARENTSTAR_);
+	parentStarBuilder3->setArg(1, "i");
+	parentStarBuilder3->setArgFixed(1, false);
+	parentStarBuilder3->setArgType(1, ARG_IF);
+	parentStarBuilder3->setArg(2, "22");
+	parentStarBuilder3->setArgFixed(2, true);
+	parentStarBuilder3->setArgType(2, ARG_STATEMENT);
+	ParentStarClause* c3 = (ParentStarClause*) parentStarBuilder3->build();
+	CPPUNIT_ASSERT(c3->isValid());
+
+	q->addClause((Clause*) c3);
+
+	vector<int>* compSize = qo->optimizeQuery(q);
+	
+	CPPUNIT_ASSERT(compSize->size() == 1);
+
+	bool c1TypeMatch = q->getClauseList().at(0)->getClauseType() == 3;
+	bool c2TypeMatch = q->getClauseList().at(1)->getClauseType() == 3;
+	bool c3TypeMatch = q->getClauseList().at(2)->getClauseType() == 3;
+	CPPUNIT_ASSERT(c1TypeMatch);
+	CPPUNIT_ASSERT(c2TypeMatch);
+	CPPUNIT_ASSERT(c3TypeMatch);
+
+	/*
+	BOOST_FOREACH(auto i, q->getClauseList()) {
+		cout << "clause type: ";
+		cout << i->getClauseType();
+		cout << endl;
+	}
+	*/
+}
+
+void QueryOptimiserTest::testNoClause() {
+	QueryOptimiser *qo = new QueryOptimiser();
+
+	StringPair *s1 = new StringPair();
+	s1->setFirst("i");
+	s1->setSecond(ARG_IF);
+
+	Query *q = new Query();
+	q->addSelectSynonym(*s1);
+
+	vector<int>* compSize = qo->optimizeQuery(q);
+	
+	CPPUNIT_ASSERT(compSize->size() == 1);
+	CPPUNIT_ASSERT(compSize->at(0) == 0);
+}
+
 void QueryOptimiserTest::testInvalidQuery() {
+	QueryOptimiser *qo = new QueryOptimiser();
+
+	StringPair *s1 = new StringPair();
+	s1->setFirst("i");
+	s1->setSecond(ARG_IF);
+	StringPair *s2 = new StringPair();
+	s2->setFirst("a");
+	s2->setSecond(ARG_ASSIGN);
+
+	Query *q = new Query();
+	q->addSelectSynonym(*s1);
+	q->addSelectSynonym(*s2);
+
+	SuchThatClauseBuilder* parentStarBuilder1 = new SuchThatClauseBuilder(PARENTSTAR_);
+	parentStarBuilder1->setArg(1, "i");
+	parentStarBuilder1->setArgFixed(1, false);
+	parentStarBuilder1->setArgType(1, ARG_IF);
+	parentStarBuilder1->setArg(2, "22");
+	parentStarBuilder1->setArgFixed(2, true);
+	parentStarBuilder1->setArgType(2, ARG_STATEMENT);
+	ParentStarClause* c1 = (ParentStarClause*) parentStarBuilder1->build();
+	CPPUNIT_ASSERT(c1->isValid());
+
+	q->addClause((Clause*) c1);
+
+	SuchThatClauseBuilder* parentStarBuilder2 = new SuchThatClauseBuilder(PARENTSTAR_);
+	parentStarBuilder2->setArg(1, "a");
+	parentStarBuilder2->setArgFixed(1, false);
+	parentStarBuilder2->setArgType(1, ARG_ASSIGN);
+	parentStarBuilder2->setArg(2, "_");
+	parentStarBuilder2->setArgFixed(2, false);
+	parentStarBuilder2->setArgType(2, ARG_GENERIC);
+	ParentStarClause* c2 = (ParentStarClause*) parentStarBuilder2->build();
+	CPPUNIT_ASSERT(!c2->isValid());
+
+	q->addClause((Clause*) c2);
+
+	vector<int>* compSize = qo->optimizeQuery(q);
+	
+	CPPUNIT_ASSERT(compSize->size() == 0);
+}
+
+void QueryOptimiserTest::testPatternQuery() {
+	QueryOptimiser *qo = new QueryOptimiser();
+
+	StringPair *s1 = new StringPair();
+	s1->setFirst("i");
+	s1->setSecond(ARG_IF);
+
+	Query *q = new Query();
+	q->addSelectSynonym(*s1);
+
+	SuchThatClauseBuilder* modifiesBuilder = new SuchThatClauseBuilder(MODIFIES_);
+	modifiesBuilder->setArg(1, "i");
+	modifiesBuilder->setArgFixed(1, false);
+	modifiesBuilder->setArgType(1, ARG_IF);
+	modifiesBuilder->setArg(2, "_");
+	modifiesBuilder->setArgFixed(2, false);
+	modifiesBuilder->setArgType(2, ARG_GENERIC);
+	ModifiesClause* c1 = (ModifiesClause*) modifiesBuilder->build();
+	CPPUNIT_ASSERT(c1->isValid());
+
+	q->addClause((Clause*) c1);
+
+	PatternClauseBuilder* ifBuilder = new PatternClauseBuilder(PATTERNIF_);
+	ifBuilder->setSynonym("i");
+	ifBuilder->setVar("v");
+	ifBuilder->setVarType(ARG_VARIABLE);
+	ifBuilder->setVarFixed(true);
+	ifBuilder->setExpr(1, "_");
+	ifBuilder->setExpr(2, "_");
+	PatternIfClause* c2 = (PatternIfClause*) ifBuilder->build();
+	CPPUNIT_ASSERT(c2->isValid());
+
+	q->addClause((Clause*) c2);
+
+	vector<int>* compSize = qo->optimizeQuery(q);
+	
+	CPPUNIT_ASSERT(compSize->size() == 1);
+
+	bool c1TypeMatch = q->getClauseList().at(0)->getClauseType() == 13;
+	bool c2TypeMatch = q->getClauseList().at(1)->getClauseType() == 5;
+	CPPUNIT_ASSERT(c1TypeMatch);
+	CPPUNIT_ASSERT(c2TypeMatch);
+	
+	/*
+	BOOST_FOREACH(auto i, q->getClauseList()) {
+		cout << "clause type: ";
+		cout << i->getClauseType();
+		cout << endl;
+	}
+	*/
+}
+
+void QueryOptimiserTest::testInvalidClause() {
 	QueryOptimiser *qo = new QueryOptimiser();
 
 	StringPair *s1 = new StringPair();
@@ -72,6 +249,7 @@ void QueryOptimiserTest::testInvalidQuery() {
 		cout << endl;
 	}
 	*/
+
 }
 
 void QueryOptimiserTest::testGettingStartingSynonym() {
