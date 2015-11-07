@@ -1064,13 +1064,13 @@ void QueryEvaluatorTest::testSingleResultMerge(){
 	qe->copyResult(R1, RF, "s");
 	qe->copyResult(R2, RF, "s");
 	
-	int i=0;
-	cout << endl << "START" << endl;
-	BOOST_FOREACH(string s, RF->getSyn("s")){
-		i++;
-		cout << i << ": " << s << endl;
-	}
-	cout << "END" << endl;
+	//int i=0;
+	//cout << endl << "START" << endl;
+	//BOOST_FOREACH(string s, RF->getSyn("s")){
+	//	i++;
+	//	cout << i << ": " << s << endl;
+	//}
+	//cout << "END" << endl;
 }
 
 void QueryEvaluatorTest::testTupleResultMerge(){

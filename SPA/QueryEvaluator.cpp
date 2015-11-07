@@ -156,7 +156,8 @@ Result* QueryEvaluator::evalOptimisedQuery(Query* query, vector<int>* componentI
 		int start = 0;
 		Result* currentRes = new Result();
 		BOOST_FOREACH(int end, *componentIndices){
-			this->validResults = evalNumClauses(query, start, end, currentRes);
+			int limit = start + end;
+			this->validResults = evalNumClauses(query, start, limit, currentRes);
 			if (!validResults){
 				break;
 			}
