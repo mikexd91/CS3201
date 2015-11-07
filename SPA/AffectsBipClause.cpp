@@ -62,8 +62,8 @@ bool AffectsBipClause::evaluateS1FixedS2Generic(string s1){
 //e.g. Affects(_, 2)
 bool AffectsBipClause::evaluateS1GenericS2Fixed(string s2) {
 	unordered_set<Statement*> assgStmts = stmtTable->getAssgStmts();
-	AffectsBipCalculator calc = AffectsBipCalculator();
 	BOOST_FOREACH(Statement* assgStmt, assgStmts) {
+		AffectsBipCalculator calc = AffectsBipCalculator();
 		if (calc.computeFixedFixed(boost::lexical_cast<string>(assgStmt->getStmtNum()), s2)) {
 			return true;
 		}
@@ -73,16 +73,15 @@ bool AffectsBipClause::evaluateS1GenericS2Fixed(string s2) {
 
 //e.g. Affects(s,2)
 unordered_set<string> AffectsBipClause::getAllS1WithS2Fixed(string s2) {
-	unordered_set<Statement*> assgStmts = stmtTable->getAssgStmts();
-	unordered_set<string> results = unordered_set<string>();
 	AffectsBipCalculator calc = AffectsBipCalculator();
-	BOOST_FOREACH(Statement* assgStmt, assgStmts) {
-		string currentStmtNum = boost::lexical_cast<string>(assgStmt->getStmtNum());
-		if (calc.computeFixedFixed(currentStmtNum, s2)) {
-			results.insert(currentStmtNum);
+	unordered_set<vector<string>> s1s2 = calc.computeAllS1AndS2(false);
+	unordered_set<string> result = unordered_set<string>();
+	BOOST_FOREACH(vector<string> pair, s1s2) {
+		if (pair.at(1) == s2) {
+			result.insert(pair.at(0));
 		}
 	}
-	return results;
+	return result;
 }
 
 //e.g. Parent(s1,_)
@@ -95,16 +94,5 @@ unordered_set<string> AffectsBipClause::getAllS1() {
 //Parent(s1, s2)
 unordered_set<vector<string>> AffectsBipClause::getAllS1AndS2() {
 	AffectsBipCalculator calc = AffectsBipCalculator();
-	unordered_set<vector<string>> results = calc.computeAllS1AndS2();
-	if (firstArg == secondArg) {
-		unordered_set<vector<string>> filteredResult = unordered_set<vector<string>>();
-		BOOST_FOREACH(vector<string> result, results) {
-			if (result.at(0) == result.at(1)) {
-				filteredResult.insert(result);
-			}
-		}
-		return filteredResult;
-	} else {
-		return results;
-	}
+	return calc.computeAllS1AndS2(firstArg == secondArg);
 }
