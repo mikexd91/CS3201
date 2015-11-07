@@ -61,7 +61,7 @@ bool AffectsBipCalculator::computeFixedFixed(string firstArg, string secondArg) 
 	return false;
 }
 
-unordered_set<vector<string>> AffectsBipCalculator::computeAllS1AndS2() {
+unordered_set<vector<string>> AffectsBipCalculator::computeAllS1AndS2(bool isS1S2Same) {
 	//used for insertion
 	type = S1_AND_S2;
 	//iterate for each proc
@@ -75,7 +75,17 @@ unordered_set<vector<string>> AffectsBipCalculator::computeAllS1AndS2() {
 		//reset state
 		globalState = State();
 	}
-	return multiSynResults;
+	if (isS1S2Same) {
+		unordered_set<vector<string>> filteredResult = unordered_set<vector<string>>();
+		BOOST_FOREACH(vector<string> result, multiSynResults) {
+			if (result.at(0) == result.at(1)) {
+				filteredResult.insert(result);
+			}
+		}
+		return filteredResult;
+	} else {
+		return multiSynResults;
+	}
 }
 
 unordered_set<string> AffectsBipCalculator::computeAllS1() {

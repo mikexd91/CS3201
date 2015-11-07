@@ -39,6 +39,13 @@ bool AffectsStarBipClause::evaluateS1GenericS2Generic() {
 
 //e.g. Parent(_,2)
 bool AffectsStarBipClause::evaluateS1GenericS2Fixed(string s2) {
+	unordered_set<Statement*> assgStmts = stmtTable->getAssgStmts();
+	BOOST_FOREACH(Statement* assgStmt, assgStmts) {
+		AffectsStarBipCalculator calc = AffectsStarBipCalculator();
+		if (calc.computeFixedFixed(boost::lexical_cast<string>(assgStmt->getStmtNum()), s2)) {
+			return true;
+		}
+	}
 	return false;
 }
 
@@ -66,7 +73,15 @@ unordered_set<string> AffectsStarBipClause::getAllS2() {
 //e.g. Parent(s1,2)
 //get parent of string
 unordered_set<string> AffectsStarBipClause::getAllS1WithS2Fixed(string s2) {
-	return unordered_set<string>();
+	AffectsStarBipCalculator calc = AffectsStarBipCalculator();
+	unordered_set<vector<string>> s1s2 = calc.computeSynSyn(false);
+	unordered_set<string> result = unordered_set<string>();
+	BOOST_FOREACH(vector<string> pair, s1s2) {
+		if (pair.at(1) == s2) {
+			result.insert(pair.at(0));
+		}
+	}
+	return result;
 }
 
 //e.g. Parent(s1,_)
