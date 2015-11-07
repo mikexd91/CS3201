@@ -12,17 +12,56 @@ AffectsBipCalculator::AffectsBipCalculator() {
 	multiSynResults = unordered_set<vector<string>>();
 	globalState = State();
 	isStart = false;
-	isEnd = false;
 	result = false;
 	parentCallStmts = stack<int>();
-	//for Affects(fixed, _)
-	stmtsAfterEnd = stack<GNode*>();
 }
 
 AffectsBipCalculator::~AffectsBipCalculator() {
 }
 
-unordered_set<vector<string>> AffectsBipCalculator::computeAllS1AndS2() {
+//e.g. Parent(1,2)
+bool AffectsBipCalculator::computeFixedFixed(string firstArg, string secondArg) {
+	type = FIXED_FIXED;
+	isStart = true;
+	//check modifies/uses aspects of firstArg and secondArg
+	s1Num = boost::lexical_cast<int>(firstArg);
+	s2Num = boost::lexical_cast<int>(secondArg);
+	Statement* stmt1 = stmtTable->getStmtObj(s1Num);
+	Statement* stmt2 = stmtTable->getStmtObj(s2Num);
+	if (stmt1->getType() != ASSIGN_STMT_ || stmt2->getType() != ASSIGN_STMT_) {
+		return false;
+	}
+	unordered_set<string> modifies1 = stmt1->getModifies();
+	unordered_set<string> uses2 = stmt2->getUses();
+	string modifyingVar;
+	if (modifies1.size() != 1 || uses2.empty()) {
+		//error
+		if (modifies1.size() != 1) {
+			cout << "Assignment statements should only have 1 modify variable";	
+		}
+		return false;
+	} else {
+		modifyingVar = *modifies1.begin();
+		if (uses2.find(modifyingVar) == uses2.end()) {
+			//stmt2 does not use a variable that stmt1 modifies.
+			return false;
+		}
+	}
+	//add first statement into the state, so we know that which var is modified
+	globalState[modifyingVar] = unordered_set<int>();
+	globalState[modifyingVar].insert(s1Num);
+	try {
+		GNode* currentNode = stmt1->getGNodeRef();
+		while(currentNode != NULL) {
+			currentNode = evaluateNode(currentNode, globalState);
+		}
+	} catch (BasicAffectsBipTermination e) {
+		return result;
+	}
+	return false;
+}
+
+unordered_set<vector<string>> AffectsBipCalculator::computeAllS1AndS2(bool isS1S2Same) {
 	//used for insertion
 	type = S1_AND_S2;
 	//iterate for each proc
@@ -30,14 +69,23 @@ unordered_set<vector<string>> AffectsBipCalculator::computeAllS1AndS2() {
 	//between each proc, reinitialise state
 	BOOST_FOREACH(ProcGNode* procNode, procNodes) {
 		GNode* currentNode = procNode->getChild();
-		while(!isEnd) {
+		while(currentNode != NULL) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
 		//reset state
 		globalState = State();
-		isEnd = false;
 	}
-	return multiSynResults;
+	if (isS1S2Same) {
+		unordered_set<vector<string>> filteredResult = unordered_set<vector<string>>();
+		BOOST_FOREACH(vector<string> result, multiSynResults) {
+			if (result.at(0) == result.at(1)) {
+				filteredResult.insert(result);
+			}
+		}
+		return filteredResult;
+	} else {
+		return multiSynResults;
+	}
 }
 
 unordered_set<string> AffectsBipCalculator::computeAllS1() {
@@ -48,12 +96,42 @@ unordered_set<string> AffectsBipCalculator::computeAllS1() {
 	//between each proc, reinitialise state
 	BOOST_FOREACH(ProcGNode* procNode, procNodes) {
 		GNode* currentNode = procNode->getChild();
-		while(!isEnd) {
+		while(currentNode != NULL) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
 		//reset state
 		globalState = State();
-		isEnd = false;
+	}
+	return singleSynResults;
+}
+
+unordered_set<string> AffectsBipCalculator::computeFixedSyn(string s1) {
+	type = FIXED_SYN;
+	isStart = true;
+	s1Num = boost::lexical_cast<int>(s1);
+	Statement* stmt1 = stmtTable->getStmtObj(s1Num);
+	if (stmt1->getType() != ASSIGN_STMT_) {
+		return unordered_set<string>();
+	}
+	unordered_set<string> modifies1 = stmt1->getModifies();
+	string modifyingVar;
+	if (modifies1.size() != 1) {
+		//error
+		cout << "Assignment statements should only have 1 modify variable";
+		return unordered_set<string>();
+	} else {
+		modifyingVar = *modifies1.begin();
+	}
+	//add first statement into the state, so we know that which var is modified
+	globalState[modifyingVar] = unordered_set<int>();
+	globalState[modifyingVar].insert(s1Num);
+	try {
+		GNode* currentNode = stmt1->getGNodeRef();
+		while(currentNode != NULL) {
+			currentNode = evaluateNode(currentNode, globalState);
+		}
+	} catch (BasicAffectsBipTermination e) {
+		return singleSynResults;
 	}
 	return singleSynResults;
 }
@@ -68,7 +146,7 @@ bool AffectsBipCalculator::computeS1GenericS2Generic() {
 		//between each proc, reinitialise state
 		BOOST_FOREACH(ProcGNode* procNode, procNodes) {
 			GNode* currentNode = procNode->getChild();
-			while(!isEnd) {
+			while(currentNode != NULL) {
 				currentNode = evaluateNode(currentNode, globalState);
 			}
 			//reset state
@@ -102,7 +180,7 @@ bool AffectsBipCalculator::computeS1FixedS2Generic(string s1) {
 	globalState[modifyingVar].insert(s1Num);
 	try {
 		GNode* currentNode = stmt1->getGNodeRef();
-		while(!isEnd) {
+		while(currentNode != NULL) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
 	} catch (BasicAffectsBipTermination e) {
@@ -119,12 +197,11 @@ unordered_set<string> AffectsBipCalculator::computeAllS2() {
 	//between each proc, reinitialise state
 	BOOST_FOREACH(ProcGNode* procNode, procNodes) {
 		GNode* currentNode = procNode->getChild();
-		while(!isEnd) {
+		while(currentNode != NULL) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
 		//reset state
 		globalState = State();
-		isEnd = false;
 	}
 	return singleSynResults;
 }
@@ -151,7 +228,7 @@ GNode* AffectsBipCalculator::evaluateNode(GNode* node, State& state) {
 	} else if (node->getNodeType() == END_) {
 		//proc is not called by another procedure
 		if (parentCallStmts.empty()) {
-			if (type == FIXED_GENERIC) {
+			if (type == FIXED_GENERIC || type == FIXED_FIXED || type == FIXED_SYN) {
 				//for fixed generic, we do not start from the beginning
 				//we therefore need to consider the case where this procedure might be called from another procedure
 				//we iterate through children, if there are
@@ -164,8 +241,7 @@ GNode* AffectsBipCalculator::evaluateNode(GNode* node, State& state) {
 				}
 			}
 			//otherwise, we do not consider the possibility that it was called, since we will iterate through it later
-			isEnd = true;
-			nextNode = node;
+			nextNode = NULL;
 		} else {
 			//current proc is called by another procedure
 			EndGNode* endNode = static_cast<EndGNode*>(node);
@@ -183,10 +259,10 @@ GNode* AffectsBipCalculator::evaluateNode(GNode* node, State& state) {
 			size_t pos = find(callStmtNums.begin(), callStmtNums.end(), parentCallStmt) - callStmtNums.begin();
 			if (pos >= originalProcNode->getParents().size()) {
 				cout << "Call stmt is not present in parents, something is wrong" << endl;
-				nextNode =  node;
+				nextNode =  NULL;
 			} else if (pos >= endNode->getChildren().size()){
 				cout << "Call index is larger than children, something is wrong" << endl;
-				nextNode = node;
+				nextNode = NULL;
 			} else {
 				nextNode =  endNode->getChildren().at(pos);
 			}
@@ -260,6 +336,12 @@ void AffectsBipCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 			if (entry != state.end() && entry->second.size() != 0) {
 				unordered_set<int> modifyingStmts = entry->second;
 				switch (type) {
+				case FIXED_FIXED:
+					if (stmtNum == s2Num) {
+						result = true;
+						throw BasicAffectsBipTermination();
+					}
+					break;
 				case GENERIC_GENERIC: 
 				case FIXED_GENERIC:
 					result = true;
@@ -270,6 +352,7 @@ void AffectsBipCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 							singleSynResults.insert(boost::lexical_cast<string>(modifyingStmt));
 						}
 					break;
+				case FIXED_SYN:
 				case S2_ONLY: 
 					singleSynResults.insert(boost::lexical_cast<string>(stmtNum));
 					break;
@@ -285,15 +368,17 @@ void AffectsBipCalculator::updateStateForAssign(AssgGNode* node, State& state) {
 			}
 		}
 		Statement::ModifiesSet modifiedVariables = assgStmt->getModifies();
-		if (type == FIXED_GENERIC) {
-			//if current statements modifies the var that we are looking out for
+		if (type == FIXED_GENERIC || type == FIXED_FIXED || type == FIXED_SYN) {
 			BOOST_FOREACH(string modifiedVar, modifiedVariables) {
+				//if current statements modifies the var that we are looking out for
 				if (modifiedVar == *(stmtTable->getStmtObj(s1Num)->getModifies().begin())) {
-					state.erase(modifiedVar);
-					result = false;
+					if (stmtNum != s1Num) {
+						//another statement overrode our assg stmt
+						state.erase(modifiedVar);
+					}
 					throw AffectsBipTermination();
 				}
-			}
+			}	
 		} else {
 			//see whether var modified overrides any others
 			BOOST_FOREACH(string modifiedVar, modifiedVariables) {
@@ -341,7 +426,7 @@ bool AffectsBipCalculator::toProceed(State state) {
 }
 
 void AffectsBipCalculator::updateStateBeyondEnd(GNode* node, State state) {
-	while (!node->isNodeType(END_)) {
+	while (node != NULL) {
 		node = evaluateNode(node, state);
 	}
 }
