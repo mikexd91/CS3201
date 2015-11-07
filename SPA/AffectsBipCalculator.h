@@ -34,7 +34,7 @@ public:
 	AffectsBipCalculator(void);
 	~AffectsBipCalculator(void);
 	//Affects(s1, s2)
-	unordered_set<vector<string>> computeAllS1AndS2(void);
+	unordered_set<vector<string>> computeAllS1AndS2(bool);
 	//Affects(s1,_)
 	unordered_set<string> computeAllS1(void);
 	//Affects(_,s2)
