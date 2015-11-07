@@ -25,7 +25,7 @@ using namespace boost;
 void AffectsStarClauseTest::setUp() {
 	/*
 	procedure test {
-1		x = z;
+1		x = x;
 2		c = d;
 3		while x {
 4			i = x;
@@ -165,7 +165,7 @@ void AffectsStarClauseTest::setUp() {
 	string modifiesArray1[] = {"x"};
 	unordered_set<string> mods1(modifiesArray1, modifiesArray1 + 1);
 	stmt1->setModifies(mods1);
-	string usesArray1[] = {"z"};
+	string usesArray1[] = {"x"};
 	unordered_set<string> uses1(usesArray1, usesArray1 + 1);
 	stmt1->setUses(uses1);
 	stmt1->setGNodeRef(assg1);
