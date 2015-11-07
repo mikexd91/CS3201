@@ -6,12 +6,12 @@ DummyGNode::DummyGNode()
 	: GNode(DUMMY_) {
 }
 
-int DummyGNode::getIfParentStmt() {
-	return this->startStmt;
+GNode* DummyGNode::getIfParent() {
+	return this->getParents().at(0);
 }
 
-int DummyGNode::getElseParentStmt() {
-	return this->endStmt;
+GNode* DummyGNode::getElseParent() {
+	return this->getParents().at(1);
 }
 
 GNode* DummyGNode::getEntrance() {
@@ -26,12 +26,12 @@ unordered_set<int> DummyGNode::getPrevStmts() {
 	return this->prevStmts;
 }
 
-void DummyGNode::setIfParentStmt(int stmtNum) {
-	this->startStmt = stmtNum;
+void DummyGNode::setIfParent(GNode* parent) {
+	this->setFirstParent(parent);
 }
 
-void DummyGNode::setElseParentStmt(int stmtNum) {
-	this->endStmt = stmtNum;
+void DummyGNode::setElseParent(GNode* parent) {
+	this->setSecondParent(parent);
 }
 
 void DummyGNode::setEntrance(GNode* entrance) {
