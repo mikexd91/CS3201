@@ -150,7 +150,7 @@ void CallsClauseTest::testCallsFixedFixedPass() {
 	CallsClause* c1 = (CallsClause*) callsBuilder->build();
 	CPPUNIT_ASSERT(c1->isValid());
 
-	bool evalResult = true;/*c1->evaluate(result);*/
+	bool evalResult = c1->evaluate(result);
 	CPPUNIT_ASSERT(evalResult);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }

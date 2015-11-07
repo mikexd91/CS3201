@@ -1,5 +1,6 @@
 #include "CallsClause.h"
 #include <iostream>
+#include <boost/foreach.hpp>
 
 using namespace stringconst;
 using namespace std;
@@ -12,10 +13,10 @@ CallsClause::~CallsClause(void){
 }
 
 bool CallsClause::isValid(void) {
-	//bool isValidFirstArg = (firstArgType == ARG_GENERIC) || (firstArgType == ARG_PROCEDURE);
-	//bool isValidSecondArg = (secondArgType == ARG_GENERIC) || (secondArgType == ARG_PROCEDURE);
+	bool isValidFirstArg = (firstArgType == ARG_GENERIC) || (firstArgType == ARG_PROCEDURE);
+	bool isValidSecondArg = (secondArgType == ARG_GENERIC) || (secondArgType == ARG_PROCEDURE);
 	//cout << isValidFirstArg << "a" << isValidSecondArg << endl;
-	return true;/*isValidFirstArg && isValidSecondArg;*/
+	return isValidFirstArg && isValidSecondArg;
 }
 
 //e.g. Calls(proc, proc)
@@ -98,11 +99,9 @@ unordered_set<string> CallsClause::getAllS2() {
 	unordered_set<Procedure*> procSet = procTable->getAllProcs();
 	for (unordered_set<Procedure*>::iterator i = procSet.begin(); i != procSet.end(); ++i) {
 		Procedure* procObj = *i;
-		unordered_set<Procedure*> callsSet = procObj->getCalls();
-		for (unordered_set<Procedure*>::iterator j = callsSet.begin(); j != callsSet.end(); ++j) {
-			Procedure* obj = *j;
-			string name = obj->getProcName();
-			results.insert(name);
+		unordered_set<Procedure*> callsSet = procObj->getCalledBy();
+		if (!callsSet.empty()) {
+			results.insert(procObj->getProcName());
 		}
 	}
 	return results;
@@ -114,11 +113,9 @@ unordered_set<string> CallsClause::getAllS1() {
 	unordered_set<Procedure*> procSet = procTable->getAllProcs();
 	for (unordered_set<Procedure*>::iterator i = procSet.begin(); i != procSet.end(); ++i) {
 		Procedure* procObj = *i;
-		unordered_set<Procedure*> callsSet = procObj->getCalledBy();
-		for (unordered_set<Procedure*>::iterator j = callsSet.begin(); j != callsSet.end(); ++j) {
-			Procedure* obj = *j;
-			string name = obj->getProcName();
-			results.insert(name);
+		unordered_set<Procedure*> callsSet = procObj->getCalls();
+		if (!callsSet.empty()) {
+			results.insert(procObj->getProcName());
 		}
 	}
 	return results;
@@ -129,17 +126,13 @@ unordered_set<vector<string>>  CallsClause::getAllS1AndS2() {
 	unordered_set<vector<string>> results = unordered_set<vector<string>>();
 	if (firstArg != secondArg) {
 		unordered_set<Procedure*> procSet = procTable->getAllProcs();
-		for (unordered_set<Procedure*>::iterator i = procSet.begin(); i != procSet.end(); ++i) {
-			Procedure* procObj = *i;
-			string objName = procObj->getProcName();
-			unordered_set<Procedure*> callProcSet = procObj->getCalls();
-			for (unordered_set<Procedure*>::iterator j = callProcSet.begin(); j != callProcSet.end(); ++j) {
-				vector<string> pair = vector<string>();
-				Procedure* callProcObj = *j;
-				string callProcName = callProcObj->getProcName();
-				pair.push_back(objName);
-				pair.push_back(callProcName);
-				results.insert(pair);
+		BOOST_FOREACH(auto i, procSet) {
+			unordered_set<Procedure*> callsSet = i->getCalls();
+			BOOST_FOREACH(auto j, callsSet) {
+				vector<string> synonyms = vector<string>();
+				synonyms.push_back(i->getProcName());
+				synonyms.push_back(j->getProcName());
+				results.insert(synonyms);
 			}
 		}
 	}
@@ -151,7 +144,9 @@ bool CallsClause::isCalls(string proc1, string proc2) {
 		Procedure* procObj1 = procTable->getProcObj(proc1);
 		Procedure* procObj2 = procTable->getProcObj(proc2);
 		unordered_set<Procedure*> procSet = procObj1->getCalls();
-		return procSet.find(procObj2) != procSet.end();
+		if (procSet.find(procObj2) != procSet.end()) {
+			return true;
+		}
 	} 
 	return false;
 }

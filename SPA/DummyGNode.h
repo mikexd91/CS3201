@@ -17,6 +17,7 @@ public:
 	// stmts
 	int getIfParentStmt();
 	int getElseParentStmt();
+	GNode* getChild();
 	GNode* getEntrance();
 	unordered_set<int> getPrevStmts();
 

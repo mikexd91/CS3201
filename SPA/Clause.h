@@ -1,5 +1,4 @@
 #pragma once
-#include "NoSynInsert.h"
 #include "SingleSynInsert.h"
 #include "MultiSynInsert.h"
 #include "Result.h"
@@ -21,7 +20,9 @@ enum ClauseType{
 	PATTERNASSG_,
 	PATTERNIF_,
 	PATTERNWHILE_,
-	WITH_
+	WITH_,
+	AFFECTSBIP_,
+	AFFECTSSTARBIP_
 };
 
 class Clause {

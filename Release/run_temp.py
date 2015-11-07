@@ -1,58 +1,37 @@
 import os
 
-# USES CLAUSE
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Uses-ss1.txt SystemTests/Results/uses.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Uses-MultiClause-ss1.txt SystemTests/Results/uses_multiclause.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Uses-StmtOverflow-ss1.txt SystemTests/Results/uses_stmtoverflow.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Uses-Misc-ss1.txt SystemTests/Results/uses_misc.xml")
+# SYSTEM SOURCE 1
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/SingleProc-ss1.txt SystemTests/Results/singleproc-ss1.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/MultiProc-ss2.txt SystemTests/Results/multiproc-ss2.xml")
 
-# MODIFIES CLAUSE
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Modifies-ss1.txt SystemTests/Results/modifies.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Modifies-MultiClause-ss1.txt SystemTests/Results/modifies_multiclause.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Modifies-StmtOverflow-ss1.txt SystemTests/Results/modifies_stmtoverflow.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Modifies-Misc-ss1.txt SystemTests/Results/modifies_misc.xml")
-
-# PARENT(*) CLAUSE
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Parent-ss1.txt SystemTests/Results/parent.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Parent-MultiClause-ss1.txt SystemTests/Results/parent_multiclause.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Parent-StmtOverflow-ss1.txt SystemTests/Results/parent_stmtoverflow.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Parent-Misc-ss1.txt SystemTests/Results/parent_misc.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/ParentStar-ss1.txt SystemTests/Results/parentstar.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/ParentStar-MultiClause-ss1.txt SystemTests/Results/parentstar_multiclause.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/ParentStar-StmtOverflow-ss1.txt SystemTests/Results/parentstar_stmtoverflow.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/ParentStar-Misc-ss1.txt SystemTests/Results/parentstar_misc.xml")
-
-# FOLLOWS(*) CLAUSE
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Follows-ss1.txt SystemTests/Results/follows.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Follows-MultiClause-ss1.txt SystemTests/Results/follows_multiclause.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Follows-StmtOverflow-ss1.txt SystemTests/Results/follows_stmtoverflow.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Follows-Misc-ss1.txt SystemTests/Results/follows_misc.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-ss1.txt SystemTests/Results/followsstar.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-MultiClause-ss1.txt SystemTests/Results/followsstar_multiclause.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-StmtOverflow-ss1.txt SystemTests/Results/followsstar_stmtoverflow.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-Misc-ss1.txt SystemTests/Results/followsstar_misc.xml")
-
-# NEXT(*) CLAUSE
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-ss1.txt SystemTests/Results/next.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-MultiClause-ss1.txt SystemTests/Results/next_multiclause.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-StmtOverflow-ss1.txt SystemTests/Results/next_stmtoverflow.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-Misc-ss1.txt SystemTests/Results/next_misc.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-ss1.txt SystemTests/Results/nextstar.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-MultiClause-ss1.txt SystemTests/Results/nextstar_multiclause.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-StmtOverflow-ss1.txt SystemTests/Results/nextstar_stmtoverflow.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-Misc-ss1.txt SystemTests/Results/nextstar_misc.xml")
-
-# AFFECTS(*) CLAUSE
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Affects-ss1.txt SystemTests/Results/affects.xml")
-os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Affects-MultiClause-ss1.txt SystemTests/Results/affects_multiclause.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Affects-StmtOverflow-ss1.txt SystemTests/Results/affects_stmtoverflow.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Affects-Misc-ss1.txt SystemTests/Results/affects_misc.xml")
+# SUCH THAT CLAUSES
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Uses-ss1.txt SystemTests/Results/uses-ss1.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Uses-ss2.txt SystemTests/Results/uses-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Modifies-ss1.txt SystemTests/Results/modifies-ss1.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Modifies-ss2.txt SystemTests/Results/modifies-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Parent-ss1.txt SystemTests/Results/parent-ss1.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Parent-ss2.txt SystemTests/Results/parent-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/ParentStar-ss1.txt SystemTests/Results/parentstar-ss1.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/ParentStar-ss2.txt SystemTests/Results/parentstar-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Follows-ss1.txt SystemTests/Results/follows-ss1.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Follows-ss2.txt SystemTests/Results/follows-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/FollowsStar-ss1.txt SystemTests/Results/followsstar-ss1.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/FollowsStar-ss2.txt SystemTests/Results/followsstar-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Calls-ss2.txt SystemTests/Results/calls-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/CallsStar-ss2.txt SystemTests/Results/callsstar-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Next-ss1.txt SystemTests/Results/next-ss1.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Next-ss2.txt SystemTests/Results/next-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-ss1.txt SystemTests/Results/nextstar-ss1.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/NextStar-ss2.txt SystemTests/Results/nextstar-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Affects-ss1.txt SystemTests/Results/affects-ss1.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Affects-ss2.txt SystemTests/Results/affects-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/AffectsStar-ss2.txt SystemTests/Results/affectsstar-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/AffectsStar-ss1.txt SystemTests/Results/affectsstar-ss1.xml")
 
 # PATTERN CLAUSE
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Pattern-ss1.txt SystemTests/Results/pattern.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Pattern-ss1.txt SystemTests/Results/pattern-ss1.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Pattern-ss2.txt SystemTests/Results/pattern-ss2.xml")
 
 # WITH CLAUSE
-# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/With-ss1.txt SystemTests/Results/with.xml")
-
-# TEMP
-# os.system("AutoTester SystemTests/Sources/Source-File-2.txt SystemTests/test.txt SystemTests/Results/test.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/With-ss1.txt SystemTests/Results/with-ss1.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/With-ss2.txt SystemTests/Results/with-ss2.xml")

@@ -263,8 +263,6 @@ bool PatternClause::evaluate(Result* res) {
 
 	} else {
 		// fail, no such combi
-		NoSynInsert insert = NoSynInsert();
-		insert.setPass(false);
-		return res->push(insert);
+		return false;
 	}
 }

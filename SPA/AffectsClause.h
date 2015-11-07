@@ -2,7 +2,6 @@
 #include "SuchThatClause.h"
 #include "CFG.h"
 #include "StmtTable.h"
-#include "CFGIterator.h"
 
 class AffectsClause 
 	: public SuchThatClause {
@@ -35,11 +34,9 @@ protected:
 private:
 	StmtTable* stmtTable;
 	ProcTable* procTable;
-	bool toContinue(CFGIterator);
-	bool toContinueForFixed(CFGIterator);
 	bool modcheck(string, GNode*, unordered_set<int>*);
 	bool modcheck(string, GNode*, unordered_set<int>*, int);
 	void modadd(string, GNode*, unordered_set<int>*, unordered_set<int>*);
 	void modadd(string, GNode*, unordered_set<int>*, unordered_set<int>*, int);
-	void print(unordered_set<int>);
+	void priynt(unordered_set<int>);
 };

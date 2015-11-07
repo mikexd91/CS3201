@@ -1,6 +1,11 @@
 #pragma once
+
 #include "Utils.h"
 #include "AST.h"
+#include "CFGbip.h"
+#include "DummyGNode.h"
+#include "EndGNode.h"
+#include "ProcGNode.h"
 #include <string>
 #include <vector>
 
@@ -11,6 +16,7 @@ class DesignExtractor {
 public: 
 	DesignExtractor();
 	void executeSecondPass();
+	void constructBip();
 
 private:
 	void checkCyclicCalls();
@@ -18,9 +24,23 @@ private:
 	void populateFollowStar();
 	void recurseParentStar(StmtNode*, vector<int>&);
 	void populateFollowInStmtLst(StmtLstNode*, queue<StmtLstNode*>&);
-	void populateModUsesProc();
-	void populateModUsesCalls();
+	bool isCyclicCall(unordered_set<Procedure*>, unordered_set<Procedure*>, Procedure*);
 
-	unordered_set<string> recurseModifies(Procedure*);
-	unordered_set<string> recurseUses(Procedure*);
+	void populateModUsesCalls();
+	void populateCallsParents(Statement*);
+	void populateCallsVarTable(Statement*);
+	void populateParentCallsVarTable(int, unordered_set<string>, unordered_set<string>);
+
+	void populateEndProcs(ProcGNode*);
+	void setEndProcChildrenList(ProcGNode*);
+	void setCallsBipList(unordered_set<Statement*>);
+	void setProcBipPrevList();
+	void breakBonds(Statement*);
+
+	void removeWhilePrevBip(int, int);
+	void removeDummyPrevBip(GNode*, int);
+	void removeOthersPrevBip(GNode*);
+
+	void addOthersPrevBip(GNode*, unordered_set<int>);
+	void addDummyPrevBip(GNode*, unordered_set<int>);
 };

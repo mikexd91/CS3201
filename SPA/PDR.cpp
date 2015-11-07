@@ -67,13 +67,24 @@ void PDR::processCallStmt(ParsedData data) {
 	addChildToParentStmtLstNode(callNode);
 
 	// Add calls to stmt table
+	StmtTable* stmtTable = StmtTable::getInstance();
 	Statement* callStmt = new Statement();
+	callStmt->setTNodeRef(callNode);
 	callStmt->setStmtNum(stmtCounter);
 	callStmt->setCalls(data.getProcName());
 	callStmt->setType(CALL_STMT_);
 	createFollowsLinks(callNode, callStmt);
-	addToStmtTable(callStmt);
+	
+	if(!stmtParentNumStack.empty()) {
+		int parentStmtNum = stmtParentNumStack.top();
+		callStmt->setParent(parentStmtNum);
+		Statement* parentStmt = stmtTable->getStmtObj(parentStmtNum);
+		unordered_set<int> children = parentStmt->getChildren();
+		children.insert(callNode->getStmtNum());
+		parentStmt->setChildren(children);
+	}
 
+	addToStmtTable(callStmt);
 	addStmtToCurrentProc(callStmt);
 }
 
@@ -315,6 +326,10 @@ void PDR::processProcedureStmt(ParsedData data) {
     for(int i = 0; i < currNestingLevel - data.getNestingLevel(); i++) {
         nodeStack.pop();
     }
+
+	while(!stmtParentNumStack.empty()) {
+		stmtParentNumStack.pop();
+	}
     
     ProcNode* previousProcNode = retrievePreviousProc();
     Procedure* currentProcedure = checkAndAddToProcTable(data.getProcName());
