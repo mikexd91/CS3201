@@ -43,4 +43,7 @@ public:
 	unordered_set<string> getValuesToPrint(Result* obj, vector<StringPair> selectList);
 	void copyResult(Result*, Result*, string);
 	void mergeMultiResult(Result*, Result*, vector<string>);
+	
+	// print invalid bool queries
+	unordered_set<string> printInvalid(Query*);
 };

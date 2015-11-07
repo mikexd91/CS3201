@@ -28,14 +28,14 @@ unordered_set<string> PQLController::parse(string query) {
 		vector<int>* optimisedQ = qo->optimizeQuery(q);
 		
 		boost::unordered_set<string> valueSet;
-		if (optimisedQ->size() != 0) { 
-			QueryEvaluator* qe = new QueryEvaluator();
+		QueryEvaluator* qe = new QueryEvaluator();
+		if (optimisedQ->size() > 0) { 
 			Result* resObj = qe->evalOptimisedQuery(q, optimisedQ);
 			vector<StringPair> selectList = q->getSelectList();
 			valueSet = qe->printValues(resObj, selectList);
 		
 		} else {
-			valueSet = unordered_set<string>();
+			valueSet = qe->printInvalid(q);
 		}
 
 		return valueSet;

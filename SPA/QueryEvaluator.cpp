@@ -28,6 +28,17 @@ string QueryEvaluator::boolToString(bool b) {
 	}
 }
 
+unordered_set<string> QueryEvaluator::printInvalid(Query* q) {
+	unordered_set<string> print = unordered_set<string>();
+	selectList = q->getSelectList();
+	bool isSelectBool = selectList.at(0).getFirst() == "BOOLEAN";
+	if (isSelectBool) {
+		string strFalse = boolToString(false);
+		print.insert(strFalse);
+	} 
+	return print;
+}
+
 unordered_set<string> QueryEvaluator::printValues(Result* finalRes, vector<StringPair> selList){
 	unordered_set<string> autotesterPrintouts = unordered_set<string>();
 	if (!validResults && selList.at(0).getFirst() == "BOOLEAN"){
