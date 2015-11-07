@@ -38,4 +38,4 @@ import os
 
 # EXTENSION
 os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/NextBIP-ss3.txt SystemTests/Reuslts/nextbip-ss3.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/NextBIPStar-ss3.txt SystemTests/Reuslts/nextbipstar-ss3.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/NextBIPStar-ss3.txt SystemTests/Reuslts/nextbipstar-ss3.xml")
