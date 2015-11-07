@@ -12,7 +12,6 @@ AffectsStarBipCalculator::AffectsStarBipCalculator() {
 	globalState = State();
 	globalResult = AffectsStarBipResult();
 	isStart = true;
-	isEnd = false;
 }
 
 AffectsStarBipCalculator::~AffectsStarBipCalculator() {
@@ -38,7 +37,7 @@ bool AffectsStarBipCalculator::computeFixedFixed(string s1String, string s2Strin
 	}
 	GNode* currentNode = s1GNode;
 	try {
-		while (!isEnd) {
+		while (currentNode != NULL) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
 	} catch (BasicAffectsStarBipTermination e) {
@@ -64,7 +63,7 @@ unordered_set<string> AffectsStarBipCalculator::computeFixedSyn(string s1String)
 	}
 	GNode* currentNode = s1GNode;
 	try {
-		while (!isEnd) {
+		while (currentNode != NULL) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
 	} catch (BasicAffectsStarBipTermination e) {}
@@ -82,12 +81,11 @@ unordered_set<vector<string>> AffectsStarBipCalculator::computeSynSyn(bool isSam
 	//between each proc, reinitialise state
 	BOOST_FOREACH(ProcGNode* procNode, procNodes) {
 		GNode* currentNode = procNode->getChild();
-		while(!isEnd) {
+		while(currentNode != NULL) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
 		//reset state
 		globalState = State();
-		isEnd = false;
 	}
 
 	unordered_set<vector<string>> multiSyns = unordered_set<vector<string>>();
@@ -155,8 +153,7 @@ GNode* AffectsStarBipCalculator::evaluateNode(GNode* node, State& state) {
 					}
 				}	
 				//otherwise, we do not consider the possibility that it was called, since we will iterate through it later
-				isEnd = true;
-				nextNode = node;
+				nextNode = NULL;
 			} else {
 				//proc was called by another proc
 				EndGNode* endNode = static_cast<EndGNode*>(node);
@@ -366,7 +363,7 @@ bool AffectsStarBipCalculator::isEmpty(State state) {
 }
 
 void AffectsStarBipCalculator::updateStateBeyondEnd(GNode* node, State state) {
-	while (!node->isNodeType(END_)) {
+	while (node != NULL) {
 		node = evaluateNode(node, state);
 	}
 }

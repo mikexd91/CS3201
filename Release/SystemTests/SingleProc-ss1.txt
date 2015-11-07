@@ -250,7 +250,7 @@ charmander, squirtle, bulbasaur, firstStageEvolution, charmeleon, wartortle, ivy
 5000
 51 - USES: 2 clauses (mixed) - fixed-fixed, fixed-syn
 variable v;
-Select v such that Uses(17, "battle2") and Uses("18", v)
+Select v such that Uses(17, "battle2") and Uses(18, v)
 battle3, charmeleon, wartortle
 5000
 52 - USES: 2 clauses (mixed) - syn-syn, syn-fixed
@@ -3626,5 +3626,30 @@ false
 726 - WITH: prog_line = prog_line
 prog_line n1; prog_line n2;
 Select BOOLEAN with n1 = n2
+true
+5000
+727 - WITH: stmt# = stmt#
+stmt s;
+Select BOOLEAN with s.stmt# = s.stmt#
+true
+5000
+728 - WITH: stmt# = stmt# (no result)
+assign a; while w;
+Select BOOLEAN with a.stmt# = w.stmt#
+false
+5000
+729 - WITH: c.value = c.value
+constant c;
+Select BOOLEAN with c.value = c.value
+true
+5000
+730 - WITH: c.procName = c.procName
+call c;
+Select c.procName with c.procName = c.procName
+none
+5000
+731 - WITH: p.procName = p.procName
+procedure p;
+Select BOOLEAN with p.procName = p.procName
 true
 5000
