@@ -543,22 +543,6 @@ void NextStarBipClause::dfsFindAll(GNode* node, vector<string> visited, stack<in
 	}
 }
 
-GNode* NextStarBipClause::traverseDummyToGetAnything(GNode* ref) {
-	GNode* child = ref;
-
-	while(true) {
-		child = child->getChildren().at(0);
-
-		if(child->getNodeType() == DUMMY_) {
-			continue;
-		} else {
-			break;
-		}
-	}
-
-	return child;
-}
-
 bool NextStarBipClause::contains(vector<string> arr, string item) {
 	if(find(arr.begin(), arr.end(), item) != arr.end()) {
 		return true;

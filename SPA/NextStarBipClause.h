@@ -69,8 +69,6 @@ private:
 	int getNodePosition(vector<GNode*>, GNode*);
 	int getVisitedPosition(vector<string>, string);
 	
-	GNode* traverseDummyToGetAnything(GNode*);
-
 	unordered_set<Statement*> getNeededStmts(string);
 	bool isNeededArgType(string, int);
 	int getChildNodeType(GNode*);
