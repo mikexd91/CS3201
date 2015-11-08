@@ -137,7 +137,7 @@ unordered_set<string> NextStarClause::getAllS1WithS2Fixed(string s2) {
 	return results;
 }
 
-// Next*(s, _) or Next*(a, _) or Next*(c, _) or Next*(if, _) or Next*(
+// Next*(s, _) or Next*(a, _) or Next*(c, _) or Next*(if, _) or Next*(w, 3)
 unordered_set<string> NextStarClause::getAllS1() {
 	results.clear();
 	unordered_set<Statement*> stmts = getNeededStmts(firstArgType);

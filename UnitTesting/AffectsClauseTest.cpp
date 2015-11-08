@@ -25,7 +25,7 @@ void
 AffectsClauseTest::setUp() {
 	/*
 	procedure test {
-1		x = z;
+1		x = x;
 2		c = d;
 3		while x {
 4			i = x;
@@ -114,9 +114,7 @@ AffectsClauseTest::setUp() {
 	if9->setExit(dummy1);
 	while12->setAfterLoopChild(dummy1);
 	assg10->setChild(dummy1);
-	dummy1->setIfParentStmt(10);
 	dummy1->setFirstParent(assg10);
-	dummy1->setElseParentStmt(12);
 	dummy1->setSecondParent(while12);
 	dummy1->setEntrance(if9);
 	AssgGNode* assg14 = new AssgGNode(14);
@@ -155,7 +153,7 @@ AffectsClauseTest::setUp() {
 	string modifiesArray1[] = {"x"};
 	unordered_set<string> mods1(modifiesArray1, modifiesArray1 + 1);
 	stmt1->setModifies(mods1);
-	string usesArray1[] = {"z"};
+	string usesArray1[] = {"x"};
 	unordered_set<string> uses1(usesArray1, usesArray1 + 1);
 	stmt1->setUses(uses1);
 	stmt1->setGNodeRef(assg1);
@@ -734,6 +732,20 @@ void AffectsClauseTest::testGenericFixedFail() {
 
 	bool result = m1->evaluate(&res);
 	CPPUNIT_ASSERT(!result);
+
+	Result res2 = Result();
+	SuchThatClauseBuilder* affectsBuilder2 = new SuchThatClauseBuilder(AFFECTS_);
+	affectsBuilder2->setArg(1, "_");
+	affectsBuilder2->setArgFixed(1, false);
+	affectsBuilder2->setArgType(1, ARG_GENERIC);
+	affectsBuilder2->setArg(2, "1");
+	affectsBuilder2->setArgFixed(2, true);
+	affectsBuilder2->setArgType(2, ARG_PROGLINE);
+	AffectsClause* m2 = (AffectsClause*) affectsBuilder2->build();
+	CPPUNIT_ASSERT(m2->isValid());
+
+	bool result2 = m2->evaluate(&res2);
+	CPPUNIT_ASSERT(!result2);
 }
 
 // under nick

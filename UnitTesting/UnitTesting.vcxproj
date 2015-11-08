@@ -34,7 +34,9 @@
     <ClCompile Include="IfNodeTest.cpp" />
     <ClCompile Include="ModifiesClauseTest.cpp" />
     <ClCompile Include="MultiSynInsertTest.cpp" />
+    <ClCompile Include="NextBipClauseTest.cpp" />
     <ClCompile Include="NextClauseTest.cpp" />
+    <ClCompile Include="NextStarBipClauseTest.cpp" />
     <ClCompile Include="NextStarClauseTest.cpp" />
     <ClCompile Include="OpNodeTest.cpp" />
     <ClCompile Include="ParentClauseTest.cpp" />
@@ -80,7 +82,9 @@
     <ClInclude Include="IfNodeTest.h" />
     <ClInclude Include="ModifiesClauseTest.h" />
     <ClInclude Include="MultiSynInsertTest.h" />
+    <ClInclude Include="NextBipClauseTest.h" />
     <ClInclude Include="NextClauseTest.h" />
+    <ClInclude Include="NextStarBipClauseTest.h" />
     <ClInclude Include="NextStarClauseTest.h" />
     <ClInclude Include="OpNodeTest.h" />
     <ClInclude Include="ParentClauseTest.h" />

@@ -53,7 +53,9 @@
     <ClCompile Include="IfNode.cpp" />
     <ClCompile Include="ModifiesClause.cpp" />
     <ClCompile Include="MultiSynInsert.cpp" />
+    <ClCompile Include="NextBipClause.cpp" />
     <ClCompile Include="NextClause.cpp" />
+    <ClCompile Include="NextStarBipClause.cpp" />
     <ClCompile Include="NextStarClause.cpp" />
     <ClCompile Include="OpNode.cpp" />
     <ClCompile Include="ParentClause.cpp" />
@@ -139,7 +141,9 @@
     <ClInclude Include="InvalidExpressionException.h" />
     <ClInclude Include="ModifiesClause.h" />
     <ClInclude Include="MultiSynInsert.h" />
+    <ClInclude Include="NextBipClause.h" />
     <ClInclude Include="NextClause.h" />
+    <ClInclude Include="NextStarBipClause.h" />
     <ClInclude Include="NextStarClause.h" />
     <ClInclude Include="OpNode.h" />
     <ClInclude Include="ParentClause.h" />
