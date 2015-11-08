@@ -5,6 +5,7 @@ os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/MultiP
 
 os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/Next-ss3.txt SystemTests/Results/next-ss3.xml")
 os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/Affects-ss3.txt SystemTests/Results/affects-ss3.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/AffectsStar-ss3.txt SystemTests/Results/affectsstar-ss3.xml")
 
 # EXTENSION
 # os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/NextBIP-ss3.txt SystemTests/Reuslts/nextbip-ss3.xml")
