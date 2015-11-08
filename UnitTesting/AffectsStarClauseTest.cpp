@@ -115,8 +115,6 @@ void AffectsStarClauseTest::setUp() {
 	if9->setExit(dummy1);
 	while12->setAfterLoopChild(dummy1);
 	assg10->setChild(dummy1);
-	dummy1->setElseParentStmt(10);
-	dummy1->setIfParentStmt(12);
 	dummy1->setEntrance(if9);
 	dummy1->setFirstParent(assg10);
 	dummy1->setSecondParent(while12);

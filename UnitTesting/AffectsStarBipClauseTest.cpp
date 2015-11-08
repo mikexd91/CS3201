@@ -118,8 +118,6 @@ void AffectsStarBipClauseTest::setUp() {
 	if9->setExit(dummy1);
 	while12->setAfterLoopChild(dummy1);
 	assg10->setChild(dummy1);
-	dummy1->setElseParentStmt(10);
-	dummy1->setIfParentStmt(8);
 	dummy1->setEntrance(if9);
 	AssgGNode* assg14 = new AssgGNode(14);
 	assg14->setEndStmt(15);

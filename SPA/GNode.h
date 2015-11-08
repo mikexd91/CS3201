@@ -6,7 +6,6 @@
 using namespace std;
 
 enum GType {
-	PROG_, 
 	PROC_, 
 	WHILE_, 
 	IF_,
