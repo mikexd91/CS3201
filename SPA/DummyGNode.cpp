@@ -6,6 +6,14 @@ DummyGNode::DummyGNode()
 	: GNode(DUMMY_) {
 }
 
+int DummyGNode::getIfParentStmt() {
+	return this->getStartStmt();
+}
+
+int DummyGNode::getElseParentStmt() {
+	return this->getEndStmt();
+}
+
 GNode* DummyGNode::getIfParent() {
 	return this->getParents().at(0);
 }

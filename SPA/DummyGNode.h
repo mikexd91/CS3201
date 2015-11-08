@@ -15,6 +15,8 @@ public:
 	// getters
 	// dummy nodes exist for connecting the if and else branches of if
 	// stmts
+	int getIfParentStmt();
+	int getElseParentStmt();
 	GNode* getIfParent();
 	GNode* getElseParent();
 	GNode* getChild();

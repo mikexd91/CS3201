@@ -1,13 +1,13 @@
 /*
- * NextStarBipClauseTest.cpp
+ * NextBipClauseTest.cpp
  *
- *  Created on: 4 Nov, 2015
+ *  Created on: 8 Nov, 2015
  *      Author: Leon
  */
 
 #include <cppunit/config/SourcePrefix.h>
 
-#include "NextStarBipClauseTest.h"
+#include "NextBipClauseTest.h"
 #include "../SPA/AssgGNode.h"
 #include "../SPA/CallGNode.h"
 #include "../SPA/CFGbip.h"
@@ -15,7 +15,7 @@
 #include "../SPA/EndGNode.h"
 #include "../SPA/IfGNode.h"
 #include "../SPA/GNode.h"
-#include "../SPA/NextStarBipClause.h"
+#include "../SPA/NextBipClause.h"
 #include "../SPA/ProcGNode.h"
 #include "../SPA/ProcTable.h"
 #include "../SPA/Statement.h"
@@ -32,7 +32,7 @@ using namespace stringconst;
 using namespace std;
 using namespace boost;
 
-void NextStarBipClauseTest::setUp() {
+void NextBipClauseTest::setUp() {
 	/*
 	procedure proc1 {
 	1	call proc2;
@@ -450,258 +450,258 @@ void NextStarBipClauseTest::setUp() {
 	stmt17->setGBipNodeRef(node17);
 }
 
-void NextStarBipClauseTest::tearDown() {
+void NextBipClauseTest::tearDown() {
 	CFGbip::reset();
 	StmtTable::getInstance()->clearTable();
 }
 
-CPPUNIT_TEST_SUITE_REGISTRATION( NextStarBipClauseTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( NextBipClauseTest );
 
-void NextStarBipClauseTest::testFixFixTrue() {
+void NextBipClauseTest::testFixFixPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "7");
-	builder->setArg(2, "8");
+	builder->setArg(2, "9");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_STATEMENT);
 	builder->setArgFixed(1, true);
 	builder->setArgFixed(2, true);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);	
 }
 
-void NextStarBipClauseTest::testFixFixFalse() {
+void NextBipClauseTest::testFixFixFail() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "1");
-	builder->setArg(2, "11");
+	builder->setArg(2, "9");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_STATEMENT);
 	builder->setArgFixed(1, true);
 	builder->setArgFixed(2, true);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result) == false);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testGeneGeneTrue() {
+void NextBipClauseTest::testGeneGenePass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "_");
 	builder->setArg(2, "_");
 	builder->setArgType(1, ARG_GENERIC);
 	builder->setArgType(2, ARG_GENERIC);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testGeneFixTrue() {
+void NextBipClauseTest::testGeneFixPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "_");
-	builder->setArg(2, "8");
+	builder->setArg(2, "10");
 	builder->setArgType(1, ARG_GENERIC);
 	builder->setArgType(2, ARG_STATEMENT);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, true);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testGeneFixFalse() {
+void NextBipClauseTest::testGeneFixFail() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "_");
 	builder->setArg(2, "14");
 	builder->setArgType(1, ARG_GENERIC);
 	builder->setArgType(2, ARG_STATEMENT);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, true);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result) == false);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testFixGeneTrue() {
+void NextBipClauseTest::testFixGenePass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "3");
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "9");
 	builder->setArg(2, "_");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_GENERIC);
 	builder->setArgFixed(1, true);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testFixGeneFalse() {
+void NextBipClauseTest::testFixGeneFail() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "17");
 	builder->setArg(2, "_");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_GENERIC);
 	builder->setArgFixed(1, true);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result) == false);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testFixSynStmtTrue() {
+void NextBipClauseTest::testFixSynStmtPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "11");
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "5");
 	builder->setArg(2, "s");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_STATEMENT);
 	builder->setArgFixed(1, true);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 11);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
 
 	list<Row> ans = result->getResultTable().rows;
 	unordered_set<string> ansSet;
 	BOOST_FOREACH(auto s, ans) {
 		ansSet.insert(s.at(0));
 	}
-	string compare[] = {"12", "13", "4", "5", "6", "7", "8", "9", "10", "11", "17"};
-	unordered_set<string> compSet(compare, compare + 11);
+	string compare[] = {"6", "8"};
+	unordered_set<string> compSet(compare, compare + 2);
 	CPPUNIT_ASSERT(compSet == ansSet);
 }
 
-void NextStarBipClauseTest::testFixSynStmtFalse() {
+void NextBipClauseTest::testFixSynStmtFail() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "17");
 	builder->setArg(2, "s");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_STATEMENT);
 	builder->setArgFixed(1, true);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result) == false);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testFixSynAssgTrue() {
+void NextBipClauseTest::testFixSynAssgPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "11");
+	builder->setArg(2, "a");
+	builder->setArgType(1, ARG_STATEMENT);
+	builder->setArgType(2, ARG_ASSIGN);
+	builder->setArgFixed(1, true);
+	builder->setArgFixed(2, false);
+	NextBipClause* clause = (NextBipClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result));
+	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
+
+	list<Row> ans = result->getResultTable().rows;
+	unordered_set<string> ansSet;
+	BOOST_FOREACH(auto s, ans) {
+		ansSet.insert(s.at(0));
+	}
+	string compare[] = {"12", "17"};
+	unordered_set<string> compSet(compare, compare + 2);
+	CPPUNIT_ASSERT(compSet == ansSet);
+}
+
+void NextBipClauseTest::testFixSynAssgFail() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "2");
 	builder->setArg(2, "a");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_ASSIGN);
 	builder->setArgFixed(1, true);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
-
-	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 6);
-
-	list<Row> ans = result->getResultTable().rows;
-	unordered_set<string> ansSet;
-	BOOST_FOREACH(auto s, ans) {
-		ansSet.insert(s.at(0));
-	}
-	string compare[] = {"4", "6", "7", "8", "9", "10"};
-	unordered_set<string> compSet(compare, compare + 6);
-	CPPUNIT_ASSERT(compSet == ansSet);
-}
-
-void NextStarBipClauseTest::testFixSynAssgFalse() {
-	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "17");
-	builder->setArg(2, "a");
-	builder->setArgType(1, ARG_STATEMENT);
-	builder->setArgType(2, ARG_ASSIGN);
-	builder->setArgFixed(1, true);
-	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result) == false);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testFixSynCallTrue() {
+void NextBipClauseTest::testFixSynCallPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "12");
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "14");
 	builder->setArg(2, "c");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_CALL);
 	builder->setArgFixed(1, true);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
 
 	list<Row> ans = result->getResultTable().rows;
 	unordered_set<string> ansSet;
 	BOOST_FOREACH(auto s, ans) {
 		ansSet.insert(s.at(0));
 	}
-	string compare[] = {"13"};
-	unordered_set<string> compSet(compare, compare + 1);
+	string compare[] = {"15", "16"};
+	unordered_set<string> compSet(compare, compare + 2);
 	CPPUNIT_ASSERT(compSet == ansSet);
 }
 
-void NextStarBipClauseTest::testFixSynCallFalse() {
+void NextBipClauseTest::testFixSynCallFail() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "3");
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "8");
 	builder->setArg(2, "c");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_CALL);
 	builder->setArgFixed(1, true);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result) == false);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testFixSynIfTrue() {
+void NextBipClauseTest::testFixSynIfPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "4");
 	builder->setArg(2, "if");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_IF);
 	builder->setArgFixed(1, true);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
@@ -717,32 +717,32 @@ void NextStarBipClauseTest::testFixSynIfTrue() {
 	CPPUNIT_ASSERT(compSet == ansSet);
 }
 
-void NextStarBipClauseTest::testFixSynIfFalse() {
+void NextBipClauseTest::testFixSynIfFail() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "17");
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "1");
 	builder->setArg(2, "if");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_IF);
 	builder->setArgFixed(1, true);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result) == false);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testFixSynWhileTrue() {
+void NextBipClauseTest::testFixSynWhilePass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "8");
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "15");
 	builder->setArg(2, "w");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_WHILE);
 	builder->setArgFixed(1, true);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
@@ -758,32 +758,32 @@ void NextStarBipClauseTest::testFixSynWhileTrue() {
 	CPPUNIT_ASSERT(compSet == ansSet);
 }
 
-void NextStarBipClauseTest::testFixSynWhileFalse() {
+void NextBipClauseTest::testFixSynWhileFail() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "16");
 	builder->setArg(2, "w");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_WHILE);
 	builder->setArgFixed(1, true);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result) == false);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testGeneSynStmtTrue() {
+void NextBipClauseTest::testGeneSynStmtPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "_");
 	builder->setArg(2, "s");
 	builder->setArgType(1, ARG_GENERIC);
 	builder->setArgType(2, ARG_STATEMENT);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
@@ -799,16 +799,16 @@ void NextStarBipClauseTest::testGeneSynStmtTrue() {
 	CPPUNIT_ASSERT(compSet == ansSet);
 }
 
-void NextStarBipClauseTest::testGeneSynAssgTrue() {
+void NextBipClauseTest::testGeneSynAssgPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "_");
 	builder->setArg(2, "a");
 	builder->setArgType(1, ARG_GENERIC);
 	builder->setArgType(2, ARG_ASSIGN);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
@@ -824,16 +824,16 @@ void NextStarBipClauseTest::testGeneSynAssgTrue() {
 	CPPUNIT_ASSERT(compSet == ansSet);
 }
 
-void NextStarBipClauseTest::testGeneSynCallTrue() {
+void NextBipClauseTest::testGeneSynCallPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "_");
 	builder->setArg(2, "c");
 	builder->setArgType(1, ARG_GENERIC);
 	builder->setArgType(2, ARG_CALL);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
@@ -844,21 +844,21 @@ void NextStarBipClauseTest::testGeneSynCallTrue() {
 	BOOST_FOREACH(auto s, ans) {
 		ansSet.insert(s.at(0));
 	}
-	string compare[] = {"3", "13", "15", "16",};
+	string compare[] = {"3", "13", "15", "16"};
 	unordered_set<string> compSet(compare, compare + 4);
 	CPPUNIT_ASSERT(compSet == ansSet);
 }
 
-void NextStarBipClauseTest::testGeneSynIfTrue() {
+void NextBipClauseTest::testGeneSynIfPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "_");
 	builder->setArg(2, "if");
 	builder->setArgType(1, ARG_GENERIC);
 	builder->setArgType(2, ARG_IF);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
@@ -874,16 +874,16 @@ void NextStarBipClauseTest::testGeneSynIfTrue() {
 	CPPUNIT_ASSERT(compSet == ansSet);
 }
 
-void NextStarBipClauseTest::testGeneSynWhileTrue() {
+void NextBipClauseTest::testGeneSynWhilePass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "_");
 	builder->setArg(2, "w");
 	builder->setArgType(1, ARG_GENERIC);
 	builder->setArgType(2, ARG_WHILE);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
@@ -899,180 +899,180 @@ void NextStarBipClauseTest::testGeneSynWhileTrue() {
 	CPPUNIT_ASSERT(compSet == ansSet);
 }
 
-void NextStarBipClauseTest::testSynStmtFixTrue() {
+void NextBipClauseTest::testSynStmtFixPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "s");
-	builder->setArg(2, "7");
+	builder->setArg(2, "6");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_STATEMENT);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, true);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 16);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
 
 	list<Row> ans = result->getResultTable().rows;
 	unordered_set<string> ansSet;
 	BOOST_FOREACH(auto s, ans) {
 		ansSet.insert(s.at(0));
 	}
-	string compare[] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"};
-	unordered_set<string> compSet(compare, compare + 16);
+	string compare[] = {"5"};
+	unordered_set<string> compSet(compare, compare + 1);
 	CPPUNIT_ASSERT(compSet == ansSet);
 }
 
-void NextStarBipClauseTest::testSynStmtFixFalse() {
+void NextBipClauseTest::testSynStmtFixFail() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "s");
-	builder->setArg(2, "1");
-	builder->setArgType(1, ARG_STATEMENT);
-	builder->setArgType(2, ARG_STATEMENT);
-	builder->setArgFixed(1, false);
-	builder->setArgFixed(2, true);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
-
-	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result) == false);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
-}
-
-void NextStarBipClauseTest::testSynAssgFixTrue() {
-	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "a");
-	builder->setArg(2, "13");
-	builder->setArgType(1, ARG_ASSIGN);
-	builder->setArgType(2, ARG_STATEMENT);
-	builder->setArgFixed(1, false);
-	builder->setArgFixed(2, true);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
-
-	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
-
-	list<Row> ans = result->getResultTable().rows;
-	unordered_set<string> ansSet;
-	BOOST_FOREACH(auto s, ans) {
-		ansSet.insert(s.at(0));
-	}
-	string compare[] = {"4", "6", "7", "8", "9", "10", "12"};
-	unordered_set<string> compSet(compare, compare + 7);
-	CPPUNIT_ASSERT(compSet == ansSet);
-}
-
-void NextStarBipClauseTest::testSynAssgFixFalse() {
-	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "a");
-	builder->setArg(2, "15");
-	builder->setArgType(1, ARG_ASSIGN);
-	builder->setArgType(2, ARG_STATEMENT);
-	builder->setArgFixed(1, false);
-	builder->setArgFixed(2, true);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
-
-	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result) == false);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
-}
-
-void NextStarBipClauseTest::testSynCallFixTrue() {
-	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "c");
-	builder->setArg(2, "17");
-	builder->setArgType(1, ARG_CALL);
-	builder->setArgType(2, ARG_STATEMENT);
-	builder->setArgFixed(1, false);
-	builder->setArgFixed(2, true);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
-
-	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 3);
-
-	list<Row> ans = result->getResultTable().rows;
-	unordered_set<string> ansSet;
-	BOOST_FOREACH(auto s, ans) {
-		ansSet.insert(s.at(0));
-	}
-	string compare[] = {"13", "15", "16"};
-	unordered_set<string> compSet(compare, compare + 3);
-	CPPUNIT_ASSERT(compSet == ansSet);
-}
-
-void NextStarBipClauseTest::testSynCallFixFalse() {
-	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "c");
-	builder->setArg(2, "15");
-	builder->setArgType(1, ARG_CALL);
-	builder->setArgType(2, ARG_STATEMENT);
-	builder->setArgFixed(1, false);
-	builder->setArgFixed(2, true);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
-
-	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result) == false);
-	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
-}
-
-void NextStarBipClauseTest::testSynIfFixTrue() {
-	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "if");
-	builder->setArg(2, "17");
-	builder->setArgType(1, ARG_IF);
-	builder->setArgType(2, ARG_STATEMENT);
-	builder->setArgFixed(1, false);
-	builder->setArgFixed(2, true);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
-
-	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
-
-	list<Row> ans = result->getResultTable().rows;
-	unordered_set<string> ansSet;
-	BOOST_FOREACH(auto s, ans) {
-		ansSet.insert(s.at(0));
-	}
-	string compare[] = {"5", "14"};
-	unordered_set<string> compSet(compare, compare + 2);
-	CPPUNIT_ASSERT(compSet == ansSet);
-}
-
-void NextStarBipClauseTest::testSynIfFixFalse() {
-	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "if");
 	builder->setArg(2, "14");
-	builder->setArgType(1, ARG_IF);
+	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_STATEMENT);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, true);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result) == false);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testSynWhileFixTrue() {
+void NextBipClauseTest::testSynAssgFixPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "w");
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "a");
 	builder->setArg(2, "5");
+	builder->setArgType(1, ARG_ASSIGN);
+	builder->setArgType(2, ARG_STATEMENT);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, true);
+	NextBipClause* clause = (NextBipClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result));
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
+
+	list<Row> ans = result->getResultTable().rows;
+	unordered_set<string> ansSet;
+	BOOST_FOREACH(auto s, ans) {
+		ansSet.insert(s.at(0));
+	}
+	string compare[] = {"4"};
+	unordered_set<string> compSet(compare, compare + 1);
+	CPPUNIT_ASSERT(compSet == ansSet);
+}
+
+void NextBipClauseTest::testSynAssgFixFail() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "a");
+	builder->setArg(2, "4");
+	builder->setArgType(1, ARG_ASSIGN);
+	builder->setArgType(2, ARG_STATEMENT);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, true);
+	NextBipClause* clause = (NextBipClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
+}
+
+void NextBipClauseTest::testSynCallFixPass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "c");
+	builder->setArg(2, "4");
+	builder->setArgType(1, ARG_CALL);
+	builder->setArgType(2, ARG_STATEMENT);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, true);
+	NextBipClause* clause = (NextBipClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result));
+	CPPUNIT_ASSERT(result->getResultTableSize() == 4);
+
+	list<Row> ans = result->getResultTable().rows;
+	unordered_set<string> ansSet;
+	BOOST_FOREACH(auto s, ans) {
+		ansSet.insert(s.at(0));
+	}
+	string compare[] = {"1", "3", "13", "16"};
+	unordered_set<string> compSet(compare, compare + 4);
+	CPPUNIT_ASSERT(compSet == ansSet);
+}
+
+void NextBipClauseTest::testSynCallFixFail() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "c");
+	builder->setArg(2, "7");
+	builder->setArgType(1, ARG_CALL);
+	builder->setArgType(2, ARG_STATEMENT);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, true);
+	NextBipClause* clause = (NextBipClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
+}
+
+void NextBipClauseTest::testSynIfFixPass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "if");
+	builder->setArg(2, "15");
+	builder->setArgType(1, ARG_IF);
+	builder->setArgType(2, ARG_STATEMENT);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, true);
+	NextBipClause* clause = (NextBipClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result));
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
+
+	list<Row> ans = result->getResultTable().rows;
+	unordered_set<string> ansSet;
+	BOOST_FOREACH(auto s, ans) {
+		ansSet.insert(s.at(0));
+	}
+	string compare[] = {"14"};
+	unordered_set<string> compSet(compare, compare + 1);
+	CPPUNIT_ASSERT(compSet == ansSet);
+}
+
+void NextBipClauseTest::testSynIfFixFail() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "if");
+	builder->setArg(2, "10");
+	builder->setArgType(1, ARG_IF);
+	builder->setArgType(2, ARG_STATEMENT);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, true);
+	NextBipClause* clause = (NextBipClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
+}
+
+void NextBipClauseTest::testSynWhileFixPass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "w");
+	builder->setArg(2, "17");
 	builder->setArgType(1, ARG_WHILE);
 	builder->setArgType(2, ARG_STATEMENT);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, true);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
@@ -1088,32 +1088,32 @@ void NextStarBipClauseTest::testSynWhileFixTrue() {
 	CPPUNIT_ASSERT(compSet == ansSet);
 }
 
-void NextStarBipClauseTest::testSynWhileFixFalse() {
+void NextBipClauseTest::testSynWhileFixFail() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "w");
-	builder->setArg(2, "3");
+	builder->setArg(2, "13");
 	builder->setArgType(1, ARG_WHILE);
 	builder->setArgType(2, ARG_STATEMENT);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, true);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result) == false);
 	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testSynStmtGeneTrue() {
+void NextBipClauseTest::testSynStmtGenePass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "s");
 	builder->setArg(2, "_");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_GENERIC);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
@@ -1129,16 +1129,16 @@ void NextStarBipClauseTest::testSynStmtGeneTrue() {
 	CPPUNIT_ASSERT(compSet == ansSet);
 }
 
-void NextStarBipClauseTest::testSynAssgGeneTrue() {
+void NextBipClauseTest::testSynAssgGenePass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "a");
 	builder->setArg(2, "_");
 	builder->setArgType(1, ARG_ASSIGN);
 	builder->setArgType(2, ARG_GENERIC);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
@@ -1154,16 +1154,16 @@ void NextStarBipClauseTest::testSynAssgGeneTrue() {
 	CPPUNIT_ASSERT(compSet == ansSet);
 }
 
-void NextStarBipClauseTest::testSynCallGeneTrue() {
+void NextBipClauseTest::testSynCallGenePass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "c");
 	builder->setArg(2, "_");
 	builder->setArgType(1, ARG_CALL);
 	builder->setArgType(2, ARG_GENERIC);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
@@ -1179,16 +1179,16 @@ void NextStarBipClauseTest::testSynCallGeneTrue() {
 	CPPUNIT_ASSERT(compSet == ansSet);
 }
 
-void NextStarBipClauseTest::testSynIfGeneTrue() {
+void NextBipClauseTest::testSynIfGenePass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "if");
 	builder->setArg(2, "_");
 	builder->setArgType(1, ARG_IF);
 	builder->setArgType(2, ARG_GENERIC);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
@@ -1204,16 +1204,16 @@ void NextStarBipClauseTest::testSynIfGeneTrue() {
 	CPPUNIT_ASSERT(compSet == ansSet);
 }
 
-void NextStarBipClauseTest::testSynWhileGeneTrue() {
+void NextBipClauseTest::testSynWhileGenePass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "w");
 	builder->setArg(2, "_");
 	builder->setArgType(1, ARG_WHILE);
 	builder->setArgType(2, ARG_GENERIC);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
@@ -1229,482 +1229,482 @@ void NextStarBipClauseTest::testSynWhileGeneTrue() {
 	CPPUNIT_ASSERT(compSet == ansSet);
 }
 
-void NextStarBipClauseTest::testSynStmtSynStmtTrue() {
+void NextBipClauseTest::testSynStmtSynStmtPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "s1");
 	builder->setArg(2, "s2");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_STATEMENT);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 180);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 21);
 }
 
-void NextStarBipClauseTest::testSynStmtSynStmtSameTrue() {
+void NextBipClauseTest::testSynStmtSynStmtSamePass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "s");
 	builder->setArg(2, "s");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_STATEMENT);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 10);
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testSynStmtSynAssgTrue() {
+void NextBipClauseTest::testSynStmtSynAssgPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "s");
 	builder->setArg(2, "a");
 	builder->setArgType(1, ARG_STATEMENT);
 	builder->setArgType(2, ARG_ASSIGN);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
-
-	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 129);
-}
-
-void NextStarBipClauseTest::testSynStmtSynCallTrue() {
-	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "s");
-	builder->setArg(2, "c");
-	builder->setArgType(1, ARG_STATEMENT);
-	builder->setArgType(2, ARG_CALL);
-	builder->setArgFixed(1, false);
-	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
-
-	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 23);
-}
-
-void NextStarBipClauseTest::testSynStmtSynIfTrue() {
-	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "s");
-	builder->setArg(2, "if");
-	builder->setArgType(1, ARG_STATEMENT);
-	builder->setArgType(2, ARG_IF);
-	builder->setArgFixed(1, false);
-	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
-
-	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 16);
-}
-
-void NextStarBipClauseTest::testSynStmtSynWhileTrue() {
-	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "s");
-	builder->setArg(2, "w");
-	builder->setArgType(1, ARG_STATEMENT);
-	builder->setArgType(2, ARG_WHILE);
-	builder->setArgFixed(1, false);
-	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
-
-	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 12);
-}
-
-void NextStarBipClauseTest::testSynAssgSynAssgTrue() {
-	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "a1");
-	builder->setArg(2, "a2");
-	builder->setArgType(1, ARG_ASSIGN);
-	builder->setArgType(2, ARG_ASSIGN);
-	builder->setArgFixed(1, false);
-	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
-
-	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 68);
-}
-
-void NextStarBipClauseTest::testSynAssgSynAssgSameTrue() {
-	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "a");
-	builder->setArg(2, "a");
-	builder->setArgType(1, ARG_ASSIGN);
-	builder->setArgType(2, ARG_ASSIGN);
-	builder->setArgFixed(1, false);
-	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
-
-	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
-}
-
-void NextStarBipClauseTest::testSynAssgSynStmtTrue() {
-	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "a");
-	builder->setArg(2, "s");
-	builder->setArgType(1, ARG_ASSIGN);
-	builder->setArgType(2, ARG_STATEMENT);
-	builder->setArgFixed(1, false);
-	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
-
-	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 97);
-}
-
-void NextStarBipClauseTest::testSynAssgSynCallTrue() {
-	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "a");
-	builder->setArg(2, "c");
-	builder->setArgType(1, ARG_ASSIGN);
-	builder->setArgType(2, ARG_CALL);
-	builder->setArgFixed(1, false);
-	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
 	CPPUNIT_ASSERT(result->getResultTableSize() == 14);
 }
 
-void NextStarBipClauseTest::testSynAssgSynIfTrue() {
+void NextBipClauseTest::testSynStmtSynCallPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "s");
+	builder->setArg(2, "c");
+	builder->setArgType(1, ARG_STATEMENT);
+	builder->setArgType(2, ARG_CALL);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, false);
+	NextBipClause* clause = (NextBipClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result));
+	CPPUNIT_ASSERT(result->getResultTableSize() == 4);
+}
+
+void NextBipClauseTest::testSynStmtSynIfPass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "s");
+	builder->setArg(2, "if");
+	builder->setArgType(1, ARG_STATEMENT);
+	builder->setArgType(2, ARG_IF);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, false);
+	NextBipClause* clause = (NextBipClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result));
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
+}
+
+void NextBipClauseTest::testSynStmtSynWhilePass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "s");
+	builder->setArg(2, "w");
+	builder->setArgType(1, ARG_STATEMENT);
+	builder->setArgType(2, ARG_WHILE);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, false);
+	NextBipClause* clause = (NextBipClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result));
+	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
+}
+
+void NextBipClauseTest::testSynAssgSynAssgPass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "a1");
+	builder->setArg(2, "a2");
+	builder->setArgType(1, ARG_ASSIGN);
+	builder->setArgType(2, ARG_ASSIGN);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, false);
+	NextBipClause* clause = (NextBipClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result));
+	CPPUNIT_ASSERT(result->getResultTableSize() == 6);
+}
+
+void NextBipClauseTest::testSynAssgSynAssgSamePass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "a");
+	builder->setArg(2, "a");
+	builder->setArgType(1, ARG_ASSIGN);
+	builder->setArgType(2, ARG_ASSIGN);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, false);
+	NextBipClause* clause = (NextBipClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
+}
+
+void NextBipClauseTest::testSynAssgSynStmtPass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "a");
+	builder->setArg(2, "s");
+	builder->setArgType(1, ARG_ASSIGN);
+	builder->setArgType(2, ARG_STATEMENT);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, false);
+	NextBipClause* clause = (NextBipClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result));
+	CPPUNIT_ASSERT(result->getResultTableSize() == 10);	
+}
+
+void NextBipClauseTest::testSynAssgSynCallPass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "a");
+	builder->setArg(2, "c");
+	builder->setArgType(1, ARG_ASSIGN);
+	builder->setArgType(2, ARG_CALL);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, false);
+	NextBipClause* clause = (NextBipClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result));
+	CPPUNIT_ASSERT(result->getResultTableSize() == 2);	
+}
+
+void NextBipClauseTest::testSynAssgSynIfPass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "a");
 	builder->setArg(2, "if");
 	builder->setArgType(1, ARG_ASSIGN);
 	builder->setArgType(2, ARG_IF);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 8);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);	
 }
 
-void NextStarBipClauseTest::testSynAssgSynWhileTrue() {
+void NextBipClauseTest::testSynAssgSynWhilePass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "a");
 	builder->setArg(2, "w");
 	builder->setArgType(1, ARG_ASSIGN);
 	builder->setArgType(2, ARG_WHILE);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 7);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);	
 }
 
-void NextStarBipClauseTest::testSynCallSynCallTrue() {
+void NextBipClauseTest::testSynCallSynCallPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "c1");
 	builder->setArg(2, "c2");
 	builder->setArgType(1, ARG_CALL);
 	builder->setArgType(2, ARG_CALL);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 3);
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);	
 }
 
-void NextStarBipClauseTest::testSynCallSynCallSameTrue() {
+void NextBipClauseTest::testSynCallSynCallSamePass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "c");
 	builder->setArg(2, "c");
 	builder->setArgType(1, ARG_CALL);
 	builder->setArgType(2, ARG_CALL);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testSynCallSynStmtTrue() {
+void NextBipClauseTest::testSynCallSynStmtPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "c");
 	builder->setArg(2, "s");
 	builder->setArgType(1, ARG_CALL);
 	builder->setArgType(2, ARG_STATEMENT);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 46);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 5);	
 }
 
-void NextStarBipClauseTest::testSynCallSynAssgTrue() {
+void NextBipClauseTest::testSynCallSynAssgPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "c");
 	builder->setArg(2, "a");
 	builder->setArgType(1, ARG_CALL);
 	builder->setArgType(2, ARG_ASSIGN);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 36);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 4);	
 }
 
-void NextStarBipClauseTest::testSynCallSynIfTrue() {
+void NextBipClauseTest::testSynCallSynIfPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "c");
 	builder->setArg(2, "if");
 	builder->setArgType(1, ARG_CALL);
 	builder->setArgType(2, ARG_IF);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 5);
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);	
 }
 
-void NextStarBipClauseTest::testSynCallSynWhileTrue() {
+void NextBipClauseTest::testSynCallSynWhilePass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "c");
 	builder->setArg(2, "w");
 	builder->setArgType(1, ARG_CALL);
 	builder->setArgType(2, ARG_WHILE);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 1);	
 }
 
-void NextStarBipClauseTest::testSynIfSynIfTrue() {
+void NextBipClauseTest::testSynIfSynIfPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "if1");
 	builder->setArg(2, "if2");
 	builder->setArgType(1, ARG_IF);
 	builder->setArgType(2, ARG_IF);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);	
 }
 
-void NextStarBipClauseTest::testSynIfSynIfSameTrue() {
+void NextBipClauseTest::testSynIfSynIfSamePass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "if");
 	builder->setArg(2, "if");
 	builder->setArgType(1, ARG_IF);
 	builder->setArgType(2, ARG_IF);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);	
 }
 
-void NextStarBipClauseTest::testSynIfSynStmtTrue() {
+void NextBipClauseTest::testSynIfSynStmtPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "if");
 	builder->setArg(2, "s");
 	builder->setArgType(1, ARG_IF);
 	builder->setArgType(2, ARG_STATEMENT);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 26);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 4);
 }
 
-void NextStarBipClauseTest::testSynIfSynAssgTrue() {
+void NextBipClauseTest::testSynIfSynAssgPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "if");
 	builder->setArg(2, "a");
 	builder->setArgType(1, ARG_IF);
 	builder->setArgType(2, ARG_ASSIGN);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
-
-	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 17);
-}
-
-void NextStarBipClauseTest::testSynIfSynCallTrue() {
-	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "if");
-	builder->setArg(2, "c");
-	builder->setArgType(1, ARG_IF);
-	builder->setArgType(2, ARG_CALL);
-	builder->setArgFixed(1, false);
-	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
-
-	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 5);
-}
-
-void NextStarBipClauseTest::testSynIfSynWhileTrue() {
-	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
-	builder->setArg(1, "if");
-	builder->setArg(2, "w");
-	builder->setArgType(1, ARG_IF);
-	builder->setArgType(2, ARG_WHILE);
-	builder->setArgFixed(1, false);
-	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
 	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
 }
 
-void NextStarBipClauseTest::testSynWhileSynWhileTrue() {
+void NextBipClauseTest::testSynIfSynCallPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "if");
+	builder->setArg(2, "c");
+	builder->setArgType(1, ARG_IF);
+	builder->setArgType(2, ARG_CALL);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, false);
+	NextBipClause* clause = (NextBipClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result));
+	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
+}
+
+void NextBipClauseTest::testSynIfSynWhilePass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
+	builder->setArg(1, "if");
+	builder->setArg(2, "w");
+	builder->setArgType(1, ARG_IF);
+	builder->setArgType(2, ARG_WHILE);
+	builder->setArgFixed(1, false);
+	builder->setArgFixed(2, false);
+	NextBipClause* clause = (NextBipClause*) builder->build();
+
+	CPPUNIT_ASSERT(clause->isValid());
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
+}
+
+void NextBipClauseTest::testSynWhileSynWhilePass() {
+	Result* result = new Result();
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "w1");
 	builder->setArg(2, "w2");
 	builder->setArgType(1, ARG_WHILE);
 	builder->setArgType(2, ARG_WHILE);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testSynWhileSynWhileSameTrue() {
+void NextBipClauseTest::testSynWhileSynWhileSamePass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "w");
 	builder->setArg(2, "w");
 	builder->setArgType(1, ARG_WHILE);
 	builder->setArgType(2, ARG_WHILE);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testSynWhileSynStmtTrue() {
+void NextBipClauseTest::testSynWhileSynStmtPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "w");
 	builder->setArg(2, "s");
 	builder->setArgType(1, ARG_WHILE);
 	builder->setArgType(2, ARG_STATEMENT);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 11);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
 }
 
-void NextStarBipClauseTest::testSynWhileSynAssgTrue() {
+void NextBipClauseTest::testSynWhileSynAssgPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "w");
 	builder->setArg(2, "a");
 	builder->setArgType(1, ARG_WHILE);
 	builder->setArgType(2, ARG_ASSIGN);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
 	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 8);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 2);
 }
 
-void NextStarBipClauseTest::testSynWhileSynCallTrue() {
+void NextBipClauseTest::testSynWhileSynCallPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "w");
 	builder->setArg(2, "c");
 	builder->setArgType(1, ARG_WHILE);
 	builder->setArgType(2, ARG_CALL);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }
 
-void NextStarBipClauseTest::testSynWhileSynIfTrue() {
+void NextBipClauseTest::testSynWhileSynIfPass() {
 	Result* result = new Result();
-	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTSTARBIP_);
+	SuchThatClauseBuilder* builder = new SuchThatClauseBuilder(NEXTBIP_);
 	builder->setArg(1, "w");
 	builder->setArg(2, "if");
 	builder->setArgType(1, ARG_WHILE);
 	builder->setArgType(2, ARG_IF);
 	builder->setArgFixed(1, false);
 	builder->setArgFixed(2, false);
-	NextStarBipClause* clause = (NextStarBipClause*) builder->build();
+	NextBipClause* clause = (NextBipClause*) builder->build();
 
 	CPPUNIT_ASSERT(clause->isValid());
-	CPPUNIT_ASSERT(clause->evaluate(result));
-	CPPUNIT_ASSERT(result->getResultTableSize() == 1);
+	CPPUNIT_ASSERT(clause->evaluate(result) == false);
+	CPPUNIT_ASSERT(result->getResultTableSize() == 0);
 }

@@ -44,6 +44,7 @@ unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("UsesClauseTest").m
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ModifiesClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("NextClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("NextStarClauseTest").makeTest());
+unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("NextBipClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("NextStarBipClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ParentClauseTest").makeTest());
 unitSuite->addTest(CppUnit::TestFactoryRegistry::getRegistry("ParentStarClauseTest").makeTest());
