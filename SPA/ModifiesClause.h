@@ -32,6 +32,7 @@ protected:
 	unordered_set<vector<string>> getAllS1AndS2();
 
 private:
+	bool isStmtType(string argType);
 	bool isProcedureModifies(string proc, string var);
 	bool isStmtModifies(int stmtnum, string var);
 	//void transferSinglesToResult(set<string>* singles, Results* res);
