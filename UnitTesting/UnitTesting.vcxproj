@@ -50,6 +50,7 @@
     <ClCompile Include="ProcTableTest.cpp" />
     <ClCompile Include="ProgNodeTest.cpp" />
     <ClCompile Include="QueryEvaluatorTest.cpp" />
+    <ClCompile Include="QueryOptimiserTest.cpp" />
     <ClCompile Include="QueryParserTest.cpp" />
     <ClCompile Include="ResultTest.cpp" />
     <ClCompile Include="SingleSynInsertTest.cpp" />
@@ -97,6 +98,7 @@
     <ClInclude Include="ProcTableTest.h" />
     <ClInclude Include="ProgNodeTest.h" />
     <ClInclude Include="QueryEvaluatorTest.h" />
+    <ClInclude Include="QueryOptimiserTest.h" />
     <ClInclude Include="QueryParserTest.h" />
     <ClInclude Include="ResultTest.h" />
     <ClInclude Include="SingleSynInsertTest.h" />

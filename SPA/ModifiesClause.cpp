@@ -72,7 +72,7 @@ bool ModifiesClause::evaluateS1FixedS2Generic(string s1) {
 		if(!proc->getModifies().empty()) {
 			return true;
 		}
-	} else if(firstArgType == ARG_PROGLINE || firstArgType == ARG_STATEMENT) {
+	} else if(isStmtType(firstArgType)) {
 		Statement* stmt = stmtTable->getStmtObj(atoi(s1.c_str()));
 		
 		if(!stmt->getModifies().empty()) {
@@ -228,6 +228,16 @@ unordered_set<vector<string>> ModifiesClause::getAllS1AndS2() {
 	}
 
 	return results;
+}
+
+bool ModifiesClause::isStmtType(string argType) {
+	if(firstArgType == ARG_STATEMENT || firstArgType == ARG_ASSIGN || 
+		firstArgType == ARG_WHILE || firstArgType == ARG_IF || 
+		firstArgType == ARG_PROGLINE || firstArgType == ARG_CALL) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 bool ModifiesClause::isProcedureModifies(string proc, string var) {

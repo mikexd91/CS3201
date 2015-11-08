@@ -15,7 +15,7 @@
 12		while xmen {
 13			fish = apple + zip + car; //19, 15 and 20 should affect 13
 14			if xmen then {
-15				tomato = tomato
+15				tomato = tomato;
 16				apple = bot + xmen;
 17				fish = dog + egg + zip;
 18				while apple {
@@ -29,7 +29,7 @@
 			}
 24			wee = apple; //10 should not affect this stmt
 		}
-25		call hey; //hey is called twice, once in test and now here, but stmt 40 should not affect*bip itself
+25		call hey; stmt 40 should not affect*bip itself
 26		w = xmen + bot; //5 and 6 should affect this
 27		zip = apple; //10, 15 and 20 should affect this stmt
 	}
@@ -50,7 +50,7 @@
 		}
 38		light = dark;
 39		call hey; 
-40		happy = b2; //bip: 40 should affect 38
+40		happy = b2;
 	}
 
 	procedure hey {
