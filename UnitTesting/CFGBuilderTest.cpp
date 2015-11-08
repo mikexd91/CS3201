@@ -37,7 +37,7 @@ void CFGBuilderTest::testProc() {
 	
 	parse(proc);
 
-	CPPUNIT_ASSERT(builder->getHead()->getNodeType() == PROCEDURE_);
+	CPPUNIT_ASSERT(builder->getHead()->getNodeType() == PROC_);
 	CPPUNIT_ASSERT(builder->getNestingLevel() == 1);
 	CPPUNIT_ASSERT(builder->getCurrProc() == "proc");
 	CPPUNIT_ASSERT(builder->getPrevState() == CFGBuilder::PROCEDURE);

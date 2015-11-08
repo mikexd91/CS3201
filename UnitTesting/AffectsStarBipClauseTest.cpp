@@ -927,3 +927,74 @@ void AffectsStarBipClauseTest::testGenericSynPass() {
 	CPPUNIT_ASSERT(s.find("20") != s.end());
 	CPPUNIT_ASSERT(s.find("22") != s.end());
 }
+
+void AffectsStarBipClauseTest::testGenericFixedPass() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSSTARBIP_);
+	affectsBuilder->setArg(1, "_");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_GENERIC);
+	affectsBuilder->setArg(2, "1");
+	affectsBuilder->setArgFixed(2, true);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsStarBipClause* m1 = (AffectsStarBipClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(result);
+	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
+}
+
+void AffectsStarBipClauseTest::testGenericFixedFail() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSSTARBIP_);
+	affectsBuilder->setArg(1, "_");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_GENERIC);
+	affectsBuilder->setArg(2, "12");
+	affectsBuilder->setArgFixed(2, true);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsStarBipClause* m1 = (AffectsStarBipClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(!result);
+	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
+}
+
+void AffectsStarBipClauseTest::testSynFixedPass() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSSTARBIP_);
+	affectsBuilder->setArg(1, "s");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_STATEMENT);
+	affectsBuilder->setArg(2, "11");
+	affectsBuilder->setArgFixed(2, true);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsStarBipClause* m1 = (AffectsStarBipClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	CPPUNIT_ASSERT(m1->evaluate(&res));
+	CPPUNIT_ASSERT(res.isSynPresent("s"));
+	CPPUNIT_ASSERT(res.getResultTableSize() == 1);
+	unordered_set<string> s = res.getSyn("s");
+	CPPUNIT_ASSERT(s.size() == 1);
+	CPPUNIT_ASSERT(s.find("6") != s.end());
+}
+
+void AffectsStarBipClauseTest::testSynFixedFail() { 
+	Result res = Result();
+	SuchThatClauseBuilder* affectsBuilder = new SuchThatClauseBuilder(AFFECTSSTARBIP_);
+	affectsBuilder->setArg(1, "s");
+	affectsBuilder->setArgFixed(1, false);
+	affectsBuilder->setArgType(1, ARG_STATEMENT);
+	affectsBuilder->setArg(2, "16");
+	affectsBuilder->setArgFixed(2, true);
+	affectsBuilder->setArgType(2, ARG_STATEMENT);
+	AffectsStarBipClause* m1 = (AffectsStarBipClause*) affectsBuilder->build();
+	CPPUNIT_ASSERT(m1->isValid());
+
+	bool result = m1->evaluate(&res);
+	CPPUNIT_ASSERT(!result);
+	CPPUNIT_ASSERT(res.getResultTableSize() == 0);
+}

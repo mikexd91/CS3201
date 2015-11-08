@@ -34,4 +34,8 @@ protected:
 private:
 	StmtTable* stmtTable;
 	ProcTable* procTable;
+	bool modcheck(string, GNode*, unordered_set<int>*);
+	bool modcheck(string, GNode*, unordered_set<int>*, int);
+	void modadd(string, GNode*, unordered_set<int>*, unordered_map<string, unordered_set<int>*>*);
+	void modadd(string, GNode*, unordered_set<int>*, unordered_map<string, unordered_set<int>*>*, int);
 };

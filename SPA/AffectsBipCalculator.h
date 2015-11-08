@@ -34,7 +34,7 @@ public:
 	AffectsBipCalculator(void);
 	~AffectsBipCalculator(void);
 	//Affects(s1, s2)
-	unordered_set<vector<string>> computeAllS1AndS2(void);
+	unordered_set<vector<string>> computeAllS1AndS2(bool);
 	//Affects(s1,_)
 	unordered_set<string> computeAllS1(void);
 	//Affects(_,s2)
@@ -43,10 +43,12 @@ public:
 	bool computeS1GenericS2Generic(void);
 	//Affects(1,_)
 	bool computeS1FixedS2Generic(string);
+	bool computeFixedFixed(string, string);
+	unordered_set<string> computeFixedSyn(string);
 
 private:
 	typedef unordered_map<string, unordered_set<int>> State;
-	enum AffectsResultType {S1_ONLY, S2_ONLY, S1_AND_S2, GENERIC_GENERIC, FIXED_GENERIC};
+	enum AffectsResultType {S1_ONLY, S2_ONLY, S1_AND_S2, GENERIC_GENERIC, FIXED_GENERIC, FIXED_FIXED, FIXED_SYN};
 
 	StmtTable* stmtTable;
 	ProcTable* procTable;
@@ -58,15 +60,14 @@ private:
 	State globalState;
 	AffectsResultType type;
 	bool isStart;
-	bool isEnd;
 
 	//for Affects(1,_), we need to store 1
 	int s1Num;
+	int s2Num;
 	bool result; //it can terminate prematurely and fail
 
 	//BIP stuff
 	stack<int> parentCallStmts;
-	stack<GNode*> stmtsAfterEnd;
 
 	void updateStateForCall(CallGNode*, State&);
 	void updateStateForWhile(WhileGNode*, State&);
