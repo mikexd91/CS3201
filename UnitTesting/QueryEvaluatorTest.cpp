@@ -1124,33 +1124,33 @@ void QueryEvaluatorTest::testTupleResultMerge(){
 	synlist.push_back("a");
 
 	unordered_set<string> P1 = qe->printValues(R1, syns);
-	cout << endl << "start R1" << endl;
+	//cout << endl << "start R1" << endl;
 	int i = 0;
 	BOOST_FOREACH(string s, P1){
 		i++;
-		cout << i << ": " << s << endl;
+		//cout << i << ": " << s << endl;
 	}
-	cout << "end R1" << endl;
+	//cout << "end R1" << endl;
 	i = 0;
 
 	unordered_set<string> P2 = qe->printValues(R2, syns);
-	cout << endl << "start R2" << endl;
+	//cout << endl << "start R2" << endl;
 	BOOST_FOREACH(string s, P2){
 		i++;
-		cout << i << ": " << s << endl;
+		//cout << i << ": " << s << endl;
 	}
-	cout << "end R2" << endl;
+	//cout << "end R2" << endl;
 	i = 0;
 
 	qe->mergeMultiResult(R1, RF, synlist);
 	qe->mergeMultiResult(R2, RF, synlist);
 
 	unordered_set<string> PF = qe->printValues(RF, syns);
-	cout << endl << "start RF" << endl;
+	//cout << endl << "start RF" << endl;
 	BOOST_FOREACH(string s, PF){
 		i++;
-		cout << i << ": " << s << endl;
+		//cout << i << ": " << s << endl;
 	}
-	cout << "end RF" << endl;
+	//cout << "end RF" << endl;
 	i = 0;
 }
