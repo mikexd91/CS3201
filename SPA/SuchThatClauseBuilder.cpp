@@ -12,6 +12,8 @@
 #include "CallsStarClause.h"
 #include "NextClause.h"
 #include "NextStarClause.h"
+#include "NextBipClause.h"
+#include "NextStarBipClause.h"
 #include "AffectsClause.h"
 #include "AffectsStarClause.h"
 #include "AffectsBipClause.h"
@@ -106,10 +108,19 @@ SuchThatClause* SuchThatClauseBuilder::build() {
 
 	} else if (this->clauseType == AFFECTSSTAR_){
 		clause = new AffectsStarClause();
+
+	} else if (this->clauseType == NEXTBIP_) {
+		clause = new NextBipClause();
+
 	} else if (this->clauseType == AFFECTSBIP_){
 		clause = new AffectsBipClause();	
-	}  else if (this->clauseType == AFFECTSSTARBIP_){
+		
+	} else if (this->clauseType == NEXTSTARBIP_) {
+		clause = new NextStarBipClause();
+
+	} else if (this->clauseType == AFFECTSSTARBIP_){
 		clause = new AffectsStarBipClause();	
+
 	}else {
 		// fail
 		return nullptr;
