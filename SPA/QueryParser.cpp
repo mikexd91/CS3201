@@ -281,24 +281,24 @@ SuchThatClauseBuilder* QueryParser::createCorrectClause(string type, queue<strin
 			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTS_);
 			return clause;
 		}
-	//} else if (type == stringconst::TYPE_NEXTBIP){
-	//	if (isStar == "*"){
-	//		Utils::getWordAndPop(*line);
-	//		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXTBIPSTAR_);
-	//		return clause;
-	//	} else {
-	//		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXTBIP_);
-	//		return clause;
-	//	}
-	//} else if (type == stringconst::TYPE_AFFECTSBIP){
-	//	if (isStar == "*"){
-	//		Utils::getWordAndPop(*line);
-	//		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTSBIPSTAR_);
-	//		return clause;
-	//	} else {
-	//		SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTSBIP_);
-	//		return clause;
-	//	}
+	} else if (type == stringconst::TYPE_NEXTBIP){
+		if (isStar == "*"){
+			Utils::getWordAndPop(*line);
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXTSTARBIP_);
+			return clause;
+		} else {
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXTBIP_);
+			return clause;
+		}
+	} else if (type == stringconst::TYPE_AFFECTSBIP){
+		if (isStar == "*"){
+			Utils::getWordAndPop(*line);
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTSSTARBIP_);
+			return clause;
+		} else {
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTSBIP_);
+			return clause;
+		}
 	} else {
 		throw UnexpectedClauseException();
 	}
