@@ -1,0 +1,45 @@
+1 - NextBip* - immediate fail 
+stmt s1, s2, s3, s4, s5, s6;
+Select <s1,s2> such that NextBip*(s1, s2) and NextBip*(s3, s4) and NextBip*(s5, s6) and Modifies(9, "cow")
+
+5000
+2 - NextBip* - simple evaluate
+stmt s1, s2, s3, s4, s5, s6, s;
+Select s such that NextBip*(s1, s2) and NextBip*(s3, s4) and NextBip*(s5, s6) and Uses(s, "dog")
+3, 8, 12, 14, 17, 18, 19, 22
+5000
+3 - NextBip* - modifies if stmts
+stmt s1, s2, s3, s4; if i;
+Select i such that NextBip*(s1, s2) and NextBip*(s3, s4) and NextBip*(i, _) and Modifies(i, _)
+3, 14, 32, 44, 45, 48
+5000
+4 - NextBip* - selection not needed
+stmt s1, s2, s3, s4; while w;
+Select w such that NextBip*(s1, s2) and NextBip*(s3, s4) and Follows(s1, s2)
+12, 18, 30
+5000
+5 - NextBip* - Parent - shrinking down of choices
+stmt s1, s2; if i; while w;
+Select <i,w> such that NextBip*(s1, s2) and NextBip*(i, w) and Parent(i, w)
+14 18
+5000
+6 - NextBip* - immediate fail
+stmt s1, s2; while w; call c;
+Select BOOLEAN such that NextBip*(s1, w) and NextBip*(c, s2) and NextBip*(40, 3)
+false
+5000
+7 - NextBip* - AffectsBip* - immediate fail
+stmt s1, s2; while w; assign a; call c;
+Select BOOLEAN such that NextBip*(s1, c) and AffectsBip*(s2, a) and NextBip*(c, w) and Parent(c, a)
+false
+5000
+8 - Next* - simple evaluate
+stmt s1, s2, s3, s4, s5, s6, s;
+Select s such that Next*(s1, s2) and Next*(s3, s4) and Next*(s5, s6) and Follows(s, 3)
+2
+5000
+9 - NextBip* - Next* - immediate fail
+stmt s1; call c; while w1, w2; assign a;
+Select <s1,a> such that Next*(s1, c) and Next*(w1, s1) and NextBip*(s1, a) and Next*(w2, s1) and Next*(22, 40)
+
+5000
