@@ -71,9 +71,9 @@ void NextBipClauseTest::setUp() {
 
 	/* ------------- Procedure Setup ------------- */
 	Procedure* proc1 = new Procedure("proc1");
-	Procedure* proc2 = new Procedure("proc1");
-	Procedure* proc3 = new Procedure("proc1");
-	Procedure* proc4 = new Procedure("proc1");
+	Procedure* proc2 = new Procedure("proc2");
+	Procedure* proc3 = new Procedure("proc3");
+	Procedure* proc4 = new Procedure("proc4");
 
 	/* ------------- StmtTable setup ------------- */
 	StmtTable* stmtTable = StmtTable::getInstance();
