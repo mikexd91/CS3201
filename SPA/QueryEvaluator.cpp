@@ -199,13 +199,14 @@ Result* QueryEvaluator::evalOptimisedQuery(Query* query, vector<int>* componentI
 			start = end;
 		}
 	}
-	if (!selectTuple && singleNotFound){
-		evalNoClause(query, finalResult);
-	} else if (selectTuple && tupleNotFound){
-		evalNoClause(query, finalResult);
-	}
 	if (!validResults){
 		finalResult = new Result();
+	} else {
+		if (!selectTuple && singleNotFound){
+			evalNoClause(query, finalResult);
+		} else if (selectTuple && tupleNotFound){
+			evalNoClause(query, finalResult);
+		}
 	}
 	return finalResult;
 }
