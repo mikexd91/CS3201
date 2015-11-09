@@ -27,8 +27,8 @@ bool AffectsStarBipCalculator::computeFixedFixed(string s1String, string s2Strin
 	if (s1->getType() != ASSIGN_STMT_ || s2->getType() != ASSIGN_STMT_ ) {
 		return false;
 	}
-	GNode* s1GNode = s1->getGNodeRef();
-	GNode* s2GNode = s2->getGNodeRef();
+	GNode* s1GNode = s1->getGBipNodeRef();
+	GNode* s2GNode = s2->getGBipNodeRef();
 	//adds s1's modifies to the list
 	BOOST_FOREACH(string modifiedVar, s1->getModifies()) {
 		unordered_set<int> modifyingStmts = unordered_set<int>();
@@ -54,7 +54,7 @@ unordered_set<string> AffectsStarBipCalculator::computeFixedSyn(string s1String)
 	if (s1->getType() != ASSIGN_STMT_) {
 		return unordered_set<string>();
 	}
-	GNode* s1GNode = s1->getGNodeRef();
+	GNode* s1GNode = s1->getGBipNodeRef();
 	//adds s1's modifies to the list
 	BOOST_FOREACH(string modifiedVar, s1->getModifies()) {
 		unordered_set<int> modifyingStmts = unordered_set<int>();

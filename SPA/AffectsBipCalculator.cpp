@@ -51,7 +51,7 @@ bool AffectsBipCalculator::computeFixedFixed(string firstArg, string secondArg) 
 	globalState[modifyingVar] = unordered_set<int>();
 	globalState[modifyingVar].insert(s1Num);
 	try {
-		GNode* currentNode = stmt1->getGNodeRef();
+		GNode* currentNode = stmt1->getGBipNodeRef();
 		while(currentNode != NULL) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
@@ -126,7 +126,7 @@ unordered_set<string> AffectsBipCalculator::computeFixedSyn(string s1) {
 	globalState[modifyingVar] = unordered_set<int>();
 	globalState[modifyingVar].insert(s1Num);
 	try {
-		GNode* currentNode = stmt1->getGNodeRef();
+		GNode* currentNode = stmt1->getGBipNodeRef();
 		while(currentNode != NULL) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
@@ -179,7 +179,7 @@ bool AffectsBipCalculator::computeS1FixedS2Generic(string s1) {
 	globalState[modifyingVar] = unordered_set<int>();
 	globalState[modifyingVar].insert(s1Num);
 	try {
-		GNode* currentNode = stmt1->getGNodeRef();
+		GNode* currentNode = stmt1->getGBipNodeRef();
 		while(currentNode != NULL) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
