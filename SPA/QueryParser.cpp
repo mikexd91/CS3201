@@ -198,6 +198,8 @@ bool QueryParser::containsClauseType(string s){
 	clauseVector.push_back(stringconst::TYPE_CALLS);
 	clauseVector.push_back(stringconst::TYPE_NEXT);
 	clauseVector.push_back(stringconst::TYPE_AFFECTS);
+	clauseVector.push_back(stringconst::TYPE_NEXTBIP);
+	clauseVector.push_back(stringconst::TYPE_AFFECTSBIP);
 	return containsAny(s, &clauseVector);
 }
 
@@ -277,6 +279,24 @@ SuchThatClauseBuilder* QueryParser::createCorrectClause(string type, queue<strin
 			return clause;
 		} else {
 			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTS_);
+			return clause;
+		}
+	} else if (type == stringconst::TYPE_NEXTBIP){
+		if (isStar == "*"){
+			Utils::getWordAndPop(*line);
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXTSTARBIP_);
+			return clause;
+		} else {
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(NEXTBIP_);
+			return clause;
+		}
+	} else if (type == stringconst::TYPE_AFFECTSBIP){
+		if (isStar == "*"){
+			Utils::getWordAndPop(*line);
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTSSTARBIP_);
+			return clause;
+		} else {
+			SuchThatClauseBuilder* clause = new SuchThatClauseBuilder(AFFECTSBIP_);
 			return clause;
 		}
 	} else {
