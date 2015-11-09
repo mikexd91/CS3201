@@ -298,6 +298,19 @@ void NextStarBipClause::dfsFind(Statement* stmt, string str, vector<string> visi
 		return;
 	}
 
+	if(contains(visited, currStmt) && stmt->getStmtNum() == bipNode->getStartStmt() && bipNode->getParents().at(0)->getNodeType() == PROC_) {
+		Procedure* proc = stmt->getProc();
+		unordered_set<int> procedureStmts = proc->getContainStmts();
+		vector<string> newVisited;
+		BOOST_FOREACH(auto v, visited) {
+			if(procedureStmts.find(atoi(v.c_str())) == procedureStmts.end()) {
+				newVisited.push_back(v);
+			}
+		}
+		
+		visited = newVisited;
+	}
+	
 	if(!contains(visited, currStmt)) {
 		visited.push_back(currStmt);
 
@@ -353,6 +366,19 @@ void NextStarBipClause::dfsFind(GNode* node, string str, vector<string> visited,
 void NextStarBipClause::dfsFindNext(Statement* stmt, vector<string> visited, stack<int> entrance, string type) {
 	string currStmt = lexical_cast<string>(stmt->getStmtNum());
 	GNode* bipNode = stmt->getGBipNodeRef();
+
+	if(contains(visited, currStmt) && stmt->getStmtNum() == bipNode->getStartStmt() && bipNode->getParents().at(0)->getNodeType() == PROC_) {
+		Procedure* proc = stmt->getProc();
+		unordered_set<int> procedureStmts = proc->getContainStmts();
+		vector<string> newVisited;
+		BOOST_FOREACH(auto v, visited) {
+			if(procedureStmts.find(atoi(v.c_str())) == procedureStmts.end()) {
+				newVisited.push_back(v);
+			}
+		}
+		
+		visited = newVisited;
+	}
 
 	if(!contains(visited, currStmt)) {
 		if(isNeededArgType(type, stmt->getStmtNum())) {
@@ -414,6 +440,41 @@ void NextStarBipClause::dfsFindPrev(Statement* stmt, vector<string> visited, sta
 	string currStmt = lexical_cast<string>(stmt->getStmtNum());
 	GNode* bipNode = stmt->getGBipNodeRef();
 	vector<GNode*> parents = bipNode->getParents();
+
+	if(contains(visited, currStmt)) {
+		bool isProcCycle = false;
+
+		if(isNodeType(bipNode, WHILE_)) {
+			if(isNodeType(bipNode->getChildren().at(1), END_)){
+				isProcCycle = true;
+			}
+		} else if(isNodeType(bipNode, IF_)) {
+			if(isNodeType(bipNode->getChildren().at(0), END_) || isNodeType(bipNode->getChildren().at(1), END_)) {
+				isProcCycle = true;
+			}
+		} else if(isNodeType(bipNode, ASSIGN_) && stmt->getStmtNum() == bipNode->getEndStmt()) {
+			if(isNodeType(bipNode->getChildren().at(0), END_)) {
+				isProcCycle = true;
+			}
+		} else {
+			if(isNodeType(bipNode->getChildren().at(0), END_)) {
+				isProcCycle = true;
+			}
+		}
+
+		if(isProcCycle) {
+			Procedure* proc = stmt->getProc();
+			unordered_set<int> procedureStmts = proc->getContainStmts();
+			vector<string> newVisited;
+			BOOST_FOREACH(auto v, visited) {
+				if(procedureStmts.find(atoi(v.c_str())) == procedureStmts.end()) {
+					newVisited.push_back(v);
+				}
+			}
+		
+			visited = newVisited;
+		}
+	}
 
 	if(!contains(visited, currStmt)) {
 		if(isNeededArgType(type, stmt->getStmtNum())) {
@@ -512,6 +573,19 @@ void NextStarBipClause::dfsFindAll(Statement* stmt, vector<string> visited, stac
 	string currStmt = lexical_cast<string>(stmt->getStmtNum());
 	GNode* bipNode = stmt->getGBipNodeRef();
 	vector<GNode*> children = bipNode->getChildren();
+
+	if(contains(visited, currStmt) && stmt->getStmtNum() == bipNode->getStartStmt() && bipNode->getParents().at(0)->getNodeType() == PROC_) {
+		Procedure* proc = stmt->getProc();
+		unordered_set<int> procedureStmts = proc->getContainStmts();
+		vector<string> newVisited;
+		BOOST_FOREACH(auto v, visited) {
+			if(procedureStmts.find(atoi(v.c_str())) == procedureStmts.end()) {
+				newVisited.push_back(v);
+			}
+		}
+		
+		visited = newVisited;
+	}
 
 	if(contains(visited, currStmt)) {
 		int pos = getVisitedPosition(visited, currStmt);
