@@ -4,6 +4,7 @@ os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Single
 os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/MultiProc-ss2.txt SystemTests/Results/multiproc-ss2.xml")
 
 os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/Next-ss3.txt SystemTests/Results/next-ss3.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/NextStar-ss3.txt SystemTests/Results/nextstar-ss3.xml")
 os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/Affects-ss3.txt SystemTests/Results/affects-ss3.xml")
 os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/AffectsStar-ss3.txt SystemTests/Results/affectsstar-ss3.xml")
 

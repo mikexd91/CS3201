@@ -24,6 +24,7 @@ import os
 # os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/Next-ss3.txt SystemTests/Results/next-ss3.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-ss1.txt SystemTests/Results/nextstar-ss1.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/NextStar-ss2.txt SystemTests/Results/nextstar-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/NextStar-ss3.txt SystemTests/Results/nextstar-ss3.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Affects-ss1.txt SystemTests/Results/affects-ss1.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Affects-ss2.txt SystemTests/Results/affects-ss2.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/Affects-ss3.txt SystemTests/Results/affects-ss3.xml")
