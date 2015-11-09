@@ -78,42 +78,43 @@ unordered_set<string> AffectsStarBipCalculator::computeFixedSyn(string s1String)
 unordered_set<vector<string>> AffectsStarBipCalculator::computeSynSyn(bool isSameSyn) {
 	type = SYN_SYN;
 	vector<ProcGNode*> procNodes = cfg->getAllProcedures();
+	unordered_set<vector<string>> multiSyns = unordered_set<vector<string>>();
 	//between each proc, reinitialise state
 	BOOST_FOREACH(ProcGNode* procNode, procNodes) {
 		GNode* currentNode = procNode->getChild();
 		while(currentNode != NULL) {
 			currentNode = evaluateNode(currentNode, globalState);
 		}
-		//reset state
-		globalState = State();
-	}
-
-	unordered_set<vector<string>> multiSyns = unordered_set<vector<string>>();
-	if (isSameSyn) {
-		BOOST_FOREACH(auto row, globalResult) {
-			int s2 = row.first;
-			unordered_set<int> s1Set = row.second;
-			BOOST_FOREACH(int s1, s1Set) {
-				if (s1 == s2) {
+		//terminated, let's get the multi syns
+		if (isSameSyn) {
+			BOOST_FOREACH(auto row, globalResult) {
+				int s2 = row.first;
+				unordered_set<int> s1Set = row.second;
+				BOOST_FOREACH(int s1, s1Set) {
+					if (s1 == s2) {
+						vector<string> toInsert = vector<string>();
+						toInsert.push_back(boost::lexical_cast<string>(s1));
+						toInsert.push_back(boost::lexical_cast<string>(s2));
+						multiSyns.insert(toInsert);
+					}
+				}
+			}
+		} else {
+			BOOST_FOREACH(auto row, globalResult) {
+				int s2 = row.first;
+				unordered_set<int> s1Set = row.second;
+				BOOST_FOREACH(int s1, s1Set) {
 					vector<string> toInsert = vector<string>();
 					toInsert.push_back(boost::lexical_cast<string>(s1));
 					toInsert.push_back(boost::lexical_cast<string>(s2));
+					//cout << "test: " << s1 << ", " << s2 << endl;
 					multiSyns.insert(toInsert);
 				}
 			}
 		}
-	} else {
-		BOOST_FOREACH(auto row, globalResult) {
-			int s2 = row.first;
-			unordered_set<int> s1Set = row.second;
-			BOOST_FOREACH(int s1, s1Set) {
-				vector<string> toInsert = vector<string>();
-				toInsert.push_back(boost::lexical_cast<string>(s1));
-				toInsert.push_back(boost::lexical_cast<string>(s2));
-				//cout << "test: " << s1 << ", " << s2 << endl;
-				multiSyns.insert(toInsert);
-			}
-		}
+		//reset state
+		globalState = State();
+		globalResult = AffectsStarBipResult();
 	}
 	return multiSyns;
 }
