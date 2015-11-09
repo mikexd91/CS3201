@@ -203,7 +203,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray1[] = {"z"};
 	unordered_set<string> uses1(usesArray1, usesArray1 + 1);
 	stmt1->setUses(uses1);
-	stmt1->setGNodeRef(assg1);
+	stmt1->setGBipNodeRef(assg1);
 	stmt1->setProcedure(procedure1);
 	stable->addStmt(stmt1);
 
@@ -216,7 +216,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray2[] = {"d"};
 	unordered_set<string> uses2(usesArray2, usesArray2 + 1);
 	stmt2->setUses(uses2);
-	stmt2->setGNodeRef(assg1);
+	stmt2->setGBipNodeRef(assg1);
 	stmt2->setProcedure(procedure1);
 	stable->addStmt(stmt2);
 
@@ -229,7 +229,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray3[] = {"x"};
 	unordered_set<string> uses3(usesArray3, usesArray3 + 1);
 	stmt3->setUses(uses3);
-	stmt3->setGNodeRef(while3);
+	stmt3->setGBipNodeRef(while3);
 	stmt3->setProcedure(procedure1);
 	stable->addStmt(stmt3);
 	
@@ -242,7 +242,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray4[] = {"x"};
 	unordered_set<string> uses4(usesArray4, usesArray4 + 1);
 	stmt4->setUses(uses4);
-	stmt4->setGNodeRef(assg4);
+	stmt4->setGBipNodeRef(assg4);
 	stmt4->setProcedure(procedure1);
 	stable->addStmt(stmt4);
 
@@ -255,7 +255,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray5[] = {"x"};
 	unordered_set<string> uses5(usesArray5, usesArray5 + 1);
 	stmt5->setUses(uses5);
-	stmt5->setGNodeRef(assg4);
+	stmt5->setGBipNodeRef(assg4);
 	stmt5->setProcedure(procedure1);
 	stable->addStmt(stmt5);
 
@@ -270,7 +270,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray6[] = {"x"};
 	unordered_set<string> uses6(usesArray6, usesArray6 + 1);
 	stmt6->setUses(uses6);
-	stmt6->setGNodeRef(assg6);
+	stmt6->setGBipNodeRef(assg6);
 	stmt6->setProcedure(procedure2);
 	stable->addStmt(stmt6);
 	
@@ -284,7 +284,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray7[] = {"x"};
 	unordered_set<string> uses7(usesArray7, usesArray7 + 1);
 	stmt7->setUses(uses7);
-	stmt7->setGNodeRef(assg6);
+	stmt7->setGBipNodeRef(assg6);
 	stmt7->setProcedure(procedure2);
 	stable->addStmt(stmt7);
 
@@ -297,7 +297,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray8[] = {"x", "b", "z"};
 	unordered_set<string> uses8(usesArray8, usesArray8 + 3);
 	stmt8->setUses(uses8);
-	stmt8->setGNodeRef(call8);
+	stmt8->setGBipNodeRef(call8);
 	stmt8->setProcedure(procedure2);
 	stable->addStmt(stmt8);
 
@@ -310,7 +310,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray9[] = {"y", "i", "z", "b"};
 	unordered_set<string> uses9(usesArray9, usesArray9 + 4);
 	stmt9->setUses(uses9);
-	stmt9->setGNodeRef(if9);
+	stmt9->setGBipNodeRef(if9);
 	stmt9->setProcedure(procedure2);
 	stable->addStmt(stmt9);
 
@@ -323,7 +323,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray10[] = {"i"};
 	unordered_set<string> uses10(usesArray10, usesArray10 + 1);
 	stmt10->setUses(uses10);
-	stmt10->setGNodeRef(assg10);
+	stmt10->setGBipNodeRef(assg10);
 	stmt10->setProcedure(procedure2);
 	stable->addStmt(stmt10);
 
@@ -336,7 +336,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray11[] = {"z"};
 	unordered_set<string> uses11(usesArray11, usesArray11 + 1);
 	stmt11->setUses(uses11);
-	stmt11->setGNodeRef(assg11);
+	stmt11->setGBipNodeRef(assg11);
 	stmt11->setProcedure(procedure2);
 	stable->addStmt(stmt11);
 
@@ -349,7 +349,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray12[] = {"x", "b"};
 	unordered_set<string> uses12(usesArray12, usesArray12 + 2);
 	stmt12->setUses(uses12);
-	stmt12->setGNodeRef(while12);
+	stmt12->setGBipNodeRef(while12);
 	stmt12->setProcedure(procedure2);
 	stable->addStmt(stmt12);
 
@@ -362,7 +362,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray13[] = {"b"};
 	unordered_set<string> uses13(usesArray13, usesArray13 + 1);
 	stmt13->setUses(uses13);
-	stmt13->setGNodeRef(assg13);
+	stmt13->setGBipNodeRef(assg13);
 	stmt13->setProcedure(procedure2);
 	stable->addStmt(stmt13);
 
@@ -375,7 +375,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray14[] = {"z"};
 	unordered_set<string> uses14(usesArray14, usesArray14 + 1);
 	stmt14->setUses(uses14);
-	stmt14->setGNodeRef(assg14);
+	stmt14->setGBipNodeRef(assg14);
 	stmt14->setProcedure(procedure2);
 	stable->addStmt(stmt14);
 
@@ -388,7 +388,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray15[] = {"c"};
 	unordered_set<string> uses15(usesArray15, usesArray15 + 1);
 	stmt15->setUses(uses15);
-	stmt15->setGNodeRef(assg14);
+	stmt15->setGBipNodeRef(assg14);
 	stmt15->setProcedure(procedure2);
 	stable->addStmt(stmt15);
 
@@ -401,7 +401,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray16[] = {"a", "b","c", "d"};
 	unordered_set<string> uses16(usesArray16, usesArray16 + 4);
 	stmt16->setUses(uses16);
-	stmt16->setGNodeRef(while16);
+	stmt16->setGBipNodeRef(while16);
 	stmt16->setProcedure(procedure2);
 	stable->addStmt(stmt16);
 
@@ -414,7 +414,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray17[] = {"b"};
 	unordered_set<string> uses17(usesArray17, usesArray17 + 1);
 	stmt17->setUses(uses17);
-	stmt17->setGNodeRef(assg17);
+	stmt17->setGBipNodeRef(assg17);
 	stmt17->setProcedure(procedure2);
 	stable->addStmt(stmt17);
 
@@ -427,7 +427,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray18[] = {"c"};
 	unordered_set<string> uses18(usesArray18, usesArray18 + 1);
 	stmt18->setUses(uses18);
-	stmt18->setGNodeRef(assg17);
+	stmt18->setGBipNodeRef(assg17);
 	stmt18->setProcedure(procedure2);
 	stable->addStmt(stmt18);
 
@@ -440,7 +440,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray19[] = {"d"};
 	unordered_set<string> uses19(usesArray19, usesArray19 + 1);
 	stmt19->setUses(uses19);
-	stmt19->setGNodeRef(assg17);
+	stmt19->setGBipNodeRef(assg17);
 	stmt19->setProcedure(procedure2);
 	stable->addStmt(stmt19);
 
@@ -453,7 +453,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray20[] = {"a"};
 	unordered_set<string> uses20(usesArray20, usesArray20 + 1);
 	stmt20->setUses(uses20);
-	stmt20->setGNodeRef(assg17);
+	stmt20->setGBipNodeRef(assg17);
 	stmt20->setProcedure(procedure2);
 	stable->addStmt(stmt20);
 
@@ -466,7 +466,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray21[] = {"x", "b", "z"};
 	unordered_set<string> uses21(usesArray21, usesArray21 + 3);
 	stmt21->setUses(uses21);
-	stmt21->setGNodeRef(call21);
+	stmt21->setGBipNodeRef(call21);
 	stmt21->setProcedure(procedure3);
 	stable->addStmt(stmt21);
 
@@ -479,7 +479,7 @@ void AffectsStarBipClauseTest::setUp() {
 	string usesArray22[] = {"c"};
 	unordered_set<string> uses22(usesArray22, usesArray22 + 1);
 	stmt22->setUses(uses22);
-	stmt22->setGNodeRef(assg22);
+	stmt22->setGBipNodeRef(assg22);
 	stmt22->setProcedure(procedure3);
 	stable->addStmt(stmt22);
 }
