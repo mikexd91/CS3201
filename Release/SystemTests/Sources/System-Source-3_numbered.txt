@@ -54,7 +54,7 @@
 	}
 
 	procedure hey {
-41		a1 = c3; 
+41		a1 = c3;
 42		b2 = a1;
 43		c3 = b2;
 44		if panda then {
