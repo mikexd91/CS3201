@@ -3,6 +3,10 @@ import os
 # SYSTEM SOURCES
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/SingleProc-ss1.txt SystemTests/Results/singleproc-ss1.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/MultiProc-ss2.txt SystemTests/Results/multiproc-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/MultiProc-ss3.txt SystemTests/Results/multiproc-ss3.xml")
+
+# EXTENSIONS
+# os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/Extensions-ss3.txt SystemTests/Results/extensions-ss3.xml")
 
 # SUCH THAT CLAUSES
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Uses-ss1.txt SystemTests/Results/uses-ss1.xml")
@@ -24,11 +28,13 @@ import os
 # os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/Next-ss3.txt SystemTests/Results/next-ss3.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/NextStar-ss1.txt SystemTests/Results/nextstar-ss1.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/NextStar-ss2.txt SystemTests/Results/nextstar-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/NextStar-ss3.txt SystemTests/Results/nextstar-ss3.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Affects-ss1.txt SystemTests/Results/affects-ss1.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/Affects-ss2.txt SystemTests/Results/affects-ss2.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/Affects-ss3.txt SystemTests/Results/affects-ss3.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/AffectsStar-ss2.txt SystemTests/Results/affectsstar-ss2.xml")
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/AffectsStar-ss1.txt SystemTests/Results/affectsstar-ss1.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/AffectsStar-ss2.txt SystemTests/Results/affectsstar-ss2.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/AffectsStar-ss3.txt SystemTests/Results/affectsstar-ss3.xml")
 
 # PATTERN CLAUSE
 # os.system("AutoTester SystemTests/Sources/System-Source-1.txt SystemTests/Pattern-ss1.txt SystemTests/Results/pattern-ss1.xml")
@@ -39,7 +45,7 @@ import os
 # os.system("AutoTester SystemTests/Sources/System-Source-2.txt SystemTests/With-ss2.txt SystemTests/Results/with-ss2.xml")
 
 # EXTENSION
-# os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/NextBIP-ss3.txt SystemTests/Reuslts/nextbip-ss3.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/NextBIPStar-ss3.txt SystemTests/Reuslts/nextbipstar-ss3.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/AffectsBIP-ss3.txt SystemTests/Reuslts/affectsbip-ss3.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/AffectsBIPStar-ss3.txt SystemTests/Reuslts/affectsbipstar-ss3.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/NextBIP-ss3.txt SystemTests/Results/nextbip-ss3.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/NextBIPStar-ss3.txt SystemTests/Results/nextbipstar-ss3.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/AffectsBIP-ss3.txt SystemTests/Results/affectsbip-ss3.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/AffectsBIPStar-ss3.txt SystemTests/Results/affectsbipstar-ss3.xml")
