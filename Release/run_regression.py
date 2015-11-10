@@ -7,3 +7,6 @@ os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/MultiP
 
 # EXTENSIONS
 os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/Extensions-ss3.txt SystemTests/Results/extensions-ss3.xml")
+
+# INVALIDS
+os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/InvalidQueries-ss3.txt SystemTests/Results/invalidqueries-ss3.xml")
