@@ -77,5 +77,6 @@ private:
 	int s2Num;
 	bool result;
 	bool isStart;
+	unordered_set<string> singleSynResult;
 };
 
