@@ -70,7 +70,5 @@
 50				snake = hot;
 			}
 		}
-51		lion = snake;	//should be affected by 44, 45, 47 and 48 	
-	}
-
-	
+51		lion = snake;
+	}	

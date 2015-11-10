@@ -43,6 +43,6 @@ import os
 
 # EXTENSION
 # os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/NextBIP-ss3.txt SystemTests/Results/nextbip-ss3.xml")
-os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/NextBIPStar-ss3.txt SystemTests/Results/nextbipstar-ss3.xml")
-os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/AffectsBIP-ss3.txt SystemTests/Results/affectsbip-ss3.xml")
-# os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/AffectsBIPStar-ss3.txt SystemTests/Results/affectsbipstar-ss3.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/NextBIPStar-ss3.txt SystemTests/Results/nextbipstar-ss3.xml")
+# os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/AffectsBIP-ss3.txt SystemTests/Results/affectsbip-ss3.xml")
+os.system("AutoTester SystemTests/Sources/System-Source-3.txt SystemTests/AffectsBIPStar-ss3.txt SystemTests/Results/affectsbipstar-ss3.xml")
