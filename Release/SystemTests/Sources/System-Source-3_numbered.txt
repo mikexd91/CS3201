@@ -54,7 +54,7 @@
 	}
 
 	procedure hey {
-41		a1 = c3; 
+41		a1 = c3;
 42		b2 = a1;
 43		c3 = b2;
 44		if panda then {
@@ -70,7 +70,5 @@
 50				snake = hot;
 			}
 		}
-51		lion = snake;	//should be affected by 44, 45, 47 and 48 	
-	}
-
-	
+51		lion = snake;
+	}	
