@@ -11,6 +11,7 @@ AffectsStarBipCalculator::AffectsStarBipCalculator() {
 	cfg = CFGbip::getInstance();
 	globalState = State();
 	globalResult = AffectsStarBipResult();
+	singleSynResult = unordered_set<string>();
 	isStart = true;
 }
 
@@ -68,11 +69,11 @@ unordered_set<string> AffectsStarBipCalculator::computeFixedSyn(string s1String)
 		}
 	} catch (BasicAffectsStarBipTermination e) {}
 	//get result
-	unordered_set<string> s2 = unordered_set<string>();
+	//unordered_set<string> s2 = unordered_set<string>();
 	BOOST_FOREACH(auto result, globalResult) {
-		s2.insert(boost::lexical_cast<string>(result.first));
+		singleSynResult.insert(boost::lexical_cast<string>(result.first));
 	}
-	return s2;
+	return singleSynResult;
 }
 
 unordered_set<vector<string>> AffectsStarBipCalculator::computeSynSyn(bool isSameSyn) {
@@ -148,11 +149,19 @@ GNode* AffectsStarBipCalculator::evaluateNode(GNode* node, State& state) {
 					//state between children of end node is not modified
 					//we retain the state before entering the different children
 					if (!node->getChildren().empty()) {
+						//reset global result
+						AffectsStarBipResult oldResult = globalResult;
 						BOOST_FOREACH(GNode* child, node->getChildren()) {
 							updateStateBeyondEnd(child, state);
+							if (type == FIXED_SYN) {
+								BOOST_FOREACH(auto result, globalResult) {
+									singleSynResult.insert(boost::lexical_cast<string>(result.first));
+								}
+							}
+							globalResult = oldResult;
 						}
-					}
-				}	
+					}	
+				}
 				//otherwise, we do not consider the possibility that it was called, since we will iterate through it later
 				nextNode = NULL;
 			} else {
