@@ -24,6 +24,7 @@
 #include "WithClauseBuilder.h"
 #include "WithClause.h"
 #include "boost/unordered_map.hpp"
+#include "boost/foreach.hpp"
 #include <queue>
 #include <string>
 #include <vector>
@@ -92,8 +93,12 @@ void QueryParser::queueBuilder(string in, queue<string>* out){
 	QueryParser::splitByDelims(&temp, "=", temp);
 	QueryParser::splitByDelims(&temp, "<", temp);
 	QueryParser::splitByDelims(&temp, ">", temp);
+	QueryParser::splitByDelims(&temp, "\t", temp);
+	QueryParser::splitByDelims(&temp, "\n", temp);
 	for (size_t i=0; i<temp.size(); i++){
-		out->push(temp.at(i));
+		if (temp.at(i) != "\t" || temp.at(i) != "\n"){
+			out->push(temp.at(i));
+		}
 	}
 }
 
@@ -304,9 +309,23 @@ SuchThatClauseBuilder* QueryParser::createCorrectClause(string type, queue<strin
 	}
 }
 
+bool QueryParser::isValidSyn(string syn){
+	char first = syn.at(0);
+	string subsequent = syn.substr(1);
+	if (!isalpha(first)){
+		return false;
+	}
+	BOOST_FOREACH(char c, subsequent){
+		if (!(isalnum(c) || c == '#')){
+			return false;
+		}
+	}
+	return true;
+}
+
 void QueryParser::parseDeclarations(Query* query, vector<string>* list){
+	unordered_set<string> parsedSyns;
 	for (size_t i=0; i<list->size(); i++){
-		unordered_map<string, string> decList = query->getDeclarationList();
 		string current = list->at(i);
 		boost::algorithm::trim(current);
 		vector<string> tokens = vector<string>();
@@ -320,8 +339,17 @@ void QueryParser::parseDeclarations(Query* query, vector<string>* list){
 			cout << decType;
 			throw InvalidDeclarationException();
 		}
+
 		StringPair* newPair = new StringPair();
-		newPair->setFirst(split.at(1));
+		string syn = split.at(1);
+		if (parsedSyns.find(syn) != parsedSyns.end()){
+			throw DuplicateDeclarationException();
+		}
+		if (!isValidSyn(syn)){
+			throw InvalidDeclarationException();
+		}
+		parsedSyns.insert(syn);
+		newPair->setFirst(syn);
 		newPair->setSecond(decType);
 		query->addDeclaration(*newPair);
 
@@ -329,9 +357,13 @@ void QueryParser::parseDeclarations(Query* query, vector<string>* list){
 			for (size_t i=1; i<tokens.size(); i++){
 				string here = tokens.at(i);
 				here = removeSpace(here);
-				if (decList.find(here) != decList.end()){
+				if (parsedSyns.find(here) != parsedSyns.end()){
 					throw DuplicateDeclarationException();
 				}
+				if (!isValidSyn(here)){
+					throw InvalidDeclarationException();
+				}
+				parsedSyns.insert(here);
 				StringPair* newPair = new StringPair();
 				newPair->setFirst(here);
 				newPair->setSecond(decType);

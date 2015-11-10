@@ -50,12 +50,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION( QueryParserTest);
 
 void QueryParserTest::testDeclaration(){
 	parser = QueryParser::getInstance();
-	string const DEC = "variable v; constant c; while w; stmt s, v; assign a; procedure p; if i; call cl";
+	string const DEC = "variable v; constant c; while w; stmt s; assign a; procedure p; if i; call cl";
 	Query* Q = new Query();
 	vector<string>* split = new vector<string>();
 	parser->tokeniser(DEC, ';', split);
-	CPPUNIT_ASSERT_THROW(parser->parseDeclarations(Q, split), DuplicateDeclarationException);
-	/*unordered_map<string,string> declist = Q->getDeclarationList();
+	//CPPUNIT_ASSERT_THROW(parser->parseDeclarations(Q, split), DuplicateDeclarationException);
+	parser->parseDeclarations(Q, split);
+	unordered_map<string,string> declist = Q->getDeclarationList();
 	CPPUNIT_ASSERT(declist.at("v") == stringconst::ARG_VARIABLE);
 	CPPUNIT_ASSERT(declist.at("c") == "constant");
 	CPPUNIT_ASSERT(declist.at("cl") == "call");
@@ -63,7 +64,7 @@ void QueryParserTest::testDeclaration(){
 	CPPUNIT_ASSERT(declist.at("w") == "while");
 	CPPUNIT_ASSERT(declist.at("a") == "assign");
 	CPPUNIT_ASSERT(declist.at("p") == "procedure");
-	CPPUNIT_ASSERT(declist.at("i") == "if");*/
+	CPPUNIT_ASSERT(declist.at("i") == "if");
 }
 
 void QueryParserTest::testSelectSingle(){
@@ -296,6 +297,14 @@ void QueryParserTest::testParser(){
 }
 
 void QueryParserTest::debugTests(){
+	parser = QueryParser::getInstance();
+	CPPUNIT_ASSERT(parser->isValidSyn("s1"));
+	CPPUNIT_ASSERT(!parser->isValidSyn("1"));
+	CPPUNIT_ASSERT(parser->isValidSyn("s123"));
+	CPPUNIT_ASSERT(parser->isValidSyn("s#"));
+	CPPUNIT_ASSERT(parser->isValidSyn("abc"));
+	CPPUNIT_ASSERT(!parser->isValidSyn("s1*"));
+	
 	ProcTable* ptable = ProcTable::getInstance();
 	ptable->clearTable();
 	Procedure* testProcP1 = new Procedure("p1");
@@ -310,19 +319,19 @@ void QueryParserTest::debugTests(){
 	Variable* testVarY = new Variable("y");
 	vtable->addVariable(testVarY);
 
-	string INPUT = "call c; Select c with c.procName = \"asd\"";
+	string INPUT = "stmt s;   Select s such that  Follows(1,  2)";
 	Query* QUERY = new Query();
 	parser = QueryParser::getInstance();
 	QUERY = parser->parseQuery(INPUT);
-	vector<Clause*> VC = QUERY->getClauseList();
-	CPPUNIT_ASSERT(VC.size() == 1);
-	//CPPUNIT_ASSERT(VC.at(0)->getClauseType() == WITH_);
-	WithClause* WC = (WithClause*)VC.at(0);
-	WithClauseRef WCL = WC->getLeftRef();
-	WithClauseRef WCR = WC->getRightRef();
-	CPPUNIT_ASSERT(WCL.getEntity() == "c");
-	CPPUNIT_ASSERT(WCR.getEntity() == "asd");
+	//vector<Clause*> VC = QUERY->getClauseList();
+	//CPPUNIT_ASSERT(VC.size() == 1);
+	////CPPUNIT_ASSERT(VC.at(0)->getClauseType() == WITH_);
+	//WithClause* WC = (WithClause*)VC.at(0);
+	//WithClauseRef WCL = WC->getLeftRef();
+	//WithClauseRef WCR = WC->getRightRef();
+	//CPPUNIT_ASSERT(WCL.getEntity() == "c");
+	//CPPUNIT_ASSERT(WCR.getEntity() == "asd");
 
-	ptable->clearTable();
-	vtable->reset();
+	//ptable->clearTable();
+	//vtable->reset();
 }

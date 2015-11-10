@@ -18,6 +18,7 @@ class QueryParser
 public:
 	static QueryParser* getInstance();			// gets singleton instance
 
+	bool isValidSyn(string);
 	string removeFrontSpaces(string);
 	bool containsOperator(string);
 	string getFirstOperator(string);
