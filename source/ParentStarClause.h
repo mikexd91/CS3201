@@ -1,17 +1,45 @@
 #pragma once
-
-#include "Clause.h"
+#include "SuchThatClause.h"
 #include "ParentClause.h"
 
-class ParentStarClause : public ParentClause{
+class ParentStarClause 
+	: public SuchThatClause {
 public:
 	ParentStarClause(void);
 	~ParentStarClause(void);
 
 	bool isValid(void);
-	Results evaluate(void);
+
+protected:
+	//e.g. Parent(string,string)
+	bool evaluateS1FixedS2Fixed(string, string);
+	//e.g. Parent(_,_)
+	bool evaluateS1GenericS2Generic();
+	//e.g. Parent(_,string)
+	bool evaluateS1GenericS2Fixed(string);
+	//Parent(string,_)
+	bool evaluateS1FixedS2Generic(string);
+	//Parent(string,s2)
+	unordered_set<string> getAllS2WithS1Fixed(string);
+	//Parent(_,s2)
+	unordered_set<string> getAllS2();
+	//Parent(s1,string)
+	unordered_set<string> getAllS1WithS2Fixed(string);
+	//Parent(s1,__)
+	unordered_set<string> getAllS1();
+	//Parent(s1,s2)
+	unordered_set<vector<string>> getAllS1AndS2();
+
 
 private:
+	StmtTable* stmtTable;
+	bool isParentStar(string, string);
+	Statement::ParentStarSet getParentStar(int, string);
+	Statement::ChildrenStarSet getChildrenStar(int, string);
+	void insertChildrenStarIntoStmtNum(unordered_set<string>&, unordered_set<Statement*>, string argType);
+	void insertParentStarIntoStmtNum(unordered_set<string>&, unordered_set<Statement*>, string argType);
+	void insertParentStarAndChildrenStarIntoResult(unordered_set<vector<string>>&, unordered_set<Statement*>);
+	/**
 	// ONLY EVALUATES PROTOTYPE CASES (only while statements)
 	Results evaluateS1WildS2Wild();										// Case: Parent*(s1,s2) - stmt1 wild, stmt2 wild
 	Results evaluateS1WildS2Fixed();									// Case: Parent*(s1,2) - stmt1 wild, stmt2 fixed
@@ -23,4 +51,5 @@ private:
 	void recurParentCheckS1WildS2Fixed(Results&, string, string);
 	void recurParentCheckS1FixedS2Wild(Results&, string, string, string);
 	void recurParentCheckS1FixedS2Fixed(Results&, string, string);
+	**/
 };

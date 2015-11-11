@@ -1,8 +1,10 @@
 #pragma once
 
-#include <set>
-#include <boost/unordered_map.hpp>
+#include "boost/unordered_map.hpp"
+#include "boost/unordered_set.hpp"
 #include "Statement.h"
+
+using boost::unordered_set;
 
 class StmtTable {
 	/*
@@ -27,11 +29,11 @@ public:
 	StatementTable::iterator getEnd();			// gets iterator to end of stmt table
 	Statement* getStmtObj(int stmtNum);			// gets the stmt obj by stmt number
 
-	const set<Statement*>& getAssgStmts();		// gets all assignment stmts
-	const set<Statement*>& getCallStmts();		// gets all call stmts
-	const set<Statement*>& getWhileStmts();		// gets all while stmts
-	const set<Statement*>& getIfStmts();		// gets all if stmts
-	const set<Statement*>& getAllStmts();		// gets all stmts
+	const unordered_set<Statement*>& getAssgStmts();		// gets all assignment stmts
+	const unordered_set<Statement*>& getCallStmts();		// gets all call stmts
+	const unordered_set<Statement*>& getWhileStmts();		// gets all while stmts
+	const unordered_set<Statement*>& getIfStmts();			// gets all if stmts
+	const unordered_set<Statement*>& getAllStmts();			// gets all stmts
 
 	// MUTATORS
 	void addStmt(Statement *stmt);	// adds statement to table
@@ -39,10 +41,10 @@ public:
 
 private:
 	StatementTable table;
-	set<Statement*> assgStmtSet;
-	set<Statement*> callStmtSet;
-	set<Statement*> whileStmtSet;
-	set<Statement*> ifStmtSet;
+	unordered_set<Statement*> assgStmtSet;
+	unordered_set<Statement*> callStmtSet;
+	unordered_set<Statement*> whileStmtSet;
+	unordered_set<Statement*> ifStmtSet;
 	
 	// SINGLETON
 	static bool instanceFlag;

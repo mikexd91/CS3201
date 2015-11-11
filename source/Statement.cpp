@@ -16,10 +16,15 @@ Statement::Statement() {
 	modifies = ModifiesSet();
 	followsAfter = DEFAULT;
 	followsBefore = DEFAULT;
+	calls = DEFAULT;
 	children = ChildrenSet();
 	parent = DEFAULT;
-	next = DEFAULT;
-	prev = DEFAULT;
+	next = NextSet();
+	prev = PreviousSet();
+	parentStar = ParentStarSet();
+	childrenStar = ChildrenStarSet();
+	followsStarBefore = FollowsStarBeforeSet();
+	followsStarAfter = FollowsStarAfterSet();
 }
 
 /*
@@ -50,11 +55,14 @@ TNode* Statement::getTNodeRef() {
 	return TNodeRef;
 }
 
-/*
 // get reference to stmt GNode
 GNode* Statement::getGNodeRef() {
 	return GNodeRef;
-} */
+}
+
+GNode* Statement::getGBipNodeRef() {
+	return GBipNodeRef;
+}
 
 // get set of variables stmt uses
 const Statement::UsesSet& Statement::getUses() {
@@ -76,6 +84,11 @@ int Statement::getFollowsBefore() {
 	return followsBefore;
 }
 
+// get proc name that stmt calls
+string Statement::getCalls() {
+	return calls;
+}
+
 // get set of child nodes of this stmt
 const Statement::ChildrenSet& Statement::getChildren() {
 	return children;
@@ -87,15 +100,47 @@ int Statement::getParent() {
 }
 
 // get stmt that is next of this stmt
-int Statement::getNext() {
+const Statement::NextSet& Statement::getNext() {
 	return next;
 }
 
 // get stmt whose next is this stmt
-int Statement::getPrev() {
+const Statement::PreviousSet& Statement::getPrev() {
 	return prev;
 }
 
+const Statement::NextBipSet& Statement::getNextBip() {
+	return nextBip;
+}
+
+const Statement::PreviousBipSet& Statement::getPrevBip() {
+	return prevBip;
+}
+
+// get parent star of this stmt
+const Statement::ParentStarSet& Statement::getParentStar() {
+	return parentStar;
+}
+
+// get children star of this stmt
+const Statement::ChildrenStarSet& Statement::getChildrenStar() {
+	return childrenStar;
+}
+
+
+// get all previous follows of this stmt
+const Statement::FollowsStarBeforeSet& Statement::getFollowsStarBefore() {
+	return followsStarBefore;
+}
+
+// get all next follows of this stmt
+const Statement::FollowsStarAfterSet& Statement::getFollowsStarAfter() {
+	return followsStarAfter;
+}
+
+Procedure* Statement::getProc() {
+	return proc;
+}
 
 /* ----------------------------- */
 /* ---------- SETTERS ---------- */
@@ -112,16 +157,19 @@ void Statement::setTNodeRef(TNode *ref) {
 	TNodeRef = ref;
 }
 
-/*
-//void Statement::setGNodeRef(GNode *ref) {
+void Statement::setGNodeRef(GNode *ref) {
 	GNodeRef = ref;
-} */
+} 
 
-void Statement::setUses(const set<string> &useSet) {
+void Statement::setGBipNodeRef(GNode* ref) {
+	GBipNodeRef = ref;
+}
+
+void Statement::setUses(const unordered_set<string> &useSet) {
 	uses = useSet;
 }
 
-void Statement::setModifies(const set<string> &modifiesSet) {
+void Statement::setModifies(const unordered_set<string> &modifiesSet) {
 	modifies = modifiesSet;
 }
 
@@ -133,7 +181,11 @@ void Statement::setFollowsBefore(int followsBefore) {
 	this->followsBefore = followsBefore;
 }
 
-void Statement::setChildren(const set<int> &childrenSet) {
+void Statement::setCalls(string procName) {
+	this->calls = procName;
+}
+
+void Statement::setChildren(const unordered_set<int> &childrenSet) {
 	children = childrenSet;
 }
 
@@ -141,10 +193,37 @@ void Statement::setParent(int parent) {
 	this->parent = parent;
 }
 
-void Statement::setNext(int nextSet) {
-	this->next = next;
+void Statement::setNext(const unordered_set<int> &nextSet) {
+	this->next = nextSet;
 }
 
-void Statement::setPrev(int prevSet) {
-	this->prev = prev;
+void Statement::setPrev(const unordered_set<int> &prevSet) {
+	this->prev = prevSet;
+}
+
+void Statement::setNextBip(const unordered_set<int> &nextBipSet) {
+	this->nextBip = nextBipSet;
+}
+
+void Statement::setPrevBip(const unordered_set<int> &prevBipSet) {
+	this->prevBip = prevBipSet;
+}
+
+void Statement::setParentStar(const unordered_set<int> &parentStarSet) {
+	parentStar = parentStarSet;
+}
+
+void Statement::setChildrenStar(const unordered_set<int> &childrenStarSet) {
+	childrenStar = childrenStarSet;
+}
+
+void Statement::setFollowsStarBefore(const FollowsStarBeforeSet &followsStarBeforeSet) {
+	followsStarBefore = followsStarBeforeSet;
+}
+void Statement::setFollowsStarAfter(const FollowsStarAfterSet &followsStarAfterSet) {
+	followsStarAfter = followsStarAfterSet;
+}
+
+void Statement::setProcedure(Procedure* proc) {
+	this->proc = proc;
 }
