@@ -2,6 +2,9 @@
 #include "FrontEndTest.h"
 #include "../SPA/Parser.h"
 #include "../SPA/PDR.h"
+#include "../SPA/CFG.h"
+#include "../SPA/CFGbipBuilder.h"
+#include "../SPA/CFGBuilder.h"
 #include "../SPA/InvalidCodeException.h"
 
 using namespace std;

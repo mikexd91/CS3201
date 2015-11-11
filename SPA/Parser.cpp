@@ -18,9 +18,7 @@ using namespace std;
 
 Parser::Parser() {
 	nestingLevel = 0;
-	parsedDataReceiver = PDR::getInstance();
-	cfgBuilder = CFGBuilder::getInstance();
-	cfgBipBuilder = CFGbipBuilder::getInstance();
+	pkb = PKB::getInstance();
 	stmtCount = 0;
 }
 
@@ -98,9 +96,7 @@ void Parser::procedure() {
 	currentProcName = procName;
 	ParsedData procedure = ParsedData(ParsedData::PROCEDURE, this->nestingLevel);
 	procedure.setProcName(procName);
-	parsedDataReceiver->processParsedData(procedure);
-	cfgBuilder->processParsedData(procedure);
-	cfgBipBuilder->processParsedData(procedure);
+	pkb->processParsedData(procedure);
 	existingProcedures.push_back(procName);
 	match("{");
 	stmtLst();
@@ -138,9 +134,7 @@ void Parser::assign() {
 	ParsedData assignment = ParsedData(ParsedData::ASSIGNMENT, nestingLevel);
 	assignment.setAssignVar(var);
 	assignment.setAssignExpression(getExpression());
-	parsedDataReceiver->processParsedData(assignment);
-	cfgBuilder->processParsedData(assignment);
-	cfgBipBuilder->processParsedData(assignment);
+	pkb->processParsedData(assignment);
 }
 
 /**
@@ -183,9 +177,7 @@ void Parser::call() {
 	}
 	ParsedData callStmt = ParsedData(ParsedData::CALL, this->nestingLevel);
 	callStmt.setProcName(procName);
-	parsedDataReceiver->processParsedData(callStmt);
-	cfgBuilder->processParsedData(callStmt);
-	cfgBipBuilder->processParsedData(callStmt);
+	pkb->processParsedData(callStmt);
 	calledProcedures.push_back(procName);
 	match(";");
 }
@@ -195,9 +187,7 @@ void Parser::parseWhile() {
 	string conditionVar = getName();
 	ParsedData whileStmt = ParsedData(ParsedData::WHILE, nestingLevel);
 	whileStmt.setWhileVar(conditionVar);
-	parsedDataReceiver->processParsedData(whileStmt);
-	cfgBuilder->processParsedData(whileStmt);
-	cfgBipBuilder->processParsedData(whileStmt);
+	pkb->processParsedData(whileStmt);
 	match("{");
 	stmtLst();
 	match("}");
@@ -214,9 +204,7 @@ void Parser::parseIf(){
 	string conditionVar = getName();
 	ParsedData ifStmt = ParsedData(ParsedData::IF, nestingLevel);
 	ifStmt.setIfVar(conditionVar);
-	parsedDataReceiver->processParsedData(ifStmt);
-	cfgBuilder->processParsedData(ifStmt);
-	cfgBipBuilder->processParsedData(ifStmt);
+	pkb->processParsedData(ifStmt);
 }
 
 void Parser::parseThen(){
@@ -229,9 +217,7 @@ void Parser::parseThen(){
 void Parser::parseElse() {
 	match ("else");
 	ParsedData elseStmt = ParsedData(ParsedData::ELSE, nestingLevel);
-	parsedDataReceiver->processParsedData(elseStmt);
-	cfgBuilder->processParsedData(elseStmt);
-	cfgBipBuilder->processParsedData(elseStmt);
+	pkb->processParsedData(elseStmt);
 	match ("{");
 	stmtLst();
 	match("}");
@@ -249,9 +235,7 @@ void Parser::validateCallStmts() {
 
 void Parser::endParse() {
 	ParsedData endData = ParsedData(ParsedData::END, nestingLevel);
-	parsedDataReceiver->processParsedData(endData);
-	cfgBuilder->processParsedData(endData);
-	cfgBipBuilder->processParsedData(endData);
+	pkb->processParsedData(endData);
 }
 
 void Parser::throwException(int lineNumber) {
