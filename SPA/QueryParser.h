@@ -37,6 +37,7 @@ public:
 	SuchThatClauseBuilder* createCorrectClause(string, queue<string>*);
 	void splitByDelims(vector<string>*, string, vector<string>);
 	void unexpectedEndCheck(queue<string>*);
+	void stringCleaner(string*);
 
 	void parseDeclarations(Query*, vector<string>*);
 	void parseSelectSynonyms(Query*, queue<string>*);
@@ -45,7 +46,6 @@ public:
 	void parsePatternOther(Query*, queue<string>*, string);
 	void parsePatternIf(Query*, queue<string>*, string);
 	void parseWith(Query*, queue<string>*);
-
 	Query* parseQuery(string);
 
 private:
