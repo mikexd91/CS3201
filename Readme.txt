@@ -1,18 +1,9 @@
--- begin
+SPA README
 
-IMPROVEMENTS OVER THE PAST 24 HOURS:
+===== BUILD INSTRUCTIONS =====
+1. Build AutoTester in Release mode
+2. Source files for basic SPA is in /source
+3. Source files for extensions is in /bonus
+4. For testing, all test files can be found in /Test02 (more details in TEST_README)
 
-1. Underscore can now be parsed and evaluated for all clauses.
-2. Empty results set will be thrown for invalid queries.
-3. Updated Parent and Parent* grammar to take in assignment statements as the first argument.
-4. Follows*(s, s) will return empty result set.
-5. Bug in some combination queries fixed.
-6. Misc improvements for unit tests, integration tests and system tests.
-
------
-
-NOT CONSIDERED FOR IMPROVEMENT:
-
-1. PQL parser to be flexible with spacing.
-
--- end.
+NOTE: Source files in /source and /bonus are copies of the ones that would be built by Visual Studios so as not to disturb the build settings.

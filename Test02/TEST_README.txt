@@ -1,6 +1,6 @@
 ===== RUN INSTRUCTIONS =====
 1. Ensure that Python2.7 is installed (Windows)
-2. Ensure that project has been built (SPA in debug, AutoTester in release)
+2. Ensure that project has been built (AutoTester in release)
 3. Run the python scripts in test root folder - /Test02
 	a. run_all_tests.py - runs all available tests
 	b. run_core_tests.py - runs all tests for functionality
