@@ -1,6 +1,7 @@
 #include "PKB.h"
 #include "PDR.h"
 #include "CFGBuilder.h"
+#include "CFGbipBuilder.h"
 
 bool PKB::instanceFlag = false;				// instance flag
 PKB* PKB::pkbInstance = NULL;				// table instance
@@ -23,8 +24,10 @@ PKB* PKB::getInstance() {
 // pass parsed data to PDR
 void PKB::processParsedData(ParsedData data) {
 	PDR* pdr = PDR::getInstance();
-	CFGBuilder* cfg = CFGBuilder::getInstance();
+	CFGBuilder* cfgBuilder = CFGBuilder::getInstance();
+	CFGbipBuilder* cfgBipBuilder = CFGbipBuilder::getInstance();
 
 	pdr->processParsedData(data);
-	cfg->processParsedData(data);
+	cfgBuilder->processParsedData(data);
+	cfgBipBuilder->processParsedData(data);
 }

@@ -2,9 +2,7 @@
 
 #include <string>
 #include <regex>
-#include "PDR.h"
-#include "CFGBuilder.h"
-#include "CFGbipBuilder.h"
+#include "PKB.h"
 #include "boost/assign.hpp"
 
 using namespace std;
@@ -21,9 +19,7 @@ private:
 	vector<string> tokens;
 	vector<string>::iterator iter;
 	int nestingLevel;
-	PDR* parsedDataReceiver;
-	CFGBuilder* cfgBuilder;
-	CFGbipBuilder* cfgBipBuilder;
+	PKB* pkb;
 	int stmtCount;
 	//all procedures that were defined in the program
 	vector<string> existingProcedures;
