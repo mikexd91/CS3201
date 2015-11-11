@@ -3,6 +3,8 @@
 
 #include "../SPA/Parser.h"
 #include "../SPA/PDR.h"
+#include "../SPA/CFGBuilder.h"
+#include "../SPA/CFGbipBuilder.h"
 #include "../SPA/InvalidCodeException.h"
 
 #include <iostream>
