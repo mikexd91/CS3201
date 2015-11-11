@@ -96,7 +96,7 @@ void QueryParser::queueBuilder(string in, queue<string>* out){
 	QueryParser::splitByDelims(&temp, "\t", temp);
 	QueryParser::splitByDelims(&temp, "\n", temp);
 	for (size_t i=0; i<temp.size(); i++){
-		if (temp.at(i) != "\t" || temp.at(i) != "\n"){
+		if (temp.at(i) != "\t" || temp.at(i) != "\n" || temp.at(i) != " "){
 			out->push(temp.at(i));
 		}
 	}
@@ -1003,6 +1003,7 @@ void QueryParser::parseWith(Query* query, queue<string>* line){
 
 Query* QueryParser::parseQuery(string input){
 
+	stringCleaner(&input);
 	Query* outputQuery = new Query();
 	vector<string>* decVector = new vector<string>();
 	tokeniser(input, ';', decVector);
@@ -1071,6 +1072,12 @@ Query* QueryParser::parseQuery(string input){
 			Utils::getWordAndPop(*selectLine);
 			unexpectedEndCheck(selectLine);
 
+		} else if (currentWord == "\n" || currentWord == "\t" || currentWord == " "){
+
+			expectPattern = false;
+			expectWith = false;
+			Utils::getWordAndPop(*selectLine);
+
 		} else {
 			
 			cout << currentWord << " not in dictionary";
@@ -1102,5 +1109,14 @@ void QueryParser::splitByDelims(vector<string>* out, string delim, vector<string
 		if (!current.empty()){
 			out->push_back(current);
 		}
+	}
+}
+
+void QueryParser::stringCleaner(string* toClean){
+	if(toClean->find('\t') != toClean->npos){
+		boost::replace_all(*toClean, "\t", " ");
+	}
+	if(toClean->find('\n') != toClean->npos){
+		boost::replace_all(*toClean, "\n", " ");
 	}
 }

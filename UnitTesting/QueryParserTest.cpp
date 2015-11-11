@@ -319,7 +319,7 @@ void QueryParserTest::debugTests(){
 	Variable* testVarY = new Variable("y");
 	vtable->addVariable(testVarY);
 
-	string INPUT = "stmt s;   Select s such that  Follows(1,  2)";
+	string INPUT = "stmt\ts; Select s such that		\n	 Follows(1,  2)";
 	Query* QUERY = new Query();
 	parser = QueryParser::getInstance();
 	QUERY = parser->parseQuery(INPUT);
