@@ -26,13 +26,25 @@ Procedure::Procedure(const string &name, TNode *tRef) {
 /* ---------- GETTERS ---------- */
 /* ----------------------------- */
 // get name of proc
-string* Procedure::getProcName() {
-	return &procName;
+string Procedure::getProcName() {
+	return procName;
 }
 
 // get reference to proc TNode
 TNode* Procedure::getTNodeRef() {
 	return TNodeRef;
+}
+
+ProcGNode* Procedure::getGNodeRef() {
+	return GNodeRef;
+}
+
+ProcGNode* Procedure::getGBipNodeRef() {
+	return GBipNodeRef;
+}
+
+const Procedure::ContainsStmtSet& Procedure::getContainStmts() {
+	return stmts;
 }
 
 // get set of variables proc uses
@@ -67,18 +79,30 @@ void Procedure::setTNodeRef(TNode *ref) {
 	TNodeRef = ref;
 }
 
-void Procedure::setUses(const set<string> &useSet) {
+void Procedure::setGNodeRef(ProcGNode* ref) {
+	GNodeRef = ref;
+}
+
+void Procedure::setGBipNodeRef(ProcGNode* ref) {
+	GBipNodeRef = ref;
+}
+
+void Procedure::setContainStmts(const unordered_set<int> &containsStmtSet) {
+	stmts = containsStmtSet;
+}
+
+void Procedure::setUses(const unordered_set<string> &useSet) {
 	uses = useSet;
 }
 
-void Procedure::setModifies(const set<string> &modifiesSet) {
+void Procedure::setModifies(const unordered_set<string> &modifiesSet) {
 	modifies = modifiesSet;
 }
 
-void Procedure::setCalls(const set<Procedure*> &callsSet) {
+void Procedure::setCalls(const unordered_set<Procedure*> &callsSet) {
 	calls = callsSet;
 }
 
-void Procedure::setCalledBy(const set<Procedure*> &calledBySet) {
+void Procedure::setCalledBy(const unordered_set<Procedure*> &calledBySet) {
 	calledBy = calledBySet;
 }

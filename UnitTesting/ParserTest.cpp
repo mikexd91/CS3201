@@ -3,6 +3,8 @@
 
 #include "../SPA/Parser.h"
 #include "../SPA/PDR.h"
+#include "../SPA/CFGBuilder.h"
+#include "../SPA/CFGbipBuilder.h"
 #include "../SPA/InvalidCodeException.h"
 
 #include <iostream>
@@ -27,7 +29,9 @@ ParserTest::tearDown() {
 	VarTable::reset();
 	ProcTable::getInstance()->clearTable();
 	PDR::resetInstanceFlag();
-	//StmtTable::getInstance()->clearTable();
+	CFGBuilder::resetInstanceFlag();
+	CFGbipBuilder::resetInstanceFlag();
+	StmtTable::getInstance()->clearTable();
 }
 
 // Registers the fixture into the 'registry'

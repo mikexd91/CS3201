@@ -4,75 +4,17 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <boost/lexical_cast.hpp>
+#include <boost/foreach.hpp>
 
-FollowsClause::FollowsClause(void):Clause(FOLLOWS_){
+using namespace stringconst;
+using boost::lexical_cast;
+
+FollowsClause::FollowsClause(void):SuchThatClause(FOLLOWS_){
+	stmtTable = StmtTable::getInstance();
 }
 
 FollowsClause::~FollowsClause(void){
-}
-
-bool FollowsClause::checkIsSameType(NodeType type, string stmtType) {
-	if ((stmtType == stringconst::ARG_STATEMENT) ||
-		(type == WHILE_STMT_ && stmtType == stringconst::ARG_WHILE) ||
-		(type == ASSIGN_STMT_ && stmtType == stringconst::ARG_ASSIGN) ||
-		(stmtType == stringconst::ARG_GENERIC)) {
-		return true;
-	
-	} else {
-		return false;
-	}
-}
-
-// gets immediate statement after stmtNum
-string FollowsClause::getFollows(string stmtNum, string unfixedStmtType) {
-	StmtTable* table = StmtTable::getInstance();
-	int stmt = stoi(stmtNum);
-	Statement* stmtObj1 = table->getStmtObj(stmt);
-	
-	if (stmtObj1 != NULL) {
-		int stmt2 = stmtObj1->getFollowsAfter();
-		if (stmt2 != -1) {
-			Statement* stmtObj2 = table->getStmtObj(stmt2);
-			NodeType type = stmtObj2->getType();
-			bool isSameType = checkIsSameType(type, unfixedStmtType);
-		
-			if (isSameType) {
-				 stringstream ss;
-				 ss << stmt2;
-				 string str;
-				 ss >> str;
-
-				return str;
-			}
-		}
-	} 
-	return "-1";
-}
-
-// gets immediate statement before stmtNum
-string FollowsClause::getFollowedBy(string stmtNum, string unfixedStmtType) {
-	StmtTable* table = StmtTable::getInstance();
-	int stmt2 = stoi(stmtNum);
-	Statement* stmtObj2 = table->getStmtObj(stmt2);
-	
-	if (stmtObj2 != NULL) {
-		int stmt1 = stmtObj2->getFollowsBefore();
-		if (stmt1 != -1) {
-			Statement* stmtObj1 = table->getStmtObj(stmt1);
-			NodeType type = stmtObj1->getType();
-			bool isSameType = checkIsSameType(type, unfixedStmtType);
-
-			if (isSameType) {
-				 stringstream ss;
-				 ss << stmt1;
-				 string str;
-				 ss >> str;
-
-				return str;
-			}
-		}
-	}
-	return "-1";
 }
 
 bool FollowsClause::isFollows(string stmtNum1, string stmtNum2) {
@@ -102,208 +44,198 @@ bool FollowsClause::isFollows(string stmtNum1, string stmtNum2) {
 bool FollowsClause::isValid(void){
 	string firstType = this->getFirstArgType();
 	string secondType = this->getSecondArgType();
-	bool firstArg = (firstType == stringconst::ARG_STATEMENT) || (firstType == stringconst::ARG_ASSIGN) || (firstType == stringconst::ARG_WHILE) || (firstType == stringconst::ARG_PROGLINE) || (firstType == stringconst::ARG_GENERIC);
-	bool secondArg = (secondType == stringconst::ARG_STATEMENT) || (secondType == stringconst::ARG_ASSIGN) || (secondType == stringconst::ARG_WHILE) || (secondType == stringconst::ARG_PROGLINE) || (secondType == stringconst::ARG_GENERIC);
+	bool firstArg = (firstType == stringconst::ARG_STATEMENT)
+		|| (firstType == stringconst::ARG_CALL)
+		|| (firstType == stringconst::ARG_IF)
+		|| (firstType == stringconst::ARG_ASSIGN) 
+		|| (firstType == stringconst::ARG_WHILE) 
+		|| (firstType == stringconst::ARG_PROGLINE) 
+		|| (firstType == stringconst::ARG_GENERIC);
+	bool secondArg = (secondType == stringconst::ARG_STATEMENT) 
+		|| (secondType == stringconst::ARG_CALL)
+		|| (secondType == stringconst::ARG_IF)
+		|| (secondType == stringconst::ARG_ASSIGN) 
+		|| (secondType == stringconst::ARG_WHILE) 
+		|| (secondType == stringconst::ARG_PROGLINE) 
+		|| (secondType == stringconst::ARG_GENERIC);
 	return (firstArg && secondArg);
 }
 
-void FollowsClause::followsBothUnfixedArg(string firstArgType, string secondArgType, Results &resObj) {
-	if (firstArgType == stringconst::ARG_ASSIGN) {
-		StmtTable* stmtTable = StmtTable::getInstance();
-		set<Statement*> assignList = stmtTable->getAssgStmts();
-		
-		for (set<Statement*>::iterator iter = assignList.begin() ; iter != assignList.end(); iter++) {
-			Statement* stmtObj1 = *iter;
-			int stmt1 = stmtObj1->getStmtNum();
-			int stmt2 = stmtObj1->getFollowsAfter();
-
-			if (stmt2 != -1) {
-				Statement* stmtObj2 = stmtTable->getStmtObj(stmt2);
-				NodeType type = stmtObj2->getType();
-				bool isSameType = checkIsSameType(type, secondArgType);
-
-				if (isSameType) {
-					stringstream ss;
-					ss << stmt1 << ' ' << stmt2;
-					string strStmt1, strStmt2;
-					ss >> strStmt1 >> strStmt2;
-
-					resObj.addPairResult(strStmt1, strStmt2);
-				}
-			}
-		}
-
-	} else if (firstArgType == stringconst::ARG_WHILE) {
-		StmtTable* stmtTable = StmtTable::getInstance();
-		set<Statement*> whileList = stmtTable->getWhileStmts();
-		for (set<Statement*>::iterator iter = whileList.begin() ; iter != whileList.end(); iter++) {
-			Statement* stmtObj1 = *iter;
-			int stmt1 = stmtObj1->getStmtNum();
-			int stmt2 = stmtObj1->getFollowsAfter();
-
-			if (stmt2 != -1) {
-				Statement* stmtObj2 = stmtTable->getStmtObj(stmt2);
-				NodeType type = stmtObj2->getType();
-				bool isSameType = checkIsSameType(type, secondArgType);
-
-				if (isSameType) {
-					stringstream ss;
-					ss << stmt1 << ' ' << stmt2;
-					string strStmt1, strStmt2;
-					ss >> strStmt1 >> strStmt2;
-
-					resObj.addPairResult(strStmt1, strStmt2);
-				}
-			}
-		}
-
-	} else if (firstArgType == stringconst::ARG_STATEMENT ||
-		firstArgType == stringconst::ARG_GENERIC) {
-		StmtTable* stmtTable = StmtTable::getInstance();
-		boost::unordered_map<int, Statement*>::iterator iter;
-		
-		for (iter = stmtTable->getIterator(); iter != stmtTable->getEnd(); iter++) {
-			int stmt1 = iter->first;
-			Statement* stmtObj1 = iter->second;
-			int stmt2 = stmtObj1->getFollowsAfter();
-
-			if (stmt2 != -1) {
-				Statement* stmtObj2 = stmtTable->getStmtObj(stmt2);
-				NodeType type = stmtObj2->getType();
-				bool isSameType = checkIsSameType(type, secondArgType);
-
-				if (isSameType) {
-					stringstream ss;
-					ss << stmt1 << ' ' << stmt2;
-					string strStmt1, strStmt2;
-					ss >> strStmt1 >> strStmt2;
-
-					resObj.addPairResult(strStmt1, strStmt2);
-				}
-			}
-		}
-
-	} else {
-		// throw error
-	}
-
-	if (resObj.getPairResults().size() > 0) {
-		resObj.setClausePassed(true);
-		//resObj.setNumOfSyn(2);
-	}
+//Follows(1,2)
+bool FollowsClause::evaluateS1FixedS2Fixed(string s1, string s2){
+	bool isClauseTrue = isFollows(s1, s2);
+	return isClauseTrue;
 }
 
-void FollowsClause::followsWithOneUnderscore(string firstArgType, string secondArgType, Results &resObj) {
-	StmtTable* stmtTable = StmtTable::getInstance();
-	boost::unordered_map<int, Statement*>::iterator iter;
-		
-	for (iter = stmtTable->getIterator(); iter != stmtTable->getEnd(); iter++) {
-		int stmt1 = iter->first;
-		Statement* stmtObj1 = iter->second;
-			
-		int stmt2;
-		if (firstArgType == stringconst::ARG_GENERIC) {
-			stmt2 = stmtObj1->getFollowsAfter();
-		} else {
-			stmt2 = stmtObj1->getFollowsBefore();
+//e.g. Follows(_,_)
+bool FollowsClause::evaluateS1GenericS2Generic(){
+	unordered_set<Statement*> stmts = stmtTable->getAllStmts();
+	for (unordered_set<Statement*>::iterator iter = stmts.begin(); iter != stmts.end(); iter++){
+		Statement* current = *iter;
+		int a = current->getFollowsAfter();
+		int b = current->getFollowsBefore();
+		if (a != -1 || b != -1){
+			return true;
 		}
-
-		if (stmt2 != -1) {
-			Statement* stmtObj2 = stmtTable->getStmtObj(stmt2);
-			NodeType type = stmtObj2->getType();
-				
-			bool isSameType;
-			if (firstArgType == stringconst::ARG_GENERIC) {
-				isSameType = checkIsSameType(type, secondArgType);
-			} else {
-				isSameType = checkIsSameType(type, firstArgType);
-			}
-
-			if (isSameType) {
-				stringstream ss;
-				ss << stmt2;
-				string strStmt2;
-				ss >> strStmt2;
-
-				resObj.addSingleResult(strStmt2);
-			}
-		}
-	}	
+	}
+	return false;
+}
+//e.g. Follows(_,2) bool
+bool FollowsClause::evaluateS1GenericS2Fixed(string s2){
+	Statement* stmt = stmtTable->getStmtObj(lexical_cast<int>(s2));
+	int a = stmt->getFollowsBefore();
+	return (a != -1);
 }
 
-Results FollowsClause::evaluate(void) {
-	Results* resultsObj = new Results();
-	bool isFirstFixed = this->getFirstArgFixed();
-	bool isSecondFixed = this->getSecondArgFixed();
-	string firstArgSyn = this->getFirstArg();
-	string secondArgSyn = this->getSecondArg();
-	string firstArgType = this->getFirstArgType();
-	string secondArgType = this->getSecondArgType();
+//Follows(1,_) bool
+bool FollowsClause::evaluateS1FixedS2Generic(string s1){
+	Statement* stmt = stmtTable->getStmtObj(lexical_cast<int>(s1));
+	int a = stmt->getFollowsAfter();
+	return (a != -1);
+}
 
-	if (isFirstFixed && isSecondFixed) {
-		bool isClauseTrue = isFollows(firstArgSyn, secondArgSyn);
-		resultsObj->setClausePassed(isClauseTrue);
-		resultsObj->setNumOfSyn(0);
-		return *resultsObj;
-
-	} else if (isFirstFixed && !isSecondFixed) {
-		string stmt2 = getFollows(firstArgSyn, secondArgType);
-		if (stmt2 != "-1") {
-			resultsObj->setClausePassed(true);
-			resultsObj->setNumOfSyn(1);
-			resultsObj->setFirstClauseSyn(secondArgSyn);
-			resultsObj->addSingleResult(stmt2);
-		} 
-		return *resultsObj;
-
-	} else if (!isFirstFixed && isSecondFixed) {
-		string stmt1 = getFollowedBy(secondArgSyn, firstArgType);
-		if (stmt1 != "-1") {
-			resultsObj->setClausePassed(true);
-			resultsObj->setNumOfSyn(1);
-			resultsObj->setFirstClauseSyn(firstArgSyn);
-			resultsObj->addSingleResult(stmt1);
-		}
-		return *resultsObj;
-
-	} else if (!isFirstFixed && !isSecondFixed) {
-		Results resObj = *resultsObj;
-		
-		if (firstArgType == stringconst::ARG_GENERIC && secondArgType == stringconst::ARG_GENERIC) {
-			followsBothUnfixedArg(firstArgType, secondArgType, resObj);
-			if (resObj.isClausePassed()) {
-				resObj.setNumOfSyn(0);
-			}
-		}
-
-		if (firstArgType == stringconst::ARG_GENERIC) {
-			followsWithOneUnderscore(firstArgType, secondArgType, resObj);
-			if (resObj.isClausePassed()) {
-				resObj.setNumOfSyn(1);
-				resObj.setFirstClauseSyn(secondArgSyn);
-			}
-		}
-
-		if (secondArgType == stringconst::ARG_GENERIC) {
-			followsWithOneUnderscore(firstArgType, secondArgType, resObj);
-			if (resObj.isClausePassed()) {
-				resObj.setNumOfSyn(1);
-				resObj.setFirstClauseSyn(firstArgSyn);
-			}
-		}
-
-		if (firstArgSyn != secondArgSyn) {
-			followsBothUnfixedArg(firstArgType, secondArgType, resObj);
-			if (resObj.isClausePassed()) {
-				resObj.setNumOfSyn(2);
-				resObj.setFirstClauseSyn(firstArgSyn);
-				resObj.setSecondClauseSyn(secondArgSyn);
-			}
-		}
-		return resObj;
-
-	} else {
-		// Error
-		return *resultsObj;
+// Follows(1, s) || Follows(1, if) || Follows(1, w) || Follows(1, a) || Follows(1, call)
+unordered_set<string> FollowsClause::getAllS2WithS1Fixed(string s1){
+	unordered_set<string> results;
+	Statement* stmt = stmtTable->getStmtObj(atoi(s1.c_str()));
+	int afterStmt = stmt->getFollowsAfter();
+	if (afterStmt != -1 && isNeededArgType(secondArgType, afterStmt)) {
+		results.insert(lexical_cast<string>(afterStmt));
 	}
+	return results;
+}
+
+// Follows(_, s) || Follows(_, if) || Follows(_, w) || Follows(_, c) || Follows(_, a)
+unordered_set<string> FollowsClause::getAllS2(){
+	unordered_set<string> results;
+	unordered_set<Statement*> setToEvaluate;
+
+	if(secondArgType == ARG_STATEMENT || secondArgType == ARG_PROGLINE) {
+		setToEvaluate = stmtTable->getAllStmts();
+	} else if(secondArgType == ARG_IF) {
+		setToEvaluate = stmtTable->getIfStmts();
+	} else if(secondArgType == ARG_WHILE) {
+		setToEvaluate = stmtTable->getWhileStmts();
+	} else if(secondArgType == ARG_CALL) {
+		setToEvaluate = stmtTable->getCallStmts();
+	} else {
+		setToEvaluate = stmtTable->getAssgStmts();
+	}
+
+	for (auto iter = setToEvaluate.begin(); iter != setToEvaluate.end(); ++iter) {
+		int beforeStmt = (*iter)->getFollowsBefore();
+		bool hasBeforeStmt = (beforeStmt != -1);
+		if (hasBeforeStmt) {
+			results.insert(lexical_cast<string>((*iter)->getStmtNum()));
+		}
+	}
+
+	return results;
+}
+
+// Follows(s, 2) || Follows(if, 2) || Follows(w, 2) || Follows(a, 2) || Follows(c, 2)
+unordered_set<string> FollowsClause::getAllS1WithS2Fixed(string s2){
+	unordered_set<string> results;
+	Statement* stmt = stmtTable->getStmtObj(atoi(s2.c_str()));
+	int beforeStmt = stmt->getFollowsBefore();
+	if (beforeStmt != -1 && isNeededArgType(firstArgType, beforeStmt)) {
+		results.insert(lexical_cast<string>(beforeStmt));
+	}
+	return results;
+}
+
+// Follows(s, _) || Follows(if, _) || Follows(w, _) || Follows(a, _) || Follows(c, _)
+unordered_set<string> FollowsClause::getAllS1(){
+	unordered_set<string> results;
+	unordered_set<Statement*> setToEvaluate;
+
+	if(firstArgType == ARG_STATEMENT || firstArgType == ARG_PROGLINE) {
+		setToEvaluate = stmtTable->getAllStmts();
+	} else if(firstArgType == ARG_IF) {
+		setToEvaluate = stmtTable->getIfStmts();
+	} else if(firstArgType == ARG_WHILE) {
+		setToEvaluate = stmtTable->getWhileStmts();
+	} else if(firstArgType == ARG_CALL) {
+		setToEvaluate = stmtTable->getCallStmts();
+	} else {
+		setToEvaluate = stmtTable->getAssgStmts();
+	}
+
+	for (auto iter = setToEvaluate.begin(); iter!= setToEvaluate.end(); ++iter) {
+		int afterStmt = (*iter)->getFollowsAfter();
+		bool hasAfterStmt = (afterStmt != -1);
+		if (hasAfterStmt) {
+			results.insert(lexical_cast<string>((*iter)->getStmtNum()));
+		}
+	}
+
+	return results;
+}
+
+// Follows(s1, s2) || Follows(s, if) || Follows(s, w) || Follows(s, a) || Follows(s, c)
+// Follows(if1, if2) || Follows(if, s) || Follows(if, w) || Follows(if, c) || Follows(if, a)
+// Follows(w1, w2) || Follows(w, s) || Follows(w, c) || Follows(w, a) || Follows(w, if)
+// Follows(c1, c2) || Follows(c, w) || Follows(c, s) || Follows(c, if) || Follows(c, a)
+// Follows(a1, a2) || Follows(a, s) || Follows(a, c) || Follows(a, if) || Follows(a, w)
+unordered_set<vector<string>> FollowsClause::getAllS1AndS2(){
+	unordered_set<vector<string>> results;
+	if(firstArg == secondArg) {
+		return results;
+	}
+	
+	unordered_set<Statement*> secondArgTypeSet = getSetFromArgType(secondArgType);
+	for (auto iter = secondArgTypeSet.begin(); iter != secondArgTypeSet.end(); ++iter) {
+		int followsBefore = (*iter)->getFollowsBefore();
+		if (followsBefore != -1 && 
+			isNeededArgType(firstArgType, followsBefore)) {
+			vector<string> pair;
+			pair.push_back(lexical_cast<string>(followsBefore));
+			pair.push_back(lexical_cast<string>((*iter)->getStmtNum()));
+			results.insert(pair);
+		}
+	}
+	
+	return results;
+}
+
+unordered_set<Statement*> FollowsClause::getSetFromArgType(string type) {
+	unordered_set<Statement*> argTypeSet;
+	if(type == ARG_STATEMENT || type == ARG_PROGLINE) {
+		argTypeSet = stmtTable->getAllStmts();
+	} else if(type == ARG_IF) {
+		argTypeSet = stmtTable->getIfStmts();
+	} else if(type == ARG_WHILE) {
+		argTypeSet = stmtTable->getWhileStmts();
+	} else if(type == ARG_CALL) {
+		argTypeSet = stmtTable->getCallStmts();
+	} else {
+		argTypeSet = stmtTable->getAssgStmts();
+	}
+	return argTypeSet;
+}
+
+bool FollowsClause::isNeededArgType(string type, int stmtNum) {
+	Statement* stmt = stmtTable->getStmtObj(stmtNum);
+
+	if(type == ARG_STATEMENT || type == ARG_PROGLINE) {
+		return true;
+	}
+	
+	if(stmt->getType() == ASSIGN_STMT_ && type == ARG_ASSIGN) {
+		return true;
+	}
+
+	if(stmt->getType() == WHILE_STMT_ && type == ARG_WHILE) {
+		return true;
+	}
+
+	if(stmt->getType() == CALL_STMT_ && type == ARG_CALL) {
+		return true;
+	}
+
+	if(stmt->getType() == IF_STMT_ && type == ARG_IF) {
+		return true;
+	}
+
+	return false;
 }

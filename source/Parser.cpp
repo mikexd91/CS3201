@@ -10,6 +10,7 @@
 #include "ParsedData.h"
 #include "Utils.h"
 #include "InvalidExpressionException.h"
+#include "ExpressionParser.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ using namespace std;
 
 Parser::Parser() {
 	nestingLevel = 0;
-	parsedDataReceiver = PDR::getInstance();
+	pkb = PKB::getInstance();
 	stmtCount = 0;
 }
 
@@ -27,6 +28,7 @@ void Parser::parse(string content) {
 	tokens = Utils::explode(content, ParserConstants::DELIM_STRING, ParserConstants::DELIMITERS);
 	iter = tokens.begin();
 	program();
+	validateCallStmts();
 	endParse();
 }
 
@@ -87,9 +89,15 @@ void Parser::program() {
 void Parser::procedure() {
 	match("procedure");
 	string procName = getName();
+	if (find(existingProcedures.begin(), existingProcedures.end(), procName) != existingProcedures.end()) {
+			//same procedure is defined twice
+			throwException(stmtCount);
+	}
+	currentProcName = procName;
 	ParsedData procedure = ParsedData(ParsedData::PROCEDURE, this->nestingLevel);
 	procedure.setProcName(procName);
-	parsedDataReceiver->processParsedData(procedure);
+	pkb->processParsedData(procedure);
+	existingProcedures.push_back(procName);
 	match("{");
 	stmtLst();
 	match("}");
@@ -111,6 +119,10 @@ void Parser::stmt() {
 	stmtCount++;
 	if (nextToken == "while") {
 		parseWhile();
+	} else if (nextToken == "if") {
+		parseIfBlock();
+	} else if (nextToken == "call") {
+		call();
 	} else {
 		assign(); 
 	}
@@ -122,9 +134,8 @@ void Parser::assign() {
 	ParsedData assignment = ParsedData(ParsedData::ASSIGNMENT, nestingLevel);
 	assignment.setAssignVar(var);
 	assignment.setAssignExpression(getExpression());
-	parsedDataReceiver->processParsedData(assignment);
+	pkb->processParsedData(assignment);
 }
-
 
 /**
 Sample parsing of expression
@@ -139,17 +150,36 @@ queue<string> Parser::getExpression() {
 	queue<string> originalExpression;
 	string word;
 	while ((word = getWord()) != ";") {
-		if (Utils::isValidFactor(word) || Utils::isValidSymbol(word)) {
+		if (Utils::isValidFactor(word) || Utils::isValidOperator(word) || word == "(" || word == ")") {
 			originalExpression.push(word);
 		} else {
 			throwException(stmtCount);
 		}
 	}
+
+	ExpressionParser expressionParser;
+	queue<string> rpn;
 	try {
-		return Utils::getRPN(originalExpression);
+		rpn = expressionParser.getRPN(originalExpression);
 	} catch (InvalidExpressionException) {
 		throwException(stmtCount);
 	}
+
+	return rpn;
+}
+
+void Parser::call() {
+	match("call");
+	string procName = getName();
+	//check that the procedure does not call itself
+	if (currentProcName == procName) {
+		throwException(stmtCount);
+	}
+	ParsedData callStmt = ParsedData(ParsedData::CALL, this->nestingLevel);
+	callStmt.setProcName(procName);
+	pkb->processParsedData(callStmt);
+	calledProcedures.push_back(procName);
+	match(";");
 }
 
 void Parser::parseWhile() {
@@ -157,15 +187,55 @@ void Parser::parseWhile() {
 	string conditionVar = getName();
 	ParsedData whileStmt = ParsedData(ParsedData::WHILE, nestingLevel);
 	whileStmt.setWhileVar(conditionVar);
-	parsedDataReceiver->processParsedData(whileStmt);
+	pkb->processParsedData(whileStmt);
 	match("{");
 	stmtLst();
 	match("}");
 }
 
+void Parser::parseIfBlock() {
+	parseIf();
+	parseThen();
+	parseElse();
+}
+
+void Parser::parseIf(){
+	match("if");
+	string conditionVar = getName();
+	ParsedData ifStmt = ParsedData(ParsedData::IF, nestingLevel);
+	ifStmt.setIfVar(conditionVar);
+	pkb->processParsedData(ifStmt);
+}
+
+void Parser::parseThen(){
+	match ("then");
+	match("{");
+	stmtLst();
+	match("}");
+}
+
+void Parser::parseElse() {
+	match ("else");
+	ParsedData elseStmt = ParsedData(ParsedData::ELSE, nestingLevel);
+	pkb->processParsedData(elseStmt);
+	match ("{");
+	stmtLst();
+	match("}");
+}
+
+//checked that all the called procedures exist as procedures
+void Parser::validateCallStmts() {
+	for (vector<string>::iterator iter = calledProcedures.begin(); iter != calledProcedures.end(); iter++) {
+		string calledProcedure = *iter;
+		if (find(existingProcedures.begin(), existingProcedures.end(), calledProcedure) == existingProcedures.end()) {
+			throwException(stmtCount);
+		}
+	}
+}
+
 void Parser::endParse() {
 	ParsedData endData = ParsedData(ParsedData::END, nestingLevel);
-	parsedDataReceiver->processParsedData(endData);
+	pkb->processParsedData(endData);
 }
 
 void Parser::throwException(int lineNumber) {

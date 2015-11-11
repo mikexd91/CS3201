@@ -5,32 +5,116 @@
 
 class ModifiesClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( ModifiesClauseTest );
-	CPPUNIT_TEST( testModifiesFixedFixed );
-	CPPUNIT_TEST( testModifiesSynFixed );
-	CPPUNIT_TEST( testModifiesFixedSyn );
-	CPPUNIT_TEST( testModifiesSynSyn );
-	CPPUNIT_TEST( testModifiesGenericFixed );
-	CPPUNIT_TEST( testModifiesFixedGeneric );
-	CPPUNIT_TEST( testModifiesGenericGeneric );
 
-	//CPPUNIT_TEST( evaulateVarWildExpr );
-	//CPPUNIT_TEST( evaluateVarFixedExprWild );
-	//CPPUNIT_TEST( evaluateVarFixedExpr );
-	//CPPUNIT_TEST( evaluateVarExprWild );
-	//CPPUNIT_TEST( evaluateVarExpr );
+	CPPUNIT_TEST( testFixedFixedStmtPass );
+	CPPUNIT_TEST( testFixedFixedStmtFail );
+	CPPUNIT_TEST( testFixedFixedProcPass );
+	CPPUNIT_TEST( testFixedFixedProcFail );
+
+	CPPUNIT_TEST( testGenericGenericPass );
+	CPPUNIT_TEST( testGenericFixedPass );
+	CPPUNIT_TEST( testGenericFixedFail );
+
+	CPPUNIT_TEST( testFixedGenericStmtPass );
+	CPPUNIT_TEST( testFixedGenericStmtFail );
+	CPPUNIT_TEST( testFixedGenericProcPass );
+	CPPUNIT_TEST( testFixedGenericProcFail );
+
+	CPPUNIT_TEST( testFixedSynStmtPass );
+	CPPUNIT_TEST( testFixedSynStmtFail );
+	CPPUNIT_TEST( testFixedSynProcPass );
+	CPPUNIT_TEST( testFixedSynProcFail );
+
+	CPPUNIT_TEST( testGenericSynPass );
+
+	CPPUNIT_TEST( testSynFixedStmtPass );
+	CPPUNIT_TEST( testSynFixedStmtFail );
+	CPPUNIT_TEST( testSynFixedProcPass );
+	CPPUNIT_TEST( testSynFixedProcFail );
+	CPPUNIT_TEST( testSynFixedWhilePass );
+	CPPUNIT_TEST( testSynFixedWhileFail );
+	CPPUNIT_TEST( testSynFixedIfPass );
+	CPPUNIT_TEST( testSynFixedIfFail );
+	CPPUNIT_TEST( testSynFixedAssgPass );
+	CPPUNIT_TEST( testSynFixedAssgFail );
+	CPPUNIT_TEST( testSynFixedCallPass );
+	CPPUNIT_TEST( testSynFixedCallFail );
+
+	CPPUNIT_TEST( testSynGenericProcPass );
+	CPPUNIT_TEST( testSynGenericIfPass );
+	CPPUNIT_TEST( testSynGenericWhilePass );
+	CPPUNIT_TEST( testSynGenericStmtPass );
+	CPPUNIT_TEST( testSynGenericAssgPass );	
+	CPPUNIT_TEST( testSynGenericCallPass );
+
+	CPPUNIT_TEST( testSynSynProcPass );
+	CPPUNIT_TEST( testSynSynIfPass );
+	CPPUNIT_TEST( testSynSynWhilePass );
+	CPPUNIT_TEST( testSynSynStmtPass );
+	CPPUNIT_TEST( testSynSynAssgPass );
+	CPPUNIT_TEST( testSynSynCallPass );
+
 	CPPUNIT_TEST_SUITE_END();
 
 public:
 	void setUp();
 	void tearDown();
 	
-	void testModifiesFixedFixed();
-	void testModifiesSynFixed();
-	void testModifiesFixedSyn();
-	void testModifiesSynSyn();
-	void testModifiesGenericFixed();
-	void testModifiesFixedGeneric();
-	void testModifiesGenericGeneric();
+	void testFixedFixedStmtPass();
+	void testFixedFixedStmtFail();
+	void testFixedFixedProcPass();
+	void testFixedFixedProcFail();
+
+	void testGenericGenericPass();
+
+	void testGenericFixedPass();
+	void testGenericFixedFail();
+
+	void testFixedGenericStmtPass();
+	void testFixedGenericStmtFail();
+	void testFixedGenericProcPass();
+	void testFixedGenericProcFail();
+
+	void testFixedSynStmtPass();
+	void testFixedSynStmtFail();
+	void testFixedSynProcPass();
+	void testFixedSynProcFail();
+	void testGenericSynPass();
+
+	void testSynFixedStmtPass();
+	void testSynFixedStmtFail();
+	void testSynFixedProcPass();
+	void testSynFixedProcFail();
+	void testSynFixedWhilePass();
+	void testSynFixedWhileFail();
+	void testSynFixedIfPass();
+	void testSynFixedIfFail();
+	void testSynFixedAssgPass();
+	void testSynFixedAssgFail();
+	void testSynFixedCallPass();
+	void testSynFixedCallFail();
+
+	void testSynGenericProcPass();
+	void testSynGenericIfPass();
+	void testSynGenericWhilePass();
+	void testSynGenericStmtPass();
+	void testSynGenericAssgPass();
+	void testSynGenericCallPass();
+
+	void testSynSynProcPass();
+	void testSynSynIfPass();
+	void testSynSynWhilePass();
+	void testSynSynStmtPass();
+	void testSynSynAssgPass();
+	void testSynSynCallPass();
+
+	//void testModifiesFixedFixed();
+	//void testModifiesSynFixed();
+	//void testModifiesFixedSyn();
+	//void testModifiesSynSyn();
+	//void testModifiesGenericFixed();
+	//void testModifiesFixedGeneric();
+	//void testModifiesGenericGeneric();
 
 	/*void evaluateVarWildExprWild();
 	void evaulateVarWildExpr();

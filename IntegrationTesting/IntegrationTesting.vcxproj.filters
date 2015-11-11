@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\IntegrationTest.cpp">
+    <ClCompile Include="FrontEndTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\TestOne.cpp">
+    <ClCompile Include="IntegrationTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PQLIntegration.cpp">
@@ -26,11 +26,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FrontEndTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="PQLIntegration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\TestOne.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="test1.simple" />
   </ItemGroup>
 </Project>

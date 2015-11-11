@@ -207,3 +207,7 @@ FakesAssemblies/
 .project
 SPA/SPA.vcxproj
 AutoTester/AutoTester.vcxproj.user
+
+# Test Files
+![Rr]elease/*.py
+![Rr]elease/SystemTests

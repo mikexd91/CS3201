@@ -1,7 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include "boost/foreach.hpp"
 #include "TestWrapper.h"
+
+using namespace boost;
 
 // implementation code of WrapperFactory - do NOT modify the next 5 lines
 AbstractWrapper* WrapperFactory::wrapper = 0;
@@ -16,7 +19,6 @@ volatile bool TestWrapper::GlobalStop = false;
 TestWrapper::TestWrapper() {
 	// create any objects here as instance variables of this class
 	// as well as any initialization required for your spa program
-	counter = 1;
 	parser = new Parser();
 	pqlController = new PQLController();
 }
@@ -33,9 +35,11 @@ void TestWrapper::parse(std::string filename) {
     string programSource = buffer.str();
 	// call parser.parse on the string
 	try {
-	parser->parse(programSource);
+		parser->parse(programSource);
+		delete parser;
 	} catch (InvalidCodeException e) {
 		cout << e.what();
+		delete parser;
 		exit(EXIT_FAILURE);
 	}
 }
@@ -48,14 +52,15 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
 	// each result must be a string.
 	// eval the query
 	try {
-		set<string> resultSet = pqlController->parse(query);
+		unordered_set<string> resultSet = pqlController->parse(query);
 		// get results
 		// iterate through the results and stuff them into the results list
-		set<string>::iterator iter;
-		for (iter = resultSet.begin(); iter != resultSet.end(); ++iter) {
-			results.push_back(*iter);
+		unordered_set<string>::iterator iter;
+		BOOST_FOREACH(auto i, resultSet) {
+			results.push_back(i);
 		}
-	} catch (exception e) {
+	} catch (std::exception e) {
 		results.push_back(e.what());
+		delete pqlController;
 	}
 }

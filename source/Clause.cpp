@@ -1,67 +1,59 @@
 #include "Clause.h"
-#include "PQLExceptions.h"
-#include <string>
-#include <map>
+#include <iostream>
 
-using std::map;
-using std::string;
-
-Clause::Clause(void){
-	this->firstArgFixed = false;
-	this->secondArgFixed = false;
+Clause::Clause() {
+	weight = 0;
 }
 
-Clause::Clause(ClauseType type){
-	this->clauseType = type;
+Clause::~Clause(void) {
+	
 }
 
-Clause::~Clause(void){
+ClauseType Clause::getClauseType()
+{
+	return this->clauseType;
 }
 
-void Clause::setFirstArg(string first){
-	this->firstArg = first;
+void Clause::setWeight(int weight) {
+	this->weight = weight;
 }
 
-void Clause::setFirstArgType(string type){
-	this->firstArgType = type;
-}
-
-void Clause::setFirstArgFixed(bool fixed){
-	this->firstArgFixed = fixed;
-}
-
-void Clause::setSecondArg(string second){
-	this->secondArg = second;
-}
-
-void Clause::setSecondArgType(string type){
-	this->secondArgType = type;
-}
-
-void Clause::setSecondArgFixed(bool fixed){
-	this->secondArgFixed = fixed;
-}
-
-string Clause::getFirstArg(void){
-	return this->firstArg;
-}
-
-string Clause::getFirstArgType(void){
-	return this->firstArgType;
-}
-
-string Clause::getSecondArg(void){
-	return this->secondArg;
-}
-
-string Clause::getSecondArgType(void){
-	return this->secondArgType;
-}
-
-bool Clause::getFirstArgFixed(void){
-	return this->firstArgFixed;
-}
-
-bool Clause::getSecondArgFixed(void){
-	return this->secondArgFixed;
+int Clause::getWeight() {
+	if (weight > 0) {
+		return weight;
+	} else if (clauseType == WITH_) {
+		return 1;
+	} else if (clauseType == CALLS_) {
+		return 4;
+	} else if (clauseType == FOLLOWS_) {
+		return 7;
+	} else if (clauseType == PARENT_) {
+		return 10;
+	} else if (clauseType == CALLSSTAR_) {
+		return 13;
+	} else if (clauseType == FOLLOWSSTAR_) {
+		return 16;
+	} else if (clauseType == PARENTSTAR_) {
+		return 19;
+	} else if (clauseType == PATTERNASSG_) {
+		return 22;
+	} else if (clauseType == PATTERNIF_) {
+		return 25;
+	} else if (clauseType == PATTERNWHILE_) {
+		return 28;
+	} else if (clauseType == USES_) {
+		return 31;
+	} else if (clauseType == MODIFIES_) {
+		return 34;
+	} else if (clauseType == NEXT_) {
+		return 37;
+	} else if (clauseType == NEXTSTAR_) {
+		return 40;
+	} else if (clauseType == AFFECTS_) {
+		return 43;
+	} else if (clauseType == AFFECTSSTAR_) {
+		return 46;
+	} else {
+		return 999;
+	}
 }

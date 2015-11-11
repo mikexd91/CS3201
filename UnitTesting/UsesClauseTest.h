@@ -4,42 +4,106 @@
 
 class UsesClauseTest : public CPPUNIT_NS::TestFixture {
 	CPPUNIT_TEST_SUITE( UsesClauseTest );
-	CPPUNIT_TEST( testUsesAssignFixedFixedPass );
-	CPPUNIT_TEST( testUsesAssignFixedFixedFail );
-	CPPUNIT_TEST( testUsesAssignSynFixedPass );
-	CPPUNIT_TEST( testUsesGenericSynFixedPass );
-	CPPUNIT_TEST( testUsesAssignSynFixedFail );
-	CPPUNIT_TEST( testUsesAssignFixedSynPass );
-	CPPUNIT_TEST( testUsesGenericFixedSynPass );
-	CPPUNIT_TEST( testUsesAssignFixedSynFail );
-	CPPUNIT_TEST( testUsesAssignSynSynPass );
-	CPPUNIT_TEST( testUsesWhileSynSynPass );
-	CPPUNIT_TEST( testUsesGenericSynSynPass );
-	CPPUNIT_TEST( testUsesStmtOverflow );
-	CPPUNIT_TEST( testUsesFirstGenericPass );
-	CPPUNIT_TEST( testUsesSecondGenericPass );
-	CPPUNIT_TEST( testUsesGenericFixedPass );
-	CPPUNIT_TEST( testUsesFixedGenericFail );
+
+	CPPUNIT_TEST( testFixedFixedStmtPass );
+	CPPUNIT_TEST( testFixedFixedStmtFail );
+	CPPUNIT_TEST( testFixedFixedProcPass );
+	CPPUNIT_TEST( testFixedFixedProcFail );
+
+	CPPUNIT_TEST( testGenericGenericPass );
+	CPPUNIT_TEST( testGenericFixedPass );
+	CPPUNIT_TEST( testGenericFixedFail );
+
+	CPPUNIT_TEST( testFixedGenericStmtPass );
+	CPPUNIT_TEST( testFixedGenericStmtFail );
+	CPPUNIT_TEST( testFixedGenericProcPass );
+	CPPUNIT_TEST( testFixedGenericProcFail );
+
+	CPPUNIT_TEST( testFixedSynStmtPass );
+	CPPUNIT_TEST( testFixedSynStmtFail );
+	CPPUNIT_TEST( testFixedSynProcPass );
+	CPPUNIT_TEST( testFixedSynProcFail );
+
+	CPPUNIT_TEST ( testGenericSynPass );
+
+	CPPUNIT_TEST( testSynFixedStmtPass );
+	CPPUNIT_TEST( testSynFixedStmtFail );
+	CPPUNIT_TEST( testSynFixedProcPass );
+	CPPUNIT_TEST( testSynFixedProcFail );
+	CPPUNIT_TEST( testSynFixedWhilePass );
+	CPPUNIT_TEST( testSynFixedWhileFail );
+	CPPUNIT_TEST( testSynFixedIfPass );
+	CPPUNIT_TEST( testSynFixedIfFail );
+	CPPUNIT_TEST( testSynFixedAssgPass );
+	CPPUNIT_TEST( testSynFixedAssgFail );
+	CPPUNIT_TEST( testSynFixedCallPass );
+	CPPUNIT_TEST( testSynFixedCallFail );
+
+	CPPUNIT_TEST( testSynGenericProcPass );
+	CPPUNIT_TEST( testSynGenericIfPass );
+	CPPUNIT_TEST( testSynGenericWhilePass );
+	CPPUNIT_TEST( testSynGenericStmtPass );
+	CPPUNIT_TEST( testSynGenericAssgPass );	
+	CPPUNIT_TEST( testSynGenericCallPass );	
+
+	CPPUNIT_TEST( testSynSynProcPass );
+	CPPUNIT_TEST( testSynSynIfPass );
+	CPPUNIT_TEST( testSynSynWhilePass );
+	CPPUNIT_TEST( testSynSynStmtPass );
+	CPPUNIT_TEST( testSynSynAssgPass );
+	CPPUNIT_TEST( testSynSynCallPass );
+
 	CPPUNIT_TEST_SUITE_END();
 
 public:
 	void setUp();
 	void tearDown();
+	
+	void testFixedFixedStmtPass();
+	void testFixedFixedStmtFail();
+	void testFixedFixedProcPass();
+	void testFixedFixedProcFail();
 
-	void testUsesAssignFixedFixedPass();
-	void testUsesAssignFixedFixedFail();
-	void testUsesAssignSynFixedPass();
-	void testUsesGenericSynFixedPass();
-	void testUsesAssignSynFixedFail();
-	void testUsesAssignFixedSynPass();
-	void testUsesGenericFixedSynPass();
-	void testUsesAssignFixedSynFail();
-	void testUsesAssignSynSynPass();
-	void testUsesWhileSynSynPass();
-	void testUsesGenericSynSynPass();
-	void testUsesStmtOverflow();
-	void testUsesFirstGenericPass();
-	void testUsesSecondGenericPass();
-	void testUsesGenericFixedPass();
-	void testUsesFixedGenericFail();
+	void testGenericGenericPass();
+
+	void testGenericFixedPass();
+	void testGenericFixedFail();
+
+	void testFixedGenericStmtPass();
+	void testFixedGenericStmtFail();
+	void testFixedGenericProcPass();
+	void testFixedGenericProcFail();
+
+	void testFixedSynStmtPass();
+	void testFixedSynStmtFail();
+	void testFixedSynProcPass();
+	void testFixedSynProcFail();
+	void testGenericSynPass();
+
+	void testSynFixedStmtPass();
+	void testSynFixedStmtFail();
+	void testSynFixedProcPass();
+	void testSynFixedProcFail();
+	void testSynFixedWhilePass();
+	void testSynFixedWhileFail();
+	void testSynFixedIfPass();
+	void testSynFixedIfFail();
+	void testSynFixedAssgPass();
+	void testSynFixedAssgFail();
+	void testSynFixedCallPass();
+	void testSynFixedCallFail();
+
+	void testSynGenericProcPass();
+	void testSynGenericIfPass();
+	void testSynGenericWhilePass();
+	void testSynGenericStmtPass();
+	void testSynGenericAssgPass();
+	void testSynGenericCallPass();
+
+	void testSynSynProcPass();
+	void testSynSynIfPass();
+	void testSynSynWhilePass();
+	void testSynSynStmtPass();
+	void testSynSynAssgPass();
+	void testSynSynCallPass();
 };

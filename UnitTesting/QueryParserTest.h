@@ -4,22 +4,30 @@
 class QueryParserTest : public CPPUNIT_NS::TestFixture{
 
 	CPPUNIT_TEST_SUITE ( QueryParserTest );
-	CPPUNIT_TEST( testTokeniser );
 	CPPUNIT_TEST( testDeclaration );
-	CPPUNIT_TEST( testSelect );
-	CPPUNIT_TEST( testClause );
-	CPPUNIT_TEST( testPattern );
+	CPPUNIT_TEST( testSelectSingle );
+	CPPUNIT_TEST( testSelectBoolean );
+	CPPUNIT_TEST( testSelectTuple );
+	CPPUNIT_TEST( testSelectAttribute );
+	CPPUNIT_TEST( testParseClauseUses );
+	CPPUNIT_TEST( testParseParentStar );
+	CPPUNIT_TEST( testWith );
 	CPPUNIT_TEST ( testParser );
+	CPPUNIT_TEST ( debugTests );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
 	void setUp(void);
 	void tearDown(void);
 
-	void testTokeniser();
 	void testDeclaration();
-	void testSelect();
-	void testClause();
-	void testPattern();
+	void testSelectSingle();
+	void testSelectBoolean();
+	void testSelectTuple();
+	void testSelectAttribute();
+	void testParseClauseUses();
+	void testParseParentStar();
+	void testWith();
 	void testParser();
+	void debugTests();
 };

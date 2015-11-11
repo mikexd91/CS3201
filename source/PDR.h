@@ -1,6 +1,7 @@
 
 #include <stack>
 #include <queue>
+#include <boost/unordered_set.hpp>
 
 #ifndef PDR_HEADER
 #define PDR_HEADER
@@ -27,8 +28,10 @@
 #include "AST.h"
 #include "Constant.h"
 #include "ConstTable.h"
+#include "DesignExtractor.h"
 
 using namespace std;
+using boost::unordered_set;
 
 class PDR {
 	
@@ -42,10 +45,12 @@ public:
 
 	int getCurrNestingLevel();
 	int getCurrStmtNumber();
+	Procedure* getCurrentProcedure();
 	stack<TNode*> getNodeStack();
+	stack<int> getParentNumStack();
 
 private:
-	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHILE};
+	enum Type {ASSIGNMENT, PROCEDURE, PROGRAM, OPERATOR, WHILE, IF, ELSE, CALL};
 	enum Flag {USES, MODIFIES};
 
 	int stmtCounter;
@@ -53,22 +58,45 @@ private:
     static bool instanceFlag;
     static PDR* pdrInstance;
 
+    Procedure* currentProcedure;
+
 	stack<int> stmtParentNumStack;
 	stack<TNode*> nodeStack;
 
 	void processProcedureStmt(ParsedData);
 	void processAssignStmt(ParsedData);
 	void processIfStmt(ParsedData);
+	void processElseStmt(ParsedData);
 	void processWhileStmt(ParsedData);
 	void processCallStmt(ParsedData);
     void processEndProgram();
 	
-    void addParentSet(set<string>, Flag);
-    void addToProcTable(TNode*);
+    void addToStmtTable(Statement*);
+    void addToCurrProc(unordered_set<string>, Flag);
+    void addParentSet(unordered_set<string>, Flag);
     void addToVarTable(TNode*, Flag);
 	void addToConstTable(TNode*);
+	void addCallToCurrentProcedure(Procedure*);
+	void addChildToParentStmtLstNode(TNode*);
+
+	// Populating the procedures with the necessary uses/modifies
+	void addUseToCurrentProcedure(string);
+	void addModifyToCurrentProcedure(string);
+	void addUsesToCalledBy(string);
+	void addModifiesToCalledBy(string);
+
+	void addUseProcToVarTable(set<string>);
+	void addModifyProcToVarTable(string);
+	void addStmtToCurrentProc(Statement*);
     
-    TNode* breakDownAssignExpression(ParsedData, set<string>&);
+	void createFollowsLinks(StmtNode*, Statement*);
+	void createCurrentProcedureLinks(ProcNode*, Procedure*);
+	void checkAndModifyNestingLevel(ParsedData);
+
+	Procedure* checkAndAddToProcTable(string);
+	ProcNode* retrievePreviousProc();
+
+    TNode* breakDownAssignExpression(ParsedData, unordered_set<string>&);
     
     bool isInteger(string);
 
